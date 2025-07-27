@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SN - Poems</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <div id="banner-placeholder"></div>
+
+  <section class="poem-container">
+    <aside class="poem-list">
+      <input type="text" id="poemSearch" placeholder="Search poems..." class="poem-search">
+      <ul id="poemList">
+        <!-- dynamically filled by script.js -->
+      </ul>
+    </aside>
+
+    <div class="poem-content">
+      <div class="audio-player" style="display:none;">
+        <h3 class="audio-title"></h3>
+        <audio controls>
+          <source src="" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+      </div>
+      <div class="poem-text" id="poemText">
+        Loading poem...
+      </div>
+    </div>
+  </section>
+
+  <script>
+fetch('banner.html')
+  .then(response => response.text())
+  .then(data => {
+    const banner = document.getElementById('banner-placeholder');
+    banner.innerHTML = data;
+
+    // After banner is inserted, get its height
+    const bannerHeight = banner.offsetHeight;
+
+    // Set the top of the fixed poem-list dynamically
+    const poemList = document.querySelector('.poem-list');
+    if (poemList) {
+      poemList.style.top = bannerHeight + 'px';
+    }
+  })
+  .catch(error => console.error('Error loading banner:', error));
+
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>

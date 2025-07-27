@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SN - Home</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="header-placeholder"></div>
+  <div id="banner-placeholder"></div>
+
+  <!-- Add other content for the home page here -->
+
+  <script>
+    // Load header.html
+    fetch('header.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('header-placeholder').innerHTML = data;
+      })
+      .catch(error => console.error('Error loading header:', error));
+
+    // Load banner.html
+    fetch('banner.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('banner-placeholder').innerHTML = data;
+      })
+      .catch(error => console.error('Error loading banner:', error));
+  </script>
+</body>
+</html>
