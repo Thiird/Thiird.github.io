@@ -10,23 +10,33 @@ document.addEventListener("DOMContentLoaded", () => {
     .catch((err) => console.error("Error loading poems manifest:", err));
 });
 
+function formatPoemTitle(filename) {
+  // Remove .md extension
+  let title = filename.replace(/\.md$/i, "");
+  // Replace the first dot after leading numbers with a space (keep the numbers)
+  title = title.replace(/^(\d+)\./, "$1 ");
+  // Replace underscores with spaces
+  title = title.replace(/_/g, " ");
+  // Capitalize first letter of each word
+  title = title.replace(/\b\w/g, (char) => char.toUpperCase());
+  return title.trim();
+}
+
 function buildPoemList(poems) {
   const poemList = document.getElementById("poemList");
-
-  // Clear the list before rebuilding
   poemList.innerHTML = "";
 
   poems.forEach((poem) => {
     const li = document.createElement("li");
     const a = document.createElement("a");
     a.href = "#";
-    a.textContent = poem.name.replace(/\.md$/i, ""); // Remove .md here
+    a.textContent = formatPoemTitle(poem.name);
     a.dataset.poem = JSON.stringify(poem);
+    a.classList.add("poem-link");
     li.appendChild(a);
     poemList.appendChild(li);
   });
 
-  // Add click listeners
   poemList.querySelectorAll("a").forEach((link) => {
     link.addEventListener("click", (e) => {
       e.preventDefault();
@@ -37,10 +47,8 @@ function buildPoemList(poems) {
 }
 
 function loadPoem(poem) {
-  // Remove previous "no audio" message if exists
   document.getElementById("noAudioMsg")?.remove();
 
-  // Load and render poem markdown from poems/ folder
   fetch("poems/" + poem.name)
     .then((res) => {
       if (!res.ok) throw new Error("Poem not found");
@@ -60,13 +68,12 @@ function loadPoem(poem) {
   const audioElement = document.querySelector("audio");
 
   if (poem.audio) {
-    // Prefix with poems/ and encode
     const audioPath = "poems/" + encodeURIComponent(poem.audio);
 
     fetch(audioPath, { method: "HEAD" })
       .then((res) => {
         if (res.ok) {
-          audioTitle.textContent = poem.name.replace(/\.md$/i, "");
+          audioTitle.textContent = formatPoemTitle(poem.audio);
           audioElement.src = audioPath;
           audioPlayer.style.display = "block";
         } else {
@@ -90,14 +97,8 @@ function showNoAudio() {
   audioTitle.textContent = "";
   audioElement.src = "";
   audioPlayer.style.display = "none";
-
-  const msg = document.createElement("p");
-  msg.id = "noAudioMsg";
-  msg.innerHTML = "<i>No audio inspo associated with this poem</i>";
-  document.getElementById("poemText").insertAdjacentElement("beforebegin", msg);
 }
 
-// Search functionality
 document.getElementById("poemSearch").addEventListener("input", (e) => {
   const search = e.target.value.toLowerCase();
   document.querySelectorAll("#poemList li").forEach((item) => {
