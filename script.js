@@ -11,10 +11,14 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function formatPoemTitle(filename) {
-  // Remove .md extension
-  let title = filename.replace(/\.md$/i, "");
-  // Replace the first dot after leading numbers with a space (keep the numbers)
-  title = title.replace(/^(\d+)\./, "$1 ");
+  let title = filename;
+  if (filename.toLowerCase().endsWith(".mp3")) {
+    // For audio files: remove leading numbers and punctuation, remove .mp3
+    title = title.replace(/^\d+[.\s]*/, "").replace(/\.mp3$/i, "");
+  } else if (filename.toLowerCase().endsWith(".md")) {
+    // For poem files: keep numbers, replace first dot with space, remove .md
+    title = title.replace(/^(\d+)\./, "$1 ").replace(/\.md$/i, "");
+  }
   // Replace underscores with spaces
   title = title.replace(/_/g, " ");
   // Capitalize first letter of each word
