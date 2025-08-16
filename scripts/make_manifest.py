@@ -2,10 +2,18 @@ import os
 import json
 import re
 
-POEMS_DIR = 'poems'
-MANIFEST_FILE = os.path.join(POEMS_DIR, 'poems_manifest.json')
+# 🔧 Change this to adjust the working folder (relative to script)
+WORKING_SUBFOLDER = "../poems"
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+POEMS_DIR = os.path.join(BASE_DIR, WORKING_SUBFOLDER)
+MANIFEST_FILE = os.path.join(POEMS_DIR, "poems_manifest.json")
 
 def build_manifest():
+    if not os.path.exists(POEMS_DIR):
+        print(f"❌ Error: Directory '{POEMS_DIR}' does not exist.")
+        return
+
     files = os.listdir(POEMS_DIR)
     
     md_pattern = re.compile(r'^(\d+)\..+\.md$', re.IGNORECASE)
@@ -32,14 +40,14 @@ def build_manifest():
         if mp3_file:
             print(f"  {md_file} <=> {mp3_file}")
             manifest.append({
-                'name': md_file,
-                'audio': mp3_file
+                "name": md_file,
+                "audio": mp3_file
             })
         else:
             print(f"  {md_file} <=> NO AUDIO MATCH")
             manifest.append({
-                'name': md_file,
-                'audio': None
+                "name": md_file,
+                "audio": None
             })
 
     # Any mp3s without matching md
@@ -47,10 +55,10 @@ def build_manifest():
         if num not in md_files:
             print(f"  AUDIO FILE {mp3_file} has NO markdown match")
 
-    with open(MANIFEST_FILE, 'w', encoding='utf-8') as f:
+    with open(MANIFEST_FILE, "w", encoding="utf-8") as f:
         json.dump(manifest, f, indent=2)
 
-    print(f'\nManifest created with {len(manifest)} entries at {MANIFEST_FILE}')
+    print(f"\n✅ Manifest created with {len(manifest)} entries at {MANIFEST_FILE}")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     build_manifest()
