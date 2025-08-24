@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SN - Poems</title>
+    <title>SN - Blogs</title>
     <link rel="stylesheet" href="styles.css" />
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   </head>
@@ -20,51 +20,46 @@
           class="poem-search"
         />
         <ul id="poemList">
-          <!-- dynamically filled -->
+          <!-- dynamically filled with blog list -->
         </ul>
       </aside>
 
       <div class="poem-content">
-        <!-- Audio Player -->
-        <div class="audio-player" style="display: none" id="audioPlayer">
-          <div class="player-controls">
-            <button id="playPause" class="player-btn">▶</button>
-            <span id="currentTime">0:00</span>
-            <div class="progress-container">
-              <div id="progressBar"></div>
-            </div>
-            <span id="duration">0:00</span>
-          </div>
-          <audio id="audioElement">
+        <!-- Audio player not used in blogs but kept for consistency -->
+        <div class="audio-player" style="display: none">
+          <h3 class="audio-title"></h3>
+          <audio controls>
             <source src="" type="audio/mpeg" />
+            Your browser does not support the audio element.
           </audio>
         </div>
-
-        <div class="poem-text" id="poemText">Loading poem...</div>
+        <div class="poem-text" id="poemText">Loading blog post...</div>
       </div>
     </section>
 
     <script>
+      // 🔹 Insert the banner
       fetch("banner.html")
         .then((response) => response.text())
         .then((data) => {
           const banner = document.getElementById("banner-placeholder");
           banner.innerHTML = data;
 
-          const poemList = document.querySelector(".poem-list");
+          const blogList = document.querySelector(".poem-list");
 
-          function updatePoemListTop() {
+          function updateListTop() {
             const bannerBottom = banner.getBoundingClientRect().bottom;
             const offset = Math.max(0, bannerBottom);
-            poemList.style.top = offset + "px";
+            blogList.style.top = offset + "px";
           }
 
-          updatePoemListTop();
-          window.addEventListener("scroll", updatePoemListTop);
-          window.addEventListener("resize", updatePoemListTop);
+          updateListTop();
+          window.addEventListener("scroll", updateListTop);
+          window.addEventListener("resize", updateListTop);
         })
         .catch((error) => console.error("Error loading banner:", error));
 
+      // 🔹 Sidebar toggle
       document.addEventListener("DOMContentLoaded", () => {
         const sidebar = document.querySelector(".poem-list");
         const toggleBtn = document.getElementById("toggleSidebar");
@@ -75,6 +70,11 @@
             ? "⏵"
             : "⏴";
         });
+
+        // 🔹 Initialize blogs list (from script.js functions)
+        if (typeof initBlogs === "function") {
+          initBlogs();
+        }
       });
     </script>
 

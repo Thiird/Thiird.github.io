@@ -27,10 +27,13 @@ def process_mp3_files():
             input_path = os.path.join(target_dir, file_name)
             output_path = os.path.join(target_dir, f"processed_{file_name}")
 
+            # FFmpeg command with fade in/out and clamp to 60s
             command = [
                 "ffmpeg",
                 "-y",
                 "-i", input_path,
+                "-t", "60",  # clamp to 1 minute
+                "-af", "afade=t=in:ss=0:d=3,afade=t=out:st=57:d=3",  # fade in/out
                 "-map", "0:a",
                 "-b:a", "64k",
                 "-vn",
