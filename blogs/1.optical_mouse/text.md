@@ -50,13 +50,13 @@ The general characteristic of the mouse I wanted were:
 The PCB design was done is KiCAD.
 <embed src="mouse_sch.pdf" type="application/pdf" width="100%" height="600px" />
 
-[<img style="width:100%;max-width:600px;">](mouse_layout.png)
+[<img class="hover-effect click-zoom" style="width:100%;max-width:600px;">](mouse_layout.png)
 
 Instead of having the mouse directly connect to the PC via Bluetooth, I decided to design a receiver too, so that I would get to design with the receiving side too.
 
 <embed src="receiver_sch.pdf" type="application/pdf" width="100%" height="600px" />
 
-[<img style="width:100%;max-width:600px;">](receiver_layout.png)
+[<img class="hover-effect click-zoom" style="width:100%;max-width:600px;">](receiver_layout.png)
 
 <h2 id="voltage-rails">Voltage rails</h2>
 
@@ -74,7 +74,7 @@ I agree three voltage rails is a bit ridiculous, but I believe I have vaid techn
 
 The rotary encoder is a TTC 24-teeth tactile mechanical encoder bought on AliExpress.
 
-[<img style="width:100%;max-width:600px;">](q_dec.png)
+[<img class="hover-effect click-zoom" style="width:100%;max-width:600px;">](q_dec.png)
 
 <h2 id="switches">Switches</h2>
 
@@ -148,10 +148,10 @@ So far I have fixed for this by just applying a very, very crude low pass filter
 
 A particular mouse combo makes the mouse store the last 2000 motion readings from the optical sensor in the MCU EEPROM.
 With the magic of Python and MathPlotLib we can visualize this data.
-[<img style="width:100%;max-width:600px;">](motion_glitch_plot.png)
+[<img class="hover-effect click-zoom" style="width:100%;max-width:600px;">](motion_glitch_plot.png)
 
 Zooming in on the second blue spike from the right, we can clearly see the low pass filter in effect.
-[<img style="width:100%;max-width:600px;">](motion_glitch_plot_zoom.png)
+[<img class="hover-effect click-zoom" style="width:100%;max-width:600px;">](motion_glitch_plot_zoom.png)
 
 The motion values are very close to 0 as I use a very low DPI setting.
 
@@ -213,7 +213,7 @@ I have a ich for keeping track of things, and doing statistical analysis over ev
 
 The app starts at system startup and sits on the system tray-bar. Whenever the mouse is connected via USB to the PC for charging, it detects that, connects to its COM port and logs the mouse statistics on a CSV file. When the mouse is disconnected it connects to the mouse receiver to alert the user about low battery level with a sound notification.
 
-[<img style="width:50%;max-width:600px;">](mouse_client.png)
+[<img class="hover-effect click-zoom" style="width:50%;max-width:600px;">](mouse_client.png)
 
 _The battery level bug was later fixed._
 

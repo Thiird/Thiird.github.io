@@ -447,11 +447,6 @@ img {
 }
 
 /* 🔹 Image grid */
-/* 🔹 Image grid */
-/* ... (all other styles unchanged up to .image-grid) ... */
-/* ... (all other styles unchanged) ... */
-
-/* 🔹 Image grid */
 .image-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
