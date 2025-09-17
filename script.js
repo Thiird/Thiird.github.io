@@ -20,17 +20,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 🔹 Calculate scale to fill 90% of viewport (for wrapper sizing)
   function calculateBaseScale(img) {
-    const maxWidth = window.innerWidth * 0.9; // 90% of viewport width
-    const maxHeight = window.innerHeight * 0.9; // 90% of viewport height
+    const maxWidth = window.innerWidth * 0.9;
+    const maxHeight = window.innerHeight * 0.9;
     const imgWidth = img.naturalWidth;
     const imgHeight = img.naturalHeight;
     if (imgWidth === 0 || imgHeight === 0) {
       console.warn("Image dimensions unavailable:", img.src);
-      return 1; // Fallback scale
+      return 1;
     }
     const scaleX = maxWidth / imgWidth;
     const scaleY = maxHeight / imgHeight;
-    const scale = Math.min(scaleX, scaleY); // Scale to fit 90% of viewport
+    const scale = Math.min(scaleX, scaleY);
     console.log(
       `Image: ${img.src}, natural: ${imgWidth}x${imgHeight}, viewport: ${maxWidth}x${maxHeight}, baseScale: ${scale}`
     );
@@ -55,8 +55,8 @@ document.addEventListener("DOMContentLoaded", () => {
     translateX = 0;
     translateY = 0;
     img.classList.remove("zoomed", "panning", "grabbing");
-    img.style.transform = "none"; // Let CSS handle initial sizing
-    lightbox.style.overflow = "hidden"; // Disable panning
+    img.style.transform = "none";
+    lightbox.style.overflow = "hidden";
     console.log(`Reset transform: zoomLevel=${zoomLevel}, transform=none`);
   }
 
@@ -76,11 +76,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 🔹 Toggle zoom on image click
   img.addEventListener("click", (e) => {
-    e.stopPropagation(); // Prevent closing lightbox
-    zoomLevel = (zoomLevel + 1) % zoomScales.length; // Cycle: 0, 1, 2
-    img.classList.toggle("zoomed", zoomLevel > 0); // zoomed class for 2x and 4x
-    img.classList.toggle("panning", zoomLevel > 0); // Enable panning for 2x and 4x
-    translateX = 0; // Reset panning
+    e.stopPropagation();
+    zoomLevel = (zoomLevel + 1) % zoomScales.length;
+    img.classList.toggle("zoomed", zoomLevel > 0);
+    img.classList.toggle("panning", zoomLevel > 0);
+    translateX = 0;
     translateY = 0;
     lightbox.style.overflow = zoomLevel > 0 ? "auto" : "hidden";
     updateTransform();
@@ -89,7 +89,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // 🔹 Panning
   img.addEventListener("mousedown", (e) => {
     if (zoomLevel > 0) {
-      // Pan at 2x and 4x
       e.preventDefault();
       isPanning = true;
       startX = e.clientX - translateX;
@@ -119,18 +118,16 @@ document.addEventListener("DOMContentLoaded", () => {
   // 🔹 Close lightbox on click outside image
   lightbox.addEventListener("click", (e) => {
     if (e.target !== img) {
-      // Close if clicking outside
       lightbox.style.display = "none";
       document.body.classList.remove("lightbox-active");
       resetTransform();
-      imageWrapper.style.aspectRatio = ""; // Clear aspect ratio
+      imageWrapper.style.aspectRatio = "";
     }
   });
 
   // 🔹 Attach click event to images with .click-zoom class
   function attachLightboxEvents() {
     document.querySelectorAll("img.click-zoom").forEach((thumbnail) => {
-      // Wrap thumbnail in image-wrapper for grid
       if (!thumbnail.parentElement.classList.contains("image-wrapper")) {
         const wrapper = document.createElement("div");
         wrapper.className = "image-wrapper";
@@ -139,14 +136,14 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       thumbnail.addEventListener("click", () => {
         img.src = thumbnail.src;
-        img.style.transform = "none"; // Reset transform
+        img.style.transform = "none";
         img.onload = () => {
-          calculateBaseScale(img); // For logging and wrapper sizing
+          calculateBaseScale(img);
           setWrapperAspectRatio(img);
           resetTransform();
         };
         if (img.complete && img.naturalWidth) {
-          calculateBaseScale(img); // For logging and wrapper sizing
+          calculateBaseScale(img);
           setWrapperAspectRatio(img);
           resetTransform();
         }
@@ -200,49 +197,92 @@ document.addEventListener("DOMContentLoaded", () => {
     progressContainer &&
     progressBar &&
     currentTimeEl &&
-    durationEl &&
-    loopBtn
+    durationEl
   ) {
     playPauseBtn.addEventListener("click", () => {
+      console.log(
+        "Play/Pause button clicked, paused:",
+        audio.paused,
+        "src:",
+        audio.src
+      );
       if (audio.paused) {
-        audio.play();
-        playPauseBtn.textContent = "⏸";
+        audio
+          .play()
+          .then(() => {
+            console.log("Audio playing");
+            playPauseBtn.textContent = "⏸";
+          })
+          .catch((err) => {
+            console.error("Audio play failed:", err);
+            playPauseBtn.textContent = "▶";
+          });
       } else {
         audio.pause();
+        console.log("Audio paused");
         playPauseBtn.textContent = "▶";
       }
     });
 
     audio.addEventListener("timeupdate", () => {
-      const progressPercent = (audio.currentTime / audio.duration) * 100;
-      progressBar.style.width = `${progressPercent}%`;
-      currentTimeEl.textContent = formatTime(audio.currentTime);
+      if (audio.duration && isFinite(audio.duration)) {
+        const progressPercent = (audio.currentTime / audio.duration) * 100;
+        progressBar.style.width = `${progressPercent}%`;
+        currentTimeEl.textContent = formatTime(audio.currentTime);
+        durationEl.textContent = formatTime(audio.duration);
+      }
     });
 
     audio.addEventListener("loadedmetadata", () => {
+      console.log("Audio metadata loaded, duration:", audio.duration);
       durationEl.textContent = formatTime(audio.duration);
+    });
+
+    audio.addEventListener("error", (e) => {
+      console.error("Audio error:", e);
+      playPauseBtn.textContent = "▶";
+      progressBar.style.width = "0%";
+      currentTimeEl.textContent = "0:00";
+      durationEl.textContent = "0:00";
     });
 
     progressContainer.addEventListener("click", (e) => {
       const width = progressContainer.clientWidth;
       const clickX = e.offsetX;
       const duration = audio.duration;
-      audio.currentTime = (clickX / width) * duration;
+      if (duration && isFinite(duration)) {
+        audio.currentTime = (clickX / width) * duration;
+        console.log("Seek to:", audio.currentTime);
+      }
     });
 
-    loopBtn.addEventListener("click", () => {
-      isLooping = !isLooping;
-      audio.loop = isLooping;
-      loopBtn.style.color = isLooping ? "#3498db" : "#d3d7db";
-    });
+    if (loopBtn) {
+      loopBtn.addEventListener("click", () => {
+        isLooping = !isLooping;
+        audio.loop = isLooping;
+        loopBtn.style.color = isLooping ? "#3498db" : "#d3d7db";
+        console.log("Loop toggled:", isLooping);
+      });
+    }
 
     function formatTime(time) {
+      if (!isFinite(time)) return "0:00";
       const minutes = Math.floor(time / 60);
       const seconds = Math.floor(time % 60)
         .toString()
         .padStart(2, "0");
       return `${minutes}:${seconds}`;
     }
+  } else {
+    console.warn("Audio player elements missing:", {
+      audio,
+      playPauseBtn,
+      progressContainer,
+      progressBar,
+      currentTimeEl,
+      durationEl,
+      loopBtn,
+    });
   }
 
   // 🔹 Back to Top Button
@@ -267,8 +307,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // 🔹 Poem Functions
   function initPoems() {
     fetch("poems/poems_manifest.json")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to load poems manifest");
+        return res.json();
+      })
       .then((poems) => {
+        console.log("Poems loaded:", poems);
         buildPoemList(poems);
         if (poems.length > 0) {
           loadPoem(poems[0]);
@@ -318,16 +362,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const progressBar = document.getElementById("progressBar");
     const currentTimeEl = document.getElementById("currentTime");
     const durationEl = document.getElementById("duration");
-    if (!audioPlayer || !audioElement) return;
+    if (!audioPlayer || !audioElement) {
+      console.warn("Audio player or element missing");
+      return;
+    }
     audioElement.pause();
     audioElement.currentTime = 0;
+    audioElement.src = "";
     progressBar.style.width = "0%";
     currentTimeEl.textContent = "0:00";
     durationEl.textContent = "0:00";
     playPauseBtn.textContent = "▶";
-    audioPlayer.removeAttribute("data-title");
-    audioElement.src = "";
+    audioPlayer.setAttribute("data-title", "");
     audioPlayer.style.display = "none";
+    isLooping = false; // Reset looping state
+    if (loopBtn) {
+      loopBtn.style.color = "#d3d7db"; // Reset loop button color
+    }
+    console.log("Audio player reset");
   }
 
   function loadPoem(poem) {
@@ -349,33 +401,43 @@ document.addEventListener("DOMContentLoaded", () => {
       const audioPlayer = document.getElementById("audioPlayer");
       const audioElement = document.getElementById("audioElement");
       const audioPath = "poems/" + encodeURIComponent(poem.audio);
+      console.log("Attempting to load audio:", audioPath);
       fetch(audioPath, { method: "HEAD" })
         .then((res) => {
           if (res.ok) {
             audioElement.src = audioPath;
-            audioElement.loop = true;
+            audioElement.loop = true; // Enable looping by default
+            isLooping = true; // Update looping state
+            if (loopBtn) {
+              loopBtn.style.color = "#3498db"; // Set loop button to active color
+            }
             audioPlayer.setAttribute("data-title", formatPoemTitle(poem.audio));
             audioPlayer.style.display = "block";
+            console.log(
+              "Audio player set, src:",
+              audioPath,
+              "looping:",
+              audioElement.loop
+            );
+          } else {
+            console.error("Audio file not found:", audioPath);
+            audioPlayer.style.display = "none";
           }
         })
-        .catch((err) => console.error("Error checking audio file:", err));
-    }
-  }
-
-  function showNoAudio() {
-    const audioPlayer = document.getElementById("audioPlayer");
-    const audioElement = document.getElementById("audioElement");
-    if (audioPlayer && audioElement) {
-      audioPlayer.removeAttribute("data-title");
-      audioElement.src = "";
-      audioPlayer.style.display = "none";
+        .catch((err) => {
+          console.error("Error checking audio file:", err);
+          audioPlayer.style.display = "none";
+        });
     }
   }
 
   // 🔹 Blog Functions
   function initBlogs() {
     fetch("blogs/blogs_manifest.json")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to load blogs manifest");
+        return res.json();
+      })
       .then((blogs) => {
         blogs.sort((a, b) => b.folder.localeCompare(a.folder));
         const target = document.getElementById("poemText");
@@ -418,7 +480,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function loadBlogPost(blog) {
-    showNoAudio();
+    resetAudioPlayer();
     const target = document.getElementById("poemText");
     if (!target) return;
     target.innerHTML = "Loading blog post...";
@@ -430,7 +492,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return res.text();
       })
       .then((md) => {
-        // Fix relative image paths
         md = md.replace(/!\[(.*?)\]\(([^)]+)\)/g, (match, alt, src) => {
           if (!src.startsWith("http") && !src.includes("/")) {
             return `![${alt}](blogs/${blog.folder}/res/${src})`;
@@ -438,7 +499,6 @@ document.addEventListener("DOMContentLoaded", () => {
           return match;
         });
 
-        // Fix clickable images
         md = md.replace(/\[<img([^>]+)>\]\(([^)]+)\)/g, (match, attrs, src) => {
           if (!src.startsWith("http") && !src.includes("/")) {
             return `[<img${attrs} src="blogs/${blog.folder}/res/${src}">](blogs/${blog.folder}/res/${src})`;
@@ -446,7 +506,6 @@ document.addEventListener("DOMContentLoaded", () => {
           return match;
         });
 
-        // Fix <embed> (PDF etc.)
         md = md.replace(
           /<embed([^>]+)src=["']([^"']+)["']([^>]*)>/g,
           (match, before, src, after) => {
@@ -457,7 +516,6 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         );
 
-        // Fix raw <img> tags
         md = md.replace(
           /<img([^>]*?)src=["']([^"']+)["']([^>]*)>/g,
           (match, before, src, after) => {
@@ -468,7 +526,6 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         );
 
-        // Fix <video> sources
         md = md.replace(
           /<video([^>]*)>\s*<source([^>]*?)src=["']([^"']+)["']([^>]*)>\s*<\/video>/g,
           (match, videoAttrs, before, src, after) => {
@@ -481,7 +538,6 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         );
 
-        // 🔹 Add custom markdown for videos: !video(filename.mp4)
         md = md.replace(/!video\(([^)]+)\)/g, (match, src) => {
           if (!src.startsWith("http") && !src.includes("/")) {
             return `
@@ -501,12 +557,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         target.innerHTML = marked.parse(md);
 
-        // Highlight code if hljs is loaded
         if (window.hljs) {
           hljs.highlightAll();
         }
 
-        // Re-attach lightbox event listeners
         const lightboxImg = lightbox.querySelector("img");
         target.querySelectorAll("img.click-zoom").forEach((thumbnail) => {
           if (!thumbnail.parentElement.classList.contains("image-wrapper")) {
@@ -518,7 +572,7 @@ document.addEventListener("DOMContentLoaded", () => {
           thumbnail.style.cursor = "pointer";
           thumbnail.addEventListener("click", () => {
             lightboxImg.src = thumbnail.src;
-            lightboxImg.style.transform = "none"; // Reset transform
+            lightboxImg.style.transform = "none";
             lightboxImg.onload = () => {
               calculateBaseScale(lightboxImg);
               setWrapperAspectRatio(lightboxImg);
