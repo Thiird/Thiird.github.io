@@ -446,33 +446,27 @@ img {
   border-radius: 8px;
 }
 
-/* 🔹 Image grid */
-.image-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 10px;
-  margin: 20px 0;
-}
-
-.image-grid img {
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 1 / 1; /* Force square preview */
-  object-fit: cover; /* Crop to fill square, preserving image quality */
-  border-radius: 8px;
-  display: block;
-}
-
-.image-grid .image-wrapper {
+/* 🔹 Image wrapper for all images */
+.image-wrapper {
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1; /* Keep square grid cells */
+  max-width: 600px; /* Match default img max-width */
+  margin: auto;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.image-grid .image-wrapper::before {
+.image-wrapper img {
+  width: 100%;
+  max-width: 100%;
+  border-radius: 8px;
+  object-fit: contain; /* Preserve natural aspect ratio for single images */
+  position: relative;
+  z-index: 2; /* Above border */
+}
+
+.image-wrapper::before {
   content: "";
   position: absolute;
   top: 0;
@@ -485,12 +479,30 @@ img {
   pointer-events: none;
 }
 
-.image-grid .image-wrapper img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: cover; /* Ensure square cropping */
+/* 🔹 Image grid */
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.image-grid .image-wrapper {
   position: relative;
-  z-index: 2; /* Above border */
+  width: 100%;
+  aspect-ratio: 1 / 1; /* Keep square grid cells */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-grid .image-wrapper img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1 / 1; /* Force square preview */
+  object-fit: cover; /* Crop to fill square, preserving image quality */
+  border-radius: 8px;
+  display: block;
 }
 
 /* 🔹 Lightbox */
@@ -505,6 +517,7 @@ img {
   background: rgba(0, 0, 0, 0.9);
   justify-content: center;
   align-items: center;
+  overflow: auto; /* Enable scrollbars for zoomed images */
 }
 
 /* 🔹 Lightbox image wrapper */
@@ -550,75 +563,6 @@ img {
 /* Zoomed state with zoom-out cursor */
 #lightbox img.zoomed {
   cursor: zoom-out; /* Zoom-out cursor when zoomed */
-}
-
-/* ... (all other styles unchanged) ... */
-/* ... (all other styles unchanged) ... */
-/* ... (all other styles unchanged) ... */
-
-/* =========================== MOBILE RESPONSIVE LAYOUT =========================== */
-@media (max-width: 768px) {
-  /* Front page header stack */
-  .header-section {
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-    padding: 15px;
-  }
-
-  .profile-pic {
-    width: 120px;
-    height: auto;
-    margin-right: 0;
-    margin-bottom: 10px;
-  }
-
-  .social-links {
-    flex-direction: row;
-    gap: 10px;
-    margin: 0;
-  }
-
-  .description {
-    text-align: center;
-  }
-
-  .description p:first-child {
-    font-size: 2em;
-  }
-
-  /* Poems page sidebar overlay */
-  .poem-container {
-    flex-direction: column;
-    margin-left: 0;
-    padding: 0;
-  }
-
-  .poem-list {
-    position: fixed;
-    width: 100%;
-    height: 100vh;
-    z-index: 1000;
-    left: -100%;
-    top: 0;
-    transition: left 0.3s ease;
-    border-right: none;
-  }
-
-  .poem-list.show {
-    left: 0;
-  }
-
-  .poem-content {
-    max-width: 100%;
-    padding: 20px;
-    margin-top: 0;
-  }
-
-  .toggle-btn {
-    width: 50px;
-    font-size: 1.2em;
-  }
 }
 
 /* Back to Top Button */
@@ -689,4 +633,69 @@ pre {
 .video-player:fullscreen {
   width: 100%;
   height: 100%;
+}
+
+/* =========================== MOBILE RESPONSIVE LAYOUT =========================== */
+@media (max-width: 768px) {
+  /* Front page header stack */
+  .header-section {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+  }
+
+  .profile-pic {
+    width: 120px;
+    height: auto;
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+
+  .social-links {
+    flex-direction: row;
+    gap: 10px;
+    margin: 0;
+  }
+
+  .description {
+    text-align: center;
+  }
+
+  .description p:first-child {
+    font-size: 2em;
+  }
+
+  /* Poems page sidebar overlay */
+  .poem-container {
+    flex-direction: column;
+    margin-left: 0;
+    padding: 0;
+  }
+
+  .poem-list {
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    z-index: 1000;
+    left: -100%;
+    top: 0;
+    transition: left 0.3s ease;
+    border-right: none;
+  }
+
+  .poem-list.show {
+    left: 0;
+  }
+
+  .poem-content {
+    max-width: 100%;
+    padding: 20px;
+    margin-top: 0;
+  }
+
+  .toggle-btn {
+    width: 50px;
+    font-size: 1.2em;
+  }
 }

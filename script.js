@@ -9,14 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
   lightbox.appendChild(imageWrapper);
   document.body.appendChild(lightbox);
 
-  // 🔹 Zoom cycle and panning variables
+  // 🔹 Zoom cycle
   let zoomLevel = 0; // 0: initial (CSS-sized), 1: 2x natural, 2: 4x natural
   const zoomScales = [0, 2, 4]; // 0: no transform, 2: 2x natural, 4: 4x natural
-  let isPanning = false;
-  let startX = 0;
-  let startY = 0;
-  let translateX = 0;
-  let translateY = 0;
 
   // 🔹 Calculate scale to fill 90% of viewport (for wrapper sizing)
   function calculateBaseScale(img) {
@@ -52,11 +47,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // 🔹 Reset transform
   function resetTransform() {
     zoomLevel = 0;
-    translateX = 0;
-    translateY = 0;
-    img.classList.remove("zoomed", "panning", "grabbing");
+    img.classList.remove("zoomed");
     img.style.transform = "none";
-    lightbox.style.overflow = "hidden";
+    lightbox.style.overflow = "auto"; // Use scrollbars
     console.log(`Reset transform: zoomLevel=${zoomLevel}, transform=none`);
   }
 
@@ -67,10 +60,8 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log(`Update transform: zoomLevel=${zoomLevel}, transform=none`);
     } else {
       const scale = zoomScales[zoomLevel];
-      img.style.transform = `scale(${scale}) translate(${translateX}px, ${translateY}px)`;
-      console.log(
-        `Update transform: zoomLevel=${zoomLevel}, scale=${scale}, translate=${translateX},${translateY}`
-      );
+      img.style.transform = `scale(${scale})`;
+      console.log(`Update transform: zoomLevel=${zoomLevel}, scale=${scale}`);
     }
   }
 
@@ -79,40 +70,8 @@ document.addEventListener("DOMContentLoaded", () => {
     e.stopPropagation();
     zoomLevel = (zoomLevel + 1) % zoomScales.length;
     img.classList.toggle("zoomed", zoomLevel > 0);
-    img.classList.toggle("panning", zoomLevel > 0);
-    translateX = 0;
-    translateY = 0;
-    lightbox.style.overflow = zoomLevel > 0 ? "auto" : "hidden";
+    lightbox.style.overflow = "auto"; // Always use scrollbars
     updateTransform();
-  });
-
-  // 🔹 Panning
-  img.addEventListener("mousedown", (e) => {
-    if (zoomLevel > 0) {
-      e.preventDefault();
-      isPanning = true;
-      startX = e.clientX - translateX;
-      startY = e.clientY - translateY;
-      img.classList.add("grabbing");
-    }
-  });
-
-  img.addEventListener("mousemove", (e) => {
-    if (isPanning && zoomLevel > 0) {
-      translateX = e.clientX - startX;
-      translateY = e.clientY - startY;
-      updateTransform();
-    }
-  });
-
-  img.addEventListener("mouseup", () => {
-    isPanning = false;
-    img.classList.remove("grabbing");
-  });
-
-  img.addEventListener("mouseleave", () => {
-    isPanning = false;
-    img.classList.remove("grabbing");
   });
 
   // 🔹 Close lightbox on click outside image
@@ -122,6 +81,20 @@ document.addEventListener("DOMContentLoaded", () => {
       document.body.classList.remove("lightbox-active");
       resetTransform();
       imageWrapper.style.aspectRatio = "";
+      console.log("Lightbox closed via click outside");
+    }
+  });
+
+  // 🔹 Close lightbox on Escape key (always closes)
+  document.addEventListener("keydown", (e) => {
+    const isVisible = window.getComputedStyle(lightbox).display !== "none";
+    console.log("Keydown:", e.key, "Visible:", isVisible);
+    if (e.key === "Escape" && isVisible) {
+      lightbox.style.display = "none";
+      document.body.classList.remove("lightbox-active");
+      resetTransform();
+      imageWrapper.style.aspectRatio = "";
+      console.log("Lightbox closed via Escape key");
     }
   });
 
@@ -149,6 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         lightbox.style.display = "flex";
         document.body.classList.add("lightbox-active");
+        console.log("Lightbox opened for image:", thumbnail.src);
       });
     });
   }
@@ -485,27 +459,54 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!target) return;
     target.innerHTML = "Loading blog post...";
     const mdPath = "blogs/" + encodeURIComponent(blog.folder) + "/text.md";
-
     fetch(mdPath)
       .then((res) => {
         if (!res.ok) throw new Error("Blog post not found");
         return res.text();
       })
       .then((md) => {
+        // Process Markdown images (e.g., ![alt](src))
         md = md.replace(/!\[(.*?)\]\(([^)]+)\)/g, (match, alt, src) => {
+          const classes = ["hover-effect", "click-zoom"]; // Default for Markdown images
           if (!src.startsWith("http") && !src.includes("/")) {
-            return `![${alt}](blogs/${blog.folder}/res/${src})`;
+            return `<div class="image-wrapper"><img class="${classes.join(
+              " "
+            )}" src="blogs/${blog.folder}/res/${src}" alt="${alt}"></div>`;
           }
-          return match;
+          return `<div class="image-wrapper"><img class="${classes.join(
+            " "
+          )}" src="${src}" alt="${alt}"></div>`;
         });
-
+        // Process Markdown-linked images (e.g., [<img ...>](src))
         md = md.replace(/\[<img([^>]+)>\]\(([^)]+)\)/g, (match, attrs, src) => {
+          let classAttr = attrs.match(/class=["']([^"']*)["']/i);
+          let classes = classAttr ? classAttr[1].split(/\s+/) : [];
+          // Only include hover-effect and click-zoom if already present
+          const newClassAttr = `class="${classes.join(" ")}"`;
+          attrs = attrs.replace(/class=["'][^"']*["']/i, "").trim();
           if (!src.startsWith("http") && !src.includes("/")) {
-            return `[<img${attrs} src="blogs/${blog.folder}/res/${src}">](blogs/${blog.folder}/res/${src})`;
+            return `<div class="image-wrapper"><img ${attrs} ${newClassAttr} src="blogs/${blog.folder}/res/${src}"></div>`;
           }
-          return match;
+          return `<div class="image-wrapper"><img ${attrs} ${newClassAttr} src="${src}"></div>`;
         });
-
+        // Process standalone <img> tags
+        md = md.replace(
+          /<img([^>]*?)src=["']([^"']+)["']([^>]*)>/g,
+          (match, before, src, after) => {
+            let classAttr = before.match(/class=["']([^"']*)["']/i);
+            let classes = classAttr ? classAttr[1].split(/\s+/) : [];
+            // Do NOT add click-zoom or hover-effect unless already present
+            const newClassAttr = classes.length
+              ? `class="${classes.join(" ")}"`
+              : "";
+            before = before.replace(/class=["'][^"']*["']/i, "").trim();
+            if (!src.startsWith("http") && !src.includes("/")) {
+              return `<div class="image-wrapper"><img ${before} ${newClassAttr} src="blogs/${blog.folder}/res/${src}" ${after}></div>`;
+            }
+            return `<div class="image-wrapper"><img ${before} ${newClassAttr} src="${src}" ${after}></div>`;
+          }
+        );
+        // Process <embed> tags (unchanged)
         md = md.replace(
           /<embed([^>]+)src=["']([^"']+)["']([^>]*)>/g,
           (match, before, src, after) => {
@@ -515,54 +516,33 @@ document.addEventListener("DOMContentLoaded", () => {
             return match;
           }
         );
-
-        md = md.replace(
-          /<img([^>]*?)src=["']([^"']+)["']([^>]*)>/g,
-          (match, before, src, after) => {
-            if (!src.startsWith("http") && !src.includes("/")) {
-              return `<div class="image-wrapper"><img${before}src="blogs/${blog.folder}/res/${src}"${after}></div>`;
-            }
-            return `<div class="image-wrapper"><img${before}src="${src}"${after}></div>`;
-          }
-        );
-
+        // Process <video> tags (unchanged)
         md = md.replace(
           /<video([^>]*)>\s*<source([^>]*?)src=["']([^"']+)["']([^>]*)>\s*<\/video>/g,
           (match, videoAttrs, before, src, after) => {
             if (!src.startsWith("http") && !src.includes("/")) {
-              return `<video${videoAttrs}>
-        <source${before}src="blogs/${blog.folder}/res/${src}"${after}>
-      </video>`;
+              return `<video${videoAttrs}> <source${before}src="blogs/${blog.folder}/res/${src}"${after}> </video>`;
             }
             return match;
           }
         );
-
+        // Process !video syntax (unchanged)
         md = md.replace(/!video\(([^)]+)\)/g, (match, src) => {
           if (!src.startsWith("http") && !src.includes("/")) {
-            return `
-            <video controls class="video-player">
-              <source src="blogs/${blog.folder}/res/${src}" type="video/mp4">
-              Your browser does not support the video tag.
-            </video>
-          `;
+            return `<video controls class="video-player"> <source src="blogs/${blog.folder}/res/${src}" type="video/mp4"> Your browser does not support the video tag. </video>`;
           }
-          return `
-          <video controls class="video-player">
-            <source src="${src}" type="video/mp4">
-            Your browser does not support the video tag.
-          </video>
-        `;
+          return `<video controls class="video-player"> <source src="${src}" type="video/mp4"> Your browser does not support the video tag. </video>`;
         });
-
         target.innerHTML = marked.parse(md);
-
         if (window.hljs) {
           hljs.highlightAll();
         }
-
+        // Attach lightbox events to all images with click-zoom class
+        const lightbox = document.getElementById("lightbox");
         const lightboxImg = lightbox.querySelector("img");
+        const imageWrapper = lightbox.querySelector(".image-wrapper");
         target.querySelectorAll("img.click-zoom").forEach((thumbnail) => {
+          // Ensure image is wrapped in .image-wrapper
           if (!thumbnail.parentElement.classList.contains("image-wrapper")) {
             const wrapper = document.createElement("div");
             wrapper.className = "image-wrapper";
@@ -570,7 +550,9 @@ document.addEventListener("DOMContentLoaded", () => {
             wrapper.appendChild(thumbnail);
           }
           thumbnail.style.cursor = "pointer";
-          thumbnail.addEventListener("click", () => {
+          // Prevent duplicate event listeners
+          thumbnail.removeEventListener("click", thumbnail._lightboxHandler);
+          thumbnail._lightboxHandler = () => {
             lightboxImg.src = thumbnail.src;
             lightboxImg.style.transform = "none";
             lightboxImg.onload = () => {
@@ -585,12 +567,14 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             lightbox.style.display = "flex";
             document.body.classList.add("lightbox-active");
-          });
+            console.log("Lightbox opened for image:", thumbnail.src);
+          };
+          thumbnail.addEventListener("click", thumbnail._lightboxHandler);
         });
       })
       .catch((err) => {
-        console.error("Error loading blog post:", err);
-        target.innerHTML = "<p>Error loading blog post.</p>";
+        console.error(err);
+        target.innerHTML = "Failed to load blog post.";
       });
   }
 });
