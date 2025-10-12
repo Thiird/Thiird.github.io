@@ -1,4 +1,99 @@
+// 🔹 Global resize timer to prevent duplicate declarations
+
+// 🔹 Function to initialize dropdown toggle for mobile and ensure desktop reset
+function initDropdownToggle() {
+  const dropdowns = document.querySelectorAll(".top-menu .dropdown");
+  const isMobile = window.innerWidth <= 800;
+
+  // Remove existing event listeners to prevent duplicates
+  dropdowns.forEach((dropdown) => {
+    const button = dropdown.querySelector(".menu-button");
+    const menu = dropdown.querySelector(".dropdown-menu");
+    // Clone button to remove old listeners
+    const newButton = button.cloneNode(true);
+    button.parentNode.replaceChild(newButton, button);
+
+    // Reset active state and menu visibility
+    dropdown.classList.remove("active");
+    if (menu) menu.style.display = "none";
+  });
+
+  dropdowns.forEach((dropdown) => {
+    const button = dropdown.querySelector(".menu-button");
+    const menu = dropdown.querySelector(".dropdown-menu");
+
+    // Remove any existing listeners to prevent duplicates
+    dropdown.removeEventListener("mouseenter", dropdown._mouseenterHandler);
+    dropdown.removeEventListener("mouseleave", dropdown._mouseleaveHandler);
+    button.removeEventListener("click", button._clickHandler);
+
+    if (isMobile) {
+      // Mobile: Toggle on click
+      button._clickHandler = (e) => {
+        e.preventDefault(); // Prevent default link behavior
+        const isActive = dropdown.classList.contains("active");
+        // Close all other dropdowns
+        document.querySelectorAll(".top-menu .dropdown").forEach((d) => {
+          if (d !== dropdown) {
+            d.classList.remove("active");
+            const otherMenu = d.querySelector(".dropdown-menu");
+            if (otherMenu) otherMenu.style.display = "none";
+          }
+        });
+        // Toggle current dropdown
+        dropdown.classList.toggle("active");
+        menu.style.display = isActive ? "none" : "block";
+      };
+      button.addEventListener("click", button._clickHandler);
+    } else {
+      // Desktop: Show/hide on hover
+      dropdown._mouseenterHandler = () => {
+        menu.style.display = "block";
+      };
+      dropdown._mouseleaveHandler = () => {
+        menu.style.display = "none";
+      };
+      dropdown.addEventListener("mouseenter", dropdown._mouseenterHandler);
+      dropdown.addEventListener("mouseleave", dropdown._mouseleaveHandler);
+    }
+  });
+
+  // Close dropdowns when clicking outside (mobile only)
+  document.removeEventListener("click", handleOutsideClick); // Remove previous listener
+  if (isMobile) {
+    document.addEventListener("click", handleOutsideClick);
+  }
+  function handleOutsideClick(e) {
+    if (!e.target.closest(".dropdown")) {
+      dropdowns.forEach((d) => {
+        d.classList.remove("active");
+        const menu = d.querySelector(".dropdown-menu");
+        if (menu) menu.style.display = "none";
+      });
+    }
+  }
+}
+
+// 🔹 Sidebar positioning
+function updateSidebarTop() {
+  const banner = document.getElementById("banner-placeholder");
+  if (banner) {
+    const bannerBottom = banner.getBoundingClientRect().bottom;
+    const offset = Math.max(0, bannerBottom);
+    document.querySelectorAll(".blog-list, .poem-list").forEach((sidebar) => {
+      sidebar.style.top = offset + "px";
+    });
+  }
+}
+
+// 🔹 Initialize on load
 document.addEventListener("DOMContentLoaded", () => {
+  // Initialize dropdown toggle
+  initDropdownToggle();
+
+  // Update sidebar position
+  updateSidebarTop();
+
   // 🔹 Lightbox Initialization
   const lightbox = document.createElement("div");
   lightbox.id = "lightbox";
@@ -85,10 +180,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 🔹 Close lightbox on Escape key (always closes)
+  // 🔹 Close lightbox on Escape key
   document.addEventListener("keydown", (e) => {
     const isVisible = window.getComputedStyle(lightbox).display !== "none";
-    console.log("Keydown:", e.key, "Visible:", isVisible);
     if (e.key === "Escape" && isVisible) {
       lightbox.style.display = "none";
       document.body.classList.remove("lightbox-active");
@@ -137,18 +231,19 @@ document.addEventListener("DOMContentLoaded", () => {
     initPoems();
   }
   if (
-    document.getElementById("poemList") &&
+    document.getElementById("blogList") &&
     window.location.pathname.includes("blogs")
   ) {
     initBlogs();
   }
 
   // 🔹 Search filter
-  const searchInput = document.getElementById("poemSearch");
+  const searchInput = document.getElementById("blogSearch") || document.getElementById("poemSearch");
   if (searchInput) {
     searchInput.addEventListener("input", (e) => {
       const search = e.target.value.toLowerCase();
-      document.querySelectorAll("#poemList li").forEach((item) => {
+      const listId = searchInput.id === "blogSearch" ? "blogList" : "poemList";
+      document.querySelectorAll(`#${listId} li`).forEach((item) => {
         const title = item.textContent.toLowerCase();
         item.style.display = title.includes(search) ? "block" : "none";
       });
@@ -307,27 +402,31 @@ document.addEventListener("DOMContentLoaded", () => {
     return title.trim();
   }
 
-  function buildPoemList(poems) {
-    const poemList = document.getElementById("poemList");
-    poemList.innerHTML = "";
-    poems.forEach((poem) => {
-      const li = document.createElement("li");
-      const a = document.createElement("a");
-      a.href = "#";
-      a.textContent = formatPoemTitle(poem.name);
-      a.dataset.poem = JSON.stringify(poem);
-      a.classList.add("poem-link");
-      li.appendChild(a);
-      poemList.appendChild(li);
-    });
-    poemList.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", (e) => {
-        e.preventDefault();
-        const poem = JSON.parse(link.getAttribute("data-poem"));
-        loadPoem(poem);
-      });
-    });
+function buildPoemList(poems) {
+  const poemListItems = document.getElementById("poemListItems"); // Target ul directly
+  if (!poemListItems) {
+    console.error("poemListItems not found");
+    return;
   }
+  poemListItems.innerHTML = "";
+  poems.forEach((poem) => {
+    const li = document.createElement("li");
+    const a = document.createElement("a");
+    a.href = "#";
+    a.textContent = formatPoemTitle(poem.name);
+    a.dataset.poem = JSON.stringify(poem);
+    a.classList.add("poem-link");
+    li.appendChild(a);
+    poemListItems.appendChild(li);
+  });
+  poemListItems.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      const poem = JSON.parse(link.getAttribute("data-poem"));
+      loadPoem(poem);
+    });
+  });
+}
 
   function resetAudioPlayer() {
     const audioPlayer = document.getElementById("audioPlayer");
@@ -414,7 +513,7 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .then((blogs) => {
         blogs.sort((a, b) => b.folder.localeCompare(a.folder));
-        const target = document.getElementById("poemText");
+        const target = document.getElementById("blogText");
         if (target) target.innerHTML = "Loading blog post...";
         buildBlogList(blogs);
         if (blogs.length > 0) {
@@ -425,19 +524,23 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function buildBlogList(blogs) {
-    const listEl = document.getElementById("poemList");
+    const listEl = document.getElementById("blogListItems"); // Correctly target the list container
     if (!listEl) return;
-    listEl.innerHTML = "";
+
+    listEl.innerHTML = ""; // Clear only the list items, not the header
+
     blogs.forEach((blog) => {
       const li = document.createElement("li");
       const a = document.createElement("a");
       a.href = "#";
       a.textContent = blog.title || formatBlogTitle(blog.folder);
       a.dataset.blog = JSON.stringify(blog);
-      a.classList.add("poem-link");
+      a.classList.add("blog-link");
       li.appendChild(a);
       listEl.appendChild(li);
     });
+
+    // Add event listeners to the blog links
     listEl.querySelectorAll("a").forEach((link) => {
       link.addEventListener("click", (e) => {
         e.preventDefault();
@@ -455,7 +558,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function loadBlogPost(blog) {
     resetAudioPlayer();
-    const target = document.getElementById("poemText");
+    const target = document.getElementById("blogText");
     if (!target) return;
     target.innerHTML = "Loading blog post...";
     const mdPath = "blogs/" + encodeURIComponent(blog.folder) + "/text.md";
@@ -465,9 +568,9 @@ document.addEventListener("DOMContentLoaded", () => {
         return res.text();
       })
       .then((md) => {
-        // Process Markdown images (e.g., ![alt](src))
+        // Process Markdown images
         md = md.replace(/!\[(.*?)\]\(([^)]+)\)/g, (match, alt, src) => {
-          const classes = ["hover-effect", "click-zoom"]; // Default for Markdown images
+          const classes = ["hover-effect", "click-zoom"];
           if (!src.startsWith("http") && !src.includes("/")) {
             return `<div class="image-wrapper"><img class="${classes.join(
               " "
@@ -477,11 +580,10 @@ document.addEventListener("DOMContentLoaded", () => {
             " "
           )}" src="${src}" alt="${alt}"></div>`;
         });
-        // Process Markdown-linked images (e.g., [<img ...>](src))
+        // Process Markdown-linked images
         md = md.replace(/\[<img([^>]+)>\]\(([^)]+)\)/g, (match, attrs, src) => {
           let classAttr = attrs.match(/class=["']([^"']*)["']/i);
           let classes = classAttr ? classAttr[1].split(/\s+/) : [];
-          // Only include hover-effect and click-zoom if already present
           const newClassAttr = `class="${classes.join(" ")}"`;
           attrs = attrs.replace(/class=["'][^"']*["']/i, "").trim();
           if (!src.startsWith("http") && !src.includes("/")) {
@@ -495,7 +597,6 @@ document.addEventListener("DOMContentLoaded", () => {
           (match, before, src, after) => {
             let classAttr = before.match(/class=["']([^"']*)["']/i);
             let classes = classAttr ? classAttr[1].split(/\s+/) : [];
-            // Do NOT add click-zoom or hover-effect unless already present
             const newClassAttr = classes.length
               ? `class="${classes.join(" ")}"`
               : "";
@@ -506,7 +607,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return `<div class="image-wrapper"><img ${before} ${newClassAttr} src="${src}" ${after}></div>`;
           }
         );
-        // Process <embed> tags (unchanged)
+        // Process <embed> tags
         md = md.replace(
           /<embed([^>]+)src=["']([^"']+)["']([^>]*)>/g,
           (match, before, src, after) => {
@@ -516,7 +617,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return match;
           }
         );
-        // Process <video> tags (unchanged)
+        // Process <video> tags
         md = md.replace(
           /<video([^>]*)>\s*<source([^>]*?)src=["']([^"']+)["']([^>]*)>\s*<\/video>/g,
           (match, videoAttrs, before, src, after) => {
@@ -526,7 +627,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return match;
           }
         );
-        // Process !video syntax (unchanged)
+        // Process !video syntax
         md = md.replace(/!video\(([^)]+)\)/g, (match, src) => {
           if (!src.startsWith("http") && !src.includes("/")) {
             return `<video controls class="video-player"> <source src="blogs/${blog.folder}/res/${src}" type="video/mp4"> Your browser does not support the video tag. </video>`;
@@ -537,12 +638,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (window.hljs) {
           hljs.highlightAll();
         }
-        // Attach lightbox events to all images with click-zoom class
+        // Attach lightbox events
         const lightbox = document.getElementById("lightbox");
         const lightboxImg = lightbox.querySelector("img");
         const imageWrapper = lightbox.querySelector(".image-wrapper");
         target.querySelectorAll("img.click-zoom").forEach((thumbnail) => {
-          // Ensure image is wrapped in .image-wrapper
           if (!thumbnail.parentElement.classList.contains("image-wrapper")) {
             const wrapper = document.createElement("div");
             wrapper.className = "image-wrapper";
@@ -550,7 +650,6 @@ document.addEventListener("DOMContentLoaded", () => {
             wrapper.appendChild(thumbnail);
           }
           thumbnail.style.cursor = "pointer";
-          // Prevent duplicate event listeners
           thumbnail.removeEventListener("click", thumbnail._lightboxHandler);
           thumbnail._lightboxHandler = () => {
             lightboxImg.src = thumbnail.src;
@@ -577,4 +676,10 @@ document.addEventListener("DOMContentLoaded", () => {
         target.innerHTML = "Failed to load blog post.";
       });
   }
+});
+
+// 🔹 Ensure initialization on load
+window.addEventListener("load", () => {
+  initDropdownToggle();
+  updateSidebarTop();
 });

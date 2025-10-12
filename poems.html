@@ -10,70 +10,86 @@
   <body>
     <div id="banner-placeholder"></div>
 
-    <section class="poem-container">
-      <aside class="poem-list">
-        <button id="toggleSidebar" class="toggle-btn">⏴</button>
-        <input
-          type="text"
-          id="poemSearch"
-          placeholder="Search"
-          class="poem-search"
-        />
-        <ul id="poemList">
+    <section class="content-scale-wrapper">
+      <div class="poem-list" id="poemList">
+        <div class="poem-list-header">
+          <button id="toggleSidebar" class="toggle-btn">☰</button>
+          <input
+            type="text"
+            id="poemSearch"
+            placeholder="Search"
+            class="poem-search"
+          />
+        </div>
+        <ul id="poemListItems">
           <!-- dynamically filled -->
         </ul>
-      </aside>
+      </div>
 
-      <div class="poem-content">
-        <!-- Audio Player -->
-        <div class="audio-player" style="display: none" id="audioPlayer">
-          <div class="player-controls">
-            <button id="playPause" class="player-btn">▶</button>
-            <span id="currentTime">0:00</span>
-            <div class="progress-container">
-              <div id="progressBar"></div>
+      <div class="poem-container">
+        <div class="poem-content">
+          <!-- Audio Player -->
+          <div class="audio-player" style="display: none" id="audioPlayer">
+            <div class="player-controls">
+              <button id="playPause" class="player-btn">▶</button>
+              <span id="currentTime">0:00</span>
+              <div class="progress-container">
+                <div id="progressBar"></div>
+              </div>
+              <span id="duration">0:00</span>
             </div>
-            <span id="duration">0:00</span>
+            <audio id="audioElement">
+              <source src="" type="audio/mpeg" />
+            </audio>
           </div>
-          <audio id="audioElement">
-            <source src="" type="audio/mpeg" />
-          </audio>
-        </div>
 
-        <div class="poem-text" id="poemText">Loading poem...</div>
+          <div class="poem-text" id="poemText">Loading poem...</div>
+        </div>
       </div>
     </section>
 
     <script>
+      // Load banner
       fetch("banner.html")
         .then((response) => response.text())
         .then((data) => {
           const banner = document.getElementById("banner-placeholder");
           banner.innerHTML = data;
+          adjustSidebarHeight();
 
-          const poemList = document.querySelector(".poem-list");
-
-          function updatePoemListTop() {
-            const bannerBottom = banner.getBoundingClientRect().bottom;
-            const offset = Math.max(0, bannerBottom);
-            poemList.style.top = offset + "px";
+          if (typeof initDropdownToggle === "function") {
+            initDropdownToggle();
           }
-
-          updatePoemListTop();
-          window.addEventListener("scroll", updatePoemListTop);
-          window.addEventListener("resize", updatePoemListTop);
         })
         .catch((error) => console.error("Error loading banner:", error));
 
-      document.addEventListener("DOMContentLoaded", () => {
-        const sidebar = document.querySelector(".poem-list");
-        const toggleBtn = document.getElementById("toggleSidebar");
+      // Adjust sidebar height dynamically
+      function adjustSidebarHeight() {
+        const banner = document.getElementById("banner-placeholder");
+        const poemList = document.getElementById("poemList");
+        if (banner && poemList) {
+          const bannerBottom = banner.getBoundingClientRect().bottom;
+          poemList.style.top = `${Math.max(0, bannerBottom)}px`;
+          poemList.style.height = `calc(100vh - ${Math.max(0, bannerBottom)}px)`;
+        }
+      }
 
-        toggleBtn.addEventListener("click", () => {
-          sidebar.classList.toggle("collapsed");
-          toggleBtn.textContent = sidebar.classList.contains("collapsed")
-            ? "⏵"
-            : "⏴";
+      window.addEventListener("resize", adjustSidebarHeight);
+      window.addEventListener("scroll", adjustSidebarHeight);
+      window.addEventListener("load", adjustSidebarHeight);
+
+      // Toggle poem list visibility
+      document.getElementById("toggleSidebar").addEventListener("click", () => {
+        const poemList = document.getElementById("poemList");
+        poemList.classList.toggle("collapsed");
+      });
+
+      // Search functionality
+      document.getElementById("poemSearch").addEventListener("input", (e) => {
+        const search = e.target.value.toLowerCase();
+        document.querySelectorAll("#poemListItems li").forEach((item) => {
+          const title = item.textContent.toLowerCase();
+          item.style.display = title.includes(search) ? "block" : "none";
         });
       });
     </script>

@@ -1,33 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SN - Home</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div id="header-placeholder"></div>
-  <div id="banner-placeholder"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SN - Home</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="header-placeholder"></div>
+    <div id="banner-placeholder"></div>
+    <div class="content-container">
+      <!-- Add other content for the home page here -->
+    </div>
 
-  <!-- Add other content for the home page here -->
+    <script>
+      // Load header.html
+      fetch("header.html")
+        .then((response) => response.text())
+        .then((data) => {
+          const header = document.getElementById("header-placeholder");
+          header.innerHTML = data;
+        })
+        .catch((error) => console.error("Error loading header:", error));
 
-  <script>
-    // Load header.html
-    fetch('header.html')
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById('header-placeholder').innerHTML = data;
-      })
-      .catch(error => console.error('Error loading header:', error));
+      // Load banner.html and initialize dropdown
+      fetch("banner.html")
+        .then((response) => response.text())
+        .then((data) => {
+          const banner = document.getElementById("banner-placeholder");
+          banner.innerHTML = data;
+          // Always try to initialize dropdowns after banner loads
+          if (typeof initDropdownToggle === "function") {
+            initDropdownToggle();
+          }
+        })
+        .catch((error) => console.error("Error loading banner:", error));
 
-    // Load banner.html
-    fetch('banner.html')
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById('banner-placeholder').innerHTML = data;
-      })
-      .catch(error => console.error('Error loading banner:', error));
-  </script>
-</body>
+      // Reinitialize dropdown toggle on resize
+      let resizeTimer;
+      window.addEventListener("resize", () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          if (typeof initDropdownToggle === "function") {
+            initDropdownToggle();
+          }
+        }, 100);
+      });
+
+      // Ensure dropdowns are initialized on load
+      window.addEventListener("load", () => {
+        if (typeof initDropdownToggle === "function") {
+          initDropdownToggle();
+        }
+      });
+    </script>
+    <script src="script.js"></script>
+  </body>
 </html>

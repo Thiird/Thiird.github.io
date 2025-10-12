@@ -131,30 +131,31 @@ The mouse wheel was modeled in Fusion360 to look like the one in the Perixx MX-1
 
 <h1 id="result">Result</h1>
 
-The mouse weights, which is an improvement over the 130 ish of the Perixx MX-1000.
+The mouse weights ~87 grams, which is an improvement over the ~130 grams of the Perixx MX-1000.
 
-Mechanically wise, the mouse is sturdy and handles well.
-The bottom is not 100% flat, so a slight wobble can be noticed if one pays attention to it, nothing that can be noticed during normal use.
+Mechanically wise, the mouse is sturdy and feels good in the hand.
+The bottom is not 100% flat, so a slight wobble can be noticed if one pays attention to it. During normal use this not perceivable.
 
 Hardware wise, everything is fine, the battery holds the charge for around 4/5 days of full-time usage and it takes around two hours to fully charge.
 This is my first battery powered project, so that's good enough for me.
 
 Firmware wise, the only gripe I have is the SPI reading routine.
-For some reason that have yet to discover, when I move the mouse in the negative X/Y axis (left and up), the read glitches to very high motion values, resulting in a jump of the cursor on screen.
+For some reason that I have yet to discover, when I move the mouse in the negative X/Y axis (left and up), the read glitches to very high motion values, resulting in a jump of the cursor on screen.
 
-I suspect my SPI reading routine is wrong timing wise. I am probably missing something horribly obvious, but I can't understand what. A user on reddit suggested that this issue is present on both positive and negative movement, but shows up only on the negative axis because of how complement two works. I think he is right, and I have stared at the code and datasheet enough that I would just like to just hook up a protocol analyzer or oscilloscope to check if something is off. I have zero equipment with me at the moment, as I sold everything before a recent move, so I'm prevented from further troubleshooting this issue further.
+I suspect my SPI reading routine is wrong (timing wise). I am probably missing something horribly obvious, but I can't understand what it is. A user on reddit suggested that this issue is present on both positive and negative movement, but shows up only on the negative axis because of how two's complement works. I think he is right, and I have stared at the code and datasheet enough that I don't know what to do anymore if not hooking up a protocol analyzer or oscilloscope to check if something is off. I have zero equipment with me at the moment, as I sold everything before a recent move, so I'm left without options.
 
 So far I have fixed for this by just applying a very, very crude low pass filter to the motion values.
 
-A particular mouse combo makes the mouse store the last 2000 motion readings from the optical sensor in the MCU EEPROM.
+A particular mouse combo makes the mouse store the last 2000 motion readings from the optical sensor in the MCU EEPROM. I store both the filtered and unfiltered values.
 With the magic of Python and MathPlotLib we can visualize this data.
 [<img class="hover-effect click-zoom" style="width:100%;max-width:600px;">](motion_glitch_plot.png)
 
 Zooming in on the second blue spike from the right, we can clearly see the low pass filter in effect.
 [<img class="hover-effect click-zoom" style="width:100%;max-width:600px;">](motion_glitch_plot_zoom.png)
 
-The motion values are very close to 0 as I use a very low DPI setting.
+With this filter in place, the mouse works smoothly and nothing wrong can be perceived during normal use.
 
+The following is simplified version of the read routine.
 <pre><code class="language-c">
 SPI_read_register(0x02, &motion);
 SPI_read_register(0x03, &xl);
@@ -226,7 +227,7 @@ Everything was hand assembled (even the 0201 components for the BLE antenna!).
 Often I see people ask online for "project ideas".  
 My suggestion is to fix a problem you have with a project, that's exactly how this project came to be: my previous mouse was falling apart and I needed a big project to help me secure my first job.
 
-Here is a few clips of me playing Battlefield 4 with my desktop mouse!
+Here is a clip of me playing Battlefield 4 with my mouse!
 
 <video controls class="video-player">
   <source src="bf4.mp4" type="video/mp4">
