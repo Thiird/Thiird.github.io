@@ -16,6 +16,9 @@ I'm currently working as an Embedded Systems Engineer in Bologna, Italy.
 I’m a very attentive, self-critical and innerly emotional person.  
 I like to be in order, on time, and know how things work down to the single atom. This attention to details is what draws me to embedded systems, where single bits matter.
 
+My brain works like a computer, I don't work well without data and I work best with known patterns.
+This works against me when I'm not dealing with computers.
+
 I rode a Suzuki DRZ-400 SM that I passionately maintained for six years.
 I dabble in tennis, calisthenics, running, powerlifting and weightlifting.
 I write poems and publish them on this website. I like to think that in doing so, I'm _"contributing to Humanity’s collective enlightenment"_.
