@@ -86,6 +86,12 @@ function updateSidebarTop() {
   }
 }
 
+// 🔹 Function to get URL parameter
+function getUrlParameter(name) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(name);
+}
+
 // 🔹 Initialize on load
 document.addEventListener("DOMContentLoaded", () => {
   // Initialize dropdown toggle
@@ -383,8 +389,12 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((poems) => {
         console.log("Poems loaded:", poems);
         buildPoemList(poems);
+        // Get poem index from URL parameter
+        const poemIndex = parseInt(getUrlParameter("poem")) || 0;
+        // Load the poem at the specified index, default to 0 if out of range
         if (poems.length > 0) {
-          loadPoem(poems[0]);
+          const selectedPoem = poems[Math.min(Math.max(poemIndex, 0), poems.length - 1)];
+          loadPoem(selectedPoem);
         }
       })
       .catch((err) => console.error("Error loading poems manifest:", err));
@@ -402,31 +412,31 @@ document.addEventListener("DOMContentLoaded", () => {
     return title.trim();
   }
 
-function buildPoemList(poems) {
-  const poemListItems = document.getElementById("poemListItems"); // Target ul directly
-  if (!poemListItems) {
-    console.error("poemListItems not found");
-    return;
-  }
-  poemListItems.innerHTML = "";
-  poems.forEach((poem) => {
-    const li = document.createElement("li");
-    const a = document.createElement("a");
-    a.href = "#";
-    a.textContent = formatPoemTitle(poem.name);
-    a.dataset.poem = JSON.stringify(poem);
-    a.classList.add("poem-link");
-    li.appendChild(a);
-    poemListItems.appendChild(li);
-  });
-  poemListItems.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", (e) => {
-      e.preventDefault();
-      const poem = JSON.parse(link.getAttribute("data-poem"));
-      loadPoem(poem);
+  function buildPoemList(poems) {
+    const poemListItems = document.getElementById("poemListItems"); // Target ul directly
+    if (!poemListItems) {
+      console.error("poemListItems not found");
+      return;
+    }
+    poemListItems.innerHTML = "";
+    poems.forEach((poem) => {
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.href = "#";
+      a.textContent = formatPoemTitle(poem.name);
+      a.dataset.poem = JSON.stringify(poem);
+      a.classList.add("poem-link");
+      li.appendChild(a);
+      poemListItems.appendChild(li);
     });
-  });
-}
+    poemListItems.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        const poem = JSON.parse(link.getAttribute("data-poem"));
+        loadPoem(poem);
+      });
+    });
+  }
 
   function resetAudioPlayer() {
     const audioPlayer = document.getElementById("audioPlayer");
@@ -516,8 +526,12 @@ function buildPoemList(poems) {
         const target = document.getElementById("blogText");
         if (target) target.innerHTML = "Loading blog post...";
         buildBlogList(blogs);
+        // Get blog index from URL parameter
+        const blogIndex = parseInt(getUrlParameter("blog")) || 0;
+        // Load the blog at the specified index, default to 0 if out of range
         if (blogs.length > 0) {
-          loadBlogPost(blogs[0]);
+          const selectedBlog = blogs[Math.min(Math.max(blogIndex, 0), blogs.length - 1)];
+          loadBlogPost(selectedBlog);
         }
       })
       .catch((err) => console.error("Error loading blogs manifest:", err));
