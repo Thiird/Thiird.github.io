@@ -380,6 +380,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // 🔹 Poem Functions
+  let poemsCache = []; // Store poems for popstate handling
   function initPoems() {
     fetch("poems/poems_manifest.json")
       .then((res) => {
@@ -387,6 +388,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return res.json();
       })
       .then((poems) => {
+        poemsCache = poems; // Cache poems for later use
         console.log("Poems loaded:", poems);
         buildPoemList(poems);
         // Get poem index from URL parameter
@@ -419,12 +421,13 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
     poemListItems.innerHTML = "";
-    poems.forEach((poem) => {
+    poems.forEach((poem, index) => {
       const li = document.createElement("li");
       const a = document.createElement("a");
       a.href = "#";
       a.textContent = formatPoemTitle(poem.name);
       a.dataset.poem = JSON.stringify(poem);
+      a.dataset.index = index; // Store index for URL updating
       a.classList.add("poem-link");
       li.appendChild(a);
       poemListItems.appendChild(li);
@@ -433,7 +436,10 @@ document.addEventListener("DOMContentLoaded", () => {
       link.addEventListener("click", (e) => {
         e.preventDefault();
         const poem = JSON.parse(link.getAttribute("data-poem"));
+        const index = link.dataset.index;
         loadPoem(poem);
+        // Update URL with poem index
+        history.pushState({ poemIndex: index }, "", `?poem=${index}`);
       });
     });
   }
@@ -515,6 +521,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // 🔹 Blog Functions
+  let blogsCache = []; // Store blogs for popstate handling
   function initBlogs() {
     fetch("blogs/blogs_manifest.json")
       .then((res) => {
@@ -522,6 +529,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return res.json();
       })
       .then((blogs) => {
+        blogsCache = blogs; // Cache blogs for later use
         blogs.sort((a, b) => b.folder.localeCompare(a.folder));
         const target = document.getElementById("blogText");
         if (target) target.innerHTML = "Loading blog post...";
@@ -543,12 +551,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     listEl.innerHTML = ""; // Clear only the list items, not the header
 
-    blogs.forEach((blog) => {
+    blogs.forEach((blog, index) => {
       const li = document.createElement("li");
       const a = document.createElement("a");
       a.href = "#";
       a.textContent = blog.title || formatBlogTitle(blog.folder);
       a.dataset.blog = JSON.stringify(blog);
+      a.dataset.index = index; // Store index for URL updating
       a.classList.add("blog-link");
       li.appendChild(a);
       listEl.appendChild(li);
@@ -559,7 +568,10 @@ document.addEventListener("DOMContentLoaded", () => {
       link.addEventListener("click", (e) => {
         e.preventDefault();
         const blog = JSON.parse(link.getAttribute("data-blog"));
+        const index = link.dataset.index;
         loadBlogPost(blog);
+        // Update URL with blog index
+        history.pushState({ blogIndex: index }, "", `?blog=${index}`);
       });
     });
   }
@@ -689,11 +701,35 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error(err);
         target.innerHTML = "Failed to load blog post.";
       });
-  }
-});
+  
+    }
 
-// 🔹 Ensure initialization on load
-window.addEventListener("load", () => {
-  initDropdownToggle();
-  updateSidebarTop();
-});
+  });
+  // 🔹 Handle URL changes (back/forward navigation)
+  window.addEventListener("popstate", (event) => {
+    if (window.location.pathname.includes("poems")) {
+      if (poemsCache.length === 0) {
+        // Re-fetch poems manifest if cache is empty
+        initPoems();
+      } else {
+        const poemIndex = parseInt(getUrlParameter("poem")) || 0;
+        const selectedPoem = poemsCache[Math.min(Math.max(poemIndex, 0), poemsCache.length - 1)];
+        loadPoem(selectedPoem);
+      }
+    } else if (window.location.pathname.includes("blogs")) {
+      if (blogsCache.length === 0) {
+        // Re-fetch blogs manifest if cache is empty
+        initBlogs();
+      } else {
+        const blogIndex = parseInt(getUrlParameter("blog")) || 0;
+        const selectedBlog = blogsCache[Math.min(Math.max(blogIndex, 0), blogsCache.length - 1)];
+        loadBlogPost(selectedBlog);
+      }
+    }
+  });
+
+  // 🔹 Ensure initialization on load
+  window.addEventListener("load", () => {
+    initDropdownToggle();
+    updateSidebarTop();
+  });
