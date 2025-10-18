@@ -733,3 +733,9 @@ document.addEventListener("DOMContentLoaded", () => {
     initDropdownToggle();
     updateSidebarTop();
   });
+
+    function toggleEmail() {
+    const emailRow = document.getElementById("email-row");
+    emailRow.style.display =
+      emailRow.style.display === "none" ? "block" : "none";
+  }

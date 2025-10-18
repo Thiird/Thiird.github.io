@@ -13,6 +13,7 @@
         I'm an embedded systems engineer with a specialty on the software side.
       </p>
       <p class="location">Based in Bologna.</p>
+
       <!-- Social icons -->
       <div class="social-icons">
         <a
@@ -48,6 +49,25 @@
             class="social-icon"
           />
         </a>
+
+        <!-- Email icon -->
+        <button
+          type="button"
+          class="email-button"
+          onclick="toggleEmail()"
+          aria-label="Show email"
+        >
+          <img
+            src="resources/icons/email.ico"
+            alt="Email"
+            class="social-icon"
+          />
+        </button>
+      </div>
+
+      <!-- Hidden email text -->
+      <div id="email-row" class="email-row" style="display: none;">
+        <p class="email-text">stefano.nicolis@example.com</p>
       </div>
     </div>
   </header>

@@ -243,4 +243,8 @@ Here is a clip of me playing Battlefield 4 with my mouse!
   <img class="hover-effect click-zoom" src="fusion.png" alt="Fusion 360 view" />
   <img class="hover-effect click-zoom" src="blender.png" alt="Blender view" />
   <img class="hover-effect click-zoom" src="voltage_rails_debugging.jpg" alt="debugging" />
+  <img class="hover-effect click-zoom" src="mouse_final_1.jpg" alt="" />
+  <img class="hover-effect click-zoom" src="mouse_final_2.png" alt="" />
+  <img class="hover-effect click-zoom" src="mouse_final_3.png" alt="" />
+  <img class="hover-effect click-zoom" src="mouse_final_4.jpg" alt="" />
 </div>
