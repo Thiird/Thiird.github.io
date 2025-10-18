@@ -252,7 +252,7 @@ body.lightbox-active {
 .poem-container, .blog-container {
   flex: 1; /* Take remaining space */
   padding: 20px;
-  background-color: #1a252f;
+  background-color: #1a2520070
   box-sizing: border-box;
 }
 
@@ -276,7 +276,6 @@ body.lightbox-active {
   padding: 0;
   overflow: hidden;
 }
-
 
 /* Hide elements in collapsed poem list */
 .poem-list.collapsed #poemListItems,
@@ -327,7 +326,6 @@ body.lightbox-active {
   margin: 0;
 }
 
-
 /* Blog List Header */
 .blog-list-header {
   display: flex;
@@ -353,9 +351,10 @@ body.lightbox-active {
 .poem-text,
 .blog-text {
   width: 100%;
-  text-align: left; /* ⬅ changed from left to center */
+  text-align: left; /* Align text to left */
   line-height: 1.6;
 }
+
 /* Toggle Button */
 .toggle-btn {
   background-color: #8d99ae;
@@ -728,56 +727,28 @@ img {
 
 /* Lightbox */
 #lightbox {
-  display: none;
   position: fixed;
-  z-index: 9999;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.9);
-  justify-content: center;
-  align-items: center;
-  overflow: auto;
-}
-
-/* Lightbox image wrapper */
-#lightbox .image-wrapper {
-  position: relative;
-  max-width: 90vw;
-  max-height: 90vh;
-  width: auto;
-  height: auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#lightbox .image-wrapper::before {
-  content: "";
-  position: absolute;
-  top: -5px;
-  left: -5px;
-  right: -5px;
-  bottom: -5px;
-  border: 0px;
-  z-index: 1;
-  pointer-events: none;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  display: none;
+  overflow: auto; /* Enable scrollbars for panning */
+  z-index: 1000;
 }
 
 /* Lightbox image */
 #lightbox img {
-  width: 100%;
-  height: 100%;
-  max-width: 90vw;
-  max-height: 90vh;
-  object-fit: contain;
-  border-radius: 10px;
-  transform-origin: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-width: none;
+  max-height: none;
   cursor: zoom-in;
-  transition: transform 0.2s ease;
-  position: relative;
-  z-index: 2;
+  user-select: none;
+  transition: opacity 0.3s ease;
+  opacity: 1;
 }
 
 #lightbox img.zoomed {
@@ -908,7 +879,6 @@ pre {
     justify-content: flex-start; /* Align content to top */
   }
 
-  /* Front page header stack */
   .header-section {
     flex-direction: column;
     align-items: center;
@@ -931,7 +901,6 @@ pre {
     font-size: 2em !important;
   }
 
-  /* Social Icons - Keep horizontal, same style as desktop */
   .social-icons {
     display: flex;
     gap: 10px;
@@ -955,7 +924,6 @@ pre {
     filter: grayscale(0%);
   }
 
-  /* Top Menu Mobile */
   .top-menu ul {
     flex-direction: column;
     width: 100%;
@@ -1013,7 +981,6 @@ pre {
     background-color: #1e6f9f;
   }
 
-  /* Ensure minimum font size for readability */
   .content-text {
     font-size: max(14px, 2vw);
   }
@@ -1022,7 +989,6 @@ pre {
     font-size: max(1.5em, 3vw);
   }
 
-  /* Ensure touch-friendly interactive elements */
   .audio-player, .custom-player, .toggle-btn, .top-menu a, .dropdown-menu a {
     min-height: 44px;
     line-height: 44px;

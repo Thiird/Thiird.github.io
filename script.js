@@ -1,4 +1,75 @@
 // 🔹 Global resize timer to prevent duplicate declarations
+let resizeTimer;
+
+// 🔹 Zoom variables for lightbox
+let zoomLevel = 0;
+const zoomScales = [0, 2, 4]; // 0: fit-to-viewport, 2: 2x natural, 4: 4x natural
+
+// 🔹 Calculate scale to fit 90% of viewport
+function calculateFitScale(img) {
+  const maxWidth = window.innerWidth * 0.9;
+  const maxHeight = window.innerHeight * 0.9;
+  const imgWidth = img.naturalWidth;
+  const imgHeight = img.naturalHeight;
+  if (imgWidth === 0 || imgHeight === 0) {
+    console.warn("Image dimensions unavailable:", img.src);
+    return 1;
+  }
+  const scale = Math.min(maxWidth / imgWidth, maxHeight / imgHeight, 1);
+  console.log(
+    `Image: ${img.src}, natural: ${imgWidth}x${imgHeight}, viewport: ${maxWidth}x${maxHeight}, fitScale: ${scale}`
+  );
+  return scale;
+}
+
+// 🔹 Apply scale to image
+function applyScale(img, scale) {
+  img.style.width = img.naturalWidth * scale + "px";
+  img.style.height = img.naturalHeight * scale + "px";
+  console.log(`Applied scale: ${scale}, size: ${img.style.width}x${img.style.height}`);
+}
+
+// 🔹 Center image if smaller than viewport
+function centerImageIfSmall(img, lightbox) {
+  const imgRect = img.getBoundingClientRect();
+  const lightboxRect = lightbox.getBoundingClientRect();
+  const left = Math.max((lightboxRect.width - imgRect.width) / 2, 0);
+  const top = Math.max((lightboxRect.height - imgRect.height) / 2, 0);
+  img.style.left = left + "px";
+  img.style.top = top + "px";
+  console.log(`Centered image: left=${left}, top=${top}`);
+}
+
+// 🔹 Apply scale with fade effect
+function fadeApply(img, lightbox, scale) {
+  img.style.opacity = 0; // Fade out
+  setTimeout(() => {
+    applyScale(img, scale);
+    img.style.left = "0px";
+    img.style.top = "0px";
+    if (scale === calculateFitScale(img)) {
+      setTimeout(() => centerImageIfSmall(img, lightbox), 0);
+    }
+    img.style.opacity = 1; // Fade in
+  }, 50);
+  console.log(`Fade apply: scale=${scale}`);
+}
+
+// 🔹 Reset zoom
+function resetZoom(img, lightbox) {
+  zoomLevel = 0;
+  img.classList.remove("zoomed");
+  const scale = calculateFitScale(img);
+  fadeApply(img, lightbox, scale);
+}
+
+// 🔹 Update zoom
+function updateZoom(img, lightbox) {
+  const fitScale = calculateFitScale(img);
+  const scale = zoomLevel === 0 ? fitScale : zoomScales[zoomLevel];
+  img.classList.toggle("zoomed", zoomLevel > 0);
+  fadeApply(img, lightbox, scale);
+}
 
 // 🔹 Function to initialize dropdown toggle for mobile and ensure desktop reset
 function initDropdownToggle() {
@@ -9,11 +80,8 @@ function initDropdownToggle() {
   dropdowns.forEach((dropdown) => {
     const button = dropdown.querySelector(".menu-button");
     const menu = dropdown.querySelector(".dropdown-menu");
-    // Clone button to remove old listeners
     const newButton = button.cloneNode(true);
     button.parentNode.replaceChild(newButton, button);
-
-    // Reset active state and menu visibility
     dropdown.classList.remove("active");
     if (menu) menu.style.display = "none";
   });
@@ -22,17 +90,14 @@ function initDropdownToggle() {
     const button = dropdown.querySelector(".menu-button");
     const menu = dropdown.querySelector(".dropdown-menu");
 
-    // Remove any existing listeners to prevent duplicates
     dropdown.removeEventListener("mouseenter", dropdown._mouseenterHandler);
     dropdown.removeEventListener("mouseleave", dropdown._mouseleaveHandler);
     button.removeEventListener("click", button._clickHandler);
 
     if (isMobile) {
-      // Mobile: Toggle on click
       button._clickHandler = (e) => {
-        e.preventDefault(); // Prevent default link behavior
+        e.preventDefault();
         const isActive = dropdown.classList.contains("active");
-        // Close all other dropdowns
         document.querySelectorAll(".top-menu .dropdown").forEach((d) => {
           if (d !== dropdown) {
             d.classList.remove("active");
@@ -40,13 +105,11 @@ function initDropdownToggle() {
             if (otherMenu) otherMenu.style.display = "none";
           }
         });
-        // Toggle current dropdown
         dropdown.classList.toggle("active");
         menu.style.display = isActive ? "none" : "block";
       };
       button.addEventListener("click", button._clickHandler);
     } else {
-      // Desktop: Show/hide on hover
       dropdown._mouseenterHandler = () => {
         menu.style.display = "block";
       };
@@ -58,8 +121,7 @@ function initDropdownToggle() {
     }
   });
 
-  // Close dropdowns when clicking outside (mobile only)
-  document.removeEventListener("click", handleOutsideClick); // Remove previous listener
+  document.removeEventListener("click", handleOutsideClick);
   if (isMobile) {
     document.addEventListener("click", handleOutsideClick);
   }
@@ -103,98 +165,40 @@ document.addEventListener("DOMContentLoaded", () => {
   // 🔹 Lightbox Initialization
   const lightbox = document.createElement("div");
   lightbox.id = "lightbox";
-  const imageWrapper = document.createElement("div");
-  imageWrapper.className = "image-wrapper";
   const img = document.createElement("img");
-  imageWrapper.appendChild(img);
-  lightbox.appendChild(imageWrapper);
+  img.id = "lightbox-img";
+  lightbox.appendChild(img);
   document.body.appendChild(lightbox);
 
-  // 🔹 Zoom cycle
-  let zoomLevel = 0; // 0: initial (CSS-sized), 1: 2x natural, 2: 4x natural
-  const zoomScales = [0, 2, 4]; // 0: no transform, 2: 2x natural, 4: 4x natural
-
-  // 🔹 Calculate scale to fill 90% of viewport (for wrapper sizing)
-  function calculateBaseScale(img) {
-    const maxWidth = window.innerWidth * 0.9;
-    const maxHeight = window.innerHeight * 0.9;
-    const imgWidth = img.naturalWidth;
-    const imgHeight = img.naturalHeight;
-    if (imgWidth === 0 || imgHeight === 0) {
-      console.warn("Image dimensions unavailable:", img.src);
-      return 1;
-    }
-    const scaleX = maxWidth / imgWidth;
-    const scaleY = maxHeight / imgHeight;
-    const scale = Math.min(scaleX, scaleY);
-    console.log(
-      `Image: ${img.src}, natural: ${imgWidth}x${imgHeight}, viewport: ${maxWidth}x${maxHeight}, baseScale: ${scale}`
-    );
-    return scale;
-  }
-
-  // 🔹 Set wrapper aspect ratio to match image
-  function setWrapperAspectRatio(img) {
-    const imgWidth = img.naturalWidth;
-    const imgHeight = img.naturalHeight;
-    if (imgWidth === 0 || imgHeight === 0) {
-      console.warn("Cannot set aspect ratio, dimensions unavailable:", img.src);
-      return;
-    }
-    imageWrapper.style.aspectRatio = `${imgWidth} / ${imgHeight}`;
-    console.log(`Set aspect ratio: ${imgWidth}/${imgHeight}`);
-  }
-
-  // 🔹 Reset transform
-  function resetTransform() {
-    zoomLevel = 0;
-    img.classList.remove("zoomed");
-    img.style.transform = "none";
-    lightbox.style.overflow = "auto"; // Use scrollbars
-    console.log(`Reset transform: zoomLevel=${zoomLevel}, transform=none`);
-  }
-
-  // 🔹 Update transform
-  function updateTransform() {
-    if (zoomLevel === 0) {
-      img.style.transform = "none";
-      console.log(`Update transform: zoomLevel=${zoomLevel}, transform=none`);
-    } else {
-      const scale = zoomScales[zoomLevel];
-      img.style.transform = `scale(${scale})`;
-      console.log(`Update transform: zoomLevel=${zoomLevel}, scale=${scale}`);
-    }
-  }
-
-  // 🔹 Toggle zoom on image click
+  // 🔹 Zoom on image click
   img.addEventListener("click", (e) => {
     e.stopPropagation();
     zoomLevel = (zoomLevel + 1) % zoomScales.length;
-    img.classList.toggle("zoomed", zoomLevel > 0);
-    lightbox.style.overflow = "auto"; // Always use scrollbars
-    updateTransform();
+    updateZoom(img, lightbox);
   });
 
-  // 🔹 Close lightbox on click outside image
+  // 🔹 Close lightbox on click outside or Escape key
   lightbox.addEventListener("click", (e) => {
     if (e.target !== img) {
       lightbox.style.display = "none";
       document.body.classList.remove("lightbox-active");
-      resetTransform();
-      imageWrapper.style.aspectRatio = "";
+      resetZoom(img, lightbox);
       console.log("Lightbox closed via click outside");
     }
   });
-
-  // 🔹 Close lightbox on Escape key
   document.addEventListener("keydown", (e) => {
-    const isVisible = window.getComputedStyle(lightbox).display !== "none";
-    if (e.key === "Escape" && isVisible) {
+    if (e.key === "Escape" && lightbox.style.display === "block") {
       lightbox.style.display = "none";
       document.body.classList.remove("lightbox-active");
-      resetTransform();
-      imageWrapper.style.aspectRatio = "";
+      resetZoom(img, lightbox);
       console.log("Lightbox closed via Escape key");
+    }
+  });
+
+  // 🔹 Handle window resize
+  window.addEventListener("resize", () => {
+    if (lightbox.style.display === "block" && zoomLevel === 0) {
+      resetZoom(img, lightbox);
     }
   });
 
@@ -207,23 +211,20 @@ document.addEventListener("DOMContentLoaded", () => {
         thumbnail.parentElement.insertBefore(wrapper, thumbnail);
         wrapper.appendChild(thumbnail);
       }
-      thumbnail.addEventListener("click", () => {
+      thumbnail.style.cursor = "pointer";
+      thumbnail.removeEventListener("click", thumbnail._lightboxHandler);
+      thumbnail._lightboxHandler = () => {
         img.src = thumbnail.src;
-        img.style.transform = "none";
-        img.onload = () => {
-          calculateBaseScale(img);
-          setWrapperAspectRatio(img);
-          resetTransform();
+        const openLightbox = () => {
+          lightbox.style.display = "block";
+          document.body.classList.add("lightbox-active");
+          resetZoom(img, lightbox);
         };
-        if (img.complete && img.naturalWidth) {
-          calculateBaseScale(img);
-          setWrapperAspectRatio(img);
-          resetTransform();
-        }
-        lightbox.style.display = "flex";
-        document.body.classList.add("lightbox-active");
+        if (img.complete && img.naturalWidth) openLightbox();
+        else img.onload = openLightbox;
         console.log("Lightbox opened for image:", thumbnail.src);
-      });
+      };
+      thumbnail.addEventListener("click", thumbnail._lightboxHandler);
     });
   }
 
@@ -380,7 +381,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // 🔹 Poem Functions
-  let poemsCache = []; // Store poems for popstate handling
+  let poemsCache = [];
   function initPoems() {
     fetch("poems/poems_manifest.json")
       .then((res) => {
@@ -388,12 +389,10 @@ document.addEventListener("DOMContentLoaded", () => {
         return res.json();
       })
       .then((poems) => {
-        poemsCache = poems; // Cache poems for later use
+        poemsCache = poems;
         console.log("Poems loaded:", poems);
         buildPoemList(poems);
-        // Get poem index from URL parameter
         const poemIndex = parseInt(getUrlParameter("poem")) || 0;
-        // Load the poem at the specified index, default to 0 if out of range
         if (poems.length > 0) {
           const selectedPoem = poems[Math.min(Math.max(poemIndex, 0), poems.length - 1)];
           loadPoem(selectedPoem);
@@ -415,7 +414,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function buildPoemList(poems) {
-    const poemListItems = document.getElementById("poemListItems"); // Target ul directly
+    const poemListItems = document.getElementById("poemListItems");
     if (!poemListItems) {
       console.error("poemListItems not found");
       return;
@@ -427,7 +426,7 @@ document.addEventListener("DOMContentLoaded", () => {
       a.href = "#";
       a.textContent = formatPoemTitle(poem.name);
       a.dataset.poem = JSON.stringify(poem);
-      a.dataset.index = index; // Store index for URL updating
+      a.dataset.index = index;
       a.classList.add("poem-link");
       li.appendChild(a);
       poemListItems.appendChild(li);
@@ -438,7 +437,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const poem = JSON.parse(link.getAttribute("data-poem"));
         const index = link.dataset.index;
         loadPoem(poem);
-        // Update URL with poem index
         history.pushState({ poemIndex: index }, "", `?poem=${index}`);
       });
     });
@@ -464,9 +462,9 @@ document.addEventListener("DOMContentLoaded", () => {
     playPauseBtn.textContent = "▶";
     audioPlayer.setAttribute("data-title", "");
     audioPlayer.style.display = "none";
-    isLooping = false; // Reset looping state
+    isLooping = false;
     if (loopBtn) {
-      loopBtn.style.color = "#d3d7db"; // Reset loop button color
+      loopBtn.style.color = "#d3d7db";
     }
     console.log("Audio player reset");
   }
@@ -480,6 +478,7 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .then((md) => {
         document.getElementById("poemText").innerHTML = marked.parse(md);
+        attachLightboxEvents();
       })
       .catch((err) => {
         console.error("Error loading poem:", err);
@@ -495,10 +494,10 @@ document.addEventListener("DOMContentLoaded", () => {
         .then((res) => {
           if (res.ok) {
             audioElement.src = audioPath;
-            audioElement.loop = true; // Enable looping by default
-            isLooping = true; // Update looping state
+            audioElement.loop = true;
+            isLooping = true;
             if (loopBtn) {
-              loopBtn.style.color = "#3498db"; // Set loop button to active color
+              loopBtn.style.color = "#3498db";
             }
             audioPlayer.setAttribute("data-title", formatPoemTitle(poem.audio));
             audioPlayer.style.display = "block";
@@ -521,7 +520,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // 🔹 Blog Functions
-  let blogsCache = []; // Store blogs for popstate handling
+  let blogsCache = [];
   function initBlogs() {
     fetch("blogs/blogs_manifest.json")
       .then((res) => {
@@ -529,14 +528,12 @@ document.addEventListener("DOMContentLoaded", () => {
         return res.json();
       })
       .then((blogs) => {
-        blogsCache = blogs; // Cache blogs for later use
+        blogsCache = blogs;
         blogs.sort((a, b) => b.folder.localeCompare(a.folder));
         const target = document.getElementById("blogText");
         if (target) target.innerHTML = "Loading blog post...";
         buildBlogList(blogs);
-        // Get blog index from URL parameter
         const blogIndex = parseInt(getUrlParameter("blog")) || 0;
-        // Load the blog at the specified index, default to 0 if out of range
         if (blogs.length > 0) {
           const selectedBlog = blogs[Math.min(Math.max(blogIndex, 0), blogs.length - 1)];
           loadBlogPost(selectedBlog);
@@ -546,31 +543,26 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function buildBlogList(blogs) {
-    const listEl = document.getElementById("blogListItems"); // Correctly target the list container
+    const listEl = document.getElementById("blogListItems");
     if (!listEl) return;
-
-    listEl.innerHTML = ""; // Clear only the list items, not the header
-
+    listEl.innerHTML = "";
     blogs.forEach((blog, index) => {
       const li = document.createElement("li");
       const a = document.createElement("a");
       a.href = "#";
       a.textContent = blog.title || formatBlogTitle(blog.folder);
       a.dataset.blog = JSON.stringify(blog);
-      a.dataset.index = index; // Store index for URL updating
+      a.dataset.index = index;
       a.classList.add("blog-link");
       li.appendChild(a);
       listEl.appendChild(li);
     });
-
-    // Add event listeners to the blog links
     listEl.querySelectorAll("a").forEach((link) => {
       link.addEventListener("click", (e) => {
         e.preventDefault();
         const blog = JSON.parse(link.getAttribute("data-blog"));
         const index = link.dataset.index;
         loadBlogPost(blog);
-        // Update URL with blog index
         history.pushState({ blogIndex: index }, "", `?blog=${index}`);
       });
     });
@@ -594,7 +586,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return res.text();
       })
       .then((md) => {
-        // Process Markdown images
         md = md.replace(/!\[(.*?)\]\(([^)]+)\)/g, (match, alt, src) => {
           const classes = ["hover-effect", "click-zoom"];
           if (!src.startsWith("http") && !src.includes("/")) {
@@ -606,10 +597,10 @@ document.addEventListener("DOMContentLoaded", () => {
             " "
           )}" src="${src}" alt="${alt}"></div>`;
         });
-        // Process Markdown-linked images
         md = md.replace(/\[<img([^>]+)>\]\(([^)]+)\)/g, (match, attrs, src) => {
           let classAttr = attrs.match(/class=["']([^"']*)["']/i);
           let classes = classAttr ? classAttr[1].split(/\s+/) : [];
+          classes = [...new Set([...classes, "click-zoom"])];
           const newClassAttr = `class="${classes.join(" ")}"`;
           attrs = attrs.replace(/class=["'][^"']*["']/i, "").trim();
           if (!src.startsWith("http") && !src.includes("/")) {
@@ -617,15 +608,13 @@ document.addEventListener("DOMContentLoaded", () => {
           }
           return `<div class="image-wrapper"><img ${attrs} ${newClassAttr} src="${src}"></div>`;
         });
-        // Process standalone <img> tags
         md = md.replace(
           /<img([^>]*?)src=["']([^"']+)["']([^>]*)>/g,
           (match, before, src, after) => {
             let classAttr = before.match(/class=["']([^"']*)["']/i);
             let classes = classAttr ? classAttr[1].split(/\s+/) : [];
-            const newClassAttr = classes.length
-              ? `class="${classes.join(" ")}"`
-              : "";
+            classes = [...new Set([...classes, "click-zoom"])];
+            const newClassAttr = `class="${classes.join(" ")}"`;
             before = before.replace(/class=["'][^"']*["']/i, "").trim();
             if (!src.startsWith("http") && !src.includes("/")) {
               return `<div class="image-wrapper"><img ${before} ${newClassAttr} src="blogs/${blog.folder}/res/${src}" ${after}></div>`;
@@ -633,7 +622,6 @@ document.addEventListener("DOMContentLoaded", () => {
             return `<div class="image-wrapper"><img ${before} ${newClassAttr} src="${src}" ${after}></div>`;
           }
         );
-        // Process <embed> tags
         md = md.replace(
           /<embed([^>]+)src=["']([^"']+)["']([^>]*)>/g,
           (match, before, src, after) => {
@@ -643,7 +631,6 @@ document.addEventListener("DOMContentLoaded", () => {
             return match;
           }
         );
-        // Process <video> tags
         md = md.replace(
           /<video([^>]*)>\s*<source([^>]*?)src=["']([^"']+)["']([^>]*)>\s*<\/video>/g,
           (match, videoAttrs, before, src, after) => {
@@ -653,7 +640,6 @@ document.addEventListener("DOMContentLoaded", () => {
             return match;
           }
         );
-        // Process !video syntax
         md = md.replace(/!video\(([^)]+)\)/g, (match, src) => {
           if (!src.startsWith("http") && !src.includes("/")) {
             return `<video controls class="video-player"> <source src="blogs/${blog.folder}/res/${src}" type="video/mp4"> Your browser does not support the video tag. </video>`;
@@ -664,52 +650,18 @@ document.addEventListener("DOMContentLoaded", () => {
         if (window.hljs) {
           hljs.highlightAll();
         }
-        // Attach lightbox events
-        const lightbox = document.getElementById("lightbox");
-        const lightboxImg = lightbox.querySelector("img");
-        const imageWrapper = lightbox.querySelector(".image-wrapper");
-        target.querySelectorAll("img.click-zoom").forEach((thumbnail) => {
-          if (!thumbnail.parentElement.classList.contains("image-wrapper")) {
-            const wrapper = document.createElement("div");
-            wrapper.className = "image-wrapper";
-            thumbnail.parentElement.insertBefore(wrapper, thumbnail);
-            wrapper.appendChild(thumbnail);
-          }
-          thumbnail.style.cursor = "pointer";
-          thumbnail.removeEventListener("click", thumbnail._lightboxHandler);
-          thumbnail._lightboxHandler = () => {
-            lightboxImg.src = thumbnail.src;
-            lightboxImg.style.transform = "none";
-            lightboxImg.onload = () => {
-              calculateBaseScale(lightboxImg);
-              setWrapperAspectRatio(lightboxImg);
-              resetTransform();
-            };
-            if (lightboxImg.complete && lightboxImg.naturalWidth) {
-              calculateBaseScale(lightboxImg);
-              setWrapperAspectRatio(lightboxImg);
-              resetTransform();
-            }
-            lightbox.style.display = "flex";
-            document.body.classList.add("lightbox-active");
-            console.log("Lightbox opened for image:", thumbnail.src);
-          };
-          thumbnail.addEventListener("click", thumbnail._lightboxHandler);
-        });
+        attachLightboxEvents();
       })
       .catch((err) => {
         console.error(err);
         target.innerHTML = "Failed to load blog post.";
       });
-  
-    }
+  }
 
-  });
   // 🔹 Handle URL changes (back/forward navigation)
   window.addEventListener("popstate", (event) => {
     if (window.location.pathname.includes("poems")) {
       if (poemsCache.length === 0) {
-        // Re-fetch poems manifest if cache is empty
         initPoems();
       } else {
         const poemIndex = parseInt(getUrlParameter("poem")) || 0;
@@ -718,7 +670,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } else if (window.location.pathname.includes("blogs")) {
       if (blogsCache.length === 0) {
-        // Re-fetch blogs manifest if cache is empty
         initBlogs();
       } else {
         const blogIndex = parseInt(getUrlParameter("blog")) || 0;
@@ -733,9 +684,10 @@ document.addEventListener("DOMContentLoaded", () => {
     initDropdownToggle();
     updateSidebarTop();
   });
+});
 
-    function toggleEmail() {
-    const emailRow = document.getElementById("email-row");
-    emailRow.style.display =
-      emailRow.style.display === "none" ? "block" : "none";
-  }
+function toggleEmail() {
+  const emailRow = document.getElementById("email-row");
+  emailRow.style.display =
+    emailRow.style.display === "none" ? "block" : "none";
+}
