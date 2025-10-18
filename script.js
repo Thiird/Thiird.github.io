@@ -1,6 +1,3 @@
-// 🔹 Global resize timer to prevent duplicate declarations
-let resizeTimer;
-
 // 🔹 Zoom variables for lightbox
 let zoomLevel = 0;
 const zoomScales = [0, 2, 4]; // 0: fit-to-viewport, 2: 2x natural, 4: 4x natural
