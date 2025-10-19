@@ -19,8 +19,6 @@
       // Configure marked to open links in a new tab
       const renderer = new marked.Renderer();
       renderer.link = function (href, title, text) {
-        // Debug: Log parameters to inspect what marked is passing
-        console.log('Link renderer params:', { href, title, text });
 
         // Handle case where href might be an object (older marked versions)
         let linkHref = href;

@@ -13,9 +13,7 @@ function calculateFitScale(img) {
     return 1;
   }
   const scale = Math.min(maxWidth / imgWidth, maxHeight / imgHeight, 1);
-  console.log(
-    `Image: ${img.src}, natural: ${imgWidth}x${imgHeight}, viewport: ${maxWidth}x${maxHeight}, fitScale: ${scale}`
-  );
+
   return scale;
 }
 
@@ -23,7 +21,6 @@ function calculateFitScale(img) {
 function applyScale(img, scale) {
   img.style.width = img.naturalWidth * scale + "px";
   img.style.height = img.naturalHeight * scale + "px";
-  console.log(`Applied scale: ${scale}, size: ${img.style.width}x${img.style.height}`);
 }
 
 // 🔹 Center image if smaller than viewport
@@ -34,7 +31,6 @@ function centerImageIfSmall(img, lightbox) {
   const top = Math.max((lightboxRect.height - imgRect.height) / 2, 0);
   img.style.left = left + "px";
   img.style.top = top + "px";
-  console.log(`Centered image: left=${left}, top=${top}`);
 }
 
 // 🔹 Apply scale with fade effect
@@ -49,7 +45,6 @@ function fadeApply(img, lightbox, scale) {
     }
     img.style.opacity = 1; // Fade in
   }, 50);
-  console.log(`Fade apply: scale=${scale}`);
 }
 
 // 🔹 Reset zoom
@@ -180,7 +175,6 @@ document.addEventListener("DOMContentLoaded", () => {
       lightbox.style.display = "none";
       document.body.classList.remove("lightbox-active");
       resetZoom(img, lightbox);
-      console.log("Lightbox closed via click outside");
     }
   });
   document.addEventListener("keydown", (e) => {
@@ -188,7 +182,6 @@ document.addEventListener("DOMContentLoaded", () => {
       lightbox.style.display = "none";
       document.body.classList.remove("lightbox-active");
       resetZoom(img, lightbox);
-      console.log("Lightbox closed via Escape key");
     }
   });
 
@@ -219,7 +212,6 @@ document.addEventListener("DOMContentLoaded", () => {
         };
         if (img.complete && img.naturalWidth) openLightbox();
         else img.onload = openLightbox;
-        console.log("Lightbox opened for image:", thumbnail.src);
       };
       thumbnail.addEventListener("click", thumbnail._lightboxHandler);
     });
@@ -273,17 +265,10 @@ document.addEventListener("DOMContentLoaded", () => {
     durationEl
   ) {
     playPauseBtn.addEventListener("click", () => {
-      console.log(
-        "Play/Pause button clicked, paused:",
-        audio.paused,
-        "src:",
-        audio.src
-      );
       if (audio.paused) {
         audio
           .play()
           .then(() => {
-            console.log("Audio playing");
             playPauseBtn.textContent = "⏸";
           })
           .catch((err) => {
@@ -292,7 +277,6 @@ document.addEventListener("DOMContentLoaded", () => {
           });
       } else {
         audio.pause();
-        console.log("Audio paused");
         playPauseBtn.textContent = "▶";
       }
     });
@@ -307,7 +291,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     audio.addEventListener("loadedmetadata", () => {
-      console.log("Audio metadata loaded, duration:", audio.duration);
       durationEl.textContent = formatTime(audio.duration);
     });
 
@@ -325,7 +308,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const duration = audio.duration;
       if (duration && isFinite(duration)) {
         audio.currentTime = (clickX / width) * duration;
-        console.log("Seek to:", audio.currentTime);
       }
     });
 
@@ -334,7 +316,6 @@ document.addEventListener("DOMContentLoaded", () => {
         isLooping = !isLooping;
         audio.loop = isLooping;
         loopBtn.style.color = isLooping ? "#3498db" : "#d3d7db";
-        console.log("Loop toggled:", isLooping);
       });
     }
 
@@ -387,7 +368,6 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .then((poems) => {
         poemsCache = poems;
-        console.log("Poems loaded:", poems);
         buildPoemList(poems);
         const poemIndex = parseInt(getUrlParameter("poem")) || 0;
         if (poems.length > 0) {
@@ -463,7 +443,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (loopBtn) {
       loopBtn.style.color = "#d3d7db";
     }
-    console.log("Audio player reset");
   }
 
   function loadPoem(poem) {
@@ -486,7 +465,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const audioPlayer = document.getElementById("audioPlayer");
       const audioElement = document.getElementById("audioElement");
       const audioPath = "poems/" + encodeURIComponent(poem.audio);
-      console.log("Attempting to load audio:", audioPath);
       fetch(audioPath, { method: "HEAD" })
         .then((res) => {
           if (res.ok) {
@@ -498,12 +476,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             audioPlayer.setAttribute("data-title", formatPoemTitle(poem.audio));
             audioPlayer.style.display = "block";
-            console.log(
-              "Audio player set, src:",
-              audioPath,
-              "looping:",
-              audioElement.loop
-            );
           } else {
             console.error("Audio file not found:", audioPath);
             audioPlayer.style.display = "none";
