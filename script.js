@@ -370,10 +370,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const playPauseBtn = document.getElementById("playPause");
   const progressContainer = document.querySelector(".progress-container");
   const progressBar = document.getElementById("progressBar");
+  const progressHandle = document.getElementById("progressHandle");
   const currentTimeEl = document.getElementById("currentTime");
   const durationEl = document.getElementById("duration");
   const loopBtn = document.getElementById("loopBtn");
   let isLooping = false;
+
+  // helper: update progress UI (bar width + handle position)
+  function updateProgressUI() {
+    if (!audio || !progressBar || !progressHandle) return;
+    const pct = (audio.duration && isFinite(audio.duration)) ? (audio.currentTime / audio.duration) * 100 : 0;
+    progressBar.style.width = pct + "%";
+    progressHandle.style.left = pct + "%";
+    // aria update
+    progressHandle.setAttribute("aria-valuenow", Math.round(pct));
+  }
 
   if (
     audio &&
@@ -406,45 +417,94 @@ document.addEventListener("DOMContentLoaded", () => {
         progressBar.style.width = `${progressPercent}%`;
         currentTimeEl.textContent = formatTime(audio.currentTime);
         durationEl.textContent = formatTime(audio.duration);
+        // update handle position
+        if (progressHandle) progressHandle.style.left = `${progressPercent}%`;
+        if (progressHandle) progressHandle.setAttribute("aria-valuenow", Math.round(progressPercent));
       }
     });
 
     audio.addEventListener("loadedmetadata", () => {
       durationEl.textContent = formatTime(audio.duration);
+      updateProgressUI();
     });
 
     audio.addEventListener("error", (e) => {
       console.error("Audio error:", e);
       playPauseBtn.textContent = "▶";
       progressBar.style.width = "0%";
+      if (progressHandle) progressHandle.style.left = "0%";
       currentTimeEl.textContent = "0:00";
       durationEl.textContent = "0:00";
     });
 
+    // Click on bar to jump
     progressContainer.addEventListener("click", (e) => {
-      const width = progressContainer.clientWidth;
-      const clickX = e.offsetX;
-      const duration = audio.duration;
-      if (duration && isFinite(duration)) {
-        audio.currentTime = (clickX / width) * duration;
+      const rect = progressContainer.getBoundingClientRect();
+      const clickX = (e.clientX !== undefined) ? e.clientX - rect.left : e.touches && e.touches[0] ? e.touches[0].clientX - rect.left : 0;
+      const pct = Math.max(0, Math.min(1, clickX / rect.width));
+      if (audio.duration && isFinite(audio.duration)) {
+        audio.currentTime = pct * audio.duration;
+        updateProgressUI();
       }
     });
 
-    if (loopBtn) {
-      loopBtn.addEventListener("click", () => {
-        isLooping = !isLooping;
-        audio.loop = isLooping;
-        loopBtn.style.color = isLooping ? "#3498db" : "#d3d7db";
-      });
-    }
+    // Draggable handle (pointer events for mouse/touch)
+    if (progressHandle) {
+      let dragging = false;
+      const rectToPct = (clientX) => {
+        const rect = progressContainer.getBoundingClientRect();
+        return Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+      };
 
-    function formatTime(time) {
-      if (!isFinite(time)) return "0:00";
-      const minutes = Math.floor(time / 60);
-      const seconds = Math.floor(time % 60)
-        .toString()
-        .padStart(2, "0");
-      return `${minutes}:${seconds}`;
+      const onPointerMove = (clientX) => {
+        if (!audio || !audio.duration || !isFinite(audio.duration)) return;
+        const pct = rectToPct(clientX);
+        progressBar.style.width = (pct * 100) + "%";
+        progressHandle.style.left = (pct * 100) + "%";
+        // update current time visually (but don't commit until pointerup)
+        currentTimeEl.textContent = formatTime(pct * audio.duration);
+      };
+
+      progressHandle.addEventListener("pointerdown", (ev) => {
+        ev.preventDefault();
+        dragging = true;
+        progressHandle.setPointerCapture(ev.pointerId);
+      });
+
+      progressHandle.addEventListener("pointermove", (ev) => {
+        if (!dragging) return;
+        onPointerMove(ev.clientX);
+      });
+
+      progressHandle.addEventListener("pointerup", (ev) => {
+        if (!dragging) return;
+        dragging = false;
+        // commit time
+        const pct = rectToPct(ev.clientX);
+        if (audio.duration && isFinite(audio.duration)) {
+          audio.currentTime = pct * audio.duration;
+        }
+        if (progressHandle.releasePointerCapture) progressHandle.releasePointerCapture(ev.pointerId);
+      });
+
+      // keyboard accessibility: left/right arrow to seek small steps
+      progressHandle.addEventListener("keydown", (ev) => {
+        if (!audio || !audio.duration || !isFinite(audio.duration)) return;
+        const step = Math.max(1, Math.floor(audio.duration * 0.02)); // ~2% or 1s min
+        if (ev.key === "ArrowLeft") {
+          audio.currentTime = Math.max(0, audio.currentTime - step);
+          updateProgressUI();
+          ev.preventDefault();
+        } else if (ev.key === "ArrowRight") {
+          audio.currentTime = Math.min(audio.duration, audio.currentTime + step);
+          updateProgressUI();
+          ev.preventDefault();
+        } else if (ev.key === "Home") {
+          audio.currentTime = 0; updateProgressUI(); ev.preventDefault();
+        } else if (ev.key === "End") {
+          audio.currentTime = audio.duration; updateProgressUI(); ev.preventDefault();
+        }
+      });
     }
   } else {
     console.warn("Audio player elements missing:", {
