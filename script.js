@@ -620,6 +620,13 @@ document.addEventListener("DOMContentLoaded", () => {
           hljs.highlightAll();
         }
         attachLightboxEvents();
+        enableInternalAnchorScrolling(target);
+
+        // NEW: if URL contains a hash when the post loads, scroll to it
+        if (location.hash) {
+          // small timeout to ensure elements are laid out
+          setTimeout(() => scrollToAnchor(location.hash), 50);
+        }
       })
       .catch((err) => {
         console.error(err);
@@ -628,7 +635,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // 🔹 Handle URL changes (back/forward navigation)
+  // Move anchor handling to the top so anchor popstates do not trigger expensive blog/poem reloads.
   window.addEventListener("popstate", (event) => {
+    // If the popped history state is an anchor, handle it immediately and return
+    if (event.state && event.state.anchor) {
+      scrollToAnchor("#" + event.state.anchor);
+      return;
+    }
+
     if (window.location.pathname.includes("poems")) {
       if (poemsCache.length === 0) {
         initPoems();
@@ -660,3 +674,54 @@ function toggleEmail() {
   emailRow.style.display =
     emailRow.style.display === "none" ? "block" : "none";
 }
+
+/* New helper: scroll to anchor id/hash accounting for sticky banner (instant) */
+function scrollToAnchor(hash) {
+  if (!hash) return;
+  const id = hash.startsWith("#") ? hash.slice(1) : hash;
+  const targetEl = document.getElementById(id);
+  if (!targetEl) return;
+  const banner = document.getElementById("banner-placeholder");
+  const bannerHeight = banner ? banner.getBoundingClientRect().height : 0;
+  // Use instant positioning (faster than smooth animation)
+  // scrollIntoView to bring element into view, then offset for sticky header
+  targetEl.scrollIntoView({ block: "start", inline: "nearest", behavior: "auto" });
+  // Use rAF to ensure layout has settled before adjusting for header
+  requestAnimationFrame(() => {
+    window.scrollBy(0, -Math.ceil(bannerHeight) - 8);
+  });
+}
+
+/* Modified helper: delegated in-page anchor handling (lighter than per-anchor listeners).
+   Pushes history state for anchors so Back/Forward navigates between anchors. */
+function enableInternalAnchorScrolling(container) {
+  if (!container) return;
+  // Remove existing delegated listener if present
+  if (container._delegatedAnchorHandler) {
+    container.removeEventListener("click", container._delegatedAnchorHandler);
+  }
+  container._delegatedAnchorHandler = function (e) {
+    const a = e.target.closest("a[href^='#']");
+    if (!a || !container.contains(a)) return;
+    const hash = a.getAttribute("href");
+    if (!hash || hash === "#" || !hash.startsWith("#")) return;
+    e.preventDefault();
+    const id = hash.slice(1);
+    const targetEl = document.getElementById(id);
+    if (targetEl) {
+      // Instant scroll and create history entry (so Back/Forward toggles anchors)
+      scrollToAnchor(hash);
+      try {
+        history.pushState({ anchor: id }, "", hash);
+      } catch (err) {
+        // ignore
+      }
+    }
+  };
+  container.addEventListener("click", container._delegatedAnchorHandler);
+}
+
+/* Also handle hashchange (some navigation can change hash without state) */
+window.addEventListener("hashchange", () => {
+  scrollToAnchor(location.hash);
+});

@@ -10,23 +10,26 @@
   <body>
     <div id="banner-placeholder"></div>
 
-    <section class="content-scale-wrapper">
-      <div class="poem-list" id="poemList">
-        <div class="poem-list-header">
-          <button id="toggleSidebar" class="toggle-btn">☰</button>
-          <input
-            type="text"
-            id="poemSearch"
-            placeholder="Search"
-            class="poem-search"
-          />
-        </div>
-        <ul id="poemListItems">
-          <!-- dynamically filled -->
-        </ul>
-      </div>
+    <!-- Mobile toggle (visible on small screens) -->
+    <button id="mobileTogglePoem" class="mobile-sidebar-toggle" aria-label="Open menu">☰</button>
 
-      <div class="poem-container">
+    <div class="content-scale-wrapper">
+      <section class="poem-container">
+        <aside class="poem-list" id="poemList">
+          <div class="poem-list-header">
+            <button id="toggleSidebar" class="toggle-btn">⏴</button>
+            <input
+              type="text"
+              id="poemSearch"
+              placeholder="Search"
+              class="poem-search"
+            />
+          </div>
+          <ul id="poemListItems">
+            <!-- dynamically filled -->
+          </ul>
+        </aside>
+
         <div class="poem-content">
           <!-- Audio Player -->
           <div class="audio-player" style="display: none" id="audioPlayer">
@@ -45,53 +48,139 @@
 
           <div class="poem-text" id="poemText">Loading poem...</div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
 
     <script>
-      // Load banner
+      // Insert the banner and initialize dropdown
       fetch("banner.html")
         .then((response) => response.text())
         .then((data) => {
           const banner = document.getElementById("banner-placeholder");
           banner.innerHTML = data;
+
+          // Adjust poem list position
           adjustSidebarHeight();
 
+          // Initialize dropdown toggle
           if (typeof initDropdownToggle === "function") {
             initDropdownToggle();
           }
         })
         .catch((error) => console.error("Error loading banner:", error));
 
-      // Adjust sidebar height dynamically
+      // Adjust sidebar height dynamically and pad content below banner
       function adjustSidebarHeight() {
-        const banner = document.getElementById("banner-placeholder");
+        // use rAF for smoother updates and to cover rapid scroll/touch events
+        requestAnimationFrame(() => {
+          const banner = document.getElementById("banner-placeholder");
+          const poemList = document.getElementById("poemList");
+          const contentWrapper = document.querySelector(".content-scale-wrapper");
+          const mobileToggle = document.getElementById("mobileTogglePoem");
+          if (banner && poemList) {
+            const bannerRect = banner.getBoundingClientRect();
+            const bannerBottom = bannerRect.bottom;
+            const topOffset = Math.max(0, bannerBottom);
+            poemList.style.top = `${topOffset}px`;
+            poemList.style.height = `calc(100vh - ${topOffset}px)`;
+            // ensure main content starts below the banner to avoid overlap
+            if (contentWrapper) {
+              contentWrapper.style.paddingTop = `${topOffset}px`;
+            }
+            // position mobile toggle under banner only while banner is visible,
+            // otherwise keep it at fixed corner (12px)
+            if (mobileToggle) {
+              const gap = 8; // px
+              if (bannerBottom > 0) {
+                mobileToggle.style.top = `${bannerBottom + gap}px`;
+              } else {
+                mobileToggle.style.top = `12px`;
+              }
+            }
+          } else {
+            // fallback: reset mobile toggle position
+            if (mobileToggle) mobileToggle.style.top = `12px`;
+            if (contentWrapper) contentWrapper.style.paddingTop = ``;
+          }
+        });
+      }
+
+      // Responsive toggle for poem list
+      const poemToggle = document.getElementById("toggleSidebar");
+      const mobilePoemToggle = document.getElementById("mobileTogglePoem");
+
+      function setPoemSidebarInitial() {
         const poemList = document.getElementById("poemList");
-        if (banner && poemList) {
-          const bannerBottom = banner.getBoundingClientRect().bottom;
-          poemList.style.top = `${Math.max(0, bannerBottom)}px`;
-          poemList.style.height = `calc(100vh - ${Math.max(0, bannerBottom)}px)`;
+        // reset any leftover classes
+        document.body.classList.remove("no-scroll");
+        if (mobilePoemToggle) mobilePoemToggle.classList.remove("hidden");
+
+        if (window.innerWidth > 800) {
+          poemList.classList.remove("collapsed", "show");
+        } else {
+          poemList.classList.remove("collapsed");
+          poemList.classList.remove("show");
         }
       }
 
-      window.addEventListener("resize", adjustSidebarHeight);
-      window.addEventListener("scroll", adjustSidebarHeight);
-      window.addEventListener("load", adjustSidebarHeight);
-
-      // Toggle poem list visibility
-      document.getElementById("toggleSidebar").addEventListener("click", () => {
+      poemToggle.addEventListener("click", () => {
         const poemList = document.getElementById("poemList");
-        poemList.classList.toggle("collapsed");
+        const isMobile = window.innerWidth <= 800;
+        if (isMobile) {
+          const isOpen = poemList.classList.toggle("show");
+          document.body.classList.toggle("no-scroll", isOpen);
+          document.documentElement.classList.toggle("no-scroll", isOpen);
+          if (mobilePoemToggle) mobilePoemToggle.classList.toggle("hidden", isOpen);
+          poemList.classList.remove("collapsed");
+        } else {
+          poemList.classList.toggle("collapsed");
+          poemList.classList.remove("show");
+          document.body.classList.remove("no-scroll");
+          document.documentElement.classList.remove("no-scroll");
+          if (mobilePoemToggle) mobilePoemToggle.classList.remove("hidden");
+        }
       });
 
-      // Search functionality
-      document.getElementById("poemSearch").addEventListener("input", (e) => {
-        const search = e.target.value.toLowerCase();
-        document.querySelectorAll("#poemListItems li").forEach((item) => {
-          const title = item.textContent.toLowerCase();
-          item.style.display = title.includes(search) ? "block" : "none";
+      // NEW: mobile toggle button handler
+      if (mobilePoemToggle) {
+        mobilePoemToggle.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const poemList = document.getElementById("poemList");
+          const isOpen = poemList.classList.toggle("show");
+          document.body.classList.toggle("no-scroll", isOpen);
+          document.documentElement.classList.toggle("no-scroll", isOpen);
+          mobilePoemToggle.classList.toggle("hidden", isOpen);
         });
+      }
+
+      // Close mobile poem sidebar when clicking outside (ignore mobile toggle)
+      document.addEventListener("click", (e) => {
+        const poemList = document.getElementById("poemList");
+        if (!poemList) return;
+        if (window.innerWidth <= 800 && poemList.classList.contains("show")) {
+          if (!e.target.closest(".poem-list") && !e.target.closest("#toggleSidebar") && !e.target.closest("#mobileTogglePoem")) {
+            poemList.classList.remove("show");
+            document.body.classList.remove("no-scroll");
+            document.documentElement.classList.remove("no-scroll");
+            if (mobilePoemToggle) mobilePoemToggle.classList.remove("hidden");
+          }
+        }
       });
+
+      // Ensure correct initial state on load and resize
+      window.addEventListener("load", () => {
+        setPoemSidebarInitial();
+        adjustSidebarHeight();
+      });
+      window.addEventListener("resize", () => {
+        setPoemSidebarInitial();
+        adjustSidebarHeight();
+      });
+      // Follow banner on scroll so mobile toggle stays under banner
+      window.addEventListener("scroll", adjustSidebarHeight);
+      // NEW: also update during touch (rubber-band / touchmove) to follow banner on mobile gestures
+      window.addEventListener("touchmove", adjustSidebarHeight, { passive: true });
+      window.addEventListener("touchend", adjustSidebarHeight);
     </script>
 
     <script src="script.js"></script>

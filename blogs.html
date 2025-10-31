@@ -46,6 +46,9 @@
 
     <div id="banner-placeholder"></div>
 
+    <!-- Mobile toggle (always present in DOM, shown via CSS on small screens) -->
+    <button id="mobileToggleBlog" class="mobile-sidebar-toggle" aria-label="Open menu">☰</button>
+
     <section class="content-scale-wrapper">
       <div class="blog-list" id="blogList">
         <div class="blog-list-header">
@@ -80,26 +83,122 @@
         })
         .catch((error) => console.error("Error loading banner:", error));
 
-      // Adjust sidebar height dynamically
+      // Adjust sidebar height dynamically and pad content below banner
       function adjustSidebarHeight() {
-        const banner = document.getElementById("banner-placeholder");
+        // use rAF for smoother updates and to cover rapid scroll/touch events
+        requestAnimationFrame(() => {
+          const banner = document.getElementById("banner-placeholder");
+          const blogList = document.getElementById("blogList");
+          const contentWrapper = document.querySelector(".content-scale-wrapper");
+          const mobileToggle = document.getElementById("mobileToggleBlog");
+          if (banner && blogList) {
+            const bannerRect = banner.getBoundingClientRect();
+            const bannerBottom = bannerRect.bottom;
+            const topOffset = Math.max(0, bannerBottom);
+            blogList.style.top = `${topOffset}px`;
+            blogList.style.height = `calc(100vh - ${topOffset}px)`;
+            // ensure main content starts below the banner to avoid overlap
+            if (contentWrapper) {
+              contentWrapper.style.paddingTop = `${topOffset}px`;
+            }
+            // position mobile toggle under banner only while banner is visible,
+            // otherwise keep it at fixed corner (12px)
+            if (mobileToggle) {
+              const gap = 8; // px
+              if (bannerBottom > 0) {
+                mobileToggle.style.top = `${bannerBottom + gap}px`;
+              } else {
+                mobileToggle.style.top = `12px`;
+              }
+            }
+          } else {
+            // fallback: reset mobile toggle position
+            if (mobileToggle) mobileToggle.style.top = `12px`;
+            if (contentWrapper) contentWrapper.style.paddingTop = ``;
+          }
+        });
+      }
+
+      // Responsive toggle: desktop -> collapse/expand; mobile -> overlay show/hide
+      const toggleBtn = document.getElementById("toggleBlogList");
+      const mobileToggle = document.getElementById("mobileToggleBlog");
+
+      function setInitialSidebarState() {
         const blogList = document.getElementById("blogList");
-        if (banner && blogList) {
-          const bannerBottom = banner.getBoundingClientRect().bottom;
-          blogList.style.top = `${Math.max(0, bannerBottom)}px`;
-          blogList.style.height = `calc(100vh - ${Math.max(0, bannerBottom)}px)`;
+        // ensure no-scroll and mobile toggle visibility are reset
+        document.body.classList.remove("no-scroll");
+        document.documentElement.classList.remove("no-scroll");
+        if (mobileToggle) mobileToggle.classList.remove("hidden");
+
+        if (window.innerWidth > 800) {
+          // Desktop: sidebar open by default
+          blogList.classList.remove("collapsed", "show");
+        } else {
+          // Mobile: sidebar hidden by default
+          blogList.classList.remove("collapsed");
+          blogList.classList.remove("show");
         }
       }
 
-      // Fix toggle functionality for blog list
-      document.getElementById("toggleBlogList").addEventListener("click", () => {
+      toggleBtn.addEventListener("click", (e) => {
         const blogList = document.getElementById("blogList");
-        blogList.classList.toggle("collapsed");
+        const isMobile = window.innerWidth <= 800;
+        if (isMobile) {
+          const isOpen = blogList.classList.toggle("show");
+          // lock body/html scroll and hide mobile toggle while open
+          document.body.classList.toggle("no-scroll", isOpen);
+          document.documentElement.classList.toggle("no-scroll", isOpen);
+          if (mobileToggle) mobileToggle.classList.toggle("hidden", isOpen);
+          blogList.classList.remove("collapsed");
+        } else {
+          blogList.classList.toggle("collapsed");
+          blogList.classList.remove("show");
+          document.body.classList.remove("no-scroll");
+          document.documentElement.classList.remove("no-scroll");
+          if (mobileToggle) mobileToggle.classList.remove("hidden");
+        }
       });
 
-      window.addEventListener("resize", adjustSidebarHeight);
+      // NEW: mobile toggle button handler
+      if (mobileToggle) {
+        mobileToggle.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const blogList = document.getElementById("blogList");
+          const isOpen = blogList.classList.toggle("show");
+          document.body.classList.toggle("no-scroll", isOpen);
+          document.documentElement.classList.toggle("no-scroll", isOpen);
+          mobileToggle.classList.toggle("hidden", isOpen);
+        });
+      }
+
+      // Close mobile overlay when clicking outside (ignore mobile toggle button)
+      document.addEventListener("click", (e) => {
+        const blogList = document.getElementById("blogList");
+        if (!blogList) return;
+        if (window.innerWidth <= 800 && blogList.classList.contains("show")) {
+          if (!e.target.closest(".blog-list") && !e.target.closest("#toggleBlogList") && !e.target.closest("#mobileToggleBlog")) {
+            blogList.classList.remove("show");
+            document.body.classList.remove("no-scroll");
+            document.documentElement.classList.remove("no-scroll");
+            if (mobileToggle) mobileToggle.classList.remove("hidden");
+          }
+        }
+      });
+
+      // Ensure correct initial state on load and on resize
+      window.addEventListener("load", () => {
+        setInitialSidebarState();
+        adjustSidebarHeight();
+      });
+      window.addEventListener("resize", () => {
+        setInitialSidebarState();
+        adjustSidebarHeight();
+      });
+      // Follow banner on scroll so mobile toggle stays under banner
       window.addEventListener("scroll", adjustSidebarHeight);
-      window.addEventListener("load", adjustSidebarHeight);
+      // NEW: also update during touch (rubber-band / touchmove) to follow banner on mobile gestures
+      window.addEventListener("touchmove", adjustSidebarHeight, { passive: true });
+      window.addEventListener("touchend", adjustSidebarHeight);
 
       // Search and sort functionality
       document.getElementById("blogSearch").addEventListener("input", (e) => {
