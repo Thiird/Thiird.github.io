@@ -101,8 +101,27 @@ html.no-scroll, body.no-scroll {
     text-align: center; /* Center text on mobile */
   }
 
-  .profile-pic {
-    margin: 0 auto 15px; /* Center profile picture on mobile */
+  /* Ensure the profile picture is centered in the column layout */
+  .header-section .profile-pic {
+    margin: 0 0 15px 0;    /* remove the previous right margin */
+    align-self: center;    /* center inside the flex column */
+    display: block;        /* ensure block-level centering works */
+  }
+
+  /* Make the description take full width so text centers beneath the image */
+  .header-section .description {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* NEW: center social icons beneath the profile pic on small screens */
+  .header-section .social-icons {
+    justify-content: center;
+    margin: 12px 0 0;
+  }
+
+  .header-section .social-button {
+    margin: 0 8px;
   }
 }
 
@@ -179,7 +198,8 @@ html.no-scroll, body.no-scroll {
   text-align: center;
   position: sticky;
   top: 0;
-  z-index: 100;
+  overflow: visible;   /* allow dropdown to be visible outside the nav box */
+  z-index: 3000;       /* high z-index so it appears above header/content */
 }
 
 .top-menu > ul {
@@ -232,10 +252,10 @@ html.no-scroll, body.no-scroll {
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #34495e; /* Lighter background for sub-options */
+  background-color: #34495e;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
   border-radius: 5px;
-  z-index: 1;
+  z-index: 3100; /* above the top-menu z-index */
 }
 
 .top-menu .dropdown:hover .dropdown-menu {
@@ -263,6 +283,12 @@ html.no-scroll, body.no-scroll {
 
 .dropdown-menu a:hover {
   background-color: #1e6f9f; /* Slightly different blue for hover */
+}
+
+/* Ensure header doesn't clip dropdowns (no inner scrollbars) */
+.header-container,
+.header-section {
+  overflow: visible; /* allow dropdown to extend into/over header without creating inner scroll */
 }
 
 /* Poem and Blog Container */
@@ -1002,9 +1028,12 @@ html, body {
   justify-content: center;
   box-shadow: 0 4px 10px rgba(0,0,0,0.25);
   cursor: pointer;
-  transition: none; /* removed animation */
+  transition: top 0.12s ease, transform 0.15s ease, background 0.15s ease;
   display: inline-flex;
 }
+
+/* Small pressed effect */
+.mobile-sidebar-toggle:active { transform: scale(0.98); }
 
 /* visible only on mobile */
 @media (max-width: 800px) {

@@ -75,21 +75,70 @@ function initDropdownToggle() {
     const newButton = button.cloneNode(true);
     button.parentNode.replaceChild(newButton, button);
     dropdown.classList.remove("active");
-    if (menu) menu.style.display = "none";
+    if (menu) {
+      menu.style.display = "none";
+      // reset any inline positioning from previous runs
+      menu.style.position = "";
+      menu.style.top = "";
+      menu.style.left = "";
+      menu.style.transform = "";
+      menu.style.zIndex = "";
+      // cleanup any previous handlers
+      menu._reposition && window.removeEventListener("scroll", menu._reposition);
+      menu._reposition && window.removeEventListener("resize", menu._reposition);
+      if (menu._mouseenterHandler) menu.removeEventListener("mouseenter", menu._mouseenterHandler);
+      if (menu._mouseleaveHandler) menu.removeEventListener("mouseleave", menu._mouseleaveHandler);
+      delete menu._reposition;
+      delete menu._mouseenterHandler;
+      delete menu._mouseleaveHandler;
+    }
+    if (dropdown._mouseenterHandler) dropdown.removeEventListener("mouseenter", dropdown._mouseenterHandler);
+    if (dropdown._mouseleaveHandler) dropdown.removeEventListener("mouseleave", dropdown._mouseleaveHandler);
+    if (button._clickHandler) button.removeEventListener("click", button._clickHandler);
   });
+
+  // Helper to position dropdown as fixed under the trigger
+  function positionFixedMenu(button, menu) {
+    if (!button || !menu) return;
+    // ensure menu is in document flow and rendered to measure
+    menu.style.display = "block";
+    menu.style.position = "fixed";
+    menu.style.zIndex = "99999";
+    menu.style.transform = "none";
+    // measure button and menu
+    const btnRect = button.getBoundingClientRect();
+    const menuRect = menu.getBoundingClientRect();
+    // overlap 0 so submenu starts exactly where top menu finishes
+    const overlap = 0; // px overlap into the trigger area
+    const gap = 0; // no gap
+
+    // center the menu horizontally over the button, but clamp to viewport
+    let left = btnRect.left + btnRect.width / 2 - menuRect.width / 2;
+    left = Math.max(8, Math.min(left, window.innerWidth - menuRect.width - 8));
+    // top is button bottom + gap but we subtract overlap so menu can overlap if needed
+    let top = btnRect.bottom + gap - overlap;
+    if (top + menuRect.height > window.innerHeight - 8) {
+      // place above the button with small overlap
+      top = btnRect.top - menuRect.height - gap + overlap;
+      if (top < 8) top = 8;
+    }
+
+    menu.style.left = `${Math.round(left)}px`;
+    menu.style.top = `${Math.round(top)}px`;
+  }
 
   dropdowns.forEach((dropdown) => {
     const button = dropdown.querySelector(".menu-button");
     const menu = dropdown.querySelector(".dropdown-menu");
 
-    dropdown.removeEventListener("mouseenter", dropdown._mouseenterHandler);
-    dropdown.removeEventListener("mouseleave", dropdown._mouseleaveHandler);
-    button.removeEventListener("click", button._clickHandler);
+    if (!button || !menu) return;
 
     if (isMobile) {
+      // Mobile: click toggles inline menu (original behaviour)
       button._clickHandler = (e) => {
         e.preventDefault();
         const isActive = dropdown.classList.contains("active");
+        // close others
         document.querySelectorAll(".top-menu .dropdown").forEach((d) => {
           if (d !== dropdown) {
             d.classList.remove("active");
@@ -102,17 +151,87 @@ function initDropdownToggle() {
       };
       button.addEventListener("click", button._clickHandler);
     } else {
-      dropdown._mouseenterHandler = () => {
+      // Desktop: show on hover, position as fixed so it floats above content
+      dropdown._mouseenterHandler = (e) => {
+        // show immediately
+        positionFixedMenu(button, menu);
+        dropdown.classList.add("active");
         menu.style.display = "block";
+
+        // reposition while open
+        const reposition = () => positionFixedMenu(button, menu);
+        window.addEventListener("scroll", reposition, { passive: true });
+        window.addEventListener("resize", reposition);
+        menu._reposition = reposition;
+
+        // ensure menu's enter/leave are wired to preserve visibility when moving between
+        menu._mouseenterHandler = (ev) => {
+          // if pointer enters menu, keep it open (no-op)
+        };
+        menu._mouseleaveHandler = (ev) => {
+          const related = ev.relatedTarget;
+          // only hide if pointer is not moving back to the button or inside the dropdown element
+          if (related && (button.contains(related) || menu.contains(related))) {
+            return;
+          }
+          // hide immediately (no delay)
+          dropdown.classList.remove("active");
+          menu.style.display = "none";
+          if (menu._reposition) {
+            window.removeEventListener("scroll", menu._reposition);
+            window.removeEventListener("resize", menu._reposition);
+            delete menu._reposition;
+          }
+        };
+        menu.addEventListener("mouseenter", menu._mouseenterHandler);
+        menu.addEventListener("mouseleave", menu._mouseleaveHandler);
       };
-      dropdown._mouseleaveHandler = () => {
+
+      dropdown._mouseleaveHandler = (e) => {
+        const related = e.relatedTarget;
+        // if pointer moved into menu or button, do nothing (keeps visible)
+        if (related && (button.contains(related) || menu.contains(related))) {
+          return;
+        }
+        // hide immediately (no delay)
+        dropdown.classList.remove("active");
         menu.style.display = "none";
+        if (menu._reposition) {
+          window.removeEventListener("scroll", menu._reposition);
+          window.removeEventListener("resize", menu._reposition);
+          delete menu._reposition;
+        }
+        if (menu._mouseenterHandler) {
+          menu.removeEventListener("mouseenter", menu._mouseenterHandler);
+          delete menu._mouseenterHandler;
+        }
+        if (menu._mouseleaveHandler) {
+          menu.removeEventListener("mouseleave", menu._mouseleaveHandler);
+          delete menu._mouseleaveHandler;
+        }
       };
+
       dropdown.addEventListener("mouseenter", dropdown._mouseenterHandler);
       dropdown.addEventListener("mouseleave", dropdown._mouseleaveHandler);
+
+      // ensure moving from menu back to button keeps it visible: add button mouseenter to re-show
+      button.addEventListener("mouseenter", () => {
+        // if menu was hidden due to quick movement, re-show immediately
+        if (menu.style.display !== "block") {
+          positionFixedMenu(button, menu);
+          dropdown.classList.add("active");
+          menu.style.display = "block";
+          // reattach reposition handlers
+          const reposition = () => positionFixedMenu(button, menu);
+          window.addEventListener("scroll", reposition, { passive: true });
+          window.addEventListener("resize", reposition);
+          menu._reposition = reposition;
+        }
+      });
     }
   });
 
+  // Click-away handler only on mobile (keeps original mobile behavior)
   document.removeEventListener("click", handleOutsideClick);
   if (isMobile) {
     document.addEventListener("click", handleOutsideClick);
@@ -121,8 +240,8 @@ function initDropdownToggle() {
     if (!e.target.closest(".dropdown")) {
       dropdowns.forEach((d) => {
         d.classList.remove("active");
-        const menu = d.querySelector(".dropdown-menu");
-        if (menu) menu.style.display = "none";
+        const m = d.querySelector(".dropdown-menu");
+        if (m) m.style.display = "none";
       });
     }
   }
@@ -667,6 +786,33 @@ document.addEventListener("DOMContentLoaded", () => {
     initDropdownToggle();
     updateSidebarTop();
   });
+
+  // NEW: enforce floating sidebar toggle visibility across pages
+  function updateFloatingToggleVisibility() {
+    const ft = document.getElementById("sidebarFloatingToggle");
+    if (!ft) return;
+    // if overlay logic explicitly hides it via .hidden, keep hidden
+    if (ft.classList.contains("hidden")) {
+      ft.style.display = "none";
+      ft.setAttribute("aria-hidden", "true");
+      return;
+    }
+    if (window.innerWidth > 800) {
+      ft.style.display = "none";
+      ft.setAttribute("aria-hidden", "true");
+    } else {
+      ft.style.display = "";
+      ft.setAttribute("aria-hidden", "false");
+    }
+  }
+
+  // Call once and on relevant events so the floating toggle is only present on small screens
+  updateFloatingToggleVisibility();
+  window.addEventListener("resize", updateFloatingToggleVisibility);
+  window.addEventListener("orientationchange", updateFloatingToggleVisibility);
+  // update after interactions that may toggle .hidden
+  document.addEventListener("click", updateFloatingToggleVisibility);
+  document.addEventListener("keydown", updateFloatingToggleVisibility);
 });
 
 function toggleEmail() {

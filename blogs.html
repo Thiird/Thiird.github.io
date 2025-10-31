@@ -47,7 +47,7 @@
     <div id="banner-placeholder"></div>
 
     <!-- Mobile toggle (always present in DOM, shown via CSS on small screens) -->
-    <button id="mobileToggleBlog" class="mobile-sidebar-toggle" aria-label="Open menu">☰</button>
+    <button id="sidebarFloatingToggle" class="mobile-sidebar-toggle" aria-label="Open menu">☰</button>
 
     <section class="content-scale-wrapper">
       <div class="blog-list" id="blogList">
@@ -90,7 +90,7 @@
           const banner = document.getElementById("banner-placeholder");
           const blogList = document.getElementById("blogList");
           const contentWrapper = document.querySelector(".content-scale-wrapper");
-          const mobileToggle = document.getElementById("mobileToggleBlog");
+          const mobileToggle = document.getElementById("sidebarFloatingToggle");
           if (banner && blogList) {
             const bannerRect = banner.getBoundingClientRect();
             const bannerBottom = bannerRect.bottom;
@@ -121,14 +121,14 @@
 
       // Responsive toggle: desktop -> collapse/expand; mobile -> overlay show/hide
       const toggleBtn = document.getElementById("toggleBlogList");
-      const mobileToggle = document.getElementById("mobileToggleBlog");
+      const floatingToggle = document.getElementById("sidebarFloatingToggle");
 
       function setInitialSidebarState() {
         const blogList = document.getElementById("blogList");
         // ensure no-scroll and mobile toggle visibility are reset
         document.body.classList.remove("no-scroll");
         document.documentElement.classList.remove("no-scroll");
-        if (mobileToggle) mobileToggle.classList.remove("hidden");
+        if (floatingToggle) floatingToggle.classList.remove("hidden");
 
         if (window.innerWidth > 800) {
           // Desktop: sidebar open by default
@@ -148,26 +148,27 @@
           // lock body/html scroll and hide mobile toggle while open
           document.body.classList.toggle("no-scroll", isOpen);
           document.documentElement.classList.toggle("no-scroll", isOpen);
-          if (mobileToggle) mobileToggle.classList.toggle("hidden", isOpen);
+          if (floatingToggle) floatingToggle.classList.toggle("hidden", isOpen);
           blogList.classList.remove("collapsed");
         } else {
           blogList.classList.toggle("collapsed");
           blogList.classList.remove("show");
+          // ensure mobile toggle/scroll cleared on desktop toggles
           document.body.classList.remove("no-scroll");
           document.documentElement.classList.remove("no-scroll");
-          if (mobileToggle) mobileToggle.classList.remove("hidden");
+          if (floatingToggle) floatingToggle.classList.remove("hidden");
         }
       });
 
       // NEW: mobile toggle button handler
-      if (mobileToggle) {
-        mobileToggle.addEventListener("click", (e) => {
+      if (floatingToggle) {
+        floatingToggle.addEventListener("click", (e) => {
           e.stopPropagation();
           const blogList = document.getElementById("blogList");
           const isOpen = blogList.classList.toggle("show");
           document.body.classList.toggle("no-scroll", isOpen);
           document.documentElement.classList.toggle("no-scroll", isOpen);
-          mobileToggle.classList.toggle("hidden", isOpen);
+          floatingToggle.classList.toggle("hidden", isOpen);
         });
       }
 
@@ -176,11 +177,11 @@
         const blogList = document.getElementById("blogList");
         if (!blogList) return;
         if (window.innerWidth <= 800 && blogList.classList.contains("show")) {
-          if (!e.target.closest(".blog-list") && !e.target.closest("#toggleBlogList") && !e.target.closest("#mobileToggleBlog")) {
+          if (!e.target.closest(".blog-list") && !e.target.closest("#toggleBlogList") && !e.target.closest("#sidebarFloatingToggle")) {
             blogList.classList.remove("show");
             document.body.classList.remove("no-scroll");
             document.documentElement.classList.remove("no-scroll");
-            if (mobileToggle) mobileToggle.classList.remove("hidden");
+            if (floatingToggle) floatingToggle.classList.remove("hidden");
           }
         }
       });
