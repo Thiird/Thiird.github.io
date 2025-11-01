@@ -594,6 +594,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const index = link.dataset.index;
         loadPoem(poem);
         history.pushState({ poemIndex: index }, "", `?poem=${index}`);
+        // only hide/collapse sidebar on mobile
+        if (window.innerWidth <= 800) {
+          closeSidebarAfterSelect();
+        }
       });
     });
   }
@@ -712,6 +716,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const index = link.dataset.index;
         loadBlogPost(blog);
         history.pushState({ blogIndex: index }, "", `?blog=${index}`);
+        // only hide/collapse sidebar on mobile
+        if (window.innerWidth <= 800) {
+          closeSidebarAfterSelect();
+        }
       });
     });
   }
@@ -773,10 +781,13 @@ document.addEventListener("DOMContentLoaded", () => {
         md = md.replace(
           /<embed([^>]+)src=["']([^"']+)["']([^>]*)>/g,
           (match, before, src, after) => {
+            // Convert inline embed to a lightweight "Open schematic" link to avoid heavy PDF rendering.
+            let href = src;
             if (!src.startsWith("http") && !src.includes("/")) {
-              return `<embed${before}src="blogs/${blog.folder}/res/${src}"${after}>`;
+              href = `blogs/${blog.folder}/res/${src}`;
             }
-            return match;
+            const filename = href.split("/").pop();
+            return `<div class="pdf-placeholder"><a href="${href}" target="_blank" rel="noopener noreferrer">Open schematic: ${filename}</a></div>`;
           }
         );
         md = md.replace(
@@ -931,3 +942,18 @@ function enableInternalAnchorScrolling(container) {
 window.addEventListener("hashchange", () => {
   scrollToAnchor(location.hash);
 });
+
+// Collapse/hide sidebars AFTER selection (mobile only)
+function closeSidebarAfterSelect() {
+	const poemList = document.getElementById("poemList");
+	const blogList = document.getElementById("blogList");
+	const floatingToggle = document.getElementById("sidebarFloatingToggle");
+	// mobile behavior: hide overlay and restore page scrolling
+	if (window.innerWidth <= 800) {
+		if (poemList) poemList.classList.remove("show");
+		if (blogList) blogList.classList.remove("show");
+		document.body.classList.remove("no-scroll");
+		document.documentElement.classList.remove("no-scroll");
+		if (floatingToggle) floatingToggle.classList.remove("hidden");
+	}
+}

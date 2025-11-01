@@ -64,6 +64,55 @@ html.no-scroll, body.no-scroll {
   min-height: calc(100vh - 60px); /* Adjust based on banner height */
 }
 
+@media (min-width: 801px) {
+	/* 4-column grid: [sidebar][left-gutter][content-strip][right-gutter]
+	   left/right gutters are symmetric and flexible but never smaller than --center-gap */
+	.content-scale-wrapper {
+		display: grid;
+		grid-template-columns:
+			auto
+			minmax(var(--center-gap), 1fr)
+			minmax(0, var(--content-width))
+			minmax(var(--center-gap), 1fr);
+		align-items: start;
+		padding-top: 0;
+		box-sizing: border-box;
+	}
+
+ 	/* Sidebar sits in the first column */
+ 	.poem-list,
+ 	.blog-list {
+ 		/* keep existing fixed widths applied elsewhere; ensure grid placement */
+ 		grid-column: 1;
+ 		/* keep position:sticky for vertical placement — still works inside grid */
+ 		position: sticky;
+ 		top: 0;
+ 	}
+
+ 	/* Content containers sit in the third column (the centered strip) */
+ 	.blog-container,
+ 	.poem-container {
+ 		grid-column: 3;
+ 		/* center content inside the column */
+ 		display: flex;
+ 		justify-content: center;
+ 		align-items: flex-start;
+ 		padding: 20px 0; /* vertical padding only */
+ 		box-sizing: border-box;
+ 		transition: margin-left var(--sidebar-transition) ease; /* harmless; keeps smoothness */
+ 	}
+
+ 	/* Constrain the inner content to the desired strip width */
+ 	.blog-content,
+ 	.poem-content {
+ 		width: 100%;
+ 		max-width: var(--content-width);
+ 		margin: 0 auto;
+ 		box-sizing: border-box;
+ 		padding: 0 12px;
+ 	}
+}
+
 /* Header Placeholder (for homepage) */
 #header-placeholder {
   background-color: #d3d7db; /* Match header-section */
@@ -305,12 +354,13 @@ html.no-scroll, body.no-scroll {
   position: sticky; /* Works with updateSidebarTop */
   top: 60px; /* Adjusted via JavaScript */
   background-color: #2c3e50;
-  padding: 10px;
-  border-right: 1px solid #4a6076;
-  overflow-y: auto;
-  box-sizing: border-box;
-  transform: none !important; /* Prevent scaling from parent */
-  z-index: 10; /* Ensure sidebar is above content */
+  /* remove top padding so the sidebar content sits flush under the banner */
+  padding: 0 10px 10px;
+   border-right: 1px solid #4a6076;
+   overflow-y: auto;
+   box-sizing: border-box;
+   transform: none !important; /* Prevent scaling from parent */
+   z-index: 10; /* Ensure sidebar is above content */
 }
 
 /* Collapsed Poem List */
@@ -339,12 +389,13 @@ html.no-scroll, body.no-scroll {
   position: sticky; /* Works with updateSidebarTop */
   top: 60px; /* Adjusted via JavaScript */
   background-color: #2c3e50;
-  padding: 10px;
-  border-right: 1px solid #4a6076;
-  overflow-y: auto;
-  box-sizing: border-box;
-  transform: none !important; /* Prevent scaling from parent */
-  z-index: 10; /* Ensure sidebar is above content */
+  /* remove top padding so the sidebar content sits flush under the banner */
+  padding: 0 10px 10px;
+   border-right: 1px solid #4a6076;
+   overflow-y: auto;
+   box-sizing: border-box;
+   transform: none !important; /* Prevent scaling from parent */
+   z-index: 10; /* Ensure sidebar is above content */
 }
 
 /* Collapsed Blog List */
@@ -679,67 +730,72 @@ html.no-scroll, body.no-scroll {
   font-family: 'Arial', sans-serif;
   color: #e0e0e0;
   line-height: 1.6;
-  font-size: 20px;
-  padding: 20px;
+  font-size: clamp(16px, 2vw, 20px);
+  padding: clamp(12px, 2.5vw, 20px);
   border-radius: 8px;
-}
-
-/* Headings */
-.content-text h1 {
-  font-size: 2.0em;
-  color: #ffffff;
-  margin-bottom: 0.5em;
-  border-bottom: 1px solid #444;
-  padding-bottom: 0.2em;
-}
-
-#contentText a:link {
-  color: #1e90ff;
-  text-decoration: underline;
-}
-
-#contentText a:visited {
-  color: #ff00ff;
-}
-
-#contentText a:hover {
-  color: #ff8c00;
-  text-decoration: underline;
-}
-
-#contentText a:active {
-  color: #b10000;
-}
-
-.poem-text, .blog-text,
-.poem-text *, .blog-text * {
-  font-family: Arial, sans-serif;
-  color: #d3d7db;
-  line-height: 1.3;
-}
-
-/* Hover effect class */
-.hover-effect {
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.hover-effect:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-}
-
-/* Click-zoom class */
-.click-zoom {
-  cursor: pointer;
-}
-
-/* Default image styling */
-img {
+  max-width: var(--site-max-width);
   width: 100%;
-  display: block;
-  margin: auto;
-  border-radius: 8px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
 }
+
+/* Bio / generic content: make responsive and match blog/poem behavior */
+.content-container {
+	max-width: var(--site-max-width); /* ensure same centered column as other pages */
+	box-sizing: border-box;
+}
+
+/* Main markdown/bio container */
+.content-text {
+	/* constrain and center like blog/poem content */
+	max-width: var(--site-max-width);
+	width: 100%;
+	margin: 0 auto;
+	padding: clamp(12px, 2.5vw, 20px);
+	box-sizing: border-box;
+	/* responsive base font size */
+	font-size: clamp(16px, 2vw, 20px);
+	line-height: 1.6;
+	overflow-wrap: break-word;
+	word-break: break-word;
+	hyphens: auto;
+}
+
+/* Responsive headings for biography and other content */
+.content-text h1 {
+	font-size: clamp(1.4rem, 4vw, 2.4rem); /* scales between small and large screens */
+	margin: 0 0 0.6em;
+	line-height: 1.1;
+	word-break: break-word;
+	hyphens: auto;
+}
+.content-text h2 {
+	font-size: clamp(1.15rem, 3vw, 1.6rem);
+	margin: 0 0 0.5em;
+	line-height: 1.2;
+}
+.content-text h3 {
+	font-size: clamp(1.05rem, 2.4vw, 1.2rem);
+	margin: 0 0 0.4em;
+	line-height: 1.25;
+}
+
+/* Ensure images inside bio/content scale to the column (override inline attrs) */
+.content-text img {
+	max-width: 100% !important;
+	width: 100% !important;
+	height: auto !important;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	object-fit: contain;
+}
+
+/* Code blocks stay scrollable but won't force page overflow */
+.content-text pre { max-width: 100%; overflow-x: auto; }
 
 /* Image wrapper for all images */
 .image-wrapper {
@@ -899,10 +955,14 @@ pre {
 
 /* Responsive sidebar sizing and layout */
 :root{
-  --sidebar-width: 240px;          /* desktop full width */
-  --sidebar-medium: clamp(160px, 22vw, 240px); /* medium responsive width */
-  --sidebar-collapsed: 56px;       /* collapsed thin width */
+  --sidebar-width: 240px;
+  --sidebar-medium: clamp(160px, 22vw, 240px);
+  --sidebar-collapsed: 56px;
   --sidebar-transition: 0.25s;
+
+  /* NEW: center layout vars */
+  --center-gap: 120px;     /* padding X (adjustable) */
+  --content-width: 720px;  /* vertical content strip width */
 }
 
 /* Base sidebar positioning (desktop) */
@@ -959,45 +1019,61 @@ pre {
 }
 
 /* Desktop: when the sidebar is present and NOT collapsed, reserve space via padding-left.
-   This keeps the inner .blog-content/.poem-content centered inside the available area. */
+   Keep an outer gap on both sides so the content strip stays centered and doesn't flow under the sidebar. */
 @media (min-width: 801px) {
-  .blog-list:not(.collapsed) ~ .blog-container,
-  .poem-list:not(.collapsed) ~ .poem-container {
-    padding-left: var(--sidebar-width);
-  }
+	/* 4-column grid: [sidebar][left-gutter][content-strip][right-gutter]
+	   left/right gutters are symmetric and flexible but never smaller than --center-gap */
+	.content-scale-wrapper {
+		display: grid;
+		grid-template-columns:
+			auto
+			minmax(var(--center-gap), 1fr)
+			minmax(0, var(--content-width))
+			minmax(var(--center-gap), 1fr);
+		align-items: start;
+		padding-top: 0;
+		box-sizing: border-box;
+	}
 
-  /* When the sidebar is collapsed on desktop allow content to use the full centered area */
-  .blog-list.collapsed ~ .blog-container,
-  .poem-list.collapsed ~ .poem-container {
-    padding-left: 0; /* allow content to fill the center (no wasted left gap) */
-  }
+ 	/* Sidebar sits in the first column */
+ 	.poem-list,
+ 	.blog-list {
+ 		/* keep existing fixed widths applied elsewhere; ensure grid placement */
+ 		grid-column: 1;
+ 		/* keep position:sticky for vertical placement — still works inside grid */
+ 		position: sticky;
+ 		top: 0;
+ 	}
+
+ 	/* Content containers sit in the third column (the centered strip) */
+ 	.blog-container,
+ 	.poem-container {
+ 		grid-column: 3;
+ 		/* center content inside the column */
+ 		display: flex;
+ 		justify-content: center;
+ 		align-items: flex-start;
+ 		padding: 20px 0; /* vertical padding only */
+ 		box-sizing: border-box;
+ 		transition: margin-left var(--sidebar-transition) ease; /* harmless; keeps smoothness */
+ 	}
+
+ 	/* Constrain the inner content to the desired strip width */
+ 	.blog-content,
+ 	.poem-content {
+ 		width: 100%;
+ 		max-width: var(--content-width);
+ 		margin: 0 auto;
+ 		box-sizing: border-box;
+ 		padding: 0 12px;
+ 	}
 }
 
-/* Medium screens: use responsive sidebar width value when sidebar is open */
-@media (max-width: 1200px) and (min-width: 801px) {
-  .blog-list:not(.collapsed) ~ .blog-container,
-  .poem-list:not(.collapsed) ~ .poem-container {
-    padding-left: var(--sidebar-medium);
-  }
-}
-
-/* Ensure images and markdown content respect the centered max width */
-.blog-text, .poem-text {
-  max-width: var(--site-max-width);
-  margin: 0 auto;
-  box-sizing: border-box;
-}
-
-.image-wrapper,
-.image-wrapper img {
-  max-width: calc(var(--site-max-width) - 40px); /* allow for inner padding */
-  width: 100%;
-  height: auto;
-}
-
-/* Prevent horizontal overflow from unexpected elements */
-html, body {
-  overflow-x: hidden;
+/* Fallback: ensure when JS adjusts padding-left for mobile overlays nothing breaks */
+.blog-list ~ .blog-container,
+.poem-list ~ .poem-container {
+  /* keep legacy rule for mobile; desktop rules above override these */
+  padding-left: 0;
 }
 
 /* Mobile: sidebar becomes overlay and covers the screen when open */
@@ -1069,5 +1145,136 @@ html, body {
   .mobile-sidebar-toggle {
     display: inline-flex;
   }
+}
+
+/* Ensure blog/poem content matches bio scaling and never overflows */
+.blog-content,
+.poem-content {
+	/* behave like centered column but allow full-width on narrow screens */
+	max-width: var(--site-max-width);
+	width: 100%;
+	padding: 0 18px; /* inner horizontal padding so images/text don't touch edges */
+	margin: 0 auto;
+	box-sizing: border-box;
+}
+
+/* Constrain text column and ensure wrapping */
+.blog-text,
+.poem-text {
+	max-width: var(--site-max-width);
+	width: 100%;
+	margin: 0 auto;
+	box-sizing: border-box;
+	text-align: left;
+	line-height: 1.6;
+	overflow-wrap: break-word;
+	word-break: break-word;
+	hyphens: auto;
+}
+
+/* Force all images in posts to scale to their container (override inline styles) */
+.blog-text img,
+.poem-text img,
+.blog-text .image-wrapper img,
+.poem-text .image-wrapper img,
+.image-wrapper img {
+	max-width: 100% !important;
+	width: 100% !important;   /* ensures it fills the text column but never overflows */
+	height: auto !important;
+	display: block;
+	object-fit: contain;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/* keep pre/code scrollable but not forcing horizontal overflow of the page */
+.blog-text pre, .poem-text pre {
+	max-width: 100%;
+	overflow-x: auto;
+}
+
+/* On very small screens, ensure layout stacks and keeps padding */
+@media (max-width: 520px) {
+	.content-scale-wrapper {
+		flex-direction: column;
+	}
+	.blog-content,
+	.poem-content {
+		padding: 8px 12px;
+	}
+	/* make the sidebar a true overlay (already handled) but ensure content never gains extra left padding */
+	.blog-list ~ .blog-container,
+	.poem-list ~ .poem-container {
+		padding-left: 0 !important;
+	}
+}
+
+/* Improve sidebar toggle performance by animating the inner contents with transform
+   (avoids heavy reflow for embedded PDFs/plugins). Also hint the compositor. */
+.poem-list, .blog-list {
+	/* hint to browser these may transform/resize */
+	will-change: width, transform;
+	backface-visibility: hidden;
+	/* promote to its own layer */
+	transform: translateZ(0);
+}
+
+/* New inner wrapper inside the sidebar whose transform we animate */
+.sidebar-inner {
+	transition: transform var(--sidebar-transition) ease, opacity var(--sidebar-transition) ease;
+	will-change: transform, opacity;
+	transform-origin: left center;
+}
+
+/* When collapsed, move the inner content left so the sidebar visually shrinks via transform.
+   The outer .poem-list/.blog-list width may still be adjusted for layout, but animating the inner
+   content with transform reduces costly repaints for plugin content (PDF/embed). */
+.poem-list.collapsed .sidebar-inner,
+.blog-list.collapsed .sidebar-inner {
+	transform: translateX(calc(-1 * (var(--sidebar-width) - var(--sidebar-collapsed))));
+	opacity: 0.999; /* keep visible but allow compositor optimizations */
+}
+
+/* Keep the sidebar header visible and sticky (so toggle remains visible when .sidebar-inner is translated) */
+.poem-list-header,
+.blog-list-header {
+	position: sticky;
+	top: 0;
+	z-index: 12; /* above inner content */
+	/* match sidebar background so it blends when sticky */
+	background-color: inherit;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	box-sizing: border-box;
+}
+
+/* Prevent inline PDF/object/iframe rendering inside posts (avoid heavy resizing/paint) */
+.blog-text embed,
+.blog-text object,
+.blog-text iframe,
+.content-text embed,
+.content-text object,
+.content-text iframe {
+  display: none !important;
+}
+
+/* Lightweight PDF placeholder/link shown instead of embedding the PDF inline */
+.pdf-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 14px 0;
+}
+.pdf-placeholder a {
+  background: #3498db;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+}
+.pdf-placeholder a:hover {
+  background: #2a85c6;
 }
 

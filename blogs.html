@@ -55,9 +55,11 @@
           <button id="toggleBlogList" class="toggle-btn">☰</button>
           <input type="text" id="blogSearch" class="blog-search" placeholder="Search blogs..." />
         </div>
-        <ul id="blogListItems">
-          <!-- dynamically filled -->
-        </ul>
+        <div class="sidebar-inner">
+          <ul id="blogListItems">
+            <!-- dynamically filled -->
+          </ul>
+        </div>
       </div>
 
       <div class="blog-container">
@@ -97,10 +99,7 @@
             const topOffset = Math.max(0, bannerBottom);
             blogList.style.top = `${topOffset}px`;
             blogList.style.height = `calc(100vh - ${topOffset}px)`;
-            // ensure main content starts below the banner to avoid overlap
-            if (contentWrapper) {
-              contentWrapper.style.paddingTop = `${topOffset}px`;
-            }
+            // NOTE: do not set contentWrapper.style.paddingTop here (avoid inline style)
             // position mobile toggle under banner only while banner is visible,
             // otherwise keep it at fixed corner (12px)
             if (mobileToggle) {
@@ -114,7 +113,7 @@
           } else {
             // fallback: reset mobile toggle position
             if (mobileToggle) mobileToggle.style.top = `12px`;
-            if (contentWrapper) contentWrapper.style.paddingTop = ``;
+            // do not modify contentWrapper.style.paddingTop
           }
         });
       }

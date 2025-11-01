@@ -24,9 +24,11 @@
             class="poem-search"
           />
         </div>
-        <ul id="poemListItems">
-          <!-- dynamically filled -->
-        </ul>
+        <div class="sidebar-inner">
+          <ul id="poemListItems">
+            <!-- dynamically filled -->
+          </ul>
+        </div>
       </div>
 
       <div class="poem-container">
@@ -85,9 +87,7 @@
             poemList.style.top = `${topOffset}px`;
             poemList.style.height = `calc(100vh - ${topOffset}px)`;
             // ensure main content starts below the banner to avoid overlap
-            if (contentWrapper) {
-              contentWrapper.style.paddingTop = `${topOffset}px`;
-            }
+            // NOTE: do not set contentWrapper.style.paddingTop here (avoid inline style)
             // position mobile toggle under banner only while banner is visible,
             // otherwise keep it at fixed corner (12px)
             if (mobileToggle) {
@@ -101,7 +101,7 @@
           } else {
             // fallback: reset mobile toggle position
             if (mobileToggle) mobileToggle.style.top = `12px`;
-            if (contentWrapper) contentWrapper.style.paddingTop = ``;
+            // do not modify contentWrapper.style.paddingTop
           }
         });
       }
