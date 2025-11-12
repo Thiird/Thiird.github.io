@@ -5,24 +5,27 @@
 <img src="mouse_exploded.png" style="width:100%; max-width:600px; display:block; margin:auto;">
 
 <h2>Table of Contents</h2>
-<ul>
-  <li><a href="#intro">Intro</a></li>
-  <li><a href="#specifications">Specifications</a></li>
-  <li>
-    <a href="#hardware">Hardware</a>
-    <ul>
-      <li><a href="#voltage-rails">Voltage rails</a></li>
-      <li><a href="#rotary-encoder">Rotary encoder</a></li>
-      <li><a href="#switches">Switches</a></li>
-      <li><a href="#battery">Battery</a></li>
-    </ul>
-  </li>
-  <li><a href="#firmware">Firmware</a></li>
-  <li><a href="#mechanical">Mechanical</a></li>
-  <li><a href="#app">Mouse client</a></li>
-  <li><a href="#result">Result</a></li>
-  <li><a href="#conclusions">Conclusions</a></li>
-</ul>
+
+<div class="custom-index">
+  <ul>
+    <li class="index-section"><a href="#intro">Intro</a></li>
+    <li class="index-section"><a href="#specifications">Specifications</a></li>
+    <li class="index-section">
+      <a href="#hardware">Hardware</a>
+      <ul class="index-subsection">
+        <li><a href="#voltage-rails">Voltage rails</a></li>
+        <li><a href="#rotary-encoder">Rotary encoder</a></li>
+        <li><a href="#switches">Switches</a></li>
+        <li><a href="#battery">Battery</a></li>
+      </ul>
+    </li>
+    <li class="index-section"><a href="#firmware">Firmware</a></li>
+    <li class="index-section"><a href="#mechanical">Mechanical</a></li>
+    <li class="index-section"><a href="#app">Mouse client</a></li>
+    <li class="index-section"><a href="#result">Result</a></li>
+    <li class="index-section"><a href="#conclusions">Conclusions</a></li>
+  </ul>
+</div>
 
 <h1 id="intro">Intro</h1>
 
@@ -50,19 +53,19 @@ The general characteristic of the mouse I wanted were:
 The PCB design was done is KiCAD.
 <embed src="mouse_sch.pdf" type="application/pdf" width="100%" height="600px" />
 
-[<img class="hover-effect click-zoom" style="width:100%;max-width:600px;">](mouse_layout.png)
+[<img class="click-zoom" style="width:100%;max-width:600px;">](mouse_layout.png)
 
 Instead of having the mouse directly connect to the PC via Bluetooth, I decided to design a receiver too, so that I would get to design with the receiving side too.
 
 <embed src="receiver_sch.pdf" type="application/pdf" width="100%" height="600px" />
 
-[<img class="hover-effect click-zoom" style="width:100%;max-width:600px;">](receiver_layout.png)
+[<img class="click-zoom" style="width:100%;max-width:600px;">](receiver_layout.png)
 
 <h2 id="voltage-rails">Voltage rails</h2>
 
 Let's address the elephant in the room: why three voltage rails for a freaking desktop mouse?
 
-- The 5V rail is mandatory as the switches I used have a minimum rating of 5V@1ma, as a matter of fact, no mouse switch exist that can lower than that, because it would require noble materials to lower the [wetting current](https://en.wikipedia.org/wiki/Wetting_current) of the electrical contact. See above video for a more thorough explanation.
+- The 5V rail is mandatory as the switches I used have a minimum rating of 5V@1ma, as a matter of fact, no mouse switch exist that can lower than that, because it would require noble materials to lower the wetting current of the electrical contact. See above video for a more thorough explanation.
 
 - The 3.3V rail I deemed necessary as the chip [uses more power at lower voltages](https://devzone.nordicsemi.com/power/w/opp/2/online-power-profiler-for-bluetooth-le), this was my first battery powered product and I was concerned about battery life.
 
@@ -214,7 +217,7 @@ I have a ich for keeping track of things, and doing statistical analysis over ev
 
 The app starts at system startup and sits on the system tray-bar. Whenever the mouse is connected via USB to the PC for charging, it detects that, connects to its COM port and logs the mouse statistics on a CSV file. When the mouse is disconnected it connects to the mouse receiver to alert the user about low battery level with a sound notification.
 
-[<img class="hover-effect click-zoom" style="width:50%;max-width:600px;">](mouse_client.png)
+[<img class="hover-effect click-zoom" style="width:60%;">](mouse_client.png)
 
 _The battery level bug was later fixed._
 

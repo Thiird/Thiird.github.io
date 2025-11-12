@@ -1,214 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SN - Blogs</title>
-    <link rel="stylesheet" href="styles.css" />
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
-    />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <script>
-      const renderer = new marked.Renderer();
-      renderer.link = function (href, title, text) {
-        let linkHref = href;
-        let linkText = text;
-        let linkTitle = title;
-        if (typeof href === "object" && href !== null) {
-          linkHref = href.href || "";
-          linkText = href.text || text || "";
-          linkTitle = href.title || title || "";
-        }
-        linkHref = linkHref.replace(/"/g, "&quot;");
-        linkText = linkText || "Link";
-        return `<a href="${linkHref}" target="_blank" rel="noopener noreferrer" ${
-          linkTitle ? `title="${linkTitle}"` : ""
-        }>${linkText}</a>`;
-      };
-      marked.setOptions({
-        renderer: renderer,
-        highlight: function (code, lang) {
-          const hljs = window.hljs;
-          return hljs.highlight(code, { language: lang }).value;
-        },
-        langPrefix: "hljs language-",
-      });
-      document.addEventListener("DOMContentLoaded", () => {
-        hljs.highlightAll();
-      });
-    </script>
-  </head>
-  <body>
-    <button id="backToTop" title="Go to top">⬆</button>
 
-    <div id="banner-placeholder"></div>
-
-    <!-- Mobile toggle (always present in DOM, shown via CSS on small screens) -->
-    <button id="sidebarFloatingToggle" class="mobile-sidebar-toggle" aria-label="Open menu">☰</button>
-
-    <section class="content-scale-wrapper">
-      <div class="blog-list" id="blogList">
-        <div class="blog-list-header">
-          <button id="toggleBlogList" class="toggle-btn">☰</button>
-          <input type="text" id="blogSearch" class="blog-search" placeholder="Search blogs..." />
-        </div>
-        <div class="sidebar-inner">
-          <ul id="blogListItems">
-            <!-- dynamically filled -->
-          </ul>
-        </div>
-      </div>
-
-      <div class="blog-container">
-        <div class="blog-content" id="blogContent">
-          <div class="blog-text" id="blogText">Loading blog post...</div>
-        </div>
-      </div>
-    </section>
-
-    <script>
-      fetch("banner.html")
-        .then((response) => response.text())
-        .then((data) => {
-          document.getElementById("banner-placeholder").innerHTML = data;
-
-          // Ensure dropdowns are initialized after banner loads
-          if (typeof initDropdownToggle === "function") {
-            initDropdownToggle();
-          }
-
-          // Adjust blog list position
-          adjustSidebarHeight();
-        })
-        .catch((error) => console.error("Error loading banner:", error));
-
-      // Adjust sidebar height dynamically and pad content below banner
-      function adjustSidebarHeight() {
-        // use rAF for smoother updates and to cover rapid scroll/touch events
-        requestAnimationFrame(() => {
-          const banner = document.getElementById("banner-placeholder");
-          const blogList = document.getElementById("blogList");
-          const contentWrapper = document.querySelector(".content-scale-wrapper");
-          const mobileToggle = document.getElementById("sidebarFloatingToggle");
-          if (banner && blogList) {
-            const bannerRect = banner.getBoundingClientRect();
-            const bannerBottom = bannerRect.bottom;
-            const topOffset = Math.max(0, bannerBottom);
-            blogList.style.top = `${topOffset}px`;
-            blogList.style.height = `calc(100vh - ${topOffset}px)`;
-            // NOTE: do not set contentWrapper.style.paddingTop here (avoid inline style)
-            // position mobile toggle under banner only while banner is visible,
-            // otherwise keep it at fixed corner (12px)
-            if (mobileToggle) {
-              const gap = 8; // px
-              if (bannerBottom > 0) {
-                mobileToggle.style.top = `${bannerBottom + gap}px`;
-              } else {
-                mobileToggle.style.top = `12px`;
-              }
-            }
-          } else {
-            // fallback: reset mobile toggle position
-            if (mobileToggle) mobileToggle.style.top = `12px`;
-            // do not modify contentWrapper.style.paddingTop
-          }
-        });
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SN - Blogs</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>
+    const renderer = new marked.Renderer();
+    renderer.link = function (href, title, text) {
+      let linkHref = href;
+      let linkText = text;
+      let linkTitle = title;
+      if (typeof href === "object" && href !== null) {
+        linkHref = href.href || "";
+        linkText = href.text || text || "";
+        linkTitle = href.title || title || "";
       }
+      linkHref = linkHref.replace(/"/g, "&quot;");
+      linkText = linkText || "Link";
+      return `<a href="${linkHref}" target="_blank" rel="noopener noreferrer" ${linkTitle ? `title="${linkTitle}"` : ""
+        }>${linkText}</a>`;
+    };
+    marked.setOptions({
+      renderer: renderer,
+      highlight: function (code, lang) {
+        const hljs = window.hljs;
+        return hljs.highlight(code, { language: lang }).value;
+      },
+      langPrefix: "hljs language-",
+    });
+    document.addEventListener("DOMContentLoaded", () => {
+      hljs.highlightAll();
+    });
+  </script>
+</head>
 
-      // Responsive toggle: desktop -> collapse/expand; mobile -> overlay show/hide
-      const toggleBtn = document.getElementById("toggleBlogList");
-      const floatingToggle = document.getElementById("sidebarFloatingToggle");
+<body>
+  <button id="backToTop" title="Go to top">⬆</button>
 
-      function setInitialSidebarState() {
+  <div id="banner-placeholder"></div>
+
+  <!-- Mobile toggle (always present in DOM, shown via CSS on small screens) -->
+  <button id="sidebarFloatingToggle" class="mobile-sidebar-toggle" aria-label="Open menu">☰</button>
+
+  <section class="content-scale-wrapper">
+    <div class="blog-list" id="blogList">
+      <div class="blog-list-header">
+        <button id="toggleBlogList" class="toggle-btn">☰</button>
+        <input type="text" id="blogSearch" class="blog-search" placeholder="Search blogs..." />
+      </div>
+      <div class="sidebar-inner">
+        <ul id="blogListItems">
+          <!-- dynamically filled -->
+        </ul>
+      </div>
+    </div>
+
+    <div class="blog-container">
+      <div class="blog-content" id="blogContent">
+        <div class="blog-text" id="blogText">Loading blog post...</div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    fetch("banner.html")
+      .then((response) => response.text())
+      .then((data) => {
+        document.getElementById("banner-placeholder").innerHTML = data;
+
+        // Ensure dropdowns are initialized after banner loads
+        if (typeof initDropdownToggle === "function") {
+          initDropdownToggle();
+        }
+
+        // Adjust blog list position
+        adjustSidebarHeight();
+      })
+      .catch((error) => console.error("Error loading banner:", error));
+
+    // Adjust sidebar height dynamically and pad content below banner
+    function adjustSidebarHeight() {
+      // use rAF for smoother updates and to cover rapid scroll/touch events
+      requestAnimationFrame(() => {
+        const banner = document.getElementById("banner-placeholder");
         const blogList = document.getElementById("blogList");
-        // ensure no-scroll and mobile toggle visibility are reset
+        const contentWrapper = document.querySelector(".content-scale-wrapper");
+        const mobileToggle = document.getElementById("sidebarFloatingToggle");
+        if (banner && blogList) {
+          const bannerRect = banner.getBoundingClientRect();
+          const bannerBottom = bannerRect.bottom;
+          const topOffset = Math.max(0, bannerBottom);
+          blogList.style.top = `${topOffset}px`;
+          blogList.style.height = `calc(100vh - ${topOffset}px)`;
+          // NOTE: do not set contentWrapper.style.paddingTop here (avoid inline style)
+          // position mobile toggle under banner only while banner is visible,
+          // otherwise keep it at fixed corner (12px)
+          if (mobileToggle) {
+            const gap = 8; // px
+            if (bannerBottom > 0) {
+              mobileToggle.style.top = `${bannerBottom + gap}px`;
+            } else {
+              mobileToggle.style.top = `12px`;
+            }
+          }
+        } else {
+          // fallback: reset mobile toggle position
+          if (mobileToggle) mobileToggle.style.top = `12px`;
+          // do not modify contentWrapper.style.paddingTop
+        }
+      });
+    }
+
+    // Responsive toggle: desktop -> collapse/expand; mobile -> overlay show/hide
+    const toggleBtn = document.getElementById("toggleBlogList");
+    const floatingToggle = document.getElementById("sidebarFloatingToggle");
+
+    function setInitialSidebarState() {
+      const blogList = document.getElementById("blogList");
+      // ensure no-scroll and mobile toggle visibility are reset
+      document.body.classList.remove("no-scroll");
+      document.documentElement.classList.remove("no-scroll");
+      if (floatingToggle) floatingToggle.classList.remove("hidden");
+
+      if (window.innerWidth > 800) {
+        // Desktop: sidebar open by default
+        blogList.classList.remove("collapsed", "show");
+      } else {
+        // Mobile: sidebar hidden by default
+        blogList.classList.remove("collapsed");
+        blogList.classList.remove("show");
+      }
+    }
+
+    toggleBtn.addEventListener("click", (e) => {
+      const blogList = document.getElementById("blogList");
+      const isMobile = window.innerWidth <= 800;
+      if (isMobile) {
+        const isOpen = blogList.classList.toggle("show");
+        // lock body/html scroll and hide mobile toggle while open
+        document.body.classList.toggle("no-scroll", isOpen);
+        document.documentElement.classList.toggle("no-scroll", isOpen);
+        if (floatingToggle) floatingToggle.classList.toggle("hidden", isOpen);
+        blogList.classList.remove("collapsed");
+      } else {
+        blogList.classList.toggle("collapsed");
+        blogList.classList.remove("show");
+        // ensure mobile toggle/scroll cleared on desktop toggles
         document.body.classList.remove("no-scroll");
         document.documentElement.classList.remove("no-scroll");
         if (floatingToggle) floatingToggle.classList.remove("hidden");
-
-        if (window.innerWidth > 800) {
-          // Desktop: sidebar open by default
-          blogList.classList.remove("collapsed", "show");
-        } else {
-          // Mobile: sidebar hidden by default
-          blogList.classList.remove("collapsed");
-          blogList.classList.remove("show");
-        }
       }
+    });
 
-      toggleBtn.addEventListener("click", (e) => {
+    // NEW: mobile toggle button handler
+    if (floatingToggle) {
+      floatingToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
         const blogList = document.getElementById("blogList");
-        const isMobile = window.innerWidth <= 800;
-        if (isMobile) {
-          const isOpen = blogList.classList.toggle("show");
-          // lock body/html scroll and hide mobile toggle while open
-          document.body.classList.toggle("no-scroll", isOpen);
-          document.documentElement.classList.toggle("no-scroll", isOpen);
-          if (floatingToggle) floatingToggle.classList.toggle("hidden", isOpen);
-          blogList.classList.remove("collapsed");
-        } else {
-          blogList.classList.toggle("collapsed");
+        const isOpen = blogList.classList.toggle("show");
+        document.body.classList.toggle("no-scroll", isOpen);
+        document.documentElement.classList.toggle("no-scroll", isOpen);
+        floatingToggle.classList.toggle("hidden", isOpen);
+      });
+    }
+
+    // Close mobile overlay when clicking outside (ignore mobile toggle button)
+    document.addEventListener("click", (e) => {
+      const blogList = document.getElementById("blogList");
+      if (!blogList) return;
+      if (window.innerWidth <= 800 && blogList.classList.contains("show")) {
+        if (!e.target.closest(".blog-list") && !e.target.closest("#toggleBlogList") && !e.target.closest("#sidebarFloatingToggle")) {
           blogList.classList.remove("show");
-          // ensure mobile toggle/scroll cleared on desktop toggles
           document.body.classList.remove("no-scroll");
           document.documentElement.classList.remove("no-scroll");
           if (floatingToggle) floatingToggle.classList.remove("hidden");
         }
-      });
-
-      // NEW: mobile toggle button handler
-      if (floatingToggle) {
-        floatingToggle.addEventListener("click", (e) => {
-          e.stopPropagation();
-          const blogList = document.getElementById("blogList");
-          const isOpen = blogList.classList.toggle("show");
-          document.body.classList.toggle("no-scroll", isOpen);
-          document.documentElement.classList.toggle("no-scroll", isOpen);
-          floatingToggle.classList.toggle("hidden", isOpen);
-        });
       }
+    });
 
-      // Close mobile overlay when clicking outside (ignore mobile toggle button)
-      document.addEventListener("click", (e) => {
-        const blogList = document.getElementById("blogList");
-        if (!blogList) return;
-        if (window.innerWidth <= 800 && blogList.classList.contains("show")) {
-          if (!e.target.closest(".blog-list") && !e.target.closest("#toggleBlogList") && !e.target.closest("#sidebarFloatingToggle")) {
-            blogList.classList.remove("show");
-            document.body.classList.remove("no-scroll");
-            document.documentElement.classList.remove("no-scroll");
-            if (floatingToggle) floatingToggle.classList.remove("hidden");
+    // Ensure correct initial state on load and on resize
+    window.addEventListener("load", () => {
+      setInitialSidebarState();
+      adjustSidebarHeight();
+    });
+    window.addEventListener("resize", () => {
+      setInitialSidebarState();
+      adjustSidebarHeight();
+    });
+    // Follow banner on scroll so mobile toggle stays under banner
+    window.addEventListener("scroll", adjustSidebarHeight);
+    // NEW: also update during touch (rubber-band / touchmove) to follow banner on mobile gestures
+    window.addEventListener("touchmove", adjustSidebarHeight, { passive: true });
+    window.addEventListener("touchend", adjustSidebarHeight);
+
+    // Search and sort functionality
+    document.getElementById("blogSearch").addEventListener("input", (e) => {
+      const search = e.target.value.toLowerCase();
+      document.querySelectorAll("#blogListItems li").forEach((item) => {
+        const title = item.textContent.toLowerCase();
+        item.style.display = title.includes(search) ? "block" : "none";
+      });
+    });
+  </script>
+  <script src="script.js"></script>
+  <script>
+    // Add tooltip reinitialization after blog content loads
+    const originalDisplayBlog = window.displayBlog;
+    if (typeof originalDisplayBlog === 'function') {
+      window.displayBlog = function (...args) {
+        const result = originalDisplayBlog.apply(this, args);
+        // Reinitialize tooltips after content is loaded
+        setTimeout(() => {
+          if (window.tooltipManager) {
+            window.tooltipManager.reinitialize();
           }
-        }
-      });
+        }, 100);
+        return result;
+      };
+    }
+  </script>
+</body>
 
-      // Ensure correct initial state on load and on resize
-      window.addEventListener("load", () => {
-        setInitialSidebarState();
-        adjustSidebarHeight();
-      });
-      window.addEventListener("resize", () => {
-        setInitialSidebarState();
-        adjustSidebarHeight();
-      });
-      // Follow banner on scroll so mobile toggle stays under banner
-      window.addEventListener("scroll", adjustSidebarHeight);
-      // NEW: also update during touch (rubber-band / touchmove) to follow banner on mobile gestures
-      window.addEventListener("touchmove", adjustSidebarHeight, { passive: true });
-      window.addEventListener("touchend", adjustSidebarHeight);
-
-      // Search and sort functionality
-      document.getElementById("blogSearch").addEventListener("input", (e) => {
-        const search = e.target.value.toLowerCase();
-        document.querySelectorAll("#blogListItems li").forEach((item) => {
-          const title = item.textContent.toLowerCase();
-          item.style.display = title.includes(search) ? "block" : "none";
-        });
-      });
-    </script>
-    <script src="script.js"></script>
-  </body>
 </html>

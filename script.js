@@ -1,6 +1,8 @@
 // 🔹 Zoom variables for lightbox
 let zoomLevel = 0;
-const zoomScales = [0, 2, 4]; // 0: fit-to-viewport, 2: 2x natural, 4: 4x natural
+const zoomScales = [1, 1.5, 2]; // 1x, 1.5x, 2x zoom levels
+let currentImageIndex = 0;
+let imageList = [];
 
 // 🔹 Calculate scale to fit 90% of viewport
 function calculateFitScale(img) {
@@ -19,8 +21,10 @@ function calculateFitScale(img) {
 
 // 🔹 Apply scale to image
 function applyScale(img, scale) {
+  console.log('applyScale called with scale:', scale, 'naturalWidth:', img.naturalWidth, 'naturalHeight:', img.naturalHeight);
   img.style.width = img.naturalWidth * scale + "px";
   img.style.height = img.naturalHeight * scale + "px";
+  console.log('Applied dimensions - width:', img.style.width, 'height:', img.style.height);
 }
 
 // 🔹 Center image if smaller than viewport
@@ -34,17 +38,56 @@ function centerImageIfSmall(img, lightbox) {
 }
 
 // 🔹 Apply scale with fade effect
-function fadeApply(img, lightbox, scale) {
+function fadeApply(img, lightbox, scale, cursorX, cursorY) {
   img.style.opacity = 0; // Fade out
   setTimeout(() => {
+    // Get current position before resizing
+    const currentRect = img.getBoundingClientRect();
+    const currentLeft = parseFloat(img.style.left) || 0;
+    const currentTop = parseFloat(img.style.top) || 0;
+    const currentWidth = currentRect.width;
+    const currentHeight = currentRect.height;
+
+    // Apply new scale
     applyScale(img, scale);
-    img.style.left = "0px";
-    img.style.top = "0px";
-    if (scale === calculateFitScale(img)) {
-      setTimeout(() => centerImageIfSmall(img, lightbox), 0);
+
+    // Get new dimensions after scaling
+    const newWidth = img.naturalWidth * scale;
+    const newHeight = img.naturalHeight * scale;
+
+    const viewportCenterX = window.innerWidth / 2;
+    const viewportCenterY = window.innerHeight / 2;
+
+    // At 1x zoom (fit to screen), always center the image
+    const fitScale = calculateFitScale(img);
+    if (Math.abs(scale - fitScale) < 0.001) {
+      // Base zoom level - center the image perfectly
+      const left = viewportCenterX - (newWidth / 2);
+      const top = viewportCenterY - (newHeight / 2);
+      img.style.left = left + "px";
+      img.style.top = top + "px";
+    } else if (cursorX !== undefined && cursorY !== undefined) {
+      // Zooming in/out - keep cursor point stable
+      // Calculate what portion of the old image the cursor was pointing at
+      const cursorRelativeX = (cursorX - currentRect.left) / currentWidth;
+      const cursorRelativeY = (cursorY - currentRect.top) / currentHeight;
+
+      // Position the new image so the same relative point is under the cursor
+      const left = cursorX - (cursorRelativeX * newWidth);
+      const top = cursorY - (cursorRelativeY * newHeight);
+
+      img.style.left = left + "px";
+      img.style.top = top + "px";
+    } else {
+      // Fallback: center the image
+      const left = viewportCenterX - (newWidth / 2);
+      const top = viewportCenterY - (newHeight / 2);
+      img.style.left = left + "px";
+      img.style.top = top + "px";
     }
+
     img.style.opacity = 1; // Fade in
-  }, 50);
+  }, 20); // Reduced from 50ms to 20ms for quicker transition
 }
 
 // 🔹 Reset zoom
@@ -56,11 +99,12 @@ function resetZoom(img, lightbox) {
 }
 
 // 🔹 Update zoom
-function updateZoom(img, lightbox) {
+function updateZoom(img, lightbox, cursorX, cursorY) {
   const fitScale = calculateFitScale(img);
-  const scale = zoomLevel === 0 ? fitScale : zoomScales[zoomLevel];
+  // Always use fitScale as the base, then multiply by the zoom multiplier
+  const scale = fitScale * zoomScales[zoomLevel];
   img.classList.toggle("zoomed", zoomLevel > 0);
-  fadeApply(img, lightbox, scale);
+  fadeApply(img, lightbox, scale, cursorX, cursorY);
 }
 
 // 🔹 Function to initialize dropdown toggle for mobile and ensure desktop reset
@@ -267,6 +311,10 @@ function getUrlParameter(name) {
 
 // 🔹 Initialize on load
 document.addEventListener("DOMContentLoaded", () => {
+  // Initialize tooltip manager
+  console.log('Initializing tooltip manager...'); // Debug log
+  window.tooltipManager = new TooltipManager();
+
   // Initialize dropdown toggle
   initDropdownToggle();
 
@@ -278,41 +326,86 @@ document.addEventListener("DOMContentLoaded", () => {
   lightbox.id = "lightbox";
   const img = document.createElement("img");
   img.id = "lightbox-img";
+
+  // Create navigation buttons
+  const prevBtn = document.createElement("button");
+  prevBtn.id = "lightbox-prev";
+  prevBtn.innerHTML = "‹";
+  prevBtn.setAttribute("aria-label", "Previous image");
+
+  const nextBtn = document.createElement("button");
+  nextBtn.id = "lightbox-next";
+  nextBtn.innerHTML = "›";
+  nextBtn.setAttribute("aria-label", "Next image");
+
+  lightbox.appendChild(prevBtn);
   lightbox.appendChild(img);
+  lightbox.appendChild(nextBtn);
   document.body.appendChild(lightbox);
+
+  // Navigation button handlers
+  prevBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    navigateImage(-1);
+  });
+
+  nextBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    navigateImage(1);
+  });
 
   // 🔹 Zoom on image click
   img.addEventListener("click", (e) => {
     e.stopPropagation();
+    const cursorX = e.clientX;
+    const cursorY = e.clientY;
     zoomLevel = (zoomLevel + 1) % zoomScales.length;
-    updateZoom(img, lightbox);
+    updateZoom(img, lightbox, cursorX, cursorY);
+    updateNavigationVisibility();
   });
 
   // 🔹 Close lightbox on click outside or Escape key
   lightbox.addEventListener("click", (e) => {
-    if (e.target !== img) {
+    if (e.target !== img && e.target !== prevBtn && e.target !== nextBtn) {
       lightbox.style.display = "none";
       document.body.classList.remove("lightbox-active");
       resetZoom(img, lightbox);
-    }
-  });
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && lightbox.style.display === "block") {
-      lightbox.style.display = "none";
-      document.body.classList.remove("lightbox-active");
-      resetZoom(img, lightbox);
+      updateNavigationVisibility();
     }
   });
 
-  // 🔹 Handle window resize
-  window.addEventListener("resize", () => {
-    if (lightbox.style.display === "block" && zoomLevel === 0) {
-      resetZoom(img, lightbox);
+  document.addEventListener("keydown", (e) => {
+    if (lightbox.style.display === "block") {
+      if (e.key === "Escape") {
+        if (zoomLevel > 0) {
+          // Reset to 1x zoom instead of closing
+          zoomLevel = 0;
+          updateZoom(img, lightbox);
+          updateNavigationVisibility();
+        } else {
+          // Close lightbox if already at 1x
+          lightbox.style.display = "none";
+          document.body.classList.remove("lightbox-active");
+          resetZoom(img, lightbox);
+          updateNavigationVisibility();
+        }
+        e.preventDefault();
+      } else if (e.key === "ArrowLeft") {
+        navigateImage(-1);
+        e.preventDefault();
+      } else if (e.key === "ArrowRight") {
+        navigateImage(1);
+        e.preventDefault();
+      }
     }
   });
 
   // 🔹 Attach click event to images with .click-zoom class
   function attachLightboxEvents() {
+    // Build image list for navigation - only include images inside .image-grid
+    const gridImages = document.querySelectorAll(".image-grid img.click-zoom");
+    imageList = Array.from(gridImages);
+
     document.querySelectorAll("img.click-zoom").forEach((thumbnail) => {
       if (!thumbnail.parentElement.classList.contains("image-wrapper")) {
         const wrapper = document.createElement("div");
@@ -323,17 +416,49 @@ document.addEventListener("DOMContentLoaded", () => {
       thumbnail.style.cursor = "pointer";
       thumbnail.removeEventListener("click", thumbnail._lightboxHandler);
       thumbnail._lightboxHandler = () => {
+        // Find index in the grid images list (or -1 if not in grid)
+        currentImageIndex = imageList.indexOf(thumbnail);
         img.src = thumbnail.src;
         const openLightbox = () => {
           lightbox.style.display = "block";
           document.body.classList.add("lightbox-active");
           resetZoom(img, lightbox);
+          updateNavigationVisibility();
         };
         if (img.complete && img.naturalWidth) openLightbox();
         else img.onload = openLightbox;
       };
       thumbnail.addEventListener("click", thumbnail._lightboxHandler);
     });
+  }
+
+  // Navigate between images
+  function navigateImage(direction) {
+    // Only navigate if current image is in the grid (currentImageIndex >= 0)
+    if (imageList.length === 0 || currentImageIndex < 0) return;
+    currentImageIndex = (currentImageIndex + direction + imageList.length) % imageList.length;
+    img.src = imageList[currentImageIndex].src;
+    const reloadImage = () => {
+      resetZoom(img, lightbox);
+      updateNavigationVisibility();
+    };
+    if (img.complete && img.naturalWidth) reloadImage();
+    else img.onload = reloadImage;
+  }
+
+  // Update navigation button visibility
+  function updateNavigationVisibility() {
+    const prevBtn = document.getElementById("lightbox-prev");
+    const nextBtn = document.getElementById("lightbox-next");
+
+    // Only show navigation if: lightbox is open, at 1x zoom, image is in grid, and there are multiple grid images
+    if (lightbox.style.display === "block" && zoomLevel === 0 && currentImageIndex >= 0 && imageList.length > 1) {
+      prevBtn.style.display = "flex";
+      nextBtn.style.display = "flex";
+    } else {
+      prevBtn.style.display = "none";
+      nextBtn.style.display = "none";
+    }
   }
 
   attachLightboxEvents();
@@ -681,6 +806,8 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .then((blogs) => {
         blogsCache = blogs;
+        // Store in global scope for tooltip manager access
+        window.blogsCache = blogs;
         blogs.sort((a, b) => b.folder.localeCompare(a.folder));
         const target = document.getElementById("blogText");
         if (target) target.innerHTML = "Loading blog post...";
@@ -756,8 +883,12 @@ document.addEventListener("DOMContentLoaded", () => {
         md = md.replace(/\[<img([^>]+)>\]\(([^)]+)\)/g, (match, attrs, src) => {
           let classAttr = attrs.match(/class=["']([^"']*)["']/i);
           let classes = classAttr ? classAttr[1].split(/\s+/) : [];
-          classes = [...new Set([...classes, "click-zoom"])];
-          const newClassAttr = `class="${classes.join(" ")}"`;
+          // Only add click-zoom if it's already in the original classes
+          const hasClickZoom = classes.includes("click-zoom");
+          if (hasClickZoom && !classes.includes("click-zoom")) {
+            classes.push("click-zoom");
+          }
+          const newClassAttr = classes.length > 0 ? `class="${classes.join(" ")}"` : '';
           attrs = attrs.replace(/class=["'][^"']*["']/i, "").trim();
           if (!src.startsWith("http") && !src.includes("/")) {
             return `<div class="image-wrapper"><img ${attrs} ${newClassAttr} src="blogs/${blog.folder}/res/${src}"></div>`;
@@ -769,8 +900,12 @@ document.addEventListener("DOMContentLoaded", () => {
           (match, before, src, after) => {
             let classAttr = before.match(/class=["']([^"']*)["']/i);
             let classes = classAttr ? classAttr[1].split(/\s+/) : [];
-            classes = [...new Set([...classes, "click-zoom"])];
-            const newClassAttr = `class="${classes.join(" ")}"`;
+            // Only add click-zoom if it's already in the original classes
+            const hasClickZoom = classes.includes("click-zoom");
+            if (hasClickZoom && !classes.includes("click-zoom")) {
+              classes.push("click-zoom");
+            }
+            const newClassAttr = classes.length > 0 ? `class="${classes.join(" ")}"` : '';
             before = before.replace(/class=["'][^"']*["']/i, "").trim();
             if (!src.startsWith("http") && !src.includes("/")) {
               return `<div class="image-wrapper"><img ${before} ${newClassAttr} src="blogs/${blog.folder}/res/${src}" ${after}></div>`;
@@ -809,6 +944,15 @@ document.addEventListener("DOMContentLoaded", () => {
         if (window.hljs) {
           hljs.highlightAll();
         }
+
+        // Initialize tooltips after content is loaded - pass blog folder directly
+        setTimeout(() => {
+          if (window.tooltipManager) {
+            console.log('Reinitializing tooltips after blog load...'); // Debug log
+            window.tooltipManager.reinitialize(blog.folder);
+          }
+        }, 100);
+
         attachLightboxEvents();
         enableInternalAnchorScrolling(target);
 
@@ -945,15 +1089,422 @@ window.addEventListener("hashchange", () => {
 
 // Collapse/hide sidebars AFTER selection (mobile only)
 function closeSidebarAfterSelect() {
-	const poemList = document.getElementById("poemList");
-	const blogList = document.getElementById("blogList");
-	const floatingToggle = document.getElementById("sidebarFloatingToggle");
-	// mobile behavior: hide overlay and restore page scrolling
-	if (window.innerWidth <= 800) {
-		if (poemList) poemList.classList.remove("show");
-		if (blogList) blogList.classList.remove("show");
-		document.body.classList.remove("no-scroll");
-		document.documentElement.classList.remove("no-scroll");
-		if (floatingToggle) floatingToggle.classList.remove("hidden");
-	}
+  const poemList = document.getElementById("poemList");
+  const blogList = document.getElementById("blogList");
+  const floatingToggle = document.getElementById("sidebarFloatingToggle");
+  // mobile behavior: hide overlay and restore page scrolling
+  if (window.innerWidth <= 800) {
+    if (poemList) poemList.classList.remove("show");
+    if (blogList) blogList.classList.remove("show");
+    document.body.classList.remove("no-scroll");
+    document.documentElement.classList.remove("no-scroll");
+    if (floatingToggle) floatingToggle.classList.remove("hidden");
+  }
+}
+
+// Tooltip Manager Class
+class TooltipManager {
+  constructor() {
+    this.tooltips = new Map();
+    this.activeTooltip = null;
+    this.tooltipDimensions = new Map(); // Cache for tooltip dimensions
+    this.tooltipData = new Map(); // Cache for tooltip data from JSON files
+    this.init();
+  }
+
+  init() {
+    // Close tooltip when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.tooltip-trigger') && !e.target.closest('.tooltip')) {
+        this.hideActiveTooltip();
+      }
+    });
+  }
+
+  // Load tooltip data from a JSON file
+  async loadTooltipData(blogFolder) {
+    const tooltipPath = `blogs/${blogFolder}/res/tooltips.json`;
+    console.log(`Attempting to load tooltips from: ${tooltipPath}`);
+    try {
+      const response = await fetch(tooltipPath);
+      console.log(`Fetch response status: ${response.status}`);
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Loaded tooltip data:', data);
+        // Store all tooltip definitions for this blog with resolved media paths
+        Object.entries(data).forEach(([id, tooltipData]) => {
+          // If media field exists and it's just a filename (not a full path), prepend blog res folder
+          if (tooltipData.media && !tooltipData.media.startsWith('blogs/') && !tooltipData.media.startsWith('http')) {
+            tooltipData.media = `blogs/${blogFolder}/res/${tooltipData.media}`;
+          }
+          this.tooltipData.set(id, tooltipData);
+          console.log(`Stored tooltip: ${id}`, tooltipData);
+        });
+        console.log(`Loaded ${Object.keys(data).length} tooltip definitions from ${tooltipPath}`);
+        console.log('All tooltip IDs in cache:', Array.from(this.tooltipData.keys()));
+      } else {
+        console.warn(`Failed to load tooltips: ${response.status} ${response.statusText}`);
+      }
+    } catch (error) {
+      console.warn(`Error loading tooltip data from ${tooltipPath}:`, error);
+    }
+  }
+
+  // Detect blog folder from current URL
+  detectBlogFolder() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const blogIndex = urlParams.get('blog');
+    console.log('Blog index from URL:', blogIndex);
+    console.log('Blogs cache available:', !!window.blogsCache);
+    // Access blogsCache from the global scope
+    if (blogIndex !== null && window.blogsCache && window.blogsCache[blogIndex]) {
+      const folder = window.blogsCache[blogIndex].folder;
+      console.log('Detected blog folder:', folder);
+      return folder;
+    }
+    console.log('No blog folder detected');
+    return null;
+  }
+
+  // 🔹 Calculate tooltip position and show
+  showTooltip(trigger, data, event) {
+    console.log('Showing tooltip with data:', data); // Debug log
+    this.hideActiveTooltip();
+
+    const tooltip = this.createTooltip(data);
+
+    // If there's media, restart it from frame 0 by resetting the src (for GIFs)
+    const mediaImg = tooltip.querySelector('.tooltip-gif');
+    if (mediaImg && data.media) {
+      // Force GIF to restart by adding a cache-busting timestamp
+      const originalSrc = data.media;
+      mediaImg.src = originalSrc + '?t=' + Date.now();
+    }
+
+    document.body.appendChild(tooltip);
+
+    // Position tooltip at cursor location if event is provided
+    if (event) {
+      this.positionTooltipAtCursor(tooltip, event, data);
+    } else {
+      // Fallback to element positioning
+      this.positionTooltipWithCache(trigger, tooltip, data);
+    }
+
+    // Force a reflow to ensure positioning is applied before adding show class
+    tooltip.offsetHeight;
+
+    // Add show class for animation
+    tooltip.classList.add('show');
+
+    // Add hover listeners to tooltip
+    tooltip.addEventListener('mouseenter', () => {
+      clearTimeout(this.hideTimeout);
+    });
+
+    tooltip.addEventListener('mouseleave', () => {
+      this.hideActiveTooltip();
+    });
+
+    this.activeTooltip = tooltip;
+  }
+
+  // Create a tooltip element
+  createTooltip(data) {
+    const tooltip = document.createElement('div');
+    tooltip.className = 'tooltip';
+
+    const content = document.createElement('div');
+    content.className = 'tooltip-content';
+
+    if (data.text) {
+      const text = document.createElement('div');
+      text.className = 'tooltip-text';
+      // Use innerHTML to support HTML formatting (bold, line breaks, etc.)
+      text.innerHTML = data.text;
+      content.appendChild(text);
+    }
+
+    // Use 'media' field instead of 'gif'
+    if (data.media) {
+      const mediaEl = document.createElement('img');
+      mediaEl.className = 'tooltip-gif';
+      mediaEl.src = data.media;
+      mediaEl.alt = data.text || 'Tooltip media'; // Use text as alt if no explicit alt provided
+      mediaEl.onerror = () => {
+        console.error('Failed to load tooltip media:', data.media);
+      };
+      content.appendChild(mediaEl);
+    }
+
+    tooltip.appendChild(content);
+    return tooltip;
+  }
+
+  // Initialize tooltips for elements with data-tooltip attributes
+  initializeTooltips() {
+    const triggers = document.querySelectorAll('[data-tooltip], [tt]');
+    console.log('Found tooltip triggers:', triggers.length); // Debug log
+
+    // Clear existing dimensions cache
+    this.tooltipDimensions.clear();
+
+    triggers.forEach(trigger => {
+      this.setupTooltip(trigger);
+      // Precalculate tooltip dimensions
+      this.precalculateTooltipDimensions(trigger);
+    });
+  }
+
+  // Precalculate tooltip dimensions for caching
+  precalculateTooltipDimensions(element) {
+    const tooltipId = element.getAttribute('tt');
+    let tooltipData;
+
+    if (tooltipId) {
+      tooltipData = this.tooltipData.get(tooltipId);
+      if (!tooltipData) {
+        console.warn(`Cannot precalculate dimensions - Tooltip ID "${tooltipId}" not found`);
+        return;
+      }
+    } else {
+      tooltipData = JSON.parse(element.getAttribute('data-tooltip'));
+    }
+
+    const dataKey = JSON.stringify(tooltipData);
+
+    // Skip if already calculated
+    if (this.tooltipDimensions.has(dataKey)) {
+      return;
+    }
+
+    // Create temporary tooltip off-screen
+    const tempTooltip = this.createTooltip(tooltipData);
+    tempTooltip.style.position = 'absolute';
+    tempTooltip.style.left = '-9999px';
+    tempTooltip.style.top = '-9999px';
+    tempTooltip.style.visibility = 'hidden';
+    document.body.appendChild(tempTooltip);
+
+    // If there's a GIF, wait for it to load before measuring
+    const gifImg = tempTooltip.querySelector('.tooltip-gif');
+
+    const measureAndStore = () => {
+      // Force layout calculation
+      tempTooltip.offsetHeight;
+
+      // Store dimensions
+      const rect = tempTooltip.getBoundingClientRect();
+      this.tooltipDimensions.set(dataKey, {
+        width: rect.width,
+        height: rect.height
+      });
+
+      // Remove temporary tooltip
+      document.body.removeChild(tempTooltip);
+
+      console.log('Precalculated dimensions for tooltip:', dataKey, this.tooltipDimensions.get(dataKey));
+    };
+
+    if (gifImg) {
+      // Wait for GIF to load before measuring
+      if (gifImg.complete) {
+        measureAndStore();
+      } else {
+        gifImg.onload = measureAndStore;
+        gifImg.onerror = measureAndStore; // Still measure even if GIF fails
+      }
+    } else {
+      measureAndStore();
+    }
+  }
+
+  setupTooltip(element) {
+    console.log('Setting up tooltip for:', element); // Debug log
+
+    // Check if using ID-based tooltip (now just 'tt')
+    const tooltipId = element.getAttribute('tt');
+    let tooltipData;
+
+    if (tooltipId) {
+      // Get tooltip data from loaded JSON
+      tooltipData = this.tooltipData.get(tooltipId);
+      if (!tooltipData) {
+        console.warn(`Tooltip ID "${tooltipId}" not found in loaded data`);
+        return;
+      }
+      // Add tooltip-trigger class if not present
+      if (!element.classList.contains('tooltip-trigger')) {
+        element.classList.add('tooltip-trigger');
+      }
+    } else {
+      // Fallback to inline JSON data
+      try {
+        tooltipData = JSON.parse(element.getAttribute('data-tooltip'));
+      } catch (e) {
+        console.warn('Failed to parse tooltip data:', e);
+        return;
+      }
+    }
+
+    // Remove existing listeners to avoid duplicates
+    element.removeEventListener('mouseenter', element._tooltipMouseEnter);
+    element.removeEventListener('mouseleave', element._tooltipMouseLeave);
+
+    // Create new listeners with delay
+    element._tooltipMouseEnter = (e) => {
+      console.log('Tooltip triggered for:', e.target); // Debug log
+      // Store the event for positioning
+      element._lastMouseEvent = e;
+      // Add 500ms delay before showing tooltip (reduced from 1000ms)
+      element._tooltipTimeout = setTimeout(() => {
+        this.showTooltip(e.target, tooltipData, element._lastMouseEvent);
+      }, 500);
+    };
+
+    element._tooltipMouseLeave = () => {
+      // Clear the timeout if mouse leaves before tooltip shows
+      if (element._tooltipTimeout) {
+        clearTimeout(element._tooltipTimeout);
+        element._tooltipTimeout = null;
+      }
+
+      // Hide tooltip immediately when mouse leaves
+      this.hideActiveTooltip();
+    };
+
+    element.addEventListener('mouseenter', element._tooltipMouseEnter);
+    element.addEventListener('mouseleave', element._tooltipMouseLeave);
+  }
+
+  // Position tooltip at cursor location
+  positionTooltipAtCursor(tooltip, event, data) {
+    const dataKey = JSON.stringify(data);
+
+    // Get cached dimensions or fallback
+    let tooltipWidth, tooltipHeight;
+    if (this.tooltipDimensions.has(dataKey)) {
+      const cached = this.tooltipDimensions.get(dataKey);
+      tooltipWidth = cached.width;
+      tooltipHeight = cached.height;
+    } else {
+      const tooltipRect = tooltip.getBoundingClientRect();
+      tooltipWidth = tooltipRect.width || 250;
+      tooltipHeight = tooltipRect.height || 100;
+    }
+
+    // Get cursor position
+    const cursorX = event.clientX;
+    const cursorY = event.clientY;
+
+    // Position tooltip above and centered on cursor
+    let left = cursorX - (tooltipWidth / 2);
+    let top = cursorY - tooltipHeight - 15; // 15px gap above cursor
+
+    // Adjust if tooltip goes off screen horizontally
+    if (left < 10) left = 10;
+    if (left + tooltipWidth > window.innerWidth - 10) {
+      left = window.innerWidth - tooltipWidth - 10;
+    }
+
+    // If not enough space above cursor, show below
+    if (top < 10) {
+      top = cursorY + 15; // 15px gap below cursor
+      tooltip.classList.add('bottom');
+    }
+
+    // Use fixed positioning
+    tooltip.style.position = 'fixed';
+    tooltip.style.left = left + 'px';
+    tooltip.style.top = top + 'px';
+  }
+
+  // Position tooltip using cached dimensions (fallback)
+  positionTooltipWithCache(trigger, tooltip, data) {
+    const triggerRect = trigger.getBoundingClientRect();
+    const dataKey = JSON.stringify(data);
+
+    console.log('Trigger rect:', {
+      left: triggerRect.left,
+      top: triggerRect.top,
+      width: triggerRect.width,
+      height: triggerRect.height
+    });
+
+    // Always use cached dimensions for consistency
+    let tooltipWidth, tooltipHeight;
+    if (this.tooltipDimensions.has(dataKey)) {
+      const cached = this.tooltipDimensions.get(dataKey);
+      tooltipWidth = cached.width;
+      tooltipHeight = cached.height;
+      console.log('Using cached dimensions:', cached);
+    } else {
+      // If no cache, force a measurement but this shouldn't happen
+      console.warn('No cached dimensions found, measuring directly');
+      const tooltipRect = tooltip.getBoundingClientRect();
+      tooltipWidth = tooltipRect.width || 250; // fallback width
+      tooltipHeight = tooltipRect.height || 100; // fallback height
+      console.log('Direct measurement fallback:', { width: tooltipWidth, height: tooltipHeight });
+    }
+
+    // Calculate position relative to viewport (getBoundingClientRect gives viewport coords)
+    let left = triggerRect.left + (triggerRect.width / 2) - (tooltipWidth / 2);
+    let top = triggerRect.top - tooltipHeight - 10;
+
+    console.log('Calculated position before adjustments:', { left, top });
+
+    // Adjust if tooltip goes off screen horizontally
+    if (left < 10) left = 10;
+    if (left + tooltipWidth > window.innerWidth - 10) {
+      left = window.innerWidth - tooltipWidth - 10;
+    }
+
+    // If not enough space above, show below
+    if (top < 10) {
+      top = triggerRect.bottom + 10;
+      tooltip.classList.add('bottom');
+    }
+
+    console.log('Final position:', { left, top });
+
+    // Use fixed positioning (no scroll offsets needed)
+    tooltip.style.position = 'fixed';
+    tooltip.style.left = left + 'px';
+    tooltip.style.top = top + 'px';
+  }
+
+  // Hide the active tooltip
+  hideActiveTooltip() {
+    if (this.activeTooltip) {
+      this.activeTooltip.classList.remove('show');
+      setTimeout(() => {
+        if (this.activeTooltip && this.activeTooltip.parentNode) {
+          this.activeTooltip.parentNode.removeChild(this.activeTooltip);
+        }
+        this.activeTooltip = null;
+      }, 300);
+    }
+  }
+
+  isHoveringTooltip() {
+    return this.activeTooltip && this.activeTooltip.matches(':hover');
+  }
+
+  // Public method to reinitialize tooltips (for dynamic content)
+  async reinitialize(blogFolder) {
+    console.log('Reinitializing tooltips with blog folder:', blogFolder); // Debug log
+
+    // Use provided blog folder or try to detect it
+    const folder = blogFolder || this.detectBlogFolder();
+    console.log('Using blog folder for tooltip loading:', folder);
+
+    if (folder) {
+      await this.loadTooltipData(folder);
+      console.log('Tooltip data loaded, cache size:', this.tooltipData.size);
+    } else {
+      console.log('No blog folder provided or detected, skipping tooltip data load');
+    }
+
+    this.initializeTooltips();
+  }
 }
