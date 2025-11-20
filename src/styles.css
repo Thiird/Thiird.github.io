@@ -8,112 +8,102 @@
   align-items: center;
 }
 
-/* General reset and dark mode body */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
   background-color: #1a252f;
-  /* Dark blue-grey background */
   color: #d3d7db;
-  /* Light grey text for readability */
   overflow-x: hidden;
-  /* Prevent horizontal scrolling */
 }
 
-/* Prevent scrolling when lightbox is active */
+a {
+  color: #3498db;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:visited {
+  color: #3498db;
+}
+
 body.lightbox-active {
   overflow: hidden;
 }
 
-/* Prevent body scrolling when mobile sidebar overlay is open */
 body.no-scroll {
   overflow: hidden !important;
   height: 100vh !important;
 }
 
-/* Prevent body/html scrolling when mobile sidebar overlay is open */
 html.no-scroll,
 body.no-scroll {
   overflow: hidden !important;
   height: 100vh !important;
 }
 
-/* Hide mobile toggle button when sidebar is open */
 .mobile-sidebar-toggle.hidden {
   display: none !important;
 }
 
-/* 🔹 Banner scaling wrapper */
 .banner-scale-wrapper {
   transform-origin: top center;
-  /* Scale from top-center */
   margin: 0 auto;
-  /* Center the banner */
 }
 
-/* Banner Placeholder */
 #banner-placeholder,
 .banner {
   background-color: #2c3e50;
-  /* Dark blue-grey */
   border: 1px solid #4a6076;
-  /* Dark thin border */
   margin: 0 auto;
   display: block;
 }
 
-/* 🔹 Content scaling wrapper */
 .content-scale-wrapper {
   display: flex;
-  /* Use flexbox for sidebar and content layout */
   margin: 0 auto;
   width: 100%;
-  /* Full width */
   box-sizing: border-box;
   min-height: calc(100vh - 60px);
-  /* Adjust based on banner height */
 }
 
 @media (min-width: 801px) {
-
-  /* 4-column grid: [sidebar][left-gutter][content-strip][right-gutter]
-	   left/right gutters are symmetric and flexible but never smaller than --center-gap */
   .content-scale-wrapper {
     display: grid;
     grid-template-columns:
-      auto minmax(var(--center-gap), 1fr) minmax(0, var(--content-width)) minmax(var(--center-gap), 1fr);
+      var(--sidebar-width) minmax(var(--center-gap), 1fr) minmax(0, var(--content-width)) minmax(var(--center-gap), 1fr);
     align-items: start;
     padding-top: 0;
     box-sizing: border-box;
+    transition: grid-template-columns var(--sidebar-transition) ease;
   }
 
-  /* Sidebar sits in the first column */
+  .content-scale-wrapper.sidebar-collapsed {
+    grid-template-columns:
+      var(--sidebar-collapsed) minmax(var(--center-gap), 1fr) minmax(0, var(--content-width)) minmax(var(--center-gap), 1fr);
+  }
+
   .poem-list,
   .blog-list {
-    /* keep existing fixed widths applied elsewhere; ensure grid placement */
     grid-column: 1;
-    /* keep position:sticky for vertical placement — still works inside grid */
     position: sticky;
     top: 0;
   }
 
-  /* Content containers sit in the third column (the centered strip) */
   .blog-container,
   .poem-container {
     grid-column: 3;
-    /* center content inside the column */
     display: flex;
     justify-content: center;
     align-items: flex-start;
     padding: 20px 0;
-    /* vertical padding only */
     box-sizing: border-box;
-    transition: margin-left var(--sidebar-transition) ease;
-    /* harmless; keeps smoothness */
   }
 
-  /* Constrain the inner content to the desired strip width */
   .blog-content,
   .poem-content {
     width: 100%;
@@ -124,70 +114,51 @@ body.no-scroll {
   }
 }
 
-/* Header Placeholder (for homepage) */
 #header-placeholder {
   background-color: #d3d7db;
-  /* Match header-section */
 }
 
-/* Header Container */
 .header-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  /* Center vertically */
   padding: 20px;
   background-color: #d3d7db;
   margin: 0 auto;
   box-sizing: border-box;
-  /* Include padding in height */
 }
 
-/* Header Section */
 .header-section {
   display: flex;
   flex-direction: row;
-  /* Keep profile picture on the left of the text */
   align-items: center;
-  /* Align items vertically */
   justify-content: center;
-  /* Center the entire section */
   gap: 20px;
   width: 100%;
   max-width: 800px;
-  /* Limit the width of the content */
   background-color: #d3d7db;
   padding: 20px;
   border-radius: 5px;
   text-align: left;
-  /* Align text to the left */
 }
 
 @media (max-width: 800px) {
   .header-section {
     flex-direction: column;
-    /* Stack items vertically on mobile */
     text-align: center;
-    /* Center text on mobile */
   }
 
-  /* Ensure the profile picture is centered in the column layout */
   .header-section .profile-pic {
     margin: 0 0 15px 0;
-    /* remove the previous right margin */
     align-self: center;
-    /* center inside the flex column */
     display: block;
-    /* ensure block-level centering works */
   }
 
-  /* Make the description take full width so text centers beneath the image */
   .header-section .description {
     width: 100%;
     text-align: center;
   }
 
-  /* NEW: center social icons beneath the profile pic on small screens */
   .header-section .social-icons {
     justify-content: center;
     margin: 12px 0 0;
@@ -198,19 +169,15 @@ body.no-scroll {
   }
 }
 
-/* Profile Picture */
 .profile-pic {
-  width: 150px;
-  /* Restore fixed width */
-  height: 200px;
-  /* Restore fixed height */
+  width: 250px;
+  height: 350px;
   border-radius: 5%;
   object-fit: cover;
   margin-right: 20px;
   border: 1px solid #4a6076;
 }
 
-/* Description */
 .description {
   display: flex;
   flex-direction: column;
@@ -220,7 +187,6 @@ body.no-scroll {
 .description p {
   margin: 0;
   color: #1a252f !important;
-  /* Dark text for contrast on light background */
 }
 
 .description .name {
@@ -244,7 +210,6 @@ body.no-scroll {
   margin: 0 0 16px 0 !important;
 }
 
-/* Social Icons */
 .social-icons {
   display: flex;
   gap: 10px;
@@ -267,7 +232,6 @@ body.no-scroll {
   filter: grayscale(0%);
 }
 
-/* Horizontal Top Menu */
 .top-menu {
   background-color: #2c3e50;
   padding: 10px 0;
@@ -275,9 +239,7 @@ body.no-scroll {
   position: sticky;
   top: 0;
   overflow: visible;
-  /* allow dropdown to be visible outside the nav box */
   z-index: 3000;
-  /* high z-index so it appears above header/content */
 }
 
 .top-menu>ul {
@@ -306,7 +268,6 @@ body.no-scroll {
   border-radius: 5px;
 }
 
-/* Ensure consistent styling for menu buttons */
 .menu-button {
   color: #ffffff;
   text-decoration: none;
@@ -314,36 +275,27 @@ body.no-scroll {
   padding: 10px 15px;
   display: block;
   cursor: pointer;
-  /* Add pointer cursor for span elements */
   line-height: 1.5;
-  /* Ensure consistent line height */
   box-sizing: border-box;
-  /* Include padding/borders in width */
 }
 
 .menu-button:hover {
   background-color: #3498db;
-  border-radius: 5px;
 }
 
-/* Dropdown Menu */
 .top-menu .dropdown .dropdown-menu {
   display: none;
-  /* Hidden by default */
   position: absolute;
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
   background-color: #34495e;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-  border-radius: 5px;
   z-index: 3100;
-  /* above the top-menu z-index */
 }
 
 .top-menu .dropdown:hover .dropdown-menu {
   display: block;
-  /* Show on hover for desktop */
 }
 
 .dropdown-menu {
@@ -358,113 +310,81 @@ body.no-scroll {
 
 .dropdown-menu a {
   color: #f1f3f5;
-  /* Even lighter text for clarity */
   padding: 10px;
   font-size: 1em;
   display: block;
   text-align: center;
   background-color: #34495e;
-  /* Match dropdown background */
 }
 
 .dropdown-menu a:hover {
   background-color: #1e6f9f;
-  /* Slightly different blue for hover */
 }
 
-/* Ensure header doesn't clip dropdowns (no inner scrollbars) */
 .header-container,
 .header-section {
   overflow: visible;
-  /* allow dropdown to extend into/over header without creating inner scroll */
 }
 
-/* Poem and Blog Container */
 .poem-container,
 .blog-container {
   flex: 1;
-  /* Take remaining space */
   padding: 20px;
   background-color: #1a2520070 box-sizing: border-box;
 }
 
-/* Poem List */
 .poem-list {
   width: 200px;
-  /* Fixed width, unaffected by zoom */
   position: sticky;
-  /* Works with updateSidebarTop */
   top: 60px;
-  /* Adjusted via JavaScript */
   background-color: #2c3e50;
-  /* remove top padding so the sidebar content sits flush under the banner */
   padding: 0 10px 10px;
   border-right: 1px solid #4a6076;
   overflow-y: auto;
   box-sizing: border-box;
   transform: none !important;
-  /* Prevent scaling from parent */
   z-index: 10;
-  /* Ensure sidebar is above content */
 }
 
-/* Collapsed Poem List */
 .poem-list.collapsed {
   width: 50px;
-  /* Fixed collapsed width */
   padding: 0;
   overflow: hidden;
 }
 
-/* Hide elements in collapsed poem list */
 .poem-list.collapsed #poemListItems,
 .poem-list.collapsed #poemSearch {
   display: none;
-  /* Hide list and search, keep toggle button */
 }
 
-/* Poem List Header */
 .poem-list-header {
   display: flex;
   flex-direction: column;
-  /* Stack toggle button and search vertically */
   gap: 10px;
 }
 
-/* Blog List */
 .blog-list {
   width: 200px;
-  /* Fixed width, unaffected by zoom */
   position: sticky;
-  /* Works with updateSidebarTop */
   top: 60px;
-  /* Adjusted via JavaScript */
   background-color: #2c3e50;
-  /* remove top padding so the sidebar content sits flush under the banner */
   padding: 0 10px 10px;
   border-right: 1px solid #4a6076;
   overflow-y: auto;
   box-sizing: border-box;
   transform: none !important;
-  /* Prevent scaling from parent */
   z-index: 10;
-  /* Ensure sidebar is above content */
 }
 
-/* Collapsed Blog List */
 .blog-list.collapsed {
   width: 50px;
-  /* Fixed collapsed width */
   padding: 0;
-  /* Remove padding */
   overflow: hidden;
 }
 
-/* Hide elements in collapsed blog list */
 .blog-list.collapsed #blogListItems,
 .blog-list.collapsed #blogSearch {
   display: none;
-  /* Hide list and search, keep toggle button */
 }
 
 #blogListItems,
@@ -476,22 +396,18 @@ body.no-scroll {
   margin: 0;
 }
 
-/* Blog List Header */
 .blog-list-header {
   display: flex;
   flex-direction: column;
-  /* Stack toggle button and search vertically */
   gap: 10px;
 }
 
-/* Poem and Blog Content */
 .poem-content,
 .blog-content {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  /* Centers the container horizontally */
   padding: 20px;
   margin: 0 auto;
   width: 100%;
@@ -499,23 +415,19 @@ body.no-scroll {
   box-sizing: border-box;
 }
 
-/* Poem and Blog Text */
 .poem-text,
 .blog-text {
   width: 100%;
   text-align: left;
-  /* Align text to left */
   line-height: 1.6;
 }
 
-/* Toggle Button */
 .toggle-btn {
   background-color: #8d99ae;
   color: #ffffff;
   border: none;
   padding: 5px 8px;
   cursor: pointer;
-  border-radius: 3px;
   margin-bottom: 10px;
   width: 100%;
   font-size: 1em;
@@ -525,28 +437,22 @@ body.no-scroll {
   background-color: #a3bffa;
 }
 
-/* Toggle Button for Blog List */
 #toggleBlogList {
   background-color: #8d99ae;
   color: #ffffff;
   border: none;
   padding: 10px;
   cursor: pointer;
-  border-radius: 5px;
   font-size: 1.2em;
   display: block;
-  margin: 10px auto;
   text-align: center;
 }
 
-/* Collapsed Blog Toggle Button */
 .blog-list.collapsed #toggleBlogList {
   width: 100%;
   height: 100%;
-  /* Fill entire sidebar height */
   padding: 0;
   margin: 0;
-  border-radius: 0;
   font-size: 1.5em;
   display: flex;
   align-items: center;
@@ -557,29 +463,23 @@ body.no-scroll {
   background-color: #a3bffa;
 }
 
-/* Toggle Button for Poem List */
 #toggleSidebar {
   background-color: #8d99ae;
   color: #ffffff;
   border: none;
   padding: 10px;
   cursor: pointer;
-  border-radius: 5px;
   font-size: 1.2em;
   display: block;
-  margin: 10px auto;
   text-align: center;
 }
 
-/* Collapsed Poem Toggle Button */
 .poem-list.collapsed #toggleSidebar {
   width: 100%;
   height: 100%;
-  /* Fill entire sidebar height */
   padding: 0;
   margin: 0;
-  border-radius: 0;
-  font-size: 1.5em;
+  font-size: 1.2em;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -589,7 +489,6 @@ body.no-scroll {
   background-color: #a3bffa;
 }
 
-/* Poem and Blog Search Input */
 .poem-search,
 .blog-search {
   display: block;
@@ -597,7 +496,6 @@ body.no-scroll {
   padding: 8px;
   font-size: 1em;
   border: 1px solid #6888a8;
-  border-radius: 5px;
   box-sizing: border-box;
   background-color: #4a6076;
   color: #d3d7db;
@@ -608,7 +506,6 @@ body.no-scroll {
   color: #8d99ae;
 }
 
-/* Poem and Blog List */
 #poemList,
 #blogList {
   list-style: none;
@@ -634,7 +531,6 @@ body.no-scroll {
   color: #3498db;
 }
 
-/* Poem and Blog Link */
 .poem-link,
 .blog-link {
   color: #d3d7db;
@@ -647,7 +543,6 @@ body.no-scroll {
   color: #3498db;
 }
 
-/* Audio Player */
 .audio-player {
   text-align: center;
   background-color: rgba(44, 62, 80, 0.6);
@@ -663,12 +558,10 @@ body.no-scroll {
   cursor: pointer;
 }
 
-/* Remove visible title */
 .audio-title {
   display: none;
 }
 
-/* Tooltip using data-title */
 .audio-player::after {
   content: attr(data-title);
   position: absolute;
@@ -690,7 +583,6 @@ body.no-scroll {
   opacity: 1;
 }
 
-/* Unified Custom Audio Player */
 .custom-player {
   display: flex;
   flex-direction: column;
@@ -734,12 +626,10 @@ body.no-scroll {
 .progress-container {
   flex: 1;
   height: 8px;
-  /* slightly taller for handle */
   background: #4a6076;
   border-radius: 999px;
   cursor: pointer;
   position: relative;
-  /* for absolute-positioned handle */
   overflow: visible;
 }
 
@@ -753,7 +643,6 @@ body.no-scroll {
   z-index: 1;
 }
 
-/* draggable circular handle */
 .progress-handle {
   position: absolute;
   top: 50%;
@@ -779,22 +668,19 @@ body.no-scroll {
   outline: 2px solid rgba(52, 152, 219, 0.6);
 }
 
-/* keep padding in collapsed toggle buttons so top spacing is consistent */
 .blog-list.collapsed #toggleBlogList,
 .poem-list.collapsed #toggleSidebar {
   padding: 10px;
-  /* match the non-collapsed padding */
   width: 100%;
   height: 100%;
   margin: 0;
   border-radius: 0;
-  font-size: 1.5em;
+  font-size: 1.2em;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* General container styling */
 .content-container {
   max-width: 1100px;
   margin: 0 auto;
@@ -804,7 +690,6 @@ body.no-scroll {
   box-sizing: border-box;
 }
 
-/* Styling for the Markdown content */
 .content-text {
   font-family: 'Arial', sans-serif;
   color: #e0e0e0;
@@ -821,22 +706,17 @@ body.no-scroll {
   hyphens: auto;
 }
 
-/* Bio / generic content: make responsive and match blog/poem behavior */
 .content-container {
   max-width: var(--site-max-width);
-  /* ensure same centered column as other pages */
   box-sizing: border-box;
 }
 
-/* Main markdown/bio container */
 .content-text {
-  /* constrain and center like blog/poem content */
   max-width: var(--site-max-width);
   width: 100%;
   margin: 0 auto;
   padding: clamp(12px, 2.5vw, 20px);
   box-sizing: border-box;
-  /* responsive base font size */
   font-size: clamp(16px, 2vw, 20px);
   line-height: 1.6;
   overflow-wrap: break-word;
@@ -844,10 +724,8 @@ body.no-scroll {
   hyphens: auto;
 }
 
-/* Responsive headings for biography and other content */
 .content-text h1 {
   font-size: clamp(1.4rem, 4vw, 2.4rem);
-  /* scales between small and large screens */
   margin: 0 0 0.6em;
   line-height: 1.1;
   word-break: break-word;
@@ -866,7 +744,6 @@ body.no-scroll {
   line-height: 1.25;
 }
 
-/* Ensure images inside bio/content scale to the column (override inline attrs) */
 .content-text img {
   max-width: 100% !important;
   width: 100% !important;
@@ -877,13 +754,11 @@ body.no-scroll {
   object-fit: contain;
 }
 
-/* Code blocks stay scrollable but won't force page overflow */
 .content-text pre {
   max-width: 100%;
   overflow-x: auto;
 }
 
-/* Image wrapper for all images */
 .image-wrapper {
   position: relative;
   width: 100%;
@@ -913,7 +788,6 @@ body.no-scroll {
   pointer-events: none;
 }
 
-/* Image grid */
 .image-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -921,11 +795,9 @@ body.no-scroll {
   margin: 20px 0;
   align-items: stretch;
   justify-items: stretch;
-  /* ensure each grid cell can be sized by its content's aspect-ratio */
   grid-auto-rows: 1fr;
 }
 
-/* Make each direct grid child a square tile (works whether the child is an <img> or a wrapper) */
 .image-grid>* {
   width: 100%;
   aspect-ratio: 1 / 1;
@@ -935,7 +807,6 @@ body.no-scroll {
   border-radius: 12px;
 }
 
-/* Direct images as grid children: fill the tile and crop to a rounded square */
 .image-grid>img,
 .image-grid>a>img {
   display: block;
@@ -946,7 +817,6 @@ body.no-scroll {
   border-radius: 12px;
 }
 
-/* Wrapped images (existing .image-wrapper) — ensure they behave the same */
 .image-grid .image-wrapper {
   position: relative;
   width: 100%;
@@ -967,7 +837,6 @@ body.no-scroll {
   display: block;
 }
 
-/* Lightbox */
 #lightbox {
   position: fixed;
   top: 0;
@@ -977,11 +846,9 @@ body.no-scroll {
   background: rgba(0, 0, 0, 0.85);
   display: none;
   overflow: auto;
-  /* Enable scrollbars for panning */
   z-index: 1000;
 }
 
-/* Lightbox image */
 #lightbox img {
   position: absolute;
   top: 0;
@@ -990,7 +857,6 @@ body.no-scroll {
   max-height: none;
   cursor: zoom-in;
   user-select: none;
-  /* Only opacity transition for zoom fade, make it quick */
   transition: opacity 0.15s ease;
   opacity: 1;
 }
@@ -999,7 +865,6 @@ body.no-scroll {
   cursor: zoom-out;
 }
 
-/* Lightbox navigation buttons */
 #lightbox-prev,
 #lightbox-next {
   position: fixed;
@@ -1040,7 +905,6 @@ body.no-scroll {
   background: rgba(0, 0, 0, 0.9);
 }
 
-/* Mobile adjustments for navigation buttons */
 @media (max-width: 600px) {
 
   #lightbox-prev,
@@ -1059,7 +923,6 @@ body.no-scroll {
   }
 }
 
-/* Back to Top Button */
 #backToTop {
   display: none;
   position: fixed;
@@ -1082,7 +945,6 @@ body.no-scroll {
   transform: translateY(-2px);
 }
 
-/* Code block styling */
 pre code {
   font-size: 0.85rem;
   border-radius: 8px;
@@ -1094,7 +956,6 @@ pre code {
   color: #c9d1d9;
 }
 
-/* Copy button inside code block */
 pre {
   position: relative;
 }
@@ -1129,29 +990,21 @@ pre {
   height: 100%;
 }
 
-/* Responsive sidebar sizing and layout */
 :root {
-  --sidebar-width: 240px;
+  --sidebar-width: 250px;
   --sidebar-medium: clamp(160px, 22vw, 240px);
   --sidebar-collapsed: 56px;
   --sidebar-transition: 0.25s;
-
-  /* NEW: center layout vars */
   --center-gap: 120px;
-  /* padding X (adjustable) */
-  --content-width: 720px;
-  /* vertical content strip width */
+  --content-width: 1000px;
 }
 
-/* Base sidebar positioning (desktop) */
 .poem-list,
 .blog-list {
   position: fixed;
   left: 0;
   top: 0;
-  /* adjusted by JS via updateSidebarTop() */
   height: 100vh;
-  /* full height; JS will set top value to banner bottom */
   width: var(--sidebar-width);
   max-width: 32vw;
   box-sizing: border-box;
@@ -1160,10 +1013,9 @@ pre {
   border-right: 1px solid #4a6076;
   overflow-y: auto;
   z-index: 100;
-  transition: width var(--sidebar-transition), left var(--sidebar-transition), transform var(--sidebar-transition);
+  transition: width var(--sidebar-transition), left var(--sidebar-transition);
 }
 
-/* Collapsed (desktop) */
 .poem-list.collapsed,
 .blog-list.collapsed {
   width: var(--sidebar-collapsed);
@@ -1171,96 +1023,25 @@ pre {
   overflow: hidden;
 }
 
-/* --- Layout fix: center content relative to banner and avoid shift/horizontal scroll --- */
-
-/* Site width to match banner/header centered area */
 :root {
   --site-max-width: 1100px;
-  /* already used in other suggestions — adjust if needed */
 }
 
-/* Ensure inner content is always centered and bounded by site width */
 .blog-content,
 .poem-content {
   max-width: var(--site-max-width);
   margin: 0 auto;
-  /* center within blog-container / poem-container */
   box-sizing: border-box;
 }
 
-/* Reset any margin-left shifting that formerly pushed the whole container.
-   Keep the sidebar fixed (position:fixed) but only add padding on the content
-   container when the sidebar is visible so the centered inner content doesn't
-   get covered by the sidebar. */
 .blog-list~.blog-container,
 .poem-list~.poem-container {
-  /* remove legacy margin shifts */
   margin-left: 0 !important;
-  /* default: no left padding (sidebar collapsed or hidden) */
   padding-left: 0;
   transition: padding-left 0.25s ease;
   box-sizing: border-box;
 }
 
-/* Desktop: when the sidebar is present and NOT collapsed, reserve space via padding-left.
-   Keep an outer gap on both sides so the content strip stays centered and doesn't flow under the sidebar. */
-@media (min-width: 801px) {
-
-  /* 4-column grid: [sidebar][left-gutter][content-strip][right-gutter]
-	   left/right gutters are symmetric and flexible but never smaller than --center-gap */
-  .content-scale-wrapper {
-    display: grid;
-    grid-template-columns:
-      auto minmax(var(--center-gap), 1fr) minmax(0, var(--content-width)) minmax(var(--center-gap), 1fr);
-    align-items: start;
-    padding-top: 0;
-    box-sizing: border-box;
-  }
-
-  /* Sidebar sits in the first column */
-  .poem-list,
-  .blog-list {
-    /* keep existing fixed widths applied elsewhere; ensure grid placement */
-    grid-column: 1;
-    /* keep position:sticky for vertical placement — still works inside grid */
-    position: sticky;
-    top: 0;
-  }
-
-  /* Content containers sit in the third column (the centered strip) */
-  .blog-container,
-  .poem-container {
-    grid-column: 3;
-    /* center content inside the column */
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 20px 0;
-    /* vertical padding only */
-    box-sizing: border-box;
-    transition: margin-left var(--sidebar-transition) ease;
-    /* harmless; keeps smoothness */
-  }
-
-  /* Constrain the inner content to the desired strip width */
-  .blog-content,
-  .poem-content {
-    width: 100%;
-    max-width: var(--content-width);
-    margin: 0 auto;
-    box-sizing: border-box;
-    padding: 0 12px;
-  }
-}
-
-/* Fallback: ensure when JS adjusts padding-left for mobile overlays nothing breaks */
-.blog-list~.blog-container,
-.poem-list~.poem-container {
-  /* keep legacy rule for mobile; desktop rules above override these */
-  padding-left: 0;
-}
-
-/* Mobile: sidebar becomes overlay and covers the screen when open */
 @media (max-width: 800px) {
 
   .poem-list,
@@ -1268,14 +1049,12 @@ pre {
     position: fixed;
     left: -100%;
     top: 0;
-    /* full overlay from top (banner JS may offset top if needed) */
     width: 100%;
     height: 100vh;
     transition: left var(--sidebar-transition);
     padding: 14px;
   }
 
-  /* when .show is present, slide in full-screen */
   .poem-list.show,
   .blog-list.show {
     left: 0;
@@ -1284,23 +1063,17 @@ pre {
     width: 100vw !important;
     max-width: none !important;
     top: auto;
-    /* top is set inline by JS (banner bottom) */
     z-index: 2200;
-    /* above banner and other elements */
     overflow-y: auto;
-    /* allow menu scrolling */
     box-shadow: none;
   }
 
-  /* While overlay is open we already add body.no-scroll — also disable interaction with page content */
   body.no-scroll .content-scale-wrapper {
     pointer-events: none;
-    /* prevent clicks/scroll on content */
     user-select: none;
     touch-action: none;
   }
 
-  /* Allow pointer events back on the sidebar itself */
   body.no-scroll .poem-list,
   body.no-scroll .blog-list {
     pointer-events: auto;
@@ -1309,15 +1082,12 @@ pre {
   }
 }
 
-/* Mobile visible sidebar toggle (floating hamburger) */
 .mobile-sidebar-toggle {
   display: none;
-  /* desktop: hidden */
   position: fixed;
   top: 12px;
   left: 12px;
   z-index: 1100;
-  /* above sidebars */
   width: 44px;
   height: 44px;
   border-radius: 8px;
@@ -1333,31 +1103,25 @@ pre {
   display: inline-flex;
 }
 
-/* Small pressed effect */
 .mobile-sidebar-toggle:active {
   transform: scale(0.98);
 }
 
-/* visible only on mobile */
 @media (max-width: 800px) {
   .mobile-sidebar-toggle {
     display: inline-flex;
   }
 }
 
-/* Ensure blog/poem content matches bio scaling and never overflows */
 .blog-content,
 .poem-content {
-  /* behave like centered column but allow full-width on narrow screens */
   max-width: var(--site-max-width);
   width: 100%;
   padding: 0 18px;
-  /* inner horizontal padding so images/text don't touch edges */
   margin: 0 auto;
   box-sizing: border-box;
 }
 
-/* Constrain text column and ensure wrapping */
 .blog-text,
 .poem-text {
   max-width: var(--site-max-width);
@@ -1371,13 +1135,11 @@ pre {
   hyphens: auto;
 }
 
-/* Force all images in posts to scale to their container (override inline styles) */
 .blog-text img,
 .poem-text img,
 .blog-text .image-wrapper img,
 .poem-text .image-wrapper img,
 .image-wrapper img {
-  /* ensures it fills the text column but never overflows */
   height: auto !important;
   display: block;
   object-fit: contain;
@@ -1385,74 +1147,36 @@ pre {
   margin-right: auto;
 }
 
-/* keep pre/code scrollable but not forcing horizontal overflow of the page */
-.blog-text pre,
-.poem-text pre {
-  max-width: 100%;
-  overflow-x: auto;
-}
-
-/* On very small screens, ensure layout stacks and keeps padding */
-@media (max-width: 520px) {
-  .content-scale-wrapper {
-    flex-direction: column;
-  }
-
-  .blog-content,
-  .poem-content {
-    padding: 8px 12px;
-  }
-
-  /* make the sidebar a true overlay (already handled) but ensure content never gains extra left padding */
-  .blog-list~.blog-container,
-  .poem-list~.poem-container {
-    padding-left: 0 !important;
-  }
-}
-
-/* Improve sidebar toggle performance by animating the inner contents with transform
-   (avoids heavy reflow for embedded PDFs/plugins). Also hint the compositor. */
 .poem-list,
 .blog-list {
-  /* hint to browser these may transform/resize */
   will-change: width, transform;
   backface-visibility: hidden;
-  /* promote to its own layer */
   transform: translateZ(0);
 }
 
-/* New inner wrapper inside the sidebar whose transform we animate */
 .sidebar-inner {
   transition: transform var(--sidebar-transition) ease, opacity var(--sidebar-transition) ease;
   will-change: transform, opacity;
   transform-origin: left center;
 }
 
-/* When collapsed, move the inner content left so the sidebar visually shrinks via transform.
-   The outer .poem-list/.blog-list width may still be adjusted for layout, but animating the inner
-   content with transform reduces costly repaints for plugin content (PDF/embed). */
 .poem-list.collapsed .sidebar-inner,
 .blog-list.collapsed .sidebar-inner {
   transform: translateX(calc(-1 * (var(--sidebar-width) - var(--sidebar-collapsed))));
   opacity: 0.999;
-  /* keep visible but allow compositor optimizations */
 }
 
-/* Keep the sidebar header visible and sticky (so toggle remains visible when .sidebar-inner is translated) */
 .poem-list-header,
 .blog-list-header {
   position: sticky;
   top: 0;
   z-index: 12;
-  /* above inner content */
-  /* match sidebar background so it blends when sticky */
   background-color: inherit;
   padding-top: 8px;
   padding-bottom: 8px;
   box-sizing: border-box;
 }
 
-/* Prevent inline PDF/object/iframe rendering inside posts (avoid heavy resizing/paint) */
 .blog-text embed,
 .blog-text object,
 .blog-text iframe,
@@ -1462,7 +1186,6 @@ pre {
   display: none !important;
 }
 
-/* Lightweight PDF placeholder/link shown instead of embedding the PDF inline */
 .pdf-placeholder {
   display: flex;
   justify-content: center;
@@ -1484,30 +1207,25 @@ pre {
   background: #2a85c6;
 }
 
-/* Remove the audio-player hover indicator (pseudo-element) entirely */
 .audio-player::after {
-  /* override and hide any previously defined tooltip */
   content: none !important;
   display: none !important;
   opacity: 0 !important;
   pointer-events: none !important;
 }
 
-/* Ensure hover state doesn't re-show anything */
 .audio-player:hover::after {
   opacity: 0 !important;
   display: none !important;
   pointer-events: none !important;
 }
 
-/* Remove the circular progress handle indicator (hide it) */
 .progress-handle {
   display: none !important;
   visibility: hidden !important;
   pointer-events: none !important;
 }
 
-/* Tooltip Styles */
 .tooltip-trigger {
   position: relative;
   cursor: default;
@@ -1526,12 +1244,12 @@ pre {
   position: fixed;
   background: #333;
   color: white;
-  padding: 15px;
+  padding: 12px;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   z-index: 1000;
-  min-width: 250px;
-  max-width: 350px;
+  width: max-content;
+  max-width: min(350px, calc(100vw - 20px));
   opacity: 0;
   visibility: hidden;
   transform: translateY(-10px);
@@ -1539,12 +1257,10 @@ pre {
   pointer-events: none;
 }
 
-/* Responsive tooltip sizing for small screens */
 @media (max-width: 600px) {
   .tooltip {
-    min-width: 200px;
     max-width: calc(100vw - 20px);
-    padding: 12px;
+    padding: 10px;
     font-size: 0.9em;
   }
 
@@ -1559,9 +1275,8 @@ pre {
 
 @media (max-width: 400px) {
   .tooltip {
-    min-width: 180px;
     max-width: calc(100vw - 16px);
-    padding: 10px;
+    padding: 8px;
     font-size: 0.85em;
   }
 
@@ -1600,7 +1315,6 @@ pre {
   text-align: left;
 }
 
-/* Custom Index Styling */
 .custom-index {
   margin: 20px 0;
   padding-left: 0;

@@ -1,0 +1,48 @@
+{
+    "keyboard": {
+        "text": "",
+        "media": "pic.png",
+        "alt": ""
+    },
+    "wrist_clock": {
+        "text": "",
+        "media": "pic.jpg",
+        "alt": ""
+    },
+    "ECU": {
+        "text": "",
+        "media": "kb.gif",
+        "alt": ""
+    },
+    "SAM_computer": {
+        "text": "",
+        "media": "kb.gif",
+        "alt": ""
+    },
+    "paw3395": {
+        "text": "High-performance gaming optical sensor with 30,000 DPI capability",
+        "media": "tooltip.gif"
+    },
+    "isa": {
+        "text": "<strong>Instruction Set Architecture</strong><br><br>The set of instructions that a processor can execute",
+        "media": ""
+    },
+    "ES": {
+        "text": "Embedded System",
+        "media": ""
+    },
+    "heat_seeking_missile": {
+        "text": "",
+        "media": "",
+        "alt": ""
+    },
+    "PCB": {
+        "text": "",
+        "media": "",
+        "alt": ""
+    },
+    "IC": {
+        "text": "<strong>Integrated Circuit</strong><br><br>A set of electronic circuits on a small flat piece of semiconductor material (usually silicon). An IC can contain billions of transistors, resistors, and capacitors working together to perform complex functions.",
+        "media": ""
+    }
+}

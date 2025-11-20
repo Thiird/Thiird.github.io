@@ -1105,10 +1105,13 @@ function closeSidebarAfterSelect() {
 // Tooltip Manager Class
 class TooltipManager {
   constructor() {
-    this.tooltips = new Map();
-    this.activeTooltip = null;
-    this.tooltipDimensions = new Map(); // Cache for tooltip dimensions
-    this.tooltipData = new Map(); // Cache for tooltip data from JSON files
+    this.tooltip = null;
+    this.currentTrigger = null;
+    this.hideTimeout = null;
+    this.currentAudio = null;
+    this.audioPlaying = false;
+    this.tooltipDimensions = new Map();
+    this.tooltipData = new Map();
     this.init();
   }
 
@@ -1167,7 +1170,7 @@ class TooltipManager {
   }
 
   // 🔹 Calculate tooltip position and show
-  showTooltip(trigger, data, event) {
+  showTooltip(trigger, data) {
     console.log('Showing tooltip with data:', data); // Debug log
     this.hideActiveTooltip();
 
@@ -1206,7 +1209,38 @@ class TooltipManager {
       this.hideActiveTooltip();
     });
 
-    this.activeTooltip = tooltip;
+    this.currentTrigger = trigger;
+    this.tooltip = tooltip;
+
+    // Handle audio
+    if (data.media && (data.media.endsWith('.mp3') || data.media.endsWith('.wav') || data.media.endsWith('.ogg'))) {
+      const audioSrc = `${blogFolder}/res/${data.media}`;
+      const audioElement = document.createElement('audio');
+      audioElement.controls = true;
+      audioElement.style.width = '100%';
+      audioElement.style.marginTop = '10px';
+
+      const source = document.createElement('source');
+      source.src = audioSrc;
+      source.type = 'audio/mpeg';
+      audioElement.appendChild(source);
+
+      tooltipContent.appendChild(audioElement);
+      this.currentAudio = audioElement;
+
+      // Track audio playback state
+      audioElement.addEventListener('play', () => {
+        this.audioPlaying = true;
+      });
+
+      audioElement.addEventListener('pause', () => {
+        this.audioPlaying = false;
+      });
+
+      audioElement.addEventListener('ended', () => {
+        this.audioPlaying = false;
+      });
+    }
   }
 
   // Create a tooltip element
@@ -1475,19 +1509,19 @@ class TooltipManager {
 
   // Hide the active tooltip
   hideActiveTooltip() {
-    if (this.activeTooltip) {
-      this.activeTooltip.classList.remove('show');
+    if (this.tooltip) {
+      this.tooltip.classList.remove('show');
       setTimeout(() => {
-        if (this.activeTooltip && this.activeTooltip.parentNode) {
-          this.activeTooltip.parentNode.removeChild(this.activeTooltip);
+        if (this.tooltip && this.tooltip.parentNode) {
+          this.tooltip.parentNode.removeChild(this.tooltip);
         }
-        this.activeTooltip = null;
+        this.tooltip = null;
       }, 300);
     }
   }
 
   isHoveringTooltip() {
-    return this.activeTooltip && this.activeTooltip.matches(':hover');
+    return this.tooltip && this.tooltip.matches(':hover');
   }
 
   // Public method to reinitialize tooltips (for dynamic content)
