@@ -1542,3 +1542,366 @@ class TooltipManager {
     this.initializeTooltips();
   }
 }
+
+// 🔹 Home Page Initialization
+function initHomePage() {
+  // Load header.html first
+  fetch("src/header.html")
+    .then(response => response.text())
+    .then(data => {
+      const header = document.getElementById("header-placeholder");
+      header.innerHTML = data;
+    })
+    .catch(error => console.error("Error loading header:", error));
+
+  // Load banner.html and initialize dropdown
+  fetch("src/banner.html")
+    .then(response => response.text())
+    .then(data => {
+      const banner = document.getElementById("banner-placeholder");
+      banner.innerHTML = data;
+      // Always try to initialize dropdowns after banner loads
+      if (typeof initDropdownToggle === "function") {
+        initDropdownToggle();
+      }
+    })
+    .catch(error => console.error("Error loading banner:", error));
+
+  // Reinitialize dropdown toggle on resize
+  let resizeTimer;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      if (typeof initDropdownToggle === "function") {
+        initDropdownToggle();
+      }
+    }, 100);
+  });
+
+  // Ensure dropdowns are initialized on load
+  window.addEventListener("load", () => {
+    if (typeof initDropdownToggle === "function") {
+      initDropdownToggle();
+    }
+  });
+}
+
+// 🔹 Blog Page Initialization
+function initBlogPage() {
+  // Load banner and set up page-specific functionality
+  fetch("banner.html")
+    .then((response) => response.text())
+    .then((data) => {
+      document.getElementById("banner-placeholder").innerHTML = data;
+
+      // Ensure dropdowns are initialized after banner loads
+      if (typeof initDropdownToggle === "function") {
+        initDropdownToggle();
+      }
+
+      // Adjust blog list position
+      adjustSidebarHeight();
+    })
+    .catch((error) => console.error("Error loading banner:", error));
+
+  // Adjust sidebar height dynamically and pad content below banner
+  function adjustSidebarHeight() {
+    // use rAF for smoother updates and to cover rapid scroll/touch events
+    requestAnimationFrame(() => {
+      const banner = document.getElementById("banner-placeholder");
+      const blogList = document.getElementById("blogList");
+      const contentWrapper = document.querySelector(".content-scale-wrapper");
+      const mobileToggle = document.getElementById("sidebarFloatingToggle");
+      if (banner && blogList) {
+        const bannerRect = banner.getBoundingClientRect();
+        const bannerBottom = bannerRect.bottom;
+        const topOffset = Math.max(0, bannerBottom);
+        blogList.style.top = `${topOffset}px`;
+        blogList.style.height = `calc(100vh - ${topOffset}px)`;
+
+        // Also adjust content wrapper margin to avoid overlap
+        if (contentWrapper) {
+          contentWrapper.style.paddingTop = `${Math.max(0, bannerBottom)}px`;
+        }
+
+        // ensure mobile toggle is positioned correctly
+        if (mobileToggle) {
+          mobileToggle.style.top = `${Math.max(0, bannerBottom)}px`;
+        }
+      }
+    });
+  }
+
+  // Set initial sidebar state (mobile: hidden, desktop: visible)
+  function setInitialSidebarState() {
+    const blogList = document.getElementById("blogList");
+    const floatingToggle = document.getElementById("sidebarFloatingToggle");
+    if (!blogList) return;
+
+    if (window.innerWidth <= 800) {
+      // Mobile: hide sidebar initially, show floating toggle
+      blogList.classList.remove("show");
+      if (floatingToggle) {
+        floatingToggle.style.display = "block";
+        floatingToggle.classList.remove("hidden");
+      }
+    } else {
+      // Desktop: show sidebar, hide floating toggle
+      blogList.classList.remove("show");
+      if (floatingToggle) {
+        floatingToggle.style.display = "none";
+      }
+    }
+  }
+
+  // Toggle blog list visibility
+  const toggleBlogList = document.getElementById("toggleBlogList");
+  if (toggleBlogList) {
+    toggleBlogList.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const blogList = document.getElementById("blogList");
+      if (window.innerWidth <= 800) {
+        // Mobile: toggle overlay
+        const isOpen = blogList.classList.toggle("show");
+        document.body.classList.toggle("no-scroll", isOpen);
+        document.documentElement.classList.toggle("no-scroll", isOpen);
+        const floatingToggle = document.getElementById("sidebarFloatingToggle");
+        if (floatingToggle) floatingToggle.classList.toggle("hidden", isOpen);
+      }
+    });
+  }
+
+  // Handle floating toggle for mobile
+  const floatingToggle = document.getElementById("sidebarFloatingToggle");
+  if (floatingToggle) {
+    floatingToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const blogList = document.getElementById("blogList");
+      const isOpen = blogList.classList.toggle("show");
+      document.body.classList.toggle("no-scroll", isOpen);
+      document.documentElement.classList.toggle("no-scroll", isOpen);
+      floatingToggle.classList.toggle("hidden", isOpen);
+    });
+  }
+
+  // Close mobile overlay when clicking outside
+  document.addEventListener("click", (e) => {
+    const blogList = document.getElementById("blogList");
+    if (!blogList) return;
+    if (window.innerWidth <= 800 && blogList.classList.contains("show")) {
+      if (!e.target.closest(".blog-list") && !e.target.closest("#toggleBlogList") && !e.target.closest("#sidebarFloatingToggle")) {
+        blogList.classList.remove("show");
+        document.body.classList.remove("no-scroll");
+        document.documentElement.classList.remove("no-scroll");
+        if (floatingToggle) floatingToggle.classList.remove("hidden");
+      }
+    }
+  });
+
+  // Ensure correct initial state on load and on resize
+  window.addEventListener("load", () => {
+    setInitialSidebarState();
+    adjustSidebarHeight();
+  });
+  window.addEventListener("resize", () => {
+    setInitialSidebarState();
+    adjustSidebarHeight();
+  });
+  window.addEventListener("scroll", adjustSidebarHeight);
+  window.addEventListener("touchmove", adjustSidebarHeight, { passive: true });
+  window.addEventListener("touchend", adjustSidebarHeight);
+
+  // Search functionality
+  const blogSearch = document.getElementById("blogSearch");
+  if (blogSearch) {
+    blogSearch.addEventListener("input", (e) => {
+      const search = e.target.value.toLowerCase();
+      document.querySelectorAll("#blogListItems li").forEach((item) => {
+        const title = item.textContent.toLowerCase();
+        item.style.display = title.includes(search) ? "block" : "none";
+      });
+    });
+  }
+}
+
+// 🔹 Poem Page Initialization  
+function initPoemPage() {
+  // Load banner
+  fetch("banner.html")
+    .then((response) => response.text())
+    .then((data) => {
+      document.getElementById("banner-placeholder").innerHTML = data;
+
+      // Ensure dropdowns are initialized after banner loads
+      if (typeof initDropdownToggle === "function") {
+        initDropdownToggle();
+      }
+
+      // Adjust poem list position
+      adjustSidebarHeight();
+    })
+    .catch((error) => console.error("Error loading banner:", error));
+
+  // Similar functionality as blog page but for poems
+  function adjustSidebarHeight() {
+    requestAnimationFrame(() => {
+      const banner = document.getElementById("banner-placeholder");
+      const poemList = document.getElementById("poemList");
+      const contentWrapper = document.querySelector(".content-scale-wrapper");
+      const mobileToggle = document.getElementById("sidebarFloatingToggle");
+      if (banner && poemList) {
+        const bannerRect = banner.getBoundingClientRect();
+        const bannerBottom = bannerRect.bottom;
+        const topOffset = Math.max(0, bannerBottom);
+        poemList.style.top = `${topOffset}px`;
+        poemList.style.height = `calc(100vh - ${topOffset}px)`;
+
+        if (contentWrapper) {
+          contentWrapper.style.paddingTop = `${Math.max(0, bannerBottom)}px`;
+        }
+
+        if (mobileToggle) {
+          mobileToggle.style.top = `${Math.max(0, bannerBottom)}px`;
+        }
+      }
+    });
+  }
+
+  function setInitialSidebarState() {
+    const poemList = document.getElementById("poemList");
+    const floatingToggle = document.getElementById("sidebarFloatingToggle");
+    if (!poemList) return;
+
+    if (window.innerWidth <= 800) {
+      poemList.classList.remove("show");
+      if (floatingToggle) {
+        floatingToggle.style.display = "block";
+        floatingToggle.classList.remove("hidden");
+      }
+    } else {
+      poemList.classList.remove("show");
+      if (floatingToggle) {
+        floatingToggle.style.display = "none";
+      }
+    }
+  }
+
+  // Toggle poem list visibility
+  const toggleSidebar = document.getElementById("toggleSidebar");
+  if (toggleSidebar) {
+    toggleSidebar.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const poemList = document.getElementById("poemList");
+      if (window.innerWidth <= 800) {
+        const isOpen = poemList.classList.toggle("show");
+        document.body.classList.toggle("no-scroll", isOpen);
+        document.documentElement.classList.toggle("no-scroll", isOpen);
+        const floatingToggle = document.getElementById("sidebarFloatingToggle");
+        if (floatingToggle) floatingToggle.classList.toggle("hidden", isOpen);
+      }
+    });
+  }
+
+  // Handle floating toggle for mobile
+  const floatingToggle = document.getElementById("sidebarFloatingToggle");
+  if (floatingToggle) {
+    floatingToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const poemList = document.getElementById("poemList");
+      const isOpen = poemList.classList.toggle("show");
+      document.body.classList.toggle("no-scroll", isOpen);
+      document.documentElement.classList.toggle("no-scroll", isOpen);
+      floatingToggle.classList.toggle("hidden", isOpen);
+    });
+  }
+
+  // Close mobile overlay when clicking outside
+  document.addEventListener("click", (e) => {
+    const poemList = document.getElementById("poemList");
+    if (!poemList) return;
+    if (window.innerWidth <= 800 && poemList.classList.contains("show")) {
+      if (!e.target.closest(".poem-list") && !e.target.closest("#toggleSidebar") && !e.target.closest("#sidebarFloatingToggle")) {
+        poemList.classList.remove("show");
+        document.body.classList.remove("no-scroll");
+        document.documentElement.classList.remove("no-scroll");
+        if (floatingToggle) floatingToggle.classList.remove("hidden");
+      }
+    }
+  });
+
+  // Event listeners
+  window.addEventListener("load", () => {
+    setInitialSidebarState();
+    adjustSidebarHeight();
+  });
+  window.addEventListener("resize", () => {
+    setInitialSidebarState();
+    adjustSidebarHeight();
+  });
+  window.addEventListener("scroll", adjustSidebarHeight);
+  window.addEventListener("touchmove", adjustSidebarHeight, { passive: true });
+  window.addEventListener("touchend", adjustSidebarHeight);
+
+  // Search functionality
+  const poemSearch = document.getElementById("poemSearch");
+  if (poemSearch) {
+    poemSearch.addEventListener("input", (e) => {
+      const search = e.target.value.toLowerCase();
+      document.querySelectorAll("#poemListItems li").forEach((item) => {
+        const title = item.textContent.toLowerCase();
+        item.style.display = title.includes(search) ? "block" : "none";
+      });
+    });
+  }
+}
+
+// 🔹 Bio Page Initialization
+function initBioPage() {
+  // Load main content from bio.md
+  fetch("bio.md")
+    .then((response) => response.text())
+    .then((data) => {
+      document.getElementById("contentText").innerHTML = marked.parse(data);
+      // Initialize tooltips after content is loaded
+      setTimeout(() => {
+        if (window.tooltipManager) {
+          window.tooltipManager.reinitialize();
+        }
+      }, 100);
+    })
+    .catch((error) => {
+      console.error("Error loading bio:", error);
+      document.getElementById("contentText").innerHTML = "Failed to load bio.";
+    });
+
+  // Load banner.html and initialize dropdown
+  fetch("../banner.html")
+    .then((response) => response.text())
+    .then((data) => {
+      const banner = document.getElementById("banner-placeholder");
+      banner.innerHTML = data;
+      // Always try to initialize dropdowns after banner loads
+      if (typeof initDropdownToggle === "function") {
+        initDropdownToggle();
+      }
+    })
+    .catch((error) => console.error("Error loading banner:", error));
+
+  // Reinitialize dropdown toggle on resize
+  let resizeTimer;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      if (typeof initDropdownToggle === "function") {
+        initDropdownToggle();
+      }
+    }, 100);
+  });
+
+  // Ensure dropdowns are initialized on load
+  window.addEventListener("load", () => {
+    if (typeof initDropdownToggle === "function") {
+      initDropdownToggle();
+    }
+  });
+}

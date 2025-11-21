@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SN - Home</title>
+    <link rel="stylesheet" href="src/styles.css">
+</head>
+<body>
+    <!-- Back to Top Button -->
+    <button id="backToTop" title="Go to top">⬆</button>
+    
+    <div id="header-placeholder"></div>
+    <div id="banner-placeholder"></div>
+
+    <script>
+        // Initialize home page
+        document.addEventListener("DOMContentLoaded", () => {
+            if (typeof initHomePage === "function") {
+                initHomePage();
+            }
+        });
+    </script>
+    <script src="src/script.js"></script>
+</body>
+</html>

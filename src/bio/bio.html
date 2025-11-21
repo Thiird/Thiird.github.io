@@ -103,36 +103,10 @@
           });
       });
 
-      // 🔹 Load banner.html and initialize dropdown
+      // Initialize bio page
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("../banner.html")
-          .then((response) => response.text())
-          .then((data) => {
-            const banner = document.getElementById("banner-placeholder");
-            banner.innerHTML = data;
-            // Always try to initialize dropdowns after banner loads
-            if (typeof initDropdownToggle === "function") {
-              initDropdownToggle();
-            }
-          })
-          .catch((error) => console.error("Error loading banner:", error));
-      });
-
-      // Reinitialize dropdown toggle on resize
-      let resizeTimer;
-      window.addEventListener("resize", () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => {
-          if (typeof initDropdownToggle === "function") {
-            initDropdownToggle();
-          }
-        }, 100);
-      });
-
-      // Ensure dropdowns are initialized on load
-      window.addEventListener("load", () => {
-        if (typeof initDropdownToggle === "function") {
-          initDropdownToggle();
+        if (typeof initBioPage === "function") {
+          initBioPage();
         }
       });
     </script>
