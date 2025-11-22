@@ -1,22 +1,17 @@
 {
-    "example": {
-        "text": "Example tooltip",
-        "media": "",
-        "alt": ""
-    },
     "drz400": {
-        "text": "Suzuki DRZ400 - A legendary dual-sport motorcycle",
-        "media": "drz400.jpg",
-        "alt": "Suzuki DRZ400 motorcycle"
+        "text": "Tell me I don't look like a power ranger!!\n2024-04-09 at 13.13.49",
+        "media": "drz-400-sm.jpg",
+        "alt": "power-ranger"
     },
     "sad-music": {
         "text": "",
         "media": "sad-music.mp3",
-        "alt": "Sad music"
+        "alt": ""
     },
     "crazy-music": {
-        "text": "",
+        "text": "<bold>Warning</bold>: High BPM music!",
         "media": "crazy-music.mp3",
-        "alt": "Crazy music"
+        "alt": ""
     }
 }

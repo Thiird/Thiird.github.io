@@ -1112,6 +1112,8 @@ class TooltipManager {
     this.audioPlaying = false;
     this.tooltipDimensions = new Map();
     this.tooltipData = new Map();
+    this.allAudioElements = new Set(); // Track all audio elements
+    this.activeTooltipAudio = null; // Track audio in current tooltip
     this.init();
   }
 
@@ -1122,6 +1124,41 @@ class TooltipManager {
         this.hideActiveTooltip();
       }
     });
+
+    // Store last mouse event for repositioning on scroll
+    this.lastMouseEvent = null;
+    document.addEventListener('mousemove', (e) => {
+      this.lastMouseEvent = e;
+    });
+
+    // Update tooltip position on scroll
+    window.addEventListener('scroll', () => {
+      if (this.tooltip && this.currentTrigger) {
+        // Get the data for current tooltip
+        const dataKey = this.currentTrigger.getAttribute('data-tooltip');
+        if (dataKey && this.tooltipData.has(dataKey)) {
+          const data = this.tooltipData.get(dataKey);
+          // Use cursor positioning if we have a recent mouse event, otherwise fallback to element
+          if (this.lastMouseEvent) {
+            this.positionTooltipAtCursor(this.tooltip, this.lastMouseEvent, data);
+          } else {
+            this.positionTooltipAtTrigger(this.tooltip, this.currentTrigger, data);
+          }
+        }
+      }
+    });
+  }
+
+  // Stop all audio tracks except the current one
+  stopAllOtherAudio(currentAudio) {
+    this.allAudioElements.forEach(audio => {
+      if (audio !== currentAudio && !audio.paused) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    });
+    // Update audioPlaying state
+    this.audioPlaying = currentAudio && !currentAudio.paused;
   }
 
   // Load tooltip data from a JSON file
@@ -1170,7 +1207,7 @@ class TooltipManager {
   }
 
   // 🔹 Calculate tooltip position and show
-  showTooltip(trigger, data) {
+  showTooltip(trigger, data, mouseEvent = null) {
     console.log('Showing tooltip with data:', data); // Debug log
     this.hideActiveTooltip();
 
@@ -1186,12 +1223,11 @@ class TooltipManager {
 
     document.body.appendChild(tooltip);
 
-    // Position tooltip at cursor location if event is provided
-    if (event) {
-      this.positionTooltipAtCursor(tooltip, event, data);
+    // Position tooltip at cursor location if mouse event is available
+    if (mouseEvent) {
+      this.positionTooltipAtCursor(tooltip, mouseEvent, data);
     } else {
-      // Fallback to element positioning
-      this.positionTooltipWithCache(trigger, tooltip, data);
+      this.positionTooltipAtTrigger(tooltip, trigger, data);
     }
 
     // Force a reflow to ensure positioning is applied before adding show class
@@ -1200,13 +1236,27 @@ class TooltipManager {
     // Add show class for animation
     tooltip.classList.add('show');
 
-    // Add hover listeners to tooltip
+    // Add hover listeners to tooltip with delay for audio
     tooltip.addEventListener('mouseenter', () => {
       clearTimeout(this.hideTimeout);
     });
 
     tooltip.addEventListener('mouseleave', () => {
-      this.hideActiveTooltip();
+      // If audio is playing, keep tooltip open
+      if (this.audioPlaying) {
+        return;
+      }
+      // Otherwise add delay to allow moving back
+      this.hideTimeout = setTimeout(() => {
+        if (!this.audioPlaying) {
+          this.hideActiveTooltip();
+        }
+      }, 1000);
+    });
+
+    // Prevent clicks inside tooltip from closing it
+    tooltip.addEventListener('click', (e) => {
+      e.stopPropagation();
     });
 
     this.currentTrigger = trigger;
@@ -1254,21 +1304,232 @@ class TooltipManager {
     if (data.text) {
       const text = document.createElement('div');
       text.className = 'tooltip-text';
-      // Use innerHTML to support HTML formatting (bold, line breaks, etc.)
-      text.innerHTML = data.text;
+      // Use innerHTML to support HTML formatting and convert \n to <br>
+      text.innerHTML = data.text.replace(/\n/g, '<br>');
       content.appendChild(text);
     }
 
-    // Use 'media' field instead of 'gif'
+    // Use 'media' field for images or audio
     if (data.media) {
-      const mediaEl = document.createElement('img');
-      mediaEl.className = 'tooltip-gif';
-      mediaEl.src = data.media;
-      mediaEl.alt = data.text || 'Tooltip media'; // Use text as alt if no explicit alt provided
-      mediaEl.onerror = () => {
-        console.error('Failed to load tooltip media:', data.media);
-      };
-      content.appendChild(mediaEl);
+      if (data.media.endsWith('.mp3') || data.media.endsWith('.wav') || data.media.endsWith('.ogg')) {
+        // Create audio player similar to poems page
+        const audioPlayer = document.createElement('div');
+        audioPlayer.className = 'tooltip-audio-player';
+        audioPlayer.style.cssText = `
+          margin-top: 10px;
+          background: #1e1e1e;
+          border-radius: 6px;
+          padding: 10px;
+          min-width: 280px;
+        `;
+        
+        const playerControls = document.createElement('div');
+        playerControls.className = 'player-controls';
+        playerControls.style.cssText = `
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        `;
+        
+        const playPauseBtn = document.createElement('button');
+        playPauseBtn.innerHTML = '▶';
+        playPauseBtn.className = 'player-btn';
+        playPauseBtn.style.cssText = `
+          background: #3498db;
+          border: none;
+          color: white;
+          padding: 6px 10px;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 14px;
+          min-width: 32px;
+          height: 32px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          user-select: none;
+          -webkit-user-select: none;
+          outline: none;
+          transition: background-color 0.2s ease;
+        `;
+
+        // Add hover effects
+        playPauseBtn.addEventListener('mouseenter', () => {
+          playPauseBtn.style.backgroundColor = '#2980b9';
+        });
+
+        playPauseBtn.addEventListener('mouseleave', () => {
+          playPauseBtn.style.backgroundColor = '#3498db';
+        });
+        
+        const currentTime = document.createElement('span');
+        currentTime.textContent = '0:00';
+        currentTime.style.cssText = `
+          color: #d3d7db;
+          font-size: 12px;
+          min-width: 35px;
+        `;
+        
+        const progressContainer = document.createElement('div');
+        progressContainer.className = 'progress-container';
+        progressContainer.style.cssText = `
+          flex: 1;
+          height: 6px;
+          background: #444;
+          border-radius: 3px;
+          position: relative;
+          cursor: pointer;
+        `;
+        
+        const progressBar = document.createElement('div');
+        progressBar.style.cssText = `
+          height: 100%;
+          background: #3498db;
+          border-radius: 3px;
+          width: 0%;
+          transition: none;
+        `;
+        
+        const progressHandle = document.createElement('div');
+        progressHandle.style.cssText = `
+          position: absolute;
+          top: 50%;
+          left: 0%;
+          width: 12px;
+          height: 12px;
+          background: #3498db;
+          border-radius: 50%;
+          transform: translate(-50%, -50%);
+          cursor: pointer;
+        `;
+        
+        const duration = document.createElement('span');
+        duration.textContent = '0:00';
+        duration.style.cssText = `
+          color: #d3d7db;
+          font-size: 12px;
+          min-width: 35px;
+        `;
+        
+        progressContainer.appendChild(progressBar);
+        progressContainer.appendChild(progressHandle);
+        
+        const audioElement = document.createElement('audio');
+        audioElement.src = data.media;
+        audioElement.loop = true;
+        audioElement.preload = 'metadata';
+        
+        // Track this audio element
+        this.allAudioElements.add(audioElement);
+        this.activeTooltipAudio = audioElement;
+        
+        // Format time helper
+        const formatTime = (seconds) => {
+          const mins = Math.floor(seconds / 60);
+          const secs = Math.floor(seconds % 60);
+          return `${mins}:${secs.toString().padStart(2, '0')}`;
+        };
+        
+        // Update progress
+        const updateProgress = () => {
+          if (audioElement.duration && isFinite(audioElement.duration)) {
+            const percent = (audioElement.currentTime / audioElement.duration) * 100;
+            progressBar.style.width = percent + '%';
+            progressHandle.style.left = percent + '%';
+            currentTime.textContent = formatTime(audioElement.currentTime);
+          }
+        };
+        
+        playPauseBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          console.log('Play button clicked, audio paused:', audioElement.paused);
+          if (audioElement.paused) {
+            console.log('Attempting to play audio');
+            // Stop all other audio first
+            this.stopAllOtherAudio(null);
+            audioElement.play().then(() => {
+              console.log('Audio started playing');
+              playPauseBtn.innerHTML = '⏸';
+              this.audioPlaying = true;
+              this.stopAllOtherAudio(audioElement); // Ensure only this one plays
+            }).catch(err => {
+              console.error('Audio play failed:', err);
+              // Try alternative approach
+              audioElement.load();
+              setTimeout(() => {
+                audioElement.play().catch(e => console.error('Retry failed:', e));
+              }, 100);
+            });
+          } else {
+            console.log('Pausing audio');
+            audioElement.pause();
+            playPauseBtn.innerHTML = '▶';
+            this.audioPlaying = false;
+          }
+        });
+
+        // Add mousedown event as backup
+        playPauseBtn.addEventListener('mousedown', (e) => {
+          e.stopPropagation();
+          e.preventDefault();
+        });
+
+        // Add pointer events for better touch support
+        playPauseBtn.style.pointerEvents = 'auto';
+        playPauseBtn.setAttribute('type', 'button');
+        
+        // Progress bar click
+        progressContainer.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const rect = progressContainer.getBoundingClientRect();
+          const percent = (e.clientX - rect.left) / rect.width;
+          if (audioElement.duration && isFinite(audioElement.duration)) {
+            audioElement.currentTime = percent * audioElement.duration;
+          }
+        });
+        
+        audioElement.addEventListener('loadedmetadata', () => {
+          duration.textContent = formatTime(audioElement.duration);
+          updateProgress();
+        });
+        
+        audioElement.addEventListener('timeupdate', updateProgress);
+        
+        audioElement.addEventListener('ended', () => {
+          // Since we're looping, this shouldn't fire, but just in case
+          this.audioPlaying = false;
+        });
+        
+        audioElement.addEventListener('pause', () => {
+          playPauseBtn.innerHTML = '▶';
+          this.audioPlaying = false;
+        });
+        
+        audioElement.addEventListener('play', () => {
+          playPauseBtn.innerHTML = '⏸';
+          this.audioPlaying = true;
+        });
+        
+        playerControls.appendChild(playPauseBtn);
+        playerControls.appendChild(currentTime);
+        playerControls.appendChild(progressContainer);
+        playerControls.appendChild(duration);
+        audioPlayer.appendChild(playerControls);
+        content.appendChild(audioPlayer);
+        
+        this.currentAudio = audioElement;
+      } else {
+        // Handle images
+        const mediaEl = document.createElement('img');
+        mediaEl.className = 'tooltip-gif';
+        mediaEl.src = data.media;
+        mediaEl.alt = data.text || 'Tooltip media';
+        mediaEl.onerror = () => {
+          console.error('Failed to load tooltip media:', data.media);
+        };
+        content.appendChild(mediaEl);
+      }
     }
 
     tooltip.appendChild(content);
@@ -1384,13 +1645,25 @@ class TooltipManager {
     // Remove existing listeners to avoid duplicates
     element.removeEventListener('mouseenter', element._tooltipMouseEnter);
     element.removeEventListener('mouseleave', element._tooltipMouseLeave);
+    element.removeEventListener('click', element._tooltipClick);
+
+    // Add click functionality if tooltip has an image
+    if (tooltipData.media && (tooltipData.media.endsWith('.jpg') || tooltipData.media.endsWith('.jpeg') || 
+                             tooltipData.media.endsWith('.png') || tooltipData.media.endsWith('.gif') || 
+                             tooltipData.media.endsWith('.webp'))) {
+      element._tooltipClick = (e) => {
+        e.preventDefault();
+        this.showImageFullscreen(tooltipData.media, tooltipData.alt || tooltipData.text, tooltipData);
+      };
+      element.addEventListener('click', element._tooltipClick);
+    }
 
     // Create new listeners with delay
     element._tooltipMouseEnter = (e) => {
       console.log('Tooltip triggered for:', e.target); // Debug log
       // Store the event for positioning
       element._lastMouseEvent = e;
-      // Add 500ms delay before showing tooltip (reduced from 1000ms)
+      // Add 500ms delay before showing tooltip
       element._tooltipTimeout = setTimeout(() => {
         this.showTooltip(e.target, tooltipData, element._lastMouseEvent);
       }, 500);
@@ -1403,8 +1676,19 @@ class TooltipManager {
         element._tooltipTimeout = null;
       }
 
-      // Hide tooltip immediately when mouse leaves
-      this.hideActiveTooltip();
+      // For audio tooltips, give more time to move to tooltip
+      if (tooltipData.media && (tooltipData.media.endsWith('.mp3') || tooltipData.media.endsWith('.wav') || tooltipData.media.endsWith('.ogg'))) {
+        this.hideTimeout = setTimeout(() => {
+          if (!this.audioPlaying) {
+            this.hideActiveTooltip();
+          }
+        }, 2000); // 2 second delay for audio tooltips
+      } else {
+        // For non-audio tooltips, add small delay too
+        this.hideTimeout = setTimeout(() => {
+          this.hideActiveTooltip();
+        }, 300);
+      }
     };
 
     element.addEventListener('mouseenter', element._tooltipMouseEnter);
@@ -1412,7 +1696,7 @@ class TooltipManager {
   }
 
   // Position tooltip at cursor location
-  positionTooltipAtCursor(tooltip, event, data) {
+  positionTooltipAtCursor(tooltip, mouseEvent, data) {
     const dataKey = JSON.stringify(data);
 
     // Get cached dimensions or fallback
@@ -1427,95 +1711,98 @@ class TooltipManager {
       tooltipHeight = tooltipRect.height || 100;
     }
 
-    // Get cursor position
-    const cursorX = event.clientX;
-    const cursorY = event.clientY;
+    // Get cursor position from the mouse event
+    const cursorX = mouseEvent.pageX;
+    const cursorY = mouseEvent.pageY;
 
     // Position tooltip above and centered on cursor
     let left = cursorX - (tooltipWidth / 2);
     let top = cursorY - tooltipHeight - 15; // 15px gap above cursor
 
     // Adjust if tooltip goes off screen horizontally
-    if (left < 10) left = 10;
-    if (left + tooltipWidth > window.innerWidth - 10) {
-      left = window.innerWidth - tooltipWidth - 10;
+    const scrollX = window.pageXOffset;
+    if (left < scrollX + 10) left = scrollX + 10;
+    if (left + tooltipWidth > scrollX + window.innerWidth - 10) {
+      left = scrollX + window.innerWidth - tooltipWidth - 10;
     }
 
     // If not enough space above cursor, show below
-    if (top < 10) {
+    if (top < window.pageYOffset + 10) {
       top = cursorY + 15; // 15px gap below cursor
       tooltip.classList.add('bottom');
+    } else {
+      tooltip.classList.remove('bottom');
     }
 
-    // Use fixed positioning
-    tooltip.style.position = 'fixed';
+    // Use absolute positioning
+    tooltip.style.position = 'absolute';
     tooltip.style.left = left + 'px';
     tooltip.style.top = top + 'px';
   }
 
-  // Position tooltip using cached dimensions (fallback)
-  positionTooltipWithCache(trigger, tooltip, data) {
-    const triggerRect = trigger.getBoundingClientRect();
+  // Position tooltip relative to trigger element for scroll following
+  positionTooltipAtTrigger(tooltip, trigger, data) {
     const dataKey = JSON.stringify(data);
 
-    console.log('Trigger rect:', {
-      left: triggerRect.left,
-      top: triggerRect.top,
-      width: triggerRect.width,
-      height: triggerRect.height
-    });
-
-    // Always use cached dimensions for consistency
+    // Get cached dimensions or fallback
     let tooltipWidth, tooltipHeight;
     if (this.tooltipDimensions.has(dataKey)) {
       const cached = this.tooltipDimensions.get(dataKey);
       tooltipWidth = cached.width;
       tooltipHeight = cached.height;
-      console.log('Using cached dimensions:', cached);
     } else {
-      // If no cache, force a measurement but this shouldn't happen
-      console.warn('No cached dimensions found, measuring directly');
       const tooltipRect = tooltip.getBoundingClientRect();
-      tooltipWidth = tooltipRect.width || 250; // fallback width
-      tooltipHeight = tooltipRect.height || 100; // fallback height
-      console.log('Direct measurement fallback:', { width: tooltipWidth, height: tooltipHeight });
+      tooltipWidth = tooltipRect.width || 250;
+      tooltipHeight = tooltipRect.height || 100;
     }
 
-    // Calculate position relative to viewport (getBoundingClientRect gives viewport coords)
-    let left = triggerRect.left + (triggerRect.width / 2) - (tooltipWidth / 2);
-    let top = triggerRect.top - tooltipHeight - 10;
+    // Get trigger element position relative to page
+    const triggerRect = trigger.getBoundingClientRect();
+    const triggerX = triggerRect.left + window.pageXOffset;
+    const triggerY = triggerRect.top + window.pageYOffset;
 
-    console.log('Calculated position before adjustments:', { left, top });
+    // Position tooltip above and centered on trigger
+    let left = triggerX + (triggerRect.width / 2) - (tooltipWidth / 2);
+    let top = triggerY - tooltipHeight - 10; // 10px gap above trigger
 
     // Adjust if tooltip goes off screen horizontally
-    if (left < 10) left = 10;
-    if (left + tooltipWidth > window.innerWidth - 10) {
-      left = window.innerWidth - tooltipWidth - 10;
+    const scrollX = window.pageXOffset;
+    if (left < scrollX + 10) left = scrollX + 10;
+    if (left + tooltipWidth > scrollX + window.innerWidth - 10) {
+      left = scrollX + window.innerWidth - tooltipWidth - 10;
     }
 
-    // If not enough space above, show below
-    if (top < 10) {
-      top = triggerRect.bottom + 10;
+    // If not enough space above trigger, show below
+    if (top < window.pageYOffset + 10) {
+      top = triggerY + triggerRect.height + 10; // 10px gap below trigger
       tooltip.classList.add('bottom');
     }
 
-    console.log('Final position:', { left, top });
-
-    // Use fixed positioning (no scroll offsets needed)
-    tooltip.style.position = 'fixed';
+    // Use absolute positioning so tooltip follows page scroll
+    tooltip.style.position = 'absolute';
     tooltip.style.left = left + 'px';
     tooltip.style.top = top + 'px';
   }
 
+
+
   // Hide the active tooltip
   hideActiveTooltip() {
     if (this.tooltip) {
+      // Stop any playing audio in the tooltip
+      if (this.activeTooltipAudio && !this.activeTooltipAudio.paused) {
+        this.activeTooltipAudio.pause();
+        this.activeTooltipAudio.currentTime = 0;
+        this.audioPlaying = false;
+      }
+      
       this.tooltip.classList.remove('show');
       setTimeout(() => {
         if (this.tooltip && this.tooltip.parentNode) {
           this.tooltip.parentNode.removeChild(this.tooltip);
         }
         this.tooltip = null;
+        this.activeTooltipAudio = null;
       }, 300);
     }
   }
@@ -1540,6 +1827,133 @@ class TooltipManager {
     }
 
     this.initializeTooltips();
+  }
+
+  // Show entire tooltip in fullscreen at larger scale
+  showImageFullscreen(imageSrc, altText, tooltipData) {
+    // Create fullscreen overlay
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 99999;
+      cursor: pointer;
+    `;
+
+    // Create zoomed tooltip container
+    const zoomedTooltip = document.createElement('div');
+    zoomedTooltip.style.cssText = `
+      background: #2c2c2c;
+      border: 1px solid #555;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      max-width: 95vw;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      cursor: auto;
+      overflow: hidden;
+    `;
+
+    // Add text if available
+    if (tooltipData && tooltipData.text) {
+      const text = document.createElement('div');
+      text.style.cssText = `
+        color: #fff;
+        font-size: 22px;
+        line-height: 1.4;
+        margin-bottom: 20px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        flex-shrink: 0;
+      `;
+      text.innerHTML = tooltipData.text.replace(/\n/g, '<br>');
+      zoomedTooltip.appendChild(text);
+    }
+
+    // Add image if available
+    if (imageSrc) {
+      const imageContainer = document.createElement('div');
+      imageContainer.style.cssText = `
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      `;
+      
+      const img = document.createElement('img');
+      img.src = imageSrc;
+      img.alt = altText || 'Zoomed image';
+      img.style.cssText = `
+        max-width: calc(95vw - 40px);
+        max-height: calc(90vh - ${tooltipData && tooltipData.text ? '120px' : '40px'});
+        border-radius: 4px;
+        display: block;
+      `;
+      
+      imageContainer.appendChild(img);
+      zoomedTooltip.appendChild(imageContainer);
+    }
+
+    // Add close button
+    const closeBtn = document.createElement('button');
+    closeBtn.innerHTML = '×';
+    closeBtn.style.cssText = `
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      background: rgba(255, 255, 255, 0.8);
+      border: none;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #000;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `;
+    closeBtn.title = 'Close fullscreen view';
+
+    // Close handlers
+    const closeFullscreen = () => {
+      document.body.removeChild(overlay);
+      document.body.style.overflow = '';
+    };
+
+    overlay.addEventListener('click', closeFullscreen);
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeFullscreen();
+    });
+    
+    // Prevent tooltip container click from closing
+    zoomedTooltip.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
+    // ESC key to close
+    const escHandler = (e) => {
+      if (e.key === 'Escape') {
+        closeFullscreen();
+        document.removeEventListener('keydown', escHandler);
+      }
+    };
+    document.addEventListener('keydown', escHandler);
+
+    // Assemble and show
+    overlay.appendChild(zoomedTooltip);
+    overlay.appendChild(closeBtn);
+    document.body.appendChild(overlay);
+    document.body.style.overflow = 'hidden'; // Prevent scrolling
   }
 }
 
