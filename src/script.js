@@ -11,7 +11,6 @@ function calculateFitScale(img) {
   const imgWidth = img.naturalWidth;
   const imgHeight = img.naturalHeight;
   if (imgWidth === 0 || imgHeight === 0) {
-    console.warn("Image dimensions unavailable:", img.src);
     return 1;
   }
   const scale = Math.min(maxWidth / imgWidth, maxHeight / imgHeight, 1);
@@ -21,10 +20,8 @@ function calculateFitScale(img) {
 
 // 🔹 Apply scale to image
 function applyScale(img, scale) {
-  console.log('applyScale called with scale:', scale, 'naturalWidth:', img.naturalWidth, 'naturalHeight:', img.naturalHeight);
   img.style.width = img.naturalWidth * scale + "px";
   img.style.height = img.naturalHeight * scale + "px";
-  console.log('Applied dimensions - width:', img.style.width, 'height:', img.style.height);
 }
 
 // 🔹 Center image if smaller than viewport
@@ -312,7 +309,6 @@ function getUrlParameter(name) {
 // 🔹 Initialize on load
 document.addEventListener("DOMContentLoaded", () => {
   // Initialize tooltip manager
-  console.log('Initializing tooltip manager...'); // Debug log
   window.tooltipManager = new TooltipManager();
 
   // Initialize dropdown toggle
@@ -527,7 +523,7 @@ document.addEventListener("DOMContentLoaded", () => {
             playPauseBtn.textContent = "⏸";
           })
           .catch((err) => {
-            console.error("Audio play failed:", err);
+
             playPauseBtn.textContent = "▶";
           });
       } else {
@@ -554,7 +550,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     audio.addEventListener("error", (e) => {
-      console.error("Audio error:", e);
+
       playPauseBtn.textContent = "▶";
       progressBar.style.width = "0%";
       if (progressHandle) progressHandle.style.left = "0%";
@@ -632,15 +628,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   } else {
-    console.warn("Audio player elements missing:", {
-      audio,
-      playPauseBtn,
-      progressContainer,
-      progressBar,
-      currentTimeEl,
-      durationEl,
-      loopBtn,
-    });
   }
 
   // 🔹 Back to Top Button
@@ -679,7 +666,7 @@ document.addEventListener("DOMContentLoaded", () => {
           loadPoem(selectedPoem);
         }
       })
-      .catch((err) => console.error("Error loading poems manifest:", err));
+      .catch((err) => {});
   }
 
   function formatPoemTitle(filename) {
@@ -697,7 +684,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function buildPoemList(poems) {
     const poemListItems = document.getElementById("poemListItems");
     if (!poemListItems) {
-      console.error("poemListItems not found");
+
       return;
     }
     poemListItems.innerHTML = "";
@@ -735,7 +722,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const currentTimeEl = document.getElementById("currentTime");
     const durationEl = document.getElementById("duration");
     if (!audioPlayer || !audioElement) {
-      console.warn("Audio player or element missing");
+
       return;
     }
     audioElement.pause();
@@ -765,7 +752,7 @@ document.addEventListener("DOMContentLoaded", () => {
         attachLightboxEvents();
       })
       .catch((err) => {
-        console.error("Error loading poem:", err);
+
         document.getElementById("poemText").innerHTML =
           "<p>Error loading poem.</p>";
       });
@@ -785,12 +772,12 @@ document.addEventListener("DOMContentLoaded", () => {
             audioPlayer.setAttribute("data-title", formatPoemTitle(poem.audio));
             audioPlayer.style.display = "block";
           } else {
-            console.error("Audio file not found:", audioPath);
+
             audioPlayer.style.display = "none";
           }
         })
         .catch((err) => {
-          console.error("Error checking audio file:", err);
+
           audioPlayer.style.display = "none";
         });
     }
@@ -818,7 +805,7 @@ document.addEventListener("DOMContentLoaded", () => {
           loadBlogPost(selectedBlog);
         }
       })
-      .catch((err) => console.error("Error loading blogs manifest:", err));
+      .catch((err) => {});
   }
 
   function buildBlogList(blogs) {
@@ -948,7 +935,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Initialize tooltips after content is loaded - pass blog folder directly
         setTimeout(() => {
           if (window.tooltipManager) {
-            console.log('Reinitializing tooltips after blog load...'); // Debug log
+
             window.tooltipManager.reinitialize(blog.folder);
           }
         }, 100);
@@ -963,7 +950,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       })
       .catch((err) => {
-        console.error(err);
+
         target.innerHTML = "Failed to load blog post.";
       });
   }
@@ -1164,13 +1151,13 @@ class TooltipManager {
   // Load tooltip data from a JSON file
   async loadTooltipData(blogFolder) {
     const tooltipPath = `blogs/${blogFolder}/res/tooltips.json`;
-    console.log(`Attempting to load tooltips from: ${tooltipPath}`);
+
     try {
       const response = await fetch(tooltipPath);
-      console.log(`Fetch response status: ${response.status}`);
+
       if (response.ok) {
         const data = await response.json();
-        console.log('Loaded tooltip data:', data);
+
         // Store all tooltip definitions for this blog with resolved media paths
         Object.entries(data).forEach(([id, tooltipData]) => {
           // If media field exists and it's just a filename (not a full path), prepend blog res folder
@@ -1178,15 +1165,15 @@ class TooltipManager {
             tooltipData.media = `blogs/${blogFolder}/res/${tooltipData.media}`;
           }
           this.tooltipData.set(id, tooltipData);
-          console.log(`Stored tooltip: ${id}`, tooltipData);
+
         });
-        console.log(`Loaded ${Object.keys(data).length} tooltip definitions from ${tooltipPath}`);
-        console.log('All tooltip IDs in cache:', Array.from(this.tooltipData.keys()));
+
+
       } else {
-        console.warn(`Failed to load tooltips: ${response.status} ${response.statusText}`);
+
       }
     } catch (error) {
-      console.warn(`Error loading tooltip data from ${tooltipPath}:`, error);
+
     }
   }
 
@@ -1194,21 +1181,20 @@ class TooltipManager {
   detectBlogFolder() {
     const urlParams = new URLSearchParams(window.location.search);
     const blogIndex = urlParams.get('blog');
-    console.log('Blog index from URL:', blogIndex);
-    console.log('Blogs cache available:', !!window.blogsCache);
+
     // Access blogsCache from the global scope
     if (blogIndex !== null && window.blogsCache && window.blogsCache[blogIndex]) {
       const folder = window.blogsCache[blogIndex].folder;
-      console.log('Detected blog folder:', folder);
+
       return folder;
     }
-    console.log('No blog folder detected');
+
     return null;
   }
 
   // 🔹 Calculate tooltip position and show
   showTooltip(trigger, data, mouseEvent = null) {
-    console.log('Showing tooltip with data:', data); // Debug log
+
     this.hideActiveTooltip();
 
     const tooltip = this.createTooltip(data);
@@ -1443,26 +1429,23 @@ class TooltipManager {
         playPauseBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           e.preventDefault();
-          console.log('Play button clicked, audio paused:', audioElement.paused);
           if (audioElement.paused) {
-            console.log('Attempting to play audio');
             // Stop all other audio first
             this.stopAllOtherAudio(null);
             audioElement.play().then(() => {
-              console.log('Audio started playing');
               playPauseBtn.innerHTML = '⏸';
               this.audioPlaying = true;
               this.stopAllOtherAudio(audioElement); // Ensure only this one plays
             }).catch(err => {
-              console.error('Audio play failed:', err);
+
               // Try alternative approach
               audioElement.load();
               setTimeout(() => {
-                audioElement.play().catch(e => console.error('Retry failed:', e));
+                audioElement.play().catch(e => {});
               }, 100);
             });
           } else {
-            console.log('Pausing audio');
+
             audioElement.pause();
             playPauseBtn.innerHTML = '▶';
             this.audioPlaying = false;
@@ -1526,7 +1509,7 @@ class TooltipManager {
         mediaEl.src = data.media;
         mediaEl.alt = data.text || 'Tooltip media';
         mediaEl.onerror = () => {
-          console.error('Failed to load tooltip media:', data.media);
+
         };
         content.appendChild(mediaEl);
       }
@@ -1539,7 +1522,7 @@ class TooltipManager {
   // Initialize tooltips for elements with data-tooltip attributes
   initializeTooltips() {
     const triggers = document.querySelectorAll('[data-tooltip], [tt]');
-    console.log('Found tooltip triggers:', triggers.length); // Debug log
+
 
     // Clear existing dimensions cache
     this.tooltipDimensions.clear();
@@ -1559,7 +1542,7 @@ class TooltipManager {
     if (tooltipId) {
       tooltipData = this.tooltipData.get(tooltipId);
       if (!tooltipData) {
-        console.warn(`Cannot precalculate dimensions - Tooltip ID "${tooltipId}" not found`);
+
         return;
       }
     } else {
@@ -1598,7 +1581,7 @@ class TooltipManager {
       // Remove temporary tooltip
       document.body.removeChild(tempTooltip);
 
-      console.log('Precalculated dimensions for tooltip:', dataKey, this.tooltipDimensions.get(dataKey));
+
     };
 
     if (gifImg) {
@@ -1615,7 +1598,7 @@ class TooltipManager {
   }
 
   setupTooltip(element) {
-    console.log('Setting up tooltip for:', element); // Debug log
+
 
     // Check if using ID-based tooltip (now just 'tt')
     const tooltipId = element.getAttribute('tt');
@@ -1625,7 +1608,7 @@ class TooltipManager {
       // Get tooltip data from loaded JSON
       tooltipData = this.tooltipData.get(tooltipId);
       if (!tooltipData) {
-        console.warn(`Tooltip ID "${tooltipId}" not found in loaded data`);
+
         return;
       }
       // Add tooltip-trigger class if not present
@@ -1637,7 +1620,7 @@ class TooltipManager {
       try {
         tooltipData = JSON.parse(element.getAttribute('data-tooltip'));
       } catch (e) {
-        console.warn('Failed to parse tooltip data:', e);
+
         return;
       }
     }
@@ -1660,7 +1643,7 @@ class TooltipManager {
 
     // Create new listeners with delay
     element._tooltipMouseEnter = (e) => {
-      console.log('Tooltip triggered for:', e.target); // Debug log
+
       // Store the event for positioning
       element._lastMouseEvent = e;
       // Add 500ms delay before showing tooltip
@@ -1813,17 +1796,17 @@ class TooltipManager {
 
   // Public method to reinitialize tooltips (for dynamic content)
   async reinitialize(blogFolder) {
-    console.log('Reinitializing tooltips with blog folder:', blogFolder); // Debug log
+
 
     // Use provided blog folder or try to detect it
     const folder = blogFolder || this.detectBlogFolder();
-    console.log('Using blog folder for tooltip loading:', folder);
+
 
     if (folder) {
       await this.loadTooltipData(folder);
-      console.log('Tooltip data loaded, cache size:', this.tooltipData.size);
+
     } else {
-      console.log('No blog folder provided or detected, skipping tooltip data load');
+
     }
 
     this.initializeTooltips();
@@ -1966,7 +1949,7 @@ function initHomePage() {
       const header = document.getElementById("header-placeholder");
       header.innerHTML = data;
     })
-    .catch(error => console.error("Error loading header:", error));
+    .catch(error => {});
 
   // Load banner.html and initialize dropdown
   fetch("src/banner.html")
@@ -1979,7 +1962,7 @@ function initHomePage() {
         initDropdownToggle();
       }
     })
-    .catch(error => console.error("Error loading banner:", error));
+    .catch(error => {});
 
   // Reinitialize dropdown toggle on resize
   let resizeTimer;
@@ -2016,7 +1999,7 @@ function initBlogPage() {
       // Adjust blog list position
       adjustSidebarHeight();
     })
-    .catch((error) => console.error("Error loading banner:", error));
+    .catch((error) => {});
 
   // Adjust sidebar height dynamically and pad content below banner
   function adjustSidebarHeight() {
@@ -2081,6 +2064,13 @@ function initBlogPage() {
         document.documentElement.classList.toggle("no-scroll", isOpen);
         const floatingToggle = document.getElementById("sidebarFloatingToggle");
         if (floatingToggle) floatingToggle.classList.toggle("hidden", isOpen);
+      } else {
+        // Desktop: toggle collapsed state
+        blogList.classList.toggle("collapsed");
+        const contentWrapper = document.querySelector(".content-scale-wrapper");
+        if (contentWrapper) {
+          contentWrapper.classList.toggle("sidebar-collapsed", blogList.classList.contains("collapsed"));
+        }
       }
     });
   }
@@ -2154,7 +2144,7 @@ function initPoemPage() {
       // Adjust poem list position
       adjustSidebarHeight();
     })
-    .catch((error) => console.error("Error loading banner:", error));
+    .catch((error) => {});
 
   // Similar functionality as blog page but for poems
   function adjustSidebarHeight() {
@@ -2207,11 +2197,19 @@ function initPoemPage() {
       e.stopPropagation();
       const poemList = document.getElementById("poemList");
       if (window.innerWidth <= 800) {
+        // Mobile: toggle overlay
         const isOpen = poemList.classList.toggle("show");
         document.body.classList.toggle("no-scroll", isOpen);
         document.documentElement.classList.toggle("no-scroll", isOpen);
         const floatingToggle = document.getElementById("sidebarFloatingToggle");
         if (floatingToggle) floatingToggle.classList.toggle("hidden", isOpen);
+      } else {
+        // Desktop: toggle collapsed state
+        poemList.classList.toggle("collapsed");
+        const contentWrapper = document.querySelector(".content-scale-wrapper");
+        if (contentWrapper) {
+          contentWrapper.classList.toggle("sidebar-collapsed", poemList.classList.contains("collapsed"));
+        }
       }
     });
   }
@@ -2284,7 +2282,7 @@ function initBioPage() {
       }, 100);
     })
     .catch((error) => {
-      console.error("Error loading bio:", error);
+
       document.getElementById("contentText").innerHTML = "Failed to load bio.";
     });
 
@@ -2299,7 +2297,7 @@ function initBioPage() {
         initDropdownToggle();
       }
     })
-    .catch((error) => console.error("Error loading banner:", error));
+    .catch((error) => {});
 
   // Reinitialize dropdown toggle on resize
   let resizeTimer;
