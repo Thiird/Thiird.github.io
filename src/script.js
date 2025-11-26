@@ -666,7 +666,7 @@ document.addEventListener("DOMContentLoaded", () => {
           loadPoem(selectedPoem);
         }
       })
-      .catch((err) => {});
+      .catch((err) => { });
   }
 
   function formatPoemTitle(filename) {
@@ -805,7 +805,7 @@ document.addEventListener("DOMContentLoaded", () => {
           loadBlogPost(selectedBlog);
         }
       })
-      .catch((err) => {});
+      .catch((err) => { });
   }
 
   function buildBlogList(blogs) {
@@ -1308,7 +1308,7 @@ class TooltipManager {
           padding: 10px;
           min-width: 280px;
         `;
-        
+
         const playerControls = document.createElement('div');
         playerControls.className = 'player-controls';
         playerControls.style.cssText = `
@@ -1316,7 +1316,7 @@ class TooltipManager {
           align-items: center;
           gap: 8px;
         `;
-        
+
         const playPauseBtn = document.createElement('button');
         playPauseBtn.innerHTML = '▶';
         playPauseBtn.className = 'player-btn';
@@ -1347,7 +1347,7 @@ class TooltipManager {
         playPauseBtn.addEventListener('mouseleave', () => {
           playPauseBtn.style.backgroundColor = '#3498db';
         });
-        
+
         const currentTime = document.createElement('span');
         currentTime.textContent = '0:00';
         currentTime.style.cssText = `
@@ -1355,7 +1355,7 @@ class TooltipManager {
           font-size: 12px;
           min-width: 35px;
         `;
-        
+
         const progressContainer = document.createElement('div');
         progressContainer.className = 'progress-container';
         progressContainer.style.cssText = `
@@ -1366,7 +1366,7 @@ class TooltipManager {
           position: relative;
           cursor: pointer;
         `;
-        
+
         const progressBar = document.createElement('div');
         progressBar.style.cssText = `
           height: 100%;
@@ -1375,7 +1375,7 @@ class TooltipManager {
           width: 0%;
           transition: none;
         `;
-        
+
         const progressHandle = document.createElement('div');
         progressHandle.style.cssText = `
           position: absolute;
@@ -1388,7 +1388,7 @@ class TooltipManager {
           transform: translate(-50%, -50%);
           cursor: pointer;
         `;
-        
+
         const duration = document.createElement('span');
         duration.textContent = '0:00';
         duration.style.cssText = `
@@ -1396,26 +1396,26 @@ class TooltipManager {
           font-size: 12px;
           min-width: 35px;
         `;
-        
+
         progressContainer.appendChild(progressBar);
         progressContainer.appendChild(progressHandle);
-        
+
         const audioElement = document.createElement('audio');
         audioElement.src = data.media;
         audioElement.loop = true;
         audioElement.preload = 'metadata';
-        
+
         // Track this audio element
         this.allAudioElements.add(audioElement);
         this.activeTooltipAudio = audioElement;
-        
+
         // Format time helper
         const formatTime = (seconds) => {
           const mins = Math.floor(seconds / 60);
           const secs = Math.floor(seconds % 60);
           return `${mins}:${secs.toString().padStart(2, '0')}`;
         };
-        
+
         // Update progress
         const updateProgress = () => {
           if (audioElement.duration && isFinite(audioElement.duration)) {
@@ -1425,7 +1425,7 @@ class TooltipManager {
             currentTime.textContent = formatTime(audioElement.currentTime);
           }
         };
-        
+
         playPauseBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           e.preventDefault();
@@ -1441,7 +1441,7 @@ class TooltipManager {
               // Try alternative approach
               audioElement.load();
               setTimeout(() => {
-                audioElement.play().catch(e => {});
+                audioElement.play().catch(e => { });
               }, 100);
             });
           } else {
@@ -1461,7 +1461,7 @@ class TooltipManager {
         // Add pointer events for better touch support
         playPauseBtn.style.pointerEvents = 'auto';
         playPauseBtn.setAttribute('type', 'button');
-        
+
         // Progress bar click
         progressContainer.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -1471,36 +1471,36 @@ class TooltipManager {
             audioElement.currentTime = percent * audioElement.duration;
           }
         });
-        
+
         audioElement.addEventListener('loadedmetadata', () => {
           duration.textContent = formatTime(audioElement.duration);
           updateProgress();
         });
-        
+
         audioElement.addEventListener('timeupdate', updateProgress);
-        
+
         audioElement.addEventListener('ended', () => {
           // Since we're looping, this shouldn't fire, but just in case
           this.audioPlaying = false;
         });
-        
+
         audioElement.addEventListener('pause', () => {
           playPauseBtn.innerHTML = '▶';
           this.audioPlaying = false;
         });
-        
+
         audioElement.addEventListener('play', () => {
           playPauseBtn.innerHTML = '⏸';
           this.audioPlaying = true;
         });
-        
+
         playerControls.appendChild(playPauseBtn);
         playerControls.appendChild(currentTime);
         playerControls.appendChild(progressContainer);
         playerControls.appendChild(duration);
         audioPlayer.appendChild(playerControls);
         content.appendChild(audioPlayer);
-        
+
         this.currentAudio = audioElement;
       } else {
         // Handle images
@@ -1631,9 +1631,9 @@ class TooltipManager {
     element.removeEventListener('click', element._tooltipClick);
 
     // Add click functionality if tooltip has an image
-    if (tooltipData.media && (tooltipData.media.endsWith('.jpg') || tooltipData.media.endsWith('.jpeg') || 
-                             tooltipData.media.endsWith('.png') || tooltipData.media.endsWith('.gif') || 
-                             tooltipData.media.endsWith('.webp'))) {
+    if (tooltipData.media && (tooltipData.media.endsWith('.jpg') || tooltipData.media.endsWith('.jpeg') ||
+      tooltipData.media.endsWith('.png') || tooltipData.media.endsWith('.gif') ||
+      tooltipData.media.endsWith('.webp'))) {
       element._tooltipClick = (e) => {
         e.preventDefault();
         this.showImageFullscreen(tooltipData.media, tooltipData.alt || tooltipData.text, tooltipData);
@@ -1778,7 +1778,7 @@ class TooltipManager {
         this.activeTooltipAudio.currentTime = 0;
         this.audioPlaying = false;
       }
-      
+
       this.tooltip.classList.remove('show');
       setTimeout(() => {
         if (this.tooltip && this.tooltip.parentNode) {
@@ -1796,7 +1796,6 @@ class TooltipManager {
 
   // Public method to reinitialize tooltips (for dynamic content)
   async reinitialize(blogFolder) {
-
 
     // Use provided blog folder or try to detect it
     const folder = blogFolder || this.detectBlogFolder();
@@ -1869,7 +1868,7 @@ class TooltipManager {
         justify-content: center;
         align-items: center;
       `;
-      
+
       const img = document.createElement('img');
       img.src = imageSrc;
       img.alt = altText || 'Zoomed image';
@@ -1879,7 +1878,7 @@ class TooltipManager {
         border-radius: 4px;
         display: block;
       `;
-      
+
       imageContainer.appendChild(img);
       zoomedTooltip.appendChild(imageContainer);
     }
@@ -1917,7 +1916,7 @@ class TooltipManager {
       e.stopPropagation();
       closeFullscreen();
     });
-    
+
     // Prevent tooltip container click from closing
     zoomedTooltip.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -1949,7 +1948,7 @@ function initHomePage() {
       const header = document.getElementById("header-placeholder");
       header.innerHTML = data;
     })
-    .catch(error => {});
+    .catch(error => { });
 
   // Load banner.html and initialize dropdown
   fetch("src/banner.html")
@@ -1962,7 +1961,7 @@ function initHomePage() {
         initDropdownToggle();
       }
     })
-    .catch(error => {});
+    .catch(error => { });
 
   // Reinitialize dropdown toggle on resize
   let resizeTimer;
@@ -1999,7 +1998,7 @@ function initBlogPage() {
       // Adjust blog list position
       adjustSidebarHeight();
     })
-    .catch((error) => {});
+    .catch((error) => { });
 
   // Adjust sidebar height dynamically and pad content below banner
   function adjustSidebarHeight() {
@@ -2007,7 +2006,6 @@ function initBlogPage() {
     requestAnimationFrame(() => {
       const banner = document.getElementById("banner-placeholder");
       const blogList = document.getElementById("blogList");
-      const contentWrapper = document.querySelector(".content-scale-wrapper");
       const mobileToggle = document.getElementById("sidebarFloatingToggle");
       if (banner && blogList) {
         const bannerRect = banner.getBoundingClientRect();
@@ -2016,10 +2014,8 @@ function initBlogPage() {
         blogList.style.top = `${topOffset}px`;
         blogList.style.height = `calc(100vh - ${topOffset}px)`;
 
-        // Also adjust content wrapper margin to avoid overlap
-        if (contentWrapper) {
-          contentWrapper.style.paddingTop = `${Math.max(0, bannerBottom)}px`;
-        }
+        // Remove this section - don't adjust content wrapper padding
+        // This was causing the content to scroll at a different rate
 
         // ensure mobile toggle is positioned correctly
         if (mobileToggle) {
@@ -2046,6 +2042,7 @@ function initBlogPage() {
       // Desktop: show sidebar, hide floating toggle
       blogList.classList.remove("show");
       if (floatingToggle) {
+
         floatingToggle.style.display = "none";
       }
     }
@@ -2144,14 +2141,13 @@ function initPoemPage() {
       // Adjust poem list position
       adjustSidebarHeight();
     })
-    .catch((error) => {});
+    .catch((error) => { });
 
   // Similar functionality as blog page but for poems
   function adjustSidebarHeight() {
     requestAnimationFrame(() => {
       const banner = document.getElementById("banner-placeholder");
       const poemList = document.getElementById("poemList");
-      const contentWrapper = document.querySelector(".content-scale-wrapper");
       const mobileToggle = document.getElementById("sidebarFloatingToggle");
       if (banner && poemList) {
         const bannerRect = banner.getBoundingClientRect();
@@ -2160,9 +2156,7 @@ function initPoemPage() {
         poemList.style.top = `${topOffset}px`;
         poemList.style.height = `calc(100vh - ${topOffset}px)`;
 
-        if (contentWrapper) {
-          contentWrapper.style.paddingTop = `${Math.max(0, bannerBottom)}px`;
-        }
+        // Remove this section - don't adjust content wrapper padding
 
         if (mobileToggle) {
           mobileToggle.style.top = `${Math.max(0, bannerBottom)}px`;
@@ -2297,7 +2291,7 @@ function initBioPage() {
         initDropdownToggle();
       }
     })
-    .catch((error) => {});
+    .catch((error) => { });
 
   // Reinitialize dropdown toggle on resize
   let resizeTimer;

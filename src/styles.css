@@ -68,7 +68,6 @@ body.no-scroll {
   margin: 0 auto;
   width: 100%;
   box-sizing: border-box;
-  min-height: calc(100vh - 60px);
 }
 
 @media (min-width: 801px) {
@@ -236,7 +235,6 @@ body.no-scroll {
   padding: 10px 0;
   text-align: center;
   position: sticky;
-  top: 0;
   overflow: visible;
   z-index: 3000;
 }
@@ -264,7 +262,6 @@ body.no-scroll {
 
 .top-menu a:hover {
   background-color: #3498db;
-  border-radius: 5px;
 }
 
 .menu-button {
@@ -692,8 +689,8 @@ body.no-scroll {
   font-family: 'Arial', sans-serif;
   color: #e0e0e0;
   line-height: 1.6;
-  font-size: clamp(16px, 2vw, 20px);
-  padding: clamp(12px, 2.5vw, 20px);
+  font-size: 18px;
+  padding: 20px;
   border-radius: 8px;
   max-width: var(--site-max-width);
   width: 100%;
@@ -713,9 +710,9 @@ body.no-scroll {
   max-width: var(--site-max-width);
   width: 100%;
   margin: 0 auto;
-  padding: clamp(12px, 2.5vw, 20px);
+  padding: 12px;
   box-sizing: border-box;
-  font-size: clamp(16px, 2vw, 20px);
+  font-size: 16px;
   line-height: 1.6;
   overflow-wrap: break-word;
   word-break: break-word;
@@ -723,7 +720,7 @@ body.no-scroll {
 }
 
 .content-text h1 {
-  font-size: clamp(1.4rem, 4vw, 2.4rem);
+  font-size: 2rem;
   margin: 0 0 0.6em;
   line-height: 1.1;
   word-break: break-word;
@@ -731,13 +728,13 @@ body.no-scroll {
 }
 
 .content-text h2 {
-  font-size: clamp(1.15rem, 3vw, 1.6rem);
+  font-size: 1.5rem;
   margin: 0 0 0.5em;
   line-height: 1.2;
 }
 
 .content-text h3 {
-  font-size: clamp(1.05rem, 2.4vw, 1.2rem);
+  font-size: 1.2rem;
   margin: 0 0 0.4em;
   line-height: 1.25;
 }
@@ -931,16 +928,13 @@ body.no-scroll {
   background-color: #333;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 4px;
   padding: 12px 14px;
   cursor: pointer;
-  transition: opacity 0.3s, transform 0.2s, background-color 0.3s;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 #backToTop:hover {
   background-color: #555;
-  transform: translateY(-2px);
 }
 
 pre code {
@@ -993,7 +987,7 @@ pre {
   --sidebar-medium: clamp(160px, 22vw, 240px);
   --sidebar-collapsed: 56px;
   --sidebar-transition: 0.25s;
-  --center-gap: 120px;
+  --center-gap: 0px;
   --content-width: 1000px;
 }
 
@@ -1036,6 +1030,7 @@ pre {
 .poem-list~.poem-container {
   margin-left: 0 !important;
   padding-left: 0;
+  margin-top: 30px;
   transition: padding-left 0.25s ease;
   box-sizing: border-box;
 }
@@ -1083,12 +1078,13 @@ pre {
 .mobile-sidebar-toggle {
   display: none;
   position: fixed;
-  top: 12px;
-  left: 12px;
-  z-index: 1100;
   width: 44px;
   height: 44px;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-top: 12px;
   border-radius: 8px;
+  z-index: 1100;
   background: #8d99ae;
   color: #fff;
   border: none;
@@ -1115,7 +1111,7 @@ pre {
 .poem-content {
   max-width: var(--site-max-width);
   width: 100%;
-  padding: 0 18px;
+  padding: 0 60px;
   margin: 0;
   box-sizing: border-box;
 }

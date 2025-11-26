@@ -16,16 +16,15 @@ Here you will find an overview of the various concepts and straightforward direc
     <li class="index-section">
       <a href="#how-is-it-made">2. How is it made</a>
       <ul class="index-subsection">
-        <li><a href="#typical-structure-of-the-electronics">2.1 Typical structure of the electronics</a></li>
-        <li><a href="#hardware">2.2 Hardware</a>
+        <li><a href="#hardware">2.1 Hardware</a>
           <ul class="index-subsection">
-            <li><a href="#input-elements">2.2.1 Input Elements</a></li>
-            <li><a href="#computational-unit">2.2.2 Computational Unit</a>
-            <li><a href="#output-elements">2.2.3 Output Elements</a></li>
+            <li><a href="#input-elements">2.1.1 Input Elements</a></li>
+            <li><a href="#computational-unit">2.1.2 Computational Unit</a>
+            <li><a href="#output-elements">2.1.3 Output Elements</a></li>
           </ul>
         </li>
-        <li><a href="#firmware">2.3 Firmware</a></li>
-        <li><a href="#software">2.4 Software</a></li>
+        <li><a href="#firmware">2.2 Firmware</a></li>
+        <li><a href="#software">2.3 Software</a></li>
       </ul>
     </li>
     <li class="index-section">
@@ -55,12 +54,12 @@ Here you will find an overview of the various concepts and straightforward direc
 <h1 id="what-is-it">1. What's an Embedded System?</h1>
 Embedded Systems, <span tt="ES">ES</span> from now on, is an application field that merges computer science, electrical engineering and mechanical engineering to create electronic systems for specific use cases.
 
-Before moving forward, it's important to define the distinction between an <em>electrical</em> and an <em>electronic</em> system.
+It's important to define the distinction between an <em>electrical</em> and an <em>electronic</em> system.
 
-Electrical means anything where "current flows through wires", like motors and lighting.  
+Electrical means anything where "current flows through wires", like motors, simple wirings and lighting.  
 Electronic means anything where "current flows through active components that perform computation", like diodes, transistor and ultimately computers.
 
-Not all computers are referred to as Embedded Systems though: any general purpose computer like desktop PCs, laptops or smartphones, is typically not considered an embedded system.
+Not all computers are referred to as Embedded Systems though: any general purpose computer like desktop PCs, laptops or smartphones, is *not* an embedded system.
 
 Some <span tt="ES">ES</span> examples are:
 - <span tt="keyboard">computer keyboard</span>
@@ -69,17 +68,17 @@ Some <span tt="ES">ES</span> examples are:
 - <span tt="SAM_computer">the guidance system of a surface to air missile</span>
 
 <h2 id="why-embedded">1.1 Why <em>'embedded'</em>?</h2>
-The result of the embedded engineer's work is the electronic system, which can't be handed to the customer as it is, it first needs to be integrated, e.g. embedded, in some kind of enclosure, hence the term embedded system.
+The result of the engineer's work is the electronic system, which can't be handed to the customer as it is, it first needs to be integrated, e.g. embedded, in some kind of enclosure, hence the term embedded system.
 
-Sometimes the enclosure is made of plastic, like for a desktop mouse, sometimes it's metal, like for the surface to air missile.
+For a desktop mouse, the enclosure is made of plastic, and for a surface to air missile the enclouse is made of metal.
 
 <h1 id="how-is-it-made">2. How is it made</h1>
 
-An embedded system is made of three main components:
+An embedded system is made of three main elements:
 
-- <strong>Hardware</strong>: The physical electronic components—circuits, chips, sensors, and actuators that make up the system
-- <strong>Firmware</strong>: Low-level code that runs directly on the hardware, controlling it at the most fundamental level
-- <strong>Software</strong>: Higher-level code that runs on top of an operating system, handling complex logic and user interfaces
+- <strong>Hardware</strong>: The electronics, like chips, buttons and actuators. 
+- <strong>Firmware</strong>: Low-level code running on the ES hardware, controlling its delicate basic functionalities  
+- <strong>Software</strong>: Higher-level code that runs on or communicates with the ES to implement extra functionalities
 
 These three layers work together to create a functioning embedded system. The hardware provides the physical platform, the firmware controls it directly, and the software (when present) adds higher-level functionality.
 
@@ -87,26 +86,23 @@ The core of an <span tt="ES">ES</span> is the electronics. There can be an <span
 
 The electronics is consolidated in a single assembly called <span tt="PCB">Printed Circuit Board</span> (PCB). A PCB is a flat board made of insulating material (usually fiberglass) with copper traces etched onto it that connect different electronic components together. Components like integrated circuits, resistors, capacitors, and connectors are soldered onto the board. The PCB is the physical heart of any embedded system, it's where all the magic happens. Without it, you'd have a mess of wires connecting components, which would be unreliable and impossible to manufacture at scale.
 
-<h2 id="typical-structure-of-the-electronics">2.1 Typical structure of the electronics</h2>
-The electronics of an <span tt="ES">ES</span> is typically composed of three elements:
+Consider a desktop mouse as an example: the hardware includes the circuit board with its buttons, scroll wheel, and motion sensor, the firmware is the code on the circuit board that interprets input from these components and sends data to the connected device and the software is the application running on your desktop computer that interacts with the mouse to adjust settings like DPI.
 
-- <strong>input elements</strong>: buttons, dials, sensors, radio signals
-- <strong>computational unit</strong>: an integrated circuit that performs computation
-- <strong>output elements</strong>: LEDs, screens, radio signals
+<h2 id="hardware">2.1 Hardware</h2>
 
-In the case of a desktop mouse, the input is the state of the buttons (pressed or not pressed) and the motion value from the motion sensor, the computational unit is a microcontroller, and the output is the USB or Bluetooth signal that gets received by the computer.
+Functionally speaking, all the hardware elements of an ES fall into one of three categories:
 
-In the case of a <span tt="heat_seeking_missile">heat-seeking missile</span>, the input is the signal coming from the heat seeker in front, the computational unit is a unit composed of FPGAs and the output is the movement of the fins to steer the rocket to follow the heat source in front of it.
+- <strong>input elements</strong>
+- <strong>computational unit</strong>
+- <strong>output elements</strong>
 
-<h2 id="hardware">2.2 Hardware</h2>
-
-<h3 id="input-elements">2.2.1 Input Elements</h3>
+<h3 id="input-elements">2.1.1 Input Elements</h3>
 
 Think of a button, dial, touch screen, a receiving antenna, magnetic sensor, light sensor, humidity sensor: anything that can produce electrical signals that describe the surrounding enviroment.
 
-In the case of a desktop mouse, the input elements are the buttons and motion sensor, and the electrical signals is the state of the buttons (pressed or not pressed) and the value from the sensor.
+In the case of a desktop mouse, the input elements are the buttons, scroll wheel and motion sensor.
 
-<h3 id="computational-unit">2.2.2 Computational Unit</h3>
+<h3 id="computational-unit">2.1.2 Computational Unit</h3>
 
 This is the core of the system, this is where the actual computation is performed.
 
@@ -157,7 +153,7 @@ Programming an FPGA means writing the HDL to implement something, compiling it t
 
 Calling HDL code "software" is quite a stretch, as the "soft" in software implies being straightforward to change and done so on a regular basis (think of how often you update apps on your phone), which is definitely not the case with FPGA code.
 
-<h3 id="output-elements">2.2.3 Output Elements</h3>
+<h3 id="output-elements">2.1.3 Output Elements</h3>
 
 Output elements are how the <span tt="ES">ES</span> talks back to you or to other systems.
 
@@ -165,7 +161,7 @@ Think of LEDs, displays (LCD, OLED, seven-segment, e-paper), buzzers, speakers, 
 
 In the case of a desktop mouse, the output of the system is the buttons and motion data encoded as USB or Bluetooth signals sent to the PC.
 
-<h2 id="firmware">2.3 Firmware</h2>
+<h2 id="firmware">2.2 Firmware</h2>
 
 Firmware is the code that runs directly on the computational unit (MCU, CPU, or FPGA), without an operating system in between. It's called firmware and not software because it's typically written once and remains mostly unchanged for the lifetime of the product. Think about how many times you updated your HVAC firmware, right, you never did.
 
@@ -173,7 +169,7 @@ Firmware is low-level code that directly controls the hardware: it configures re
 
 For example, the firmware in your computer keyboard reads which keys are pressed, debounces the switches, and sends the appropriate USB signals to your PC. It runs the same code every single time you press a key, without any operating system.
 
-<h2 id="software">2.4 Software</h2>
+<h2 id="software">2.3 Software</h2>
 
 In the embedded world, when we say "software" (as opposed to firmware), we're usually talking about higher-level code that runs on top of an operating system like Linux or Android. This is different from firmware in several ways:
 
