@@ -93,6 +93,12 @@ function resetZoom(img, lightbox) {
   img.classList.remove("zoomed");
   const scale = calculateFitScale(img);
   fadeApply(img, lightbox, scale);
+  
+  // Show caption at basic zoom level
+  const caption = document.getElementById("lightbox-caption");
+  if (caption && caption.textContent.trim()) {
+    caption.style.display = "block";
+  }
 }
 
 // 🔹 Update zoom
@@ -102,6 +108,12 @@ function updateZoom(img, lightbox, cursorX, cursorY) {
   const scale = fitScale * zoomScales[zoomLevel];
   img.classList.toggle("zoomed", zoomLevel > 0);
   fadeApply(img, lightbox, scale, cursorX, cursorY);
+  
+  // Hide caption when zoomed beyond basic level
+  const caption = document.getElementById("lightbox-caption");
+  if (caption) {
+    caption.style.display = zoomLevel === 0 && caption.textContent.trim() ? "block" : "none";
+  }
 }
 
 // 🔹 Function to initialize dropdown toggle for mobile and ensure desktop reset
@@ -334,9 +346,14 @@ document.addEventListener("DOMContentLoaded", () => {
   nextBtn.innerHTML = "›";
   nextBtn.setAttribute("aria-label", "Next image");
 
+  // Create caption for alt text
+  const caption = document.createElement("div");
+  caption.id = "lightbox-caption";
+
   lightbox.appendChild(prevBtn);
   lightbox.appendChild(img);
   lightbox.appendChild(nextBtn);
+  lightbox.appendChild(caption);
   document.body.appendChild(lightbox);
 
   // Navigation button handlers
@@ -415,6 +432,16 @@ document.addEventListener("DOMContentLoaded", () => {
         // Find index in the grid images list (or -1 if not in grid)
         currentImageIndex = imageList.indexOf(thumbnail);
         img.src = thumbnail.src;
+        
+        // Update caption with alt text
+        const caption = document.getElementById("lightbox-caption");
+        if (thumbnail.alt && thumbnail.alt.trim()) {
+          caption.textContent = thumbnail.alt;
+          caption.style.display = zoomLevel === 0 ? "block" : "none";
+        } else {
+          caption.style.display = "none";
+        }
+        
         const openLightbox = () => {
           lightbox.style.display = "block";
           document.body.classList.add("lightbox-active");
@@ -433,7 +460,18 @@ document.addEventListener("DOMContentLoaded", () => {
     // Only navigate if current image is in the grid (currentImageIndex >= 0)
     if (imageList.length === 0 || currentImageIndex < 0) return;
     currentImageIndex = (currentImageIndex + direction + imageList.length) % imageList.length;
-    img.src = imageList[currentImageIndex].src;
+    const currentImg = imageList[currentImageIndex];
+    img.src = currentImg.src;
+    
+    // Update caption with current image's alt text
+    const caption = document.getElementById("lightbox-caption");
+    if (currentImg.alt && currentImg.alt.trim()) {
+      caption.textContent = currentImg.alt;
+      caption.style.display = zoomLevel === 0 ? "block" : "none";
+    } else {
+      caption.style.display = "none";
+    }
+    
     const reloadImage = () => {
       resetZoom(img, lightbox);
       updateNavigationVisibility();
@@ -702,8 +740,21 @@ document.addEventListener("DOMContentLoaded", () => {
     poemListItems.querySelectorAll("a").forEach((link) => {
       link.addEventListener("click", (e) => {
         e.preventDefault();
-        const poem = JSON.parse(link.getAttribute("data-poem"));
         const index = link.dataset.index;
+        const currentPoemIndex = getUrlParameter('poem');
+        
+        // If clicking on the currently active poem
+        if (index === currentPoemIndex) {
+          // On mobile, just close the sidebar
+          if (window.innerWidth <= 800) {
+            closeSidebarAfterSelect();
+          }
+          // On desktop, do nothing
+          return;
+        }
+        
+        // Different poem selected, load it
+        const poem = JSON.parse(link.getAttribute("data-poem"));
         loadPoem(poem);
         history.pushState({ poemIndex: index }, "", `?poem=${index}`);
         // only hide/collapse sidebar on mobile
@@ -826,8 +877,21 @@ document.addEventListener("DOMContentLoaded", () => {
     listEl.querySelectorAll("a").forEach((link) => {
       link.addEventListener("click", (e) => {
         e.preventDefault();
-        const blog = JSON.parse(link.getAttribute("data-blog"));
         const index = link.dataset.index;
+        const currentBlogIndex = getUrlParameter('blog');
+        
+        // If clicking on the currently active blog
+        if (index === currentBlogIndex) {
+          // On mobile, just close the sidebar
+          if (window.innerWidth <= 800) {
+            closeSidebarAfterSelect();
+          }
+          // On desktop, do nothing
+          return;
+        }
+        
+        // Different blog selected, load it
+        const blog = JSON.parse(link.getAttribute("data-blog"));
         loadBlogPost(blog);
         history.pushState({ blogIndex: index }, "", `?blog=${index}`);
         // only hide/collapse sidebar on mobile
@@ -1938,6 +2002,35 @@ class TooltipManager {
     document.body.style.overflow = 'hidden'; // Prevent scrolling
   }
 }
+
+// Floating sidebar toggle functionality for mobile
+function initSidebarToggle() {
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar'); // Assuming sidebar exists
+    
+    if (sidebarToggle && sidebar) {
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            sidebarToggle.classList.toggle('active');
+        });
+        
+        // Show/hide toggle button based on screen size
+        const updateToggleVisibility = () => {
+            if (window.innerWidth <= 768) {
+                sidebarToggle.style.display = 'block';
+            } else {
+                sidebarToggle.style.display = 'none';
+                sidebar.classList.remove('active');
+            }
+        };
+        
+        window.addEventListener('resize', updateToggleVisibility);
+        updateToggleVisibility(); // Initial check
+    }
+}
+
+// Initialize sidebar toggle when DOM is loaded
+document.addEventListener('DOMContentLoaded', initSidebarToggle);
 
 // 🔹 Home Page Initialization
 function initHomePage() {

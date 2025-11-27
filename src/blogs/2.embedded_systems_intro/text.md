@@ -339,10 +339,10 @@ Good luck.
 ## Gallery
 
 <div class="image-grid">
-  <img src="res/image1.jpg" alt="Gallery image 1" />
-  <img src="res/image2.jpg" alt="Gallery image 2" />
-  <img src="res/image3.jpg" alt="Gallery image 3" />
-  <img src="res/image4.jpg" alt="Gallery image 4" />
-  <img src="res/image5.jpg" alt="Gallery image 5" />
-  <img src="res/image6.jpg" alt="Gallery image 6" />
+  <img class="hover-effect click-zoom" src="es_1.jpg" alt="Gallery image 1" />
+  <img class="hover-effect click-zoom" src="es_2.jpg" alt="My custom mouse assembly" />
+  <img class="hover-effect click-zoom" src="es_3.jpg" alt="My custom keyboard internals" />
+  <img class="hover-effect click-zoom" src="es_4.jpg" alt="Infrared seeker for an R-60 soviet air-to-air missile" />
+  <img class="hover-effect click-zoom" src="es_5.jpg" alt="Gallery image 5" />
+  <img class="hover-effect click-zoom" src="es_6.jpg" alt="Gallery image 6" />
 </div>

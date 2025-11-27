@@ -37,13 +37,11 @@ body.lightbox-active {
 
 body.no-scroll {
   overflow: hidden !important;
-  height: 100vh !important;
 }
 
 html.no-scroll,
 body.no-scroll {
   overflow: hidden !important;
-  height: 100vh !important;
 }
 
 .mobile-sidebar-toggle.hidden {
@@ -898,6 +896,22 @@ body.no-scroll {
 #lightbox-prev:active,
 #lightbox-next:active {
   background: rgba(0, 0, 0, 0.9);
+}
+
+#lightbox-caption {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(71, 71, 71, 0.8);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 16px;
+  max-width: 80%;
+  text-align: center;
+  display: none;
+  transition: opacity 0.3s ease;
 }
 
 @media (max-width: 600px) {
