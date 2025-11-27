@@ -2004,35 +2004,39 @@ class TooltipManager {
 }
 
 // Floating sidebar toggle functionality for mobile
-function initSidebarToggle() {
-    const sidebarToggle = document.getElementById('sidebarToggle');
-    const sidebar = document.getElementById('sidebar'); // Assuming sidebar exists
-    
-    if (sidebarToggle && sidebar) {
-        sidebarToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-            sidebarToggle.classList.toggle('active');
-        });
-        
-        // Show/hide toggle button based on screen size
-        const updateToggleVisibility = () => {
-            if (window.innerWidth <= 768) {
-                sidebarToggle.style.display = 'block';
-            } else {
-                sidebarToggle.style.display = 'none';
-                sidebar.classList.remove('active');
-            }
-        };
-        
-        window.addEventListener('resize', updateToggleVisibility);
-        updateToggleVisibility(); // Initial check
-    }
-}
+// function initSidebarToggle() {
+//     const sidebarToggle = document.getElementById('sidebarFloatingToggle');
+//     const sidebar = document.getElementById('poemList') || document.getElementById('blogList');
+//     
+//     if (sidebarToggle && sidebar) {
+//         sidebarToggle.addEventListener('click', () => {
+//             sidebar.classList.toggle('show');
+//             sidebarToggle.classList.toggle('active');
+//         });
+//         
+//         // Show/hide toggle button based on screen size
+//         const updateToggleVisibility = () => {
+//             if (window.innerWidth <= 768) {
+//                 sidebarToggle.style.display = 'block';
+//             } else {
+//                 sidebarToggle.style.display = 'none';
+//                 sidebar.classList.remove('show');
+//             }
+//         };
+//         
+//         window.addEventListener('resize', updateToggleVisibility);
+//         updateToggleVisibility(); // Initial check
+//     }
+// }
 
-// Initialize sidebar toggle when DOM is loaded
-document.addEventListener('DOMContentLoaded', initSidebarToggle);
+// Only initialize sidebar toggle on pages that have sidebars
+// document.addEventListener('DOMContentLoaded', () => {
+//     if (document.getElementById('poemList') || document.getElementById('blogList')) {
+//         initSidebarToggle();
+//     }
+// });
 
-// 🔹 Home Page Initialization
+//// 🔹 Home Page Initialization
 function initHomePage() {
   // Load header.html first
   fetch("src/header.html")
@@ -2107,8 +2111,6 @@ function initBlogPage() {
         blogList.style.top = `${topOffset}px`;
         blogList.style.height = `calc(100vh - ${topOffset}px)`;
 
-        // Remove this section - don't adjust content wrapper padding
-        // This was causing the content to scroll at a different rate
 
         // ensure mobile toggle is positioned correctly
         if (mobileToggle) {
@@ -2249,8 +2251,8 @@ function initPoemPage() {
         poemList.style.top = `${topOffset}px`;
         poemList.style.height = `calc(100vh - ${topOffset}px)`;
 
-        // Remove this section - don't adjust content wrapper padding
 
+        // ensure mobile toggle is positioned correctly
         if (mobileToggle) {
           mobileToggle.style.top = `${Math.max(0, bannerBottom)}px`;
         }

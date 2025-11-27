@@ -239,13 +239,13 @@ Here is a clip of me playing Battlefield 4 with my mouse!
 <h1 id="pic_dump">Picture dump</h1>
 
 <div class="image-grid">
-  <img class="hover-effect click-zoom" src="antenna_assembly.jpg" alt="antenna" />
+  <img class="hover-effect click-zoom" src="antenna_assembly.jpg" alt="MCU and antenna assembly" />
   <img class="hover-effect click-zoom" src="early_shell_prototype.jpg" alt="shell" />
-  <img class="hover-effect click-zoom" src="man_cave.jpg" alt="man cave" />
+  <img class="hover-effect click-zoom" src="man_cave.jpg" alt="Where the mouse was built" />
   <img class="hover-effect click-zoom" src="new_vs_old.jpg" alt="new vs old" />
   <img class="hover-effect click-zoom" src="fusion.png" alt="Fusion 360 view" />
   <img class="hover-effect click-zoom" src="blender.png" alt="Blender view" />
-  <img class="hover-effect click-zoom" src="voltage_rails_debugging.jpg" alt="debugging" />
+  <img class="hover-effect click-zoom" src="voltage_rails_debugging.jpg" alt="Debugging the voltage supervisor" />
   <img class="hover-effect click-zoom" src="mouse_final_1.jpg" alt="" />
   <img class="hover-effect click-zoom" src="mouse_final_2.jpg" alt="" />
   <img class="hover-effect click-zoom" src="mouse_final_3.jpg" alt="" />
