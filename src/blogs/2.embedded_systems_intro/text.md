@@ -333,14 +333,3 @@ Moreover, doctors, lawyers and engineers are the typical professions that earn h
 Engineers have immense power in their hands, so try to seize it and use it for good.
 
 Good luck.
-
----
-
-## Gallery
-
-<div class="image-grid">
-  <img class="hover-effect click-zoom" src="es_1.jpg" alt="Input of the 110GHz front end module from a Keysight UXR oscilloscope" />
-  <img class="hover-effect click-zoom" src="es_2.jpg" alt="My custom mouse assembly" />
-  <img class="hover-effect click-zoom" src="es_3.jpg" alt="My custom keyboard internals" />
-  <img class="hover-effect click-zoom" src="es_4.jpg" alt="Infrared seeker for an R-60 soviet air-to-air missile" />
-</div>

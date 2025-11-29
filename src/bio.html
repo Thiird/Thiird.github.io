@@ -4,7 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SN - Bio</title>
-    <link rel="stylesheet" href="../styles.css" />
+    <link rel="icon" type="image/x-icon" href="resources/icons/favicon.ico">
+    <link rel="stylesheet" href="styles.css" />
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <!-- Highlight.js Dark Theme -->
@@ -63,53 +64,50 @@
       <div class="content-text" id="contentText">Loading bio...</div>
     </section>
 
+    <script src="script.js"></script>
     <script>
-      // 🔹 Load bio.md
+      // Load banner first
+      fetch("banner.html")
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById("banner-placeholder").innerHTML = html;
+          if (typeof initDropdownToggle === "function") {
+            initDropdownToggle();
+          }
+        })
+        .catch(error => console.error("Failed to load banner:", error));
+
+      // Load bio content
       document.addEventListener("DOMContentLoaded", () => {
-        fetch("bio.md")
+        fetch("bio/bio.md")
           .then((response) => response.text())
           .then((data) => {
             document.getElementById("contentText").innerHTML = marked.parse(data);
             hljs.highlightAll();
             
-            // Initialize tooltips with local tooltip file after bio content loads
+            // Initialize tooltips after content loads
             setTimeout(() => {
               if (window.tooltipManager) {
-                // For bio page, load tooltips directly from res/tooltips.json
-                window.tooltipManager.loadTooltipData('').then(() => {
-                  // Override the blog folder detection for bio page
-                  fetch("res/tooltips.json")
-                    .then(response => response.json())
-                    .then(data => {
-                      // Store tooltip data directly without blog folder prefix
-                      Object.entries(data).forEach(([id, tooltipData]) => {
-                        // For bio page, media paths are relative to res/ folder
-                        if (tooltipData.media && !tooltipData.media.startsWith('http')) {
-                          tooltipData.media = `res/${tooltipData.media}`;
-                        }
-                        window.tooltipManager.tooltipData.set(id, tooltipData);
-                      });
-                      window.tooltipManager.initializeTooltips();
-                    })
-                    .catch(error => console.warn('Error loading bio tooltips:', error));
-                });
+                fetch("bio/res/tooltips.json")
+                  .then(response => response.json())
+                  .then(data => {
+                    Object.entries(data).forEach(([id, tooltipData]) => {
+                      if (tooltipData.media && !tooltipData.media.startsWith('http')) {
+                        tooltipData.media = `bio/res/${tooltipData.media}`;
+                      }
+                      window.tooltipManager.tooltipData.set(id, tooltipData);
+                    });
+                    window.tooltipManager.initializeTooltips();
+                  })
+                  .catch(error => console.warn('No tooltips available for bio page'));
               }
             }, 100);
           })
           .catch((error) => {
             console.error("Error loading bio:", error);
-            document.getElementById("contentText").innerHTML =
-              "Failed to load bio.";
+            document.getElementById("contentText").innerHTML = "Failed to load bio.";
           });
       });
-
-      // Initialize bio page
-      document.addEventListener("DOMContentLoaded", () => {
-        if (typeof initBioPage === "function") {
-          initBioPage();
-        }
-      });
     </script>
-    <script src="../script.js"></script>
   </body>
 </html>
