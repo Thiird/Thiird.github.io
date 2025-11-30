@@ -1262,7 +1262,7 @@ pre {
   visibility: hidden;
   transform: translateY(-10px);
   transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 @media (max-width: 600px) {
@@ -1301,6 +1301,7 @@ pre {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
+  pointer-events: auto;
 }
 
 .tooltip-content {

@@ -1258,7 +1258,6 @@ class TooltipManager {
 
   // 🔹 Calculate tooltip position and show
   showTooltip(trigger, data, mouseEvent = null) {
-
     this.hideActiveTooltip();
 
     const tooltip = this.createTooltip(data);
@@ -1286,12 +1285,24 @@ class TooltipManager {
     // Add show class for animation
     tooltip.classList.add('show');
 
-    // Add hover listeners to tooltip with delay for audio
-    tooltip.addEventListener('mouseenter', () => {
+    // Make entire tooltip clickable if it has an image
+    if (data.media && (data.media.endsWith('.jpg') || data.media.endsWith('.jpeg') ||
+      data.media.endsWith('.png') || data.media.endsWith('.gif') ||
+      data.media.endsWith('.webp'))) {
+      tooltip.style.cursor = 'pointer';
+      tooltip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.showImageFullscreen(data.media, data.alt || data.text, data);
+      });
+    }
+
+    // Add hover listeners to tooltip - CRITICAL for keeping it visible
+    tooltip.addEventListener('mouseenter', (e) => {
       clearTimeout(this.hideTimeout);
+      this.hideTimeout = null;
     });
 
-    tooltip.addEventListener('mouseleave', () => {
+    tooltip.addEventListener('mouseleave', (e) => {
       // If audio is playing, keep tooltip open
       if (this.audioPlaying) {
         return;
@@ -1302,11 +1313,6 @@ class TooltipManager {
           this.hideActiveTooltip();
         }
       }, 1000);
-    });
-
-    // Prevent clicks inside tooltip from closing it
-    tooltip.addEventListener('click', (e) => {
-      e.stopPropagation();
     });
 
     this.currentTrigger = trigger;
@@ -1336,7 +1342,6 @@ class TooltipManager {
         const audioPlayer = document.createElement('div');
         audioPlayer.className = 'tooltip-audio-player';
         audioPlayer.style.cssText = `
-          margin-top: 10px;
           background: #1e1e1e;
           border-radius: 6px;
           padding: 10px;
@@ -1677,28 +1682,22 @@ class TooltipManager {
   }
 
   setupTooltip(element) {
-
     // Check if using ID-based tooltip (now just 'tt')
     const tooltipId = element.getAttribute('tt');
     let tooltipData;
 
     if (tooltipId) {
-      // Get tooltip data from loaded JSON
       tooltipData = this.tooltipData.get(tooltipId);
       if (!tooltipData) {
-
         return;
       }
-      // Add tooltip-trigger class if not present
       if (!element.classList.contains('tooltip-trigger')) {
         element.classList.add('tooltip-trigger');
       }
     } else {
-      // Fallback to inline JSON data
       try {
         tooltipData = JSON.parse(element.getAttribute('data-tooltip'));
       } catch (e) {
-
         return;
       }
     }
@@ -1706,20 +1705,8 @@ class TooltipManager {
     // Remove existing listeners to avoid duplicates
     element.removeEventListener('mouseenter', element._tooltipMouseEnter);
     element.removeEventListener('mouseleave', element._tooltipMouseLeave);
-    element.removeEventListener('click', element._tooltipClick);
 
-    // Add click functionality if tooltip has an image
-    if (tooltipData.media && (tooltipData.media.endsWith('.jpg') || tooltipData.media.endsWith('.jpeg') ||
-      tooltipData.media.endsWith('.png') || tooltipData.media.endsWith('.gif') ||
-      tooltipData.media.endsWith('.webp'))) {
-      element._tooltipClick = (e) => {
-        e.preventDefault();
-        this.showImageFullscreen(tooltipData.media, tooltipData.alt || tooltipData.text, tooltipData);
-      };
-      element.addEventListener('click', element._tooltipClick);
-    }
-
-    // Create new listeners with delay
+    // Create new listeners with unified delay
     element._tooltipMouseEnter = (e) => {
       // Clear any pending hide timeout
       if (this.hideTimeout) {
@@ -1735,32 +1722,36 @@ class TooltipManager {
         return;
       }
       
-      // Add 500ms delay before showing tooltip
+      // Unified 500ms delay before showing tooltip for all types
       element._tooltipTimeout = setTimeout(() => {
         this.showTooltip(e.target, tooltipData, element._lastMouseEvent);
       }, 500);
     };
 
-    element._tooltipMouseLeave = () => {
+    element._tooltipMouseLeave = (e) => {
+      // Check if mouse moved into tooltip
+      const relatedTarget = e.relatedTarget;
+      if (relatedTarget && this.tooltip && this.tooltip.contains(relatedTarget)) {
+        // Cancel show timeout but don't hide
+        if (element._tooltipTimeout) {
+          clearTimeout(element._tooltipTimeout);
+          element._tooltipTimeout = null;
+        }
+        return;
+      }
+      
       // Clear the show timeout if mouse leaves before tooltip appears
       if (element._tooltipTimeout) {
         clearTimeout(element._tooltipTimeout);
         element._tooltipTimeout = null;
       }
 
-      // For audio tooltips, give more time to move to tooltip
-      if (tooltipData.media && (tooltipData.media.endsWith('.mp3') || tooltipData.media.endsWith('.wav') || tooltipData.media.endsWith('.ogg'))) {
-        this.hideTimeout = setTimeout(() => {
-          if (!this.audioPlaying) {
-            this.hideActiveTooltip();
-          }
-        }, 2000); // 2 second delay for audio tooltips
-      } else {
-        // For non-audio tooltips, add small delay
-        this.hideTimeout = setTimeout(() => {
+      // Unified hide delay for all tooltip types
+      this.hideTimeout = setTimeout(() => {
+        if (!this.audioPlaying) {
           this.hideActiveTooltip();
-        }, 300);
-      }
+        }
+      }, 1000);
     };
 
     element.addEventListener('mouseenter', element._tooltipMouseEnter);
@@ -1977,57 +1968,26 @@ class TooltipManager {
       zoomedTooltip.appendChild(imageContainer);
     }
 
-    // Add close button
-    const closeBtn = document.createElement('button');
-    closeBtn.innerHTML = '×';
-    closeBtn.style.cssText = `
-      position: absolute;
-      top: 20px;
-      right: 30px;
-      background: rgba(255, 255, 255, 0.8);
-      border: none;
-      font-size: 40px;
-      font-weight: bold;
-      cursor: pointer;
-      color: #000;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    `;
-    closeBtn.title = 'Close fullscreen view';
-
-    // Close handlers
+    // Close handlers - click anywhere to close
     const closeFullscreen = () => {
       document.body.removeChild(overlay);
       document.body.style.overflow = '';
+      document.removeEventListener('keydown', escHandler);
     };
 
     overlay.addEventListener('click', closeFullscreen);
-    closeBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      closeFullscreen();
-    });
-
-    // Prevent tooltip container click from closing
-    zoomedTooltip.addEventListener('click', (e) => {
-      e.stopPropagation();
-    });
+    zoomedTooltip.addEventListener('click', closeFullscreen);
 
     // ESC key to close
     const escHandler = (e) => {
       if (e.key === 'Escape') {
         closeFullscreen();
-        document.removeEventListener('keydown', escHandler);
       }
     };
     document.addEventListener('keydown', escHandler);
 
     // Assemble and show
     overlay.appendChild(zoomedTooltip);
-    overlay.appendChild(closeBtn);
     document.body.appendChild(overlay);
     document.body.style.overflow = 'hidden'; // Prevent scrolling
   }
