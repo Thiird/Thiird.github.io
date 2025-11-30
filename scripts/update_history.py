@@ -55,12 +55,7 @@ def get_blog_entries(blogs_dir):
     for idx, blog in enumerate(manifest):
         folder = blog.get('folder', '')
         title = blog.get('title', folder.replace('_', ' ').title())
-        date = blog.get('date', '')
-        
-        # Skip entries without dates (empty string)
-        if not date:
-            print(f"    ⚠️  Skipping [{idx}] {title} - no date")
-            continue
+        date = blog.get('date', datetime.now().strftime('%Y-%m-%d'))
         
         entry = {
             'type': 'blog',
@@ -95,12 +90,7 @@ def get_poem_entries(poems_dir):
     entries = []
     for idx, poem in enumerate(manifest):
         name = poem.get('name', poem.get('folder', '').replace('_', ' ').title())
-        date = poem.get('date', '')
-        
-        # Skip entries without dates (empty string)
-        if not date:
-            print(f"    ⚠️  Skipping [{idx}] {name} - no date")
-            continue
+        date = poem.get('date', datetime.now().strftime('%Y-%m-%d'))
         
         entry = {
             'type': 'poem',

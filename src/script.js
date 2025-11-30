@@ -719,8 +719,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 🔹 Poem Functions
   let poemsCache = [];
   function initPoems() {
-    // Fix manifest path to use ../poems/
-    fetch("../poems/poems_manifest.json")
+    fetch("poems/poems_manifest.json")
       .then((res) => {
         if (!res.ok) throw new Error("Failed to load poems manifest");
         return res.json();
@@ -825,8 +824,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function loadPoem(poem) {
     resetAudioPlayer();
-    // When in src/ folder, need to go up one level with ../ to reach poems/
-    fetch("../poems/" + poem.folder + "/poem.md")
+    fetch("poems/" + poem.folder + "/poem.md")
       .then((res) => {
         if (!res.ok) throw new Error("Poem not found");
         return res.text();
@@ -876,8 +874,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (poem.audio) {
       const audioPlayer = document.getElementById("audioPlayer");
       const audioElement = document.getElementById("audioElement");
-      // Fix audio path to use ../poems/
-      const audioPath = "../poems/" + poem.folder + "/" + encodeURIComponent(poem.audio);
+      const audioPath = "poems/" + poem.folder + "/" + encodeURIComponent(poem.audio);
       fetch(audioPath, { method: "HEAD" })
         .then((res) => {
           if (res.ok) {
@@ -902,8 +899,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 🔹 Blog Functions
   let blogsCache = [];
   function initBlogs() {
-    // Fix blogs manifest path to use ../blogs/
-    fetch("../blogs/blogs_manifest.json")
+    fetch("blogs/blogs_manifest.json")
       .then((res) => {
         if (!res.ok) throw new Error("Failed to load blogs manifest");
         return res.json();
@@ -1992,7 +1988,7 @@ class TooltipManager {
     zoomedTooltip.style.cssText = `
       background: #2c2c2c;
       border: 1px solid #555;
-      border-radius:  8px;
+      border-radius: 8px;
       padding: 20px;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
       max-width: 95vw;
