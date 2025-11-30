@@ -31,7 +31,8 @@ def extract_date_from_markdown(md_path):
     except Exception as e:
         print(f"  ⚠️  Error reading date from {md_path}: {e}")
     
-    return None
+    # Return empty string instead of None if no date found
+    return ""
 
 def format_date(date_string):
     """Format date from YYYY-MM-DD to readable format (e.g., 'Jan 15, 2024')."""
@@ -71,8 +72,8 @@ def make_blog_manifest():
         # Extract date from markdown
         date = extract_date_from_markdown(blog_file)
         if not date:
-            print(f"  ⚠️  No date found in {folder.name}/blog.md, using current date")
-            date = datetime.now().strftime('%Y-%m-%d')
+            print(f"  ⚠️  No date found in {folder.name}/blog.md, using empty date")
+            date = ""
         
         # Do NOT add formatted date to markdown file anymore
         
@@ -136,10 +137,8 @@ def make_poem_manifest():
         # Extract date from markdown
         date = extract_date_from_markdown(poem_file)
         if not date:
-            print(f"  ⚠️  No date found in {folder.name}/poem.md, using current date")
-            date = datetime.now().strftime('%Y-%m-%d')
-        
-        # Do NOT add formatted date to markdown file anymore
+            print(f"  ⚠️  No date found in {folder.name}/poem.md, using empty date")
+            date = ""
         
         # Check for audio file
         audio_file = None

@@ -1,7 +1,3 @@
----
-date: 2024-10-15
----
-
 # Intro
 
 This is a collection of poems and letters that I started writing in 2025.
