@@ -31,7 +31,8 @@ def extract_date_from_markdown(md_path):
     except Exception as e:
         print(f"  ⚠️  Error reading date from {md_path}: {e}")
     
-    return None
+    # Return empty string instead of None if no date found
+    return ""
 
 def format_date(date_string):
     """Format date from YYYY-MM-DD to readable format (e.g., 'Jan 15, 2024')."""

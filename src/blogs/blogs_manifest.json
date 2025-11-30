@@ -1,12 +1,12 @@
 [
   {
-    "folder": "1.optical_mouse",
-    "title": "Optical Mouse",
+    "folder": "1-optical_mouse",
+    "title": "1-Optical Mouse",
     "date": "2025-11-30"
   },
   {
-    "folder": "2.embedded_systems_intro",
-    "title": "Embedded Systems Intro",
+    "folder": "2-embedded_systems_intro",
+    "title": "2-Embedded Systems Intro",
     "date": "2025-11-30"
   }
 ]
