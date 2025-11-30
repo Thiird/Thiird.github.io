@@ -303,12 +303,23 @@ function initDropdownToggle() {
 // 🔹 Sidebar positioning
 function updateSidebarTop() {
   const banner = document.getElementById("banner-placeholder");
-  if (banner) {
-    const bannerBottom = banner.getBoundingClientRect().bottom;
-    const offset = Math.max(0, bannerBottom);
-    document.querySelectorAll(".blog-list, .poem-list").forEach((sidebar) => {
-      sidebar.style.top = offset + "px";
-    });
+  const sidebars = document.querySelectorAll(".blog-list, .poem-list");
+  
+  if (banner && sidebars.length > 0) {
+    // On desktop (width > 800px), calculate position based on banner visibility
+    if (window.innerWidth > 800) {
+      const bannerRect = banner.getBoundingClientRect();
+      const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+      
+      // Calculate how much of banner is still visible
+      const bannerBottom = bannerRect.bottom;
+      const topOffset = Math.max(0, bannerBottom);
+      
+      sidebars.forEach((sidebar) => {
+        sidebar.style.top = `${topOffset}px`;
+        sidebar.style.height = `calc(100vh - ${topOffset}px)`;
+      });
+    }
   }
 }
 
@@ -328,6 +339,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Update sidebar position
   updateSidebarTop();
+  
+  // Update on scroll and resize for desktop
+  window.addEventListener("scroll", () => {
+    if (window.innerWidth > 800) {
+      updateSidebarTop();
+    }
+  });
+  
+  window.addEventListener("resize", () => {
+    updateSidebarTop();
+  });
 
   // 🔹 Lightbox Initialization
   const lightbox = document.createElement("div");
@@ -535,6 +557,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const loopBtn = document.getElementById("loopBtn");
   let isLooping = false;
 
+  // Define formatTime function at the top level so it's accessible everywhere
+  function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  }
+
   // helper: update progress UI (bar width + handle position)
   function updateProgressUI() {
     if (!audio || !progressBar || !progressHandle) return;
@@ -709,11 +738,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function formatPoemTitle(filename) {
     let title = filename;
+    // Don't remove the number prefix for poems
     if (filename.toLowerCase().endsWith(".mp3")) {
-      title = title.replace(/^\d+[.\s]*/, "").replace(/\.mp3$/i, "");
+      title = title.replace(/\.mp3$/i, "");
     } else if (filename.toLowerCase().endsWith(".md")) {
-      title = title.replace(/^(\d+)\./, "$1 ").replace(/\.md$/i, "");
+      title = title.replace(/\.md$/i, "");
     }
+    // Replace underscores with spaces but keep the number prefix
     title = title.replace(/_/g, " ");
     title = title.replace(/\b\w/g, (char) => char.toUpperCase());
     return title.trim();
@@ -793,24 +824,57 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function loadPoem(poem) {
     resetAudioPlayer();
-    fetch("poems/" + poem.name)
+    fetch("poems/" + poem.folder + "/poem.md")
       .then((res) => {
         if (!res.ok) throw new Error("Poem not found");
         return res.text();
       })
       .then((md) => {
-        document.getElementById("poemText").innerHTML = marked.parse(md);
+        const poemText = document.getElementById("poemText");
+        const poemContent = document.getElementById("poemContent");
+        const audioPlayer = document.getElementById("audioPlayer");
+        
+        // Extract and remove YAML front matter date
+        let dateStr = null;
+        md = md.replace(/^---\s*\ndate:\s*(\d{4}-\d{2}-\d{2})\s*\n---\s*\n/m, (match, extractedDate) => {
+          dateStr = extractedDate;
+          return ''; // Remove the front matter from markdown
+        });
+        
+        // Render markdown (without date)
+        poemText.innerHTML = marked.parse(md);
+        
+        // Create and insert date element BEFORE audio player and poem text
+        if (dateStr && poemContent) {
+          // Remove any existing date element
+          const existingDate = poemContent.querySelector('.poem-date');
+          if (existingDate) {
+            existingDate.remove();
+          }
+          
+          // Format the date nicely
+          const date = new Date(dateStr);
+          const formatted = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+          
+          // Create date element
+          const dateElement = document.createElement('p');
+          dateElement.className = 'poem-date';
+          dateElement.style.cssText = 'font-style: italic; color: #8d99ae; text-align: left; margin: 0 0 16px 0; font-size: 0.9em;';
+          dateElement.textContent = formatted;
+          
+          // Insert at the top of poemContent (before audio player and poem text)
+          poemContent.insertBefore(dateElement, poemContent.firstChild);
+        }
+        
         attachLightboxEvents();
       })
       .catch((err) => {
-
-        document.getElementById("poemText").innerHTML =
-          "<p>Error loading poem.</p>";
+        document.getElementById("poemText").innerHTML = "<p>Error loading poem.</p>";
       });
     if (poem.audio) {
       const audioPlayer = document.getElementById("audioPlayer");
       const audioElement = document.getElementById("audioElement");
-      const audioPath = "poems/" + encodeURIComponent(poem.audio);
+      const audioPath = "poems/" + poem.folder + "/" + encodeURIComponent(poem.audio);
       fetch(audioPath, { method: "HEAD" })
         .then((res) => {
           if (res.ok) {
@@ -820,15 +884,13 @@ document.addEventListener("DOMContentLoaded", () => {
             if (loopBtn) {
               loopBtn.style.color = "#3498db";
             }
-            audioPlayer.setAttribute("data-title", formatPoemTitle(poem.audio));
+            audioPlayer.setAttribute("data-title", poem.name);
             audioPlayer.style.display = "block";
           } else {
-
             audioPlayer.style.display = "none";
           }
         })
         .catch((err) => {
-
           audioPlayer.style.display = "none";
         });
     }
@@ -913,13 +975,28 @@ document.addEventListener("DOMContentLoaded", () => {
     const target = document.getElementById("blogText");
     if (!target) return;
     target.innerHTML = "Loading blog post...";
-    const mdPath = "blogs/" + encodeURIComponent(blog.folder) + "/text.md";
+    const mdPath = "blogs/" + encodeURIComponent(blog.folder) + "/blog.md";
     fetch(mdPath)
       .then((res) => {
         if (!res.ok) throw new Error("Blog post not found");
         return res.text();
       })
       .then((md) => {
+        // Extract and remove YAML front matter date
+        let dateStr = null;
+        md = md.replace(/^---\s*\ndate:\s*(\d{4}-\d{2}-\d{2})\s*\n---\s*\n/m, (match, extractedDate) => {
+          dateStr = extractedDate;
+          return ''; // Remove the front matter from markdown
+        });
+        
+        // Format the date nicely
+        let dateHtml = '';
+        if (dateStr) {
+          const date = new Date(dateStr);
+          const formatted = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+          dateHtml = `<p style="font-style: italic; color: #8d99ae; text-align: left; margin: 0 0 24px 0; font-size: 0.9em;">${formatted}</p>`;
+        }
+        
         md = md.replace(/!\[(.*?)\]\(([^)]+)\)/g, (match, alt, src) => {
           const classes = ["hover-effect", "click-zoom"];
           if (!src.startsWith("http") && !src.includes("/")) {
@@ -991,7 +1068,8 @@ document.addEventListener("DOMContentLoaded", () => {
           }
           return `<video controls class="video-player"> <source src="${src}" type="video/mp4"> Your browser does not support the video tag. </video>`;
         });
-        target.innerHTML = marked.parse(md);
+        // Render markdown and prepend styled date
+        target.innerHTML = dateHtml + marked.parse(md);
         if (window.hljs) {
           hljs.highlightAll();
         }
@@ -999,7 +1077,6 @@ document.addEventListener("DOMContentLoaded", () => {
         // Initialize tooltips after content is loaded - pass blog folder directly
         setTimeout(() => {
           if (window.tooltipManager) {
-
             window.tooltipManager.reinitialize(blog.folder);
           }
         }, 100);
@@ -1014,7 +1091,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       })
       .catch((err) => {
-
         target.innerHTML = "Failed to load blog post.";
       });
   }
@@ -1451,13 +1527,6 @@ class TooltipManager {
         this.allAudioElements.add(audioElement);
         this.activeTooltipAudio = audioElement;
 
-        // Format time helper
-        const formatTime = (seconds) => {
-          const mins = Math.floor(seconds / 60);
-          const secs = Math.floor(seconds % 60);
-          return `${mins}:${secs.toString().padStart(2, '0')}`;
-        };
-
         // Update progress
         const updateProgress = () => {
           if (audioElement.duration && isFinite(audioElement.duration)) {
@@ -1526,7 +1595,7 @@ class TooltipManager {
           progressBar.style.width = (pct * 100) + "%";
           progressHandle.style.left = (pct * 100) + "%";
           // update current time visually (but don't commit until pointerup)
-          currentTime.textContent = formatTime(pct * audioElement.duration);
+          currentTimeEl.textContent = formatTime(pct * audioElement.duration);
         };
 
         progressHandle.addEventListener('pointerdown', (ev) => {
@@ -1980,6 +2049,7 @@ class TooltipManager {
 
     // ESC key to close
     const escHandler = (e) => {
+     
       if (e.key === 'Escape') {
         closeFullscreen();
       }
@@ -1992,40 +2062,6 @@ class TooltipManager {
     document.body.style.overflow = 'hidden'; // Prevent scrolling
   }
 }
-
-// Floating sidebar toggle functionality for mobile
-// function initSidebarToggle() {
-//     const sidebarToggle = document.getElementById('sidebarFloatingToggle');
-//     const sidebar = document.getElementById('poemList') || document.getElementById('blogList');
-//     
-//     if (sidebarToggle && sidebar) {
-//         sidebarToggle.addEventListener('click', () => {
-//             sidebar.classList.toggle('show');
-//             sidebarToggle.classList.toggle('active');
-//         });
-//         
-//         // Show/hide toggle button based on screen size
-//         const updateToggleVisibility = () => {
-//             if (window.innerWidth <= 768) {
-//                 sidebarToggle.style.display = 'block';
-//             } else {
-//                 sidebarToggle.style.display = 'none';
-//                 sidebar.classList.remove('show');
-//             }
-//         };
-//         
-//         window.addEventListener('resize', updateToggleVisibility);
-//         updateToggleVisibility(); // Initial check
-//     }
-// }
-
-// Only initialize sidebar toggle on pages that have sidebars
-// document.addEventListener('DOMContentLoaded', () => {
-//     if (document.getElementById('poemList') || document.getElementById('blogList')) {
-//         initSidebarToggle();
-//     }
-// });
-
 //// 🔹 Home Page Initialization
 function initHomePage() {
   // Load header.html first
@@ -2038,17 +2074,21 @@ function initHomePage() {
     .catch(error => { });
 
   // Load banner.html and initialize dropdown
+ 
   fetch("src/banner.html")
     .then(response => response.text())
     .then(data => {
       const banner = document.getElementById("banner-placeholder");
-           banner.innerHTML = data;
+      banner.innerHTML = data;
       // Always try to initialize dropdowns after banner loads
       if (typeof initDropdownToggle === "function") {
         initDropdownToggle();
       }
     })
     .catch(error => { });
+
+  // Load and display history
+  loadHistory();
 
   // Reinitialize dropdown toggle on resize
   let resizeTimer;
@@ -2067,6 +2107,67 @@ function initHomePage() {
       initDropdownToggle();
     }
   });
+}
+
+// 🔹 Load and display history
+function loadHistory() {
+  fetch("src/resources/history.json")
+    .then(response => {
+      if (!response.ok) throw new Error("Failed to load history");
+      return response.json();
+    })
+    .then(historyData => {
+      // Data is already sorted and trimmed to 5 items by the Python script
+      // No need to sort or slice here
+      
+      const historyList = document.getElementById("historyList");
+      if (!historyList) return;
+
+      historyList.innerHTML = "";
+
+      historyData.forEach(item => {
+        const li = document.createElement("li");
+        li.className = "history-item";
+
+        const link = document.createElement("a");
+        link.href = item.link;
+
+        const content = document.createElement("div");
+        content.className = "history-item-content";
+
+        const typeSpan = document.createElement("span");
+        typeSpan.className = `history-item-type ${item.type}`;
+        typeSpan.textContent = item.type;
+
+        const nameSpan = document.createElement("span");
+        nameSpan.className = "history-item-name";
+        nameSpan.textContent = item.name;
+
+        const dateSpan = document.createElement("span");
+        dateSpan.className = "history-item-date";
+        dateSpan.textContent = formatDate(item.date);
+
+        content.appendChild(typeSpan);
+        content.appendChild(nameSpan);
+        link.appendChild(content);
+        link.appendChild(dateSpan);
+        li.appendChild(link);
+        historyList.appendChild(li);
+      });
+    })
+    .catch(error => {
+      const historyList = document.getElementById("historyList");
+      if (historyList) {
+        historyList.innerHTML = '<li style="color: #e74c3c; padding: 15px;">Failed to load history.</li>';
+      }
+    });
+}
+
+// 🔹 Format date to readable format
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const options = { year: 'numeric', month: 'short', day: 'numeric' };
+  return date.toLocaleDateString('en-US', options);
 }
 
 // 🔹 Blog Page Initialization
@@ -2096,15 +2197,17 @@ function initBlogPage() {
       const mobileToggle = document.getElementById("sidebarFloatingToggle");
       if (banner && blogList) {
         const bannerRect = banner.getBoundingClientRect();
-        const bannerBottom = bannerRect.bottom;
-        const topOffset = Math.max(0, bannerBottom);
-        blogList.style.top = `${topOffset}px`;
-        blogList.style.height = `calc(100vh - ${topOffset}px)`;
-
+        
+        // Calculate how much of the banner is still visible
+        const bannerBottom = Math.max(0, bannerRect.bottom);
+        
+        // Apply same logic for both mobile and desktop - just use bannerRect.bottom
+        blogList.style.top = `${bannerBottom}px`;
+        blogList.style.height = `calc(100vh - ${bannerBottom}px)`;
 
         // ensure mobile toggle is positioned correctly
         if (mobileToggle) {
-          mobileToggle.style.top = `${Math.max(0, bannerBottom)}px`;
+          mobileToggle.style.top = `${bannerBottom}px`;
         }
       }
     });
@@ -2127,7 +2230,6 @@ function initBlogPage() {
       // Desktop: show sidebar, hide floating toggle
       blogList.classList.remove("show");
       if (floatingToggle) {
-
         floatingToggle.style.display = "none";
       }
     }
@@ -2236,32 +2338,37 @@ function initPoemPage() {
       const mobileToggle = document.getElementById("sidebarFloatingToggle");
       if (banner && poemList) {
         const bannerRect = banner.getBoundingClientRect();
-        const bannerBottom = bannerRect.bottom;
-        const topOffset = Math.max(0, bannerBottom);
-        poemList.style.top = `${topOffset}px`;
-        poemList.style.height = `calc(100vh - ${topOffset}px)`;
+        
+        // Calculate how much of the banner is still visible
+        const bannerBottom = Math.max(0, bannerRect.bottom);
 
+        // Apply same logic for both mobile and desktop - just use bannerRect.bottom
+        poemList.style.top = `${bannerBottom}px`;
+        poemList.style.height = `calc(100vh - ${bannerBottom}px)`;
 
         // ensure mobile toggle is positioned correctly
         if (mobileToggle) {
-          mobileToggle.style.top = `${Math.max(0, bannerBottom)}px`;
+          mobileToggle.style.top = `${bannerBottom}px`;
         }
       }
     });
   }
 
+  // Set initial sidebar state (mobile: hidden, desktop: visible)
   function setInitialSidebarState() {
     const poemList = document.getElementById("poemList");
     const floatingToggle = document.getElementById("sidebarFloatingToggle");
     if (!poemList) return;
 
     if (window.innerWidth <= 800) {
+      // Mobile: hide sidebar initially, show floating toggle
       poemList.classList.remove("show");
       if (floatingToggle) {
         floatingToggle.style.display = "block";
         floatingToggle.classList.remove("hidden");
       }
     } else {
+      // Desktop: show sidebar, hide floating toggle
       poemList.classList.remove("show");
       if (floatingToggle) {
         floatingToggle.style.display = "none";
@@ -2344,55 +2451,4 @@ function initPoemPage() {
       });
     });
   }
-}
-
-// 🔹 Bio Page Initialization
-function initBioPage() {
-  // Load main content from bio.md
-  fetch("bio.md")
-    .then((response) => response.text())
-    .then((data) => {
-      document.getElementById("contentText").innerHTML = marked.parse(data);
-      // Initialize tooltips after content is loaded
-      setTimeout(() => {
-        if (window.tooltipManager) {
-          window.tooltipManager.reinitialize();
-        }
-      }, 100);
-    })
-    .catch((error) => {
-
-      document.getElementById("contentText").innerHTML = "Failed to load bio.";
-    });
-
-  // Load banner.html and initialize dropdown
-  fetch("../banner.html")
-    .then((response) => response.text())
-    .then((data) => {
-      const banner = document.getElementById("banner-placeholder");
-      banner.innerHTML = data;
-      // Always try to initialize dropdowns after banner loads
-      if (typeof initDropdownToggle === "function") {
-        initDropdownToggle();
-      }
-    })
-    .catch((error) => { });
-
-  // Reinitialize dropdown toggle on resize
-  let resizeTimer;
-  window.addEventListener("resize", () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      if (typeof initDropdownToggle === "function") {
-        initDropdownToggle();
-      }
-    }, 100);
-  });
-
-  // Ensure dropdowns are initialized on load
-  window.addEventListener("load", () => {
-    if (typeof initDropdownToggle === "function") {
-      initDropdownToggle();
-    }
-  });
 }

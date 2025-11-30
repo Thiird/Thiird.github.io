@@ -1,30 +1,44 @@
 [
   {
-    "name": "0.Intro.md",
-    "audio": null
+    "folder": "0.Intro",
+    "name": "Intro",
+    "audio": null,
+    "date": "2024-10-15"
   },
   {
-    "name": "1.the_final_step.md",
-    "audio": null
+    "folder": "1.the_final_step",
+    "name": "The Final Step",
+    "audio": null,
+    "date": "2024-10-15"
   },
   {
-    "name": "2.human_bootloader.md",
-    "audio": null
+    "folder": "2.human_bootloader",
+    "name": "Human Bootloader",
+    "audio": null,
+    "date": "2024-10-15"
   },
   {
-    "name": "3.eulogy.md",
-    "audio": "3.oneheart_x_reidenshi_-_snowfall_-_Slowed_Down.mp3"
+    "folder": "3.eulogy",
+    "name": "Eulogy",
+    "audio": "3.oneheart_x_reidenshi_-_snowfall_-_Slowed_Down.mp3",
+    "date": "2024-10-15"
   },
   {
-    "name": "4.privileged_wistfulness.md",
-    "audio": "4.everything_works_out_in_the_end.mp3"
+    "folder": "4.privileged_wistfulness",
+    "name": "Privileged Wistfulness",
+    "audio": "4.everything_works_out_in_the_end.mp3",
+    "date": "2024-10-15"
   },
   {
-    "name": "5.letter_to_a_faded_friend.md",
-    "audio": "5.Broken_Couch.mp3"
+    "folder": "5.letter_to_a_faded_friend",
+    "name": "Letter To A Faded Friend",
+    "audio": "5.Broken_Couch.mp3",
+    "date": "2024-10-15"
   },
   {
-    "name": "6.last_moments.md",
-    "audio": "6.Chaos_at_the_Bottom_of_the_Bottle.mp3"
+    "folder": "6.last_moments",
+    "name": "Last Moments",
+    "audio": "6.Chaos_at_the_Bottom_of_the_Bottle.mp3",
+    "date": "2024-10-15"
   }
 ]

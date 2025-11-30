@@ -1,3 +1,7 @@
+---
+date: 2024-10-15
+---
+
 ## Privileged wistfulness
 
 At some point in life, it's inevitable to look back.

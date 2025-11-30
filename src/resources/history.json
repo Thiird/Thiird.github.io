@@ -1,0 +1,32 @@
+[
+  {
+    "type": "blog",
+    "name": "Optical Mouse",
+    "date": "2025-11-30",
+    "link": "src/blogs.html?blog=0"
+  },
+  {
+    "type": "blog",
+    "name": "Embedded Systems Intro",
+    "date": "2025-11-30",
+    "link": "src/blogs.html?blog=1"
+  },
+  {
+    "type": "poem",
+    "name": "Intro",
+    "date": "2024-10-15",
+    "link": "src/poems.html?poem=0"
+  },
+  {
+    "type": "poem",
+    "name": "The Final Step",
+    "date": "2024-10-15",
+    "link": "src/poems.html?poem=1"
+  },
+  {
+    "type": "poem",
+    "name": "Human Bootloader",
+    "date": "2024-10-15",
+    "link": "src/poems.html?poem=2"
+  }
+]

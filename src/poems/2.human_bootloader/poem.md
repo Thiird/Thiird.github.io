@@ -1,3 +1,7 @@
+---
+date: 2024-10-15
+---
+
 ## Human auto-bootloader
 
 Intelligence is a discrete part of the Universe.  

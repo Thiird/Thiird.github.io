@@ -1,3 +1,7 @@
+---
+date: 2024-10-15
+---
+
 ## Last moments
 
 The room is full, people keep coming.
@@ -21,7 +25,3 @@ Silence reigns as their minds get rewired.
 Death is both a blessing and a curse.  
 It curses the subject with destruction.  
 It blesses the bystanders with comprehension.
-
----
-
-Dated 15th of August 2025.

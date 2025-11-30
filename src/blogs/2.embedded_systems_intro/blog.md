@@ -1,3 +1,5 @@
+<p style="font-style: italic; color: #8d99ae; text-align: center; margin: 0 0 24px 0; font-size: 0.9em;">Nov 30, 2025</p>
+
 <h1 id="intro-to-embedded-systems">Intro to Embedded Systems</h1>
 
 This article is meant for people that are absolutely new to embedded systems.  

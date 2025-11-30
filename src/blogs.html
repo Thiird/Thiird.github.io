@@ -71,6 +71,17 @@
 
     <script src="script.js"></script>
     <script>
+        // Load banner
+        fetch("banner.html")
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById("banner-placeholder").innerHTML = html;
+                if (typeof initDropdownToggle === "function") {
+                    initDropdownToggle();
+                }
+            })
+            .catch(error => console.error("Failed to load banner:", error));
+
         // Initialize blog page
         document.addEventListener("DOMContentLoaded", () => {
             if (typeof initBlogPage === "function") {

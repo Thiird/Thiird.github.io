@@ -166,8 +166,11 @@ body.no-scroll {
 }
 
 .profile-pic {
-  width: 250px;
-  height: 350px;
+  max-width: 250px;
+  max-height: 350px;
+  width: auto;
+  height: auto;
+  transform: scale(1);
   border-radius: 5%;
   object-fit: cover;
   margin-right: 20px;
@@ -537,7 +540,7 @@ body.no-scroll {
 }
 
 .audio-player {
-  text-align: center;
+  text-align: left;
   background-color: rgba(44, 62, 80, 0.6);
   padding: 8px 12px;
   border-radius: 8px;
@@ -546,9 +549,11 @@ body.no-scroll {
   margin-bottom: 20px;
   max-width: 400px;
   min-width: 200px;
-  width: 100%;
+  width: auto;
   position: relative;
   cursor: pointer;
+  margin-left: 0;
+  margin-right: auto;
 }
 
 .audio-title {
@@ -1019,7 +1024,6 @@ pre {
   border-right: 1px solid #4a6076;
   overflow-y: auto;
   z-index: 100;
-  transition: width var(--sidebar-transition), left var(--sidebar-transition);
 }
 
 .poem-list.collapsed,
@@ -1107,7 +1111,6 @@ pre {
   justify-content: center;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
   cursor: pointer;
-  transition: top 0.12s ease, transform 0.15s ease, background 0.15s ease;
   display: inline-flex;
 }
 
@@ -1363,4 +1366,109 @@ pre {
 .index-subsection a:hover {
   text-decoration: underline;
   color: #3498db;
+}
+
+/* History section styles */
+.history-section {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.history-section h2 {
+  color: #d3d7db;
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.history-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.history-item {
+  padding: 12px 0;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #4a6076;
+  transition: opacity 0.2s ease;
+}
+
+.history-item:hover {
+  opacity: 0.8;
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.history-item a {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.history-item-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.history-item-type {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 0.8em;
+  font-weight: bold;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.history-item-type.blog {
+  background-color: #3498db;
+  color: white;
+}
+
+.history-item-type.poem {
+  background-color: #9b59b6;
+  color: white;
+}
+
+.history-item-type.article {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.history-item-name {
+  color: #d3d7db;
+  font-size: 1em;
+}
+
+.history-item-date {
+  color: #8d99ae;
+  font-size: 0.85em;
+  flex-shrink: 0;
+}
+
+@media (max-width: 600px) {
+  .history-section {
+    margin: 20px 10px;
+    padding: 15px;
+  }
+
+  .history-item a {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .history-item-date {
+    margin-left: 0;
+    padding-left: 0;
+  }
 }
