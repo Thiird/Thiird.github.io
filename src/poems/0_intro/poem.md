@@ -1,3 +1,5 @@
+date: 2025-11-30
+
 # Intro
 
 This is a collection of poems and letters that I started writing in 2025.

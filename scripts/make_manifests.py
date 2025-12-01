@@ -10,28 +10,20 @@ def get_repo_root():
     return script_dir.parent
 
 def extract_date_from_markdown(md_path):
-    """Extract date from markdown front matter."""
+    """Extract date from simple 'date: YYYY-MM-DD' line (no YAML markers)."""
     try:
         with open(md_path, 'r', encoding='utf-8') as f:
             content = f.read()
-            
-        # Look for date in YAML front matter (between --- markers)
-        yaml_match = re.search(r'^---\s*\n(.*?)\n---', content, re.MULTILINE | re.DOTALL)
-        if yaml_match:
-            front_matter = yaml_match.group(1)
-            date_match = re.search(r'^date:\s*["\']?(\d{4}-\d{2}-\d{2})["\']?', front_matter, re.MULTILINE)
-            if date_match:
-                return date_match.group(1)
         
-        # Fallback: look for date anywhere in the file
-        date_match = re.search(r'date:\s*["\']?(\d{4}-\d{2}-\d{2})["\']?', content, re.IGNORECASE)
+        # Look for simple "date: YYYY-MM-DD" line at start of file
+        date_match = re.search(r'^date:\s*(\d{4}-\d{2}-\d{2})\s*$', content, re.MULTILINE)
         if date_match:
             return date_match.group(1)
             
     except Exception as e:
         print(f"  ⚠️  Error reading date from {md_path}: {e}")
     
-    # Return empty string instead of None if no date found
+    # Return empty string if no date found
     return ""
 
 def format_date(date_string):
@@ -77,7 +69,7 @@ def make_blog_manifest():
         
         # Do NOT add formatted date to markdown file anymore
         
-        # Extract title from folder name
+        # Extract title from folder name with proper spacing
         folder_name = folder.name
         title = folder_name
         if folder_name[0].isdigit():
@@ -85,7 +77,12 @@ def make_blog_manifest():
             if len(parts) > 1:
                 title = parts[1].strip()
         
-        title = title.replace('_', ' ').title()
+        # Replace underscores with spaces: "1_optical_mouse" → "1 optical mouse"
+        title = title.replace('_', ' ')
+        # Add spacing around number: "1 optical" → "1 - optical"
+        title = re.sub(r'^(\d+)\s+', r'\1 - ', title)
+        # Capitalize each word
+        title = title.title()
         
         blog_entry = {
             'folder': folder.name,
@@ -149,7 +146,7 @@ def make_poem_manifest():
                 audio_file = file.name
                 break
         
-        # Extract name from folder
+        # Extract name from folder with proper spacing
         folder_name = folder.name
         name = folder_name
         if folder_name[0].isdigit():
@@ -157,7 +154,12 @@ def make_poem_manifest():
             if len(parts) > 1:
                 name = parts[1].strip()
         
-        name = name.replace('_', ' ').replace('-', ' ').title()
+        # Replace underscores and dashes with spaces
+        name = name.replace('_', ' ').replace('-', ' ')
+        # Add spacing around number: "1 intro" → "1 - intro"
+        name = re.sub(r'^(\d+)\s+', r'\1 - ', name)
+        # Capitalize each word
+        name = name.title()
         
         poem_entry = {
             'folder': folder.name,

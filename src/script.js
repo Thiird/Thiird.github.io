@@ -4,20 +4,6 @@ const zoomScales = [1, 1.5, 2]; // 1x, 1.5x, 2x zoom levels
 let currentImageIndex = 0;
 let imageList = [];
 
-// 🔹 Helper: raw GitHub URL (master branch)
-function getRawGitUrl(repoRelPath) {
-  return `https://raw.githubusercontent.com/Thiird/Thiird.github.io/master/${repoRelPath}`;
-}
-
-// 🔹 Helper: try local path first (works locally and on Pages if not processed), fallback to raw GitHub
-async function fetchWithPagesFallback(localRelPath, repoRelPath, options) {
-  try {
-    const res = await fetch(localRelPath, options);
-    if (res.ok) return res;
-  } catch (_) { /* ignore and try fallback */ }
-  return fetch(getRawGitUrl(repoRelPath), options);
-}
-
 // 🔹 Calculate scale to fit 90% of viewport
 function calculateFitScale(img) {
   const maxWidth = window.innerWidth * 0.9;
@@ -733,8 +719,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 🔹 Poem Functions
   let poemsCache = [];
   function initPoems() {
-    // local path (works locally and on Pages if JSON is copied); fallback to raw if 404
-    fetchWithPagesFallback("poems/poems_manifest.json", "src/poems/poems_manifest.json")
+    fetch("poems/poems_manifest.json")
       .then((res) => {
         if (!res.ok) throw new Error("Failed to load poems manifest");
         return res.json();
@@ -759,8 +744,8 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (filename.toLowerCase().endsWith(".md")) {
       title = title.replace(/\.md$/i, "");
     }
-    // Replace underscores with spaces but keep the number prefix
-    title = title.replace(/_/g, " ");
+    // Replace underscores with spaces and add spacing around dash: "1-Title" → "1 - Title"
+    title = title.replace(/_/g, " ").replace(/(\d+)-/, "$1 - ");
     title = title.replace(/\b\w/g, (char) => char.toUpperCase());
     return title.trim();
   }
@@ -840,8 +825,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function loadPoem(poem) {
     resetAudioPlayer();
     const localMd = `poems/${poem.folder}/poem.md`;
-    const repoMd = `src/${localMd}`;
-    fetchWithPagesFallback(localMd, repoMd)
+    fetch(localMd)
       .then((res) => {
         if (!res.ok) throw new Error("Poem not found");
         return res.text();
@@ -851,14 +835,17 @@ document.addEventListener("DOMContentLoaded", () => {
         const poemContent = document.getElementById("poemContent");
         const audioPlayer = document.getElementById("audioPlayer");
         
-        // Extract and remove YAML front matter date
+        // Extract date from simple "date: YYYY-MM-DD" line (no YAML markers)
         let dateStr = null;
-        md = md.replace(/^---\s*\ndate:\s*(\d{4}-\d{2}-\d{2})\s*\n---\s*\n/m, (match, extractedDate) => {
+        md = md.replace(/^date:\s*(\d{4}-\d{2}-\d{2})\s*$/m, (match, extractedDate) => {
           dateStr = extractedDate;
-          return ''; // Remove the front matter from markdown
+          return ''; // Remove the date line from markdown
         });
         
-        // Render markdown (without date)
+        // Remove any <hr> tags (---) that appear after date removal
+        md = md.replace(/^\s*---\s*$/gm, '');
+        
+        // Render markdown (without date and hr tags)
         poemText.innerHTML = marked.parse(md);
         
         // Create and insert date element BEFORE audio player and poem text
@@ -916,7 +903,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 🔹 Blog Functions
   let blogsCache = [];
   function initBlogs() {
-    fetchWithPagesFallback("blogs/blogs_manifest.json", "src/blogs/blogs_manifest.json")
+    fetch("blogs/blogs_manifest.json")
       .then((res) => {
         if (!res.ok) throw new Error("Failed to load blogs manifest");
         return res.json();
@@ -983,6 +970,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function formatBlogTitle(folder) {
     let title = folder.replace(/_/g, " ");
+    // Add spacing around dash: "1-Title" → "1 - Title"
+    title = title.replace(/(\d+)-/, "$1 - ");
     title = title.replace(/\b\w/g, (char) => char.toUpperCase());
     return title.trim();
   }
@@ -993,19 +982,21 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!target) return;
     target.innerHTML = "Loading blog post...";
     const localMd = `blogs/${encodeURIComponent(blog.folder)}/blog.md`;
-    const repoMd = `src/${localMd}`;
-    fetchWithPagesFallback(localMd, repoMd)
+    fetch(localMd)
       .then((res) => {
         if (!res.ok) throw new Error("Blog post not found");
         return res.text();
       })
       .then((md) => {
-        // Extract and remove YAML front matter date
+        // Extract date from simple "date: YYYY-MM-DD" line (no YAML markers)
         let dateStr = null;
-        md = md.replace(/^---\s*\ndate:\s*(\d{4}-\d{2}-\d{2})\s*\n---\s*\n/m, (match, extractedDate) => {
+        md = md.replace(/^date:\s*(\d{4}-\d{2}-\d{2})\s*$/m, (match, extractedDate) => {
           dateStr = extractedDate;
-          return ''; // Remove the front matter from markdown
+          return ''; // Remove the date line from markdown
         });
+        
+        // Remove any <hr> tags (---) that appear after date removal
+        md = md.replace(/^\s*---\s*$/gm, '');
         
         // Format the date nicely
         let dateHtml = '';

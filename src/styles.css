@@ -547,13 +547,21 @@ body.no-scroll {
   border: 1px solid #3a4a5a;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   margin-bottom: 20px;
-  max-width: 400px;
-  min-width: 200px;
-  width: auto;
+  max-width: 600px; /* Increased from 400px */
+  min-width: 280px; /* Increased from 200px */
+  width: 100%;
   position: relative;
   cursor: pointer;
   margin-left: 0;
   margin-right: auto;
+}
+
+/* Make audio player responsive on narrow screens */
+@media (max-width: 600px) {
+  .audio-player {
+    max-width: 100%;
+    min-width: 200px;
+  }
 }
 
 .audio-title {
@@ -1471,4 +1479,10 @@ pre {
     margin-left: 0;
     padding-left: 0;
   }
+}
+
+/* Ensure poem date is left-aligned */
+.poem-date {
+  text-align: left !important;
+  margin-left: 0 !important;
 }
