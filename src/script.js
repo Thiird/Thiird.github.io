@@ -824,7 +824,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function loadPoem(poem) {
     resetAudioPlayer();
-    const localMd = `poems/${poem.folder}/poem.md`;
+    const localMd = `poems/${poem.folder}/poem.md`; // Use poem.folder instead of poem.name
     fetch(localMd)
       .then((res) => {
         if (!res.ok) throw new Error("Poem not found");
@@ -873,6 +873,7 @@ document.addEventListener("DOMContentLoaded", () => {
         attachLightboxEvents();
       })
       .catch((err) => {
+        console.error("Error loading poem:", err);
         document.getElementById("poemText").innerHTML = "<p>Error loading poem.</p>";
       });
     if (poem.audio) {

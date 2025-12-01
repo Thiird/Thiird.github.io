@@ -1,32 +1,32 @@
 [
   {
-    "type": "blog",
-    "name": "1-Optical Mouse",
-    "date": "2025-11-30",
-    "link": "src/blogs.html?blog=0"
-  },
-  {
-    "type": "blog",
-    "name": "2-Embedded Systems Intro",
-    "date": "2025-11-30",
-    "link": "src/blogs.html?blog=1"
-  },
-  {
     "type": "poem",
-    "name": "0 Intro",
+    "name": "0 - Intro",
     "date": "2025-11-30",
     "link": "src/poems.html?poem=0"
   },
   {
     "type": "poem",
-    "name": "1 The Final Step",
+    "name": "1 - The Final Step",
     "date": "2024-10-15",
     "link": "src/poems.html?poem=1"
   },
   {
     "type": "poem",
-    "name": "2 Human Bootloader",
+    "name": "2 - Human Bootloader",
     "date": "2024-10-15",
     "link": "src/poems.html?poem=2"
+  },
+  {
+    "type": "poem",
+    "name": "3 - Eulogy",
+    "date": "2024-10-15",
+    "link": "src/poems.html?poem=3"
+  },
+  {
+    "type": "poem",
+    "name": "4 - Privileged Wistfulness",
+    "date": "2024-10-15",
+    "link": "src/poems.html?poem=4"
   }
 ]
