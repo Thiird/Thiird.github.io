@@ -72,8 +72,8 @@ def make_blog_manifest():
         # Extract date from markdown
         date = extract_date_from_markdown(blog_file)
         if not date:
-            print(f"  ⚠️  No date found in {folder.name}/blog.md, using current date")
-            date = datetime.now().strftime('%Y-%m-%d')
+            print(f"  ⚠️  No date found in {folder.name}/blog.md, using empty date")
+            date = ""
         
         # Do NOT add formatted date to markdown file anymore
         
@@ -137,8 +137,8 @@ def make_poem_manifest():
         # Extract date from markdown
         date = extract_date_from_markdown(poem_file)
         if not date:
-            print(f"  ⚠️  No date found in {folder.name}/poem.md, using current date")
-            date = datetime.now().strftime('%Y-%m-%d')
+            print(f"  ⚠️  No date found in {folder.name}/poem.md, using empty date")
+            date = ""
         
         # Do NOT add formatted date to markdown file anymore
         

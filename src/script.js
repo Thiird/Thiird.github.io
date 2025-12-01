@@ -4,6 +4,20 @@ const zoomScales = [1, 1.5, 2]; // 1x, 1.5x, 2x zoom levels
 let currentImageIndex = 0;
 let imageList = [];
 
+// 🔹 Helper: raw GitHub URL (master branch)
+function getRawGitUrl(repoRelPath) {
+  return `https://raw.githubusercontent.com/Thiird/Thiird.github.io/master/${repoRelPath}`;
+}
+
+// 🔹 Helper: try local path first (works locally and on Pages if not processed), fallback to raw GitHub
+async function fetchWithPagesFallback(localRelPath, repoRelPath, options) {
+  try {
+    const res = await fetch(localRelPath, options);
+    if (res.ok) return res;
+  } catch (_) { /* ignore and try fallback */ }
+  return fetch(getRawGitUrl(repoRelPath), options);
+}
+
 // 🔹 Calculate scale to fit 90% of viewport
 function calculateFitScale(img) {
   const maxWidth = window.innerWidth * 0.9;
@@ -719,7 +733,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // 🔹 Poem Functions
   let poemsCache = [];
   function initPoems() {
-    fetch("poems/poems_manifest.json")
+    // local path (works locally and on Pages if JSON is copied); fallback to raw if 404
+    fetchWithPagesFallback("poems/poems_manifest.json", "src/poems/poems_manifest.json")
       .then((res) => {
         if (!res.ok) throw new Error("Failed to load poems manifest");
         return res.json();
@@ -824,7 +839,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function loadPoem(poem) {
     resetAudioPlayer();
-    fetch("poems/" + poem.folder + "/poem.md")
+    const localMd = `poems/${poem.folder}/poem.md`;
+    const repoMd = `src/${localMd}`;
+    fetchWithPagesFallback(localMd, repoMd)
       .then((res) => {
         if (!res.ok) throw new Error("Poem not found");
         return res.text();
@@ -899,7 +916,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 🔹 Blog Functions
   let blogsCache = [];
   function initBlogs() {
-    fetch("blogs/blogs_manifest.json")
+    fetchWithPagesFallback("blogs/blogs_manifest.json", "src/blogs/blogs_manifest.json")
       .then((res) => {
         if (!res.ok) throw new Error("Failed to load blogs manifest");
         return res.json();
@@ -975,8 +992,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const target = document.getElementById("blogText");
     if (!target) return;
     target.innerHTML = "Loading blog post...";
-    const mdPath = "blogs/" + encodeURIComponent(blog.folder) + "/blog.md";
-    fetch(mdPath)
+    const localMd = `blogs/${encodeURIComponent(blog.folder)}/blog.md`;
+    const repoMd = `src/${localMd}`;
+    fetchWithPagesFallback(localMd, repoMd)
       .then((res) => {
         if (!res.ok) throw new Error("Blog post not found");
         return res.text();
@@ -1964,6 +1982,8 @@ class TooltipManager {
 
     this.initializeTooltips();
   }
+
+
 
   // Show entire tooltip in fullscreen at larger scale
   showImageFullscreen(imageSrc, altText, tooltipData) {
