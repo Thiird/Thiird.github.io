@@ -1,5 +1,5 @@
 ---
-date: 2024-10-15
+date: 2025-05-28
 ---
 
 ## Eulogy
@@ -21,8 +21,6 @@ You are hereby relieved of your duties as an adult of the world.
 May you forever, Rest In Peace.
 
 ---
-
-Dated 28th of May 2025.
 
 Written around 9 am while at work.
 I listened to music on youtube while at work, and this music popped up.

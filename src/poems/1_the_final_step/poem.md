@@ -1,5 +1,5 @@
 ---
-date: 2024-10-15
+date: 2025-04-29
 ---
 
 ## The Final Step
@@ -19,5 +19,3 @@ I use this last realization to charge for a moment, and push myself to make a st
 <span style="color: #99999996;">_Fading already, only a memory remains._</span>
 
 ---
-
-Dated 29th of April 2025.

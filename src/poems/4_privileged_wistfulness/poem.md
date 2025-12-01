@@ -1,5 +1,5 @@
 ---
-date: 2024-10-15
+date: 2025-06-17
 ---
 
 ## Privileged wistfulness
@@ -16,5 +16,3 @@ May the awareness of this privilege bring your mind relief.
 <span style="color: #99999996;">"For all the reasons you have not to, allow yourself to be at peace."</p>
 
 ---
-
-Dated 17th of June 2025.

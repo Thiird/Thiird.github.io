@@ -10,13 +10,13 @@ def get_repo_root():
     return script_dir.parent
 
 def extract_date_from_markdown(md_path):
-    """Extract date from simple 'date: YYYY-MM-DD' line (no YAML markers)."""
+    """Extract date from simple 'date: YYYY-MM-DD' or 'date: YYYY-MM' line (no YAML markers)."""
     try:
         with open(md_path, 'r', encoding='utf-8') as f:
             content = f.read()
         
-        # Look for simple "date: YYYY-MM-DD" line at start of file
-        date_match = re.search(r'^date:\s*(\d{4}-\d{2}-\d{2})\s*$', content, re.MULTILINE)
+        # Look for simple "date: YYYY-MM-DD" or "date: YYYY-MM" line at start of file
+        date_match = re.search(r'^date:\s*(\d{4}-\d{2}(?:-\d{2})?)\s*$', content, re.MULTILINE)
         if date_match:
             return date_match.group(1)
             

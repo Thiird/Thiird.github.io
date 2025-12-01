@@ -1,5 +1,5 @@
 ---
-date: 2024-10-15
+date: 2025-04-26
 ---
 
 ## Human auto-bootloader
@@ -33,8 +33,6 @@ The future lives in my actions.
 <span style="color: #99999996;">_I earned a passing grade on life._</span>
 
 ---
-
-Dated 26th of April 2025.
 
 I have a very strong urge of making the most of my life.  
 I have this concept in my mind of "earning a passing grade on life".

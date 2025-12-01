@@ -34,6 +34,24 @@ def save_json(filepath, data):
         print(f"  ❌ Error saving {filepath}: {e}")
         return False
 
+def parse_date(date_string):
+    """Parse date string, handling both YYYY-MM-DD and YYYY-MM formats.
+    Returns a datetime object for comparison, using first day of month for partial dates."""
+    try:
+        parts = date_string.split('-')
+        if len(parts) == 2:
+            # Partial date: YYYY-MM -> treat as first day of month
+            return datetime.strptime(date_string + '-01', '%Y-%m-%d')
+        elif len(parts) == 3:
+            # Full date: YYYY-MM-DD
+            return datetime.strptime(date_string, '%Y-%m-%d')
+        else:
+            # Invalid format, return epoch
+            return datetime(1970, 1, 1)
+    except ValueError:
+        # If parsing fails, return epoch
+        return datetime(1970, 1, 1)
+
 def get_blog_entries(blogs_dir):
     """Extract blog entries from blogs_manifest.json."""
     manifest_path = blogs_dir / 'blogs_manifest.json'
@@ -158,9 +176,9 @@ def update_history():
     
     print(f"\n📊 Total entries collected: {len(all_entries)}")
     
-    # Sort by date (most recent first)
+    # Sort by date (most recent first) using the new parse_date function
     print("\n🔄 Sorting entries by date (most recent first)...")
-    all_entries.sort(key=lambda x: datetime.strptime(x['date'], '%Y-%m-%d'), reverse=True)
+    all_entries.sort(key=lambda x: parse_date(x['date']), reverse=True)
     
     # Keep only the last 5 entries
     all_entries = all_entries[:5]

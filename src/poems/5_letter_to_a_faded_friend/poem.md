@@ -1,5 +1,5 @@
 ---
-date: 2024-10-15
+date: 2025-07
 ---
 
 ## Letter to a faded friend
@@ -34,8 +34,6 @@ Keep your head up ~~░░░░░~~, can win.
 Stefano
 
 ---
-
-Dated June/July 2025.
 
 ~~_Context redacted_~~
 

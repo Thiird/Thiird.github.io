@@ -7,26 +7,26 @@
   },
   {
     "type": "poem",
-    "name": "1 - The Final Step",
-    "date": "2024-10-15",
-    "link": "src/poems.html?poem=1"
+    "name": "5 - Letter To A Faded Friend",
+    "date": "2025-07",
+    "link": "src/poems.html?poem=5"
   },
   {
     "type": "poem",
-    "name": "2 - Human Bootloader",
-    "date": "2024-10-15",
-    "link": "src/poems.html?poem=2"
-  },
-  {
-    "type": "poem",
-    "name": "3 - Eulogy",
-    "date": "2024-10-15",
-    "link": "src/poems.html?poem=3"
+    "name": "6 - Last Moments",
+    "date": "2025-07",
+    "link": "src/poems.html?poem=6"
   },
   {
     "type": "poem",
     "name": "4 - Privileged Wistfulness",
-    "date": "2024-10-15",
+    "date": "2025-06-17",
     "link": "src/poems.html?poem=4"
+  },
+  {
+    "type": "poem",
+    "name": "3 - Eulogy",
+    "date": "2025-05-28",
+    "link": "src/poems.html?poem=3"
   }
 ]

@@ -824,7 +824,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function loadPoem(poem) {
     resetAudioPlayer();
-    const localMd = `poems/${poem.folder}/poem.md`; // Use poem.folder instead of poem.name
+    const localMd = `poems/${poem.folder}/poem.md`;
     fetch(localMd)
       .then((res) => {
         if (!res.ok) throw new Error("Poem not found");
@@ -835,9 +835,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const poemContent = document.getElementById("poemContent");
         const audioPlayer = document.getElementById("audioPlayer");
         
-        // Extract date from simple "date: YYYY-MM-DD" line (no YAML markers)
+        // Extract date from simple "date: YYYY-MM-DD" or "date: YYYY-MM" line
         let dateStr = null;
-        md = md.replace(/^date:\s*(\d{4}-\d{2}-\d{2})\s*$/m, (match, extractedDate) => {
+        md = md.replace(/^date:\s*(\d{4}-\d{2}(?:-\d{2})?)\s*$/m, (match, extractedDate) => {
           dateStr = extractedDate;
           return ''; // Remove the date line from markdown
         });
@@ -856,9 +856,8 @@ document.addEventListener("DOMContentLoaded", () => {
             existingDate.remove();
           }
           
-          // Format the date nicely
-          const date = new Date(dateStr);
-          const formatted = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+          // Format the date (handles both partial and full dates)
+          const formatted = formatDate(dateStr);
           
           // Create date element
           const dateElement = document.createElement('p');
@@ -989,9 +988,9 @@ document.addEventListener("DOMContentLoaded", () => {
         return res.text();
       })
       .then((md) => {
-        // Extract date from simple "date: YYYY-MM-DD" line (no YAML markers)
+        // Extract date from simple "date: YYYY-MM-DD" or "date: YYYY-MM" line
         let dateStr = null;
-        md = md.replace(/^date:\s*(\d{4}-\d{2}-\d{2})\s*$/m, (match, extractedDate) => {
+        md = md.replace(/^date:\s*(\d{4}-\d{2}(?:-\d{2})?)\s*$/m, (match, extractedDate) => {
           dateStr = extractedDate;
           return ''; // Remove the date line from markdown
         });
@@ -999,11 +998,10 @@ document.addEventListener("DOMContentLoaded", () => {
         // Remove any <hr> tags (---) that appear after date removal
         md = md.replace(/^\s*---\s*$/gm, '');
         
-        // Format the date nicely
+        // Format the date nicely (handles both partial and full dates)
         let dateHtml = '';
         if (dateStr) {
-          const date = new Date(dateStr);
-          const formatted = date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+          const formatted = formatDate(dateStr);
           dateHtml = `<p style="font-style: italic; color: #8d99ae; text-align: left; margin: 0 0 24px 0; font-size: 0.9em;">${formatted}</p>`;
         }
         
@@ -1485,33 +1483,40 @@ class TooltipManager {
         progressContainer.className = 'progress-container';
         progressContainer.style.cssText = `
           flex: 1;
-          height: 6px;
+          height: 8px;
           background: #444;
-          border-radius: 3px;
+          border-radius: 999px;
           position: relative;
           cursor: pointer;
+          overflow: visible;
         `;
 
         const progressBar = document.createElement('div');
         progressBar.style.cssText = `
           height: 100%;
           background: #3498db;
-          border-radius: 3px;
+          border-radius: 999px;
           width: 0%;
-          transition: none;
+          transition: width 0.08s linear;
+          position: relative;
+          z-index: 1;
         `;
 
         const progressHandle = document.createElement('div');
+        progressHandle.className = 'progress-handle';
         progressHandle.style.cssText = `
           position: absolute;
           top: 50%;
           left: 0%;
-          width: 12px;
-          height: 12px;
-          background: #3498db;
+          width: 14px;
+          height: 14px;
+          background: #ffffff;
           border-radius: 50%;
           transform: translate(-50%, -50%);
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
           cursor: grab;
+          z-index: 2;
+          touch-action: none;
           display: block !important;
           visibility: visible !important;
           pointer-events: auto !important;
@@ -1537,6 +1542,13 @@ class TooltipManager {
         this.allAudioElements.add(audioElement);
         this.activeTooltipAudio = audioElement;
 
+        // Local formatTime function for this tooltip audio player
+        const formatTime = (seconds) => {
+          const mins = Math.floor(seconds / 60);
+          const secs = Math.floor(seconds % 60);
+          return `${mins}:${secs.toString().padStart(2, '0')}`;
+        };
+
         // Update progress
         const updateProgress = () => {
           if (audioElement.duration && isFinite(audioElement.duration)) {
@@ -1556,9 +1568,8 @@ class TooltipManager {
             audioElement.play().then(() => {
               playPauseBtn.innerHTML = '⏸';
               this.audioPlaying = true;
-              this.stopAllOtherAudio(audioElement); // Ensure only this one plays
+              this.stopAllOtherAudio(audioElement);
             }).catch(err => {
-              // Try alternative approach
               audioElement.load();
               setTimeout(() => {
                 audioElement.play().catch(e => { });
@@ -1571,28 +1582,27 @@ class TooltipManager {
           }
         });
 
-        // Add mousedown event as backup
         playPauseBtn.addEventListener('mousedown', (e) => {
           e.stopPropagation();
           e.preventDefault();
         });
 
-        // Add pointer events for better touch support
         playPauseBtn.style.pointerEvents = 'auto';
         playPauseBtn.setAttribute('type', 'button');
 
-        // Progress bar click to seek
+        // Progress bar click to seek (same as poems page)
         progressContainer.addEventListener('click', (e) => {
           e.stopPropagation();
           const rect = progressContainer.getBoundingClientRect();
-          const percent = (e.clientX - rect.left) / rect.width;
+          const clickX = (e.clientX !== undefined) ? e.clientX - rect.left : e.touches && e.touches[0] ? e.touches[0].clientX - rect.left : 0;
+          const pct = Math.max(0, Math.min(1, clickX / rect.width));
           if (audioElement.duration && isFinite(audioElement.duration)) {
-            audioElement.currentTime = percent * audioElement.duration;
+            audioElement.currentTime = pct * audioElement.duration;
             updateProgress();
           }
         });
 
-        // Draggable progress handle (similar to poems page)
+        // Draggable progress handle (exactly like poems page)
         let dragging = false;
         const rectToPct = (clientX) => {
           const rect = progressContainer.getBoundingClientRect();
@@ -1604,8 +1614,7 @@ class TooltipManager {
           const pct = rectToPct(clientX);
           progressBar.style.width = (pct * 100) + "%";
           progressHandle.style.left = (pct * 100) + "%";
-          // update current time visually (but don't commit until pointerup)
-          currentTimeEl.textContent = formatTime(pct * audioElement.duration);
+          currentTime.textContent = formatTime(pct * audioElement.duration);
         };
 
         progressHandle.addEventListener('pointerdown', (ev) => {
@@ -1627,13 +1636,41 @@ class TooltipManager {
           ev.stopPropagation();
           dragging = false;
           progressHandle.style.cursor = 'grab';
-          // commit time
           const pct = rectToPct(ev.clientX);
           if (audioElement.duration && isFinite(audioElement.duration)) {
             audioElement.currentTime = pct * audioElement.duration;
           }
           if (progressHandle.releasePointerCapture) progressHandle.releasePointerCapture(ev.pointerId);
         });
+
+        // keyboard accessibility: left/right arrow to seek small steps
+        progressHandle.addEventListener('keydown', (ev) => {
+          if (!audioElement || !audioElement.duration || !isFinite(audioElement.duration)) return;
+          const step = Math.max(1, Math.floor(audioElement.duration * 0.02));
+          if (ev.key === "ArrowLeft") {
+            audioElement.currentTime = Math.max(0, audioElement.currentTime - step);
+            updateProgress();
+            ev.preventDefault();
+          } else if (ev.key === "ArrowRight") {
+            audioElement.currentTime = Math.min(audioElement.duration, audioElement.currentTime + step);
+            updateProgress();
+            ev.preventDefault();
+          } else if (ev.key === "Home") {
+            audioElement.currentTime = 0;
+            updateProgress();
+            ev.preventDefault();
+          } else if (ev.key === "End") {
+            audioElement.currentTime = audioElement.duration;
+            updateProgress();
+            ev.preventDefault();
+          }
+        });
+
+        progressHandle.setAttribute('tabindex', '0');
+        progressHandle.setAttribute('role', 'slider');
+        progressHandle.setAttribute('aria-valuemin', '0');
+        progressHandle.setAttribute('aria-valuemax', '100');
+        progressHandle.setAttribute('aria-valuenow', '0');
 
         audioElement.addEventListener('loadedmetadata', () => {
           duration.textContent = formatTime(audioElement.duration);
@@ -1643,7 +1680,6 @@ class TooltipManager {
         audioElement.addEventListener('timeupdate', updateProgress);
 
         audioElement.addEventListener('ended', () => {
-          // Since we're looping, this shouldn't fire, but just in case
           this.audioPlaying = false;
         });
 
@@ -1671,9 +1707,7 @@ class TooltipManager {
         mediaEl.className = 'tooltip-gif';
         mediaEl.src = data.media;
         mediaEl.alt = data.text || 'Tooltip media';
-        mediaEl.onerror = () => {
-
-        };
+        mediaEl.onerror = () => { };
         content.appendChild(mediaEl);
       }
     }
@@ -2157,7 +2191,7 @@ function loadHistory() {
 
         const dateSpan = document.createElement("span");
         dateSpan.className = "history-item-date";
-        dateSpan.textContent = formatDate(item.date);
+        dateSpan.textContent = formatDate(item.date); // Uses updated formatDate function
 
         content.appendChild(typeSpan);
         content.appendChild(nameSpan);
@@ -2177,9 +2211,23 @@ function loadHistory() {
 
 // 🔹 Format date to readable format
 function formatDate(dateString) {
-  const date = new Date(dateString);
-  const options = { year: 'numeric', month: 'short', day: 'numeric' };
-  return date.toLocaleDateString('en-US', options);
+  // Handle partial dates (YYYY-MM) and full dates (YYYY-MM-DD)
+  const parts = dateString.split('-');
+  
+  if (parts.length === 2) {
+    // Partial date: YYYY-MM -> "Month Year"
+    const year = parseInt(parts[0]);
+    const month = parseInt(parts[1]) - 1; // 0-indexed
+    const date = new Date(year, month, 1);
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+  } else if (parts.length === 3) {
+    // Full date: YYYY-MM-DD -> "Month DD, YYYY"
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+  
+  // Fallback for invalid format
+  return dateString;
 }
 
 // 🔹 Blog Page Initialization
