@@ -1,10 +1,11 @@
-<p style="font-style: italic; color: #8d99ae; text-align: center; margin: 0 0 24px 0; font-size: 0.9em;">Nov 30, 2025</p>
+date: 2025-11-30
+---
 
 <h1 style="text-align:center; font-size:2em; font-weight:bold;">
   Custom Desktop Mouse
 </h1>
 
-<img src="mouse_exploded.png" style="width:100%; max-width:600px; display:block; margin:auto;">
+<img src="mouse_exploded.png" style="width:80%;">
 
 <h2>Table of Contents</h2>
 
@@ -55,13 +56,13 @@ The general characteristic of the mouse I wanted were:
 The PCB design was done is KiCAD.
 <embed src="mouse_sch.pdf" type="application/pdf" width="100%" height="600px" />
 
-[<img class="click-zoom" style="width:100%;max-width:600px;">](mouse_layout.png)
+<img class="click-zoom" src="mouse_layout.png" style="width:80%;">
 
 Instead of having the mouse directly connect to the PC via Bluetooth, I decided to design a receiver too, so that I would get to design with the receiving side too.
 
 <embed src="receiver_sch.pdf" type="application/pdf" width="100%" height="600px" />
 
-[<img class="click-zoom" style="width:100%;max-width:600px;">](receiver_layout.png)
+<img class="click-zoom" src="receiver_layout.png" style="width:80%;">
 
 <h2 id="voltage-rails">Voltage rails</h2>
 
@@ -79,7 +80,7 @@ I agree three voltage rails is a bit ridiculous, but I believe I have vaid techn
 
 The rotary encoder is a TTC 24-teeth tactile mechanical encoder bought on AliExpress.
 
-[<img class="hover-effect click-zoom" style="width:100%;max-width:600px;">](q_dec.png)
+<img class="click-zoom" src="q_dec.png" style="width:80%;">
 
 <h2 id="switches">Switches</h2>
 
@@ -153,14 +154,15 @@ So far I have fixed for this by just applying a very, very crude low pass filter
 
 A particular mouse combo makes the mouse store the last 2000 motion readings from the optical sensor in the MCU EEPROM. I store both the filtered and unfiltered values.
 With the magic of Python and MathPlotLib we can visualize this data.
-[<img class="hover-effect click-zoom" style="width:100%;max-width:600px;">](motion_glitch_plot.png)
+<img class="click-zoom" src="motion_glitch_plot.png" style="width:70%; display:block; margin:20px auto;">
 
 Zooming in on the second blue spike from the right, we can clearly see the low pass filter in effect.
-[<img class="hover-effect click-zoom" style="width:100%;max-width:600px;">](motion_glitch_plot_zoom.png)
+<img class="click-zoom" src="motion_glitch_plot_zoom.png" style="width:70%;">
 
 With this filter in place, the mouse works smoothly and nothing wrong can be perceived during normal use.
 
 The following is simplified version of the read routine.
+
 <pre><code class="language-c">
 SPI_read_register(0x02, &motion);
 SPI_read_register(0x03, &xl);
@@ -219,7 +221,7 @@ I have a ich for keeping track of things, and doing statistical analysis over ev
 
 The app starts at system startup and sits on the system tray-bar. Whenever the mouse is connected via USB to the PC for charging, it detects that, connects to its COM port and logs the mouse statistics on a CSV file. When the mouse is disconnected it connects to the mouse receiver to alert the user about low battery level with a sound notification.
 
-[<img class="hover-effect click-zoom" style="width:60%;">](mouse_client.png)
+<img src="mouse_client.png" style="width:40%;">
 
 _The battery level bug was later fixed._
 
@@ -241,15 +243,15 @@ Here is a clip of me playing Battlefield 4 with my mouse!
 <h1 id="pic_dump">Picture dump</h1>
 
 <div class="image-grid">
-  <img class="hover-effect click-zoom" src="antenna_assembly.jpg" alt="MCU and antenna assembly" />
-  <img class="hover-effect click-zoom" src="early_shell_prototype.jpg" alt="shell" />
-  <img class="hover-effect click-zoom" src="man_cave.jpg" alt="Where the mouse was built" />
-  <img class="hover-effect click-zoom" src="new_vs_old.jpg" alt="new vs old" />
-  <img class="hover-effect click-zoom" src="fusion.png" alt="Fusion 360 view" />
-  <img class="hover-effect click-zoom" src="blender.png" alt="Blender view" />
-  <img class="hover-effect click-zoom" src="voltage_rails_debugging.jpg" alt="Debugging the voltage supervisor" />
-  <img class="hover-effect click-zoom" src="mouse_final_1.jpg" alt="" />
-  <img class="hover-effect click-zoom" src="mouse_final_2.jpg" alt="" />
-  <img class="hover-effect click-zoom" src="mouse_final_3.jpg" alt="" />
-  <img class="hover-effect click-zoom" src="mouse_final_4.jpg" alt="" />
+  <img class="click-zoom" src="antenna_assembly.jpg" alt="MCU and antenna assembly" />
+  <img class="click-zoom" src="early_shell_prototype.jpg" alt="shell" />
+  <img class="click-zoom" src="man_cave.jpg" alt="Where the mouse was built" />
+  <img class="click-zoom" src="new_vs_old.jpg" alt="new vs old" />
+  <img class="click-zoom" src="fusion.png" alt="Fusion 360 view" />
+  <img class="click-zoom" src="blender.png" alt="Blender view" />
+  <img class="click-zoom" src="voltage_rails_debugging.jpg" alt="Debugging the voltage supervisor" />
+  <img class="click-zoom" src="mouse_final_1.jpg" alt="" />
+  <img class="click-zoom" src="mouse_final_2.jpg" alt="" />
+  <img class="click-zoom" src="mouse_final_3.jpg" alt="" />
+  <img class="click-zoom" src="mouse_final_4.jpg" alt="" />
 </div>

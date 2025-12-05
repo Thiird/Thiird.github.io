@@ -24,6 +24,17 @@ function applyScale(img, scale) {
   img.style.height = img.naturalHeight * scale + "px";
 }
 
+// 🔹 Center image in viewport
+function centerImage(img) {
+  const viewportCenterX = window.innerWidth / 2;
+  const viewportCenterY = window.innerHeight / 2;
+  const imgRect = img.getBoundingClientRect();
+  const left = viewportCenterX - (imgRect.width / 2);
+  const top = viewportCenterY - (imgRect.height / 2);
+  img.style.left = left + "px";
+  img.style.top = top + "px";
+}
+
 // 🔹 Center image if smaller than viewport
 function centerImageIfSmall(img, lightbox) {
   const imgRect = img.getBoundingClientRect();
@@ -34,56 +45,47 @@ function centerImageIfSmall(img, lightbox) {
   img.style.top = top + "px";
 }
 
+// 🔹 Fit and center image
+function fitAndCenterImage(img) {
+  const scale = calculateFitScale(img);
+  applyScale(img, scale);
+  centerImage(img);
+}
+
 // 🔹 Apply scale with fade effect
 function fadeApply(img, lightbox, scale, cursorX, cursorY) {
   img.style.opacity = 0; // Fade out
   setTimeout(() => {
-    // Get current position before resizing
-    const currentRect = img.getBoundingClientRect();
-    const currentLeft = parseFloat(img.style.left) || 0;
-    const currentTop = parseFloat(img.style.top) || 0;
-    const currentWidth = currentRect.width;
-    const currentHeight = currentRect.height;
+    const oldRect = img.getBoundingClientRect();
+    const oldWidth = oldRect.width;
+    const oldHeight = oldRect.height;
+    const oldLeft = parseFloat(img.style.left) || 0;
+    const oldTop = parseFloat(img.style.top) || 0;
 
     // Apply new scale
     applyScale(img, scale);
+    const newRect = img.getBoundingClientRect();
+    const newWidth = newRect.width;
+    const newHeight = newRect.height;
 
-    // Get new dimensions after scaling
-    const newWidth = img.naturalWidth * scale;
-    const newHeight = img.naturalHeight * scale;
+    if (cursorX !== undefined && cursorY !== undefined && zoomLevel > 0) {
+      // Calculate cursor position relative to old image
+      const relX = (cursorX - oldRect.left) / oldWidth;
+      const relY = (cursorY - oldRect.top) / oldHeight;
 
-    const viewportCenterX = window.innerWidth / 2;
-    const viewportCenterY = window.innerHeight / 2;
+      // Calculate new position to keep cursor point fixed
+      const newLeft = cursorX - relX * newWidth;
+      const newTop = cursorY - relY * newHeight;
 
-    // At 1x zoom (fit to screen), always center the image
-    const fitScale = calculateFitScale(img);
-    if (Math.abs(scale - fitScale) < 0.001) {
-      // Base zoom level - center the image perfectly
-      const left = viewportCenterX - (newWidth / 2);
-      const top = viewportCenterY - (newHeight / 2);
-      img.style.left = left + "px";
-      img.style.top = top + "px";
-    } else if (cursorX !== undefined && cursorY !== undefined) {
-      // Zooming in/out - keep cursor point stable
-      // Calculate what portion of the old image the cursor was pointing at
-      const cursorRelativeX = (cursorX - currentRect.left) / currentWidth;
-      const cursorRelativeY = (cursorY - currentRect.top) / currentHeight;
-
-      // Position the new image so the same relative point is under the cursor
-      const left = cursorX - (cursorRelativeX * newWidth);
-      const top = cursorY - (cursorRelativeY * newHeight);
-
-      img.style.left = left + "px";
-      img.style.top = top + "px";
+      img.style.left = newLeft + "px";
+      img.style.top = newTop + "px";
     } else {
-      // Fallback: center the image
-      const left = viewportCenterX - (newWidth / 2);
-      const top = viewportCenterY - (newHeight / 2);
-      img.style.left = left + "px";
-      img.style.top = top + "px";
+      // Center image if no cursor position or at base zoom
+      centerImageIfSmall(img, lightbox);
     }
 
-    img.style.opacity = 1; // Fade in
+    // Fade in
+    img.style.opacity = 1;
   }, 20); // Reduced from 50ms to 20ms for quicker transition
 }
 
@@ -93,7 +95,7 @@ function resetZoom(img, lightbox) {
   img.classList.remove("zoomed");
   const scale = calculateFitScale(img);
   fadeApply(img, lightbox, scale);
-  
+
   // Show caption at basic zoom level
   const caption = document.getElementById("lightbox-caption");
   if (caption && caption.textContent.trim()) {
@@ -108,11 +110,11 @@ function updateZoom(img, lightbox, cursorX, cursorY) {
   const scale = fitScale * zoomScales[zoomLevel];
   img.classList.toggle("zoomed", zoomLevel > 0);
   fadeApply(img, lightbox, scale, cursorX, cursorY);
-  
+
   // Hide caption when zoomed beyond basic level
   const caption = document.getElementById("lightbox-caption");
   if (caption) {
-    caption.style.display = zoomLevel === 0 && caption.textContent.trim() ? "block" : "none";
+    caption.style.display = zoomLevel > 0 ? "none" : "block";
   }
 }
 
@@ -304,17 +306,17 @@ function initDropdownToggle() {
 function updateSidebarTop() {
   const banner = document.getElementById("banner-placeholder");
   const sidebars = document.querySelectorAll(".blog-list, .poem-list");
-  
+
   if (banner && sidebars.length > 0) {
     // On desktop (width > 800px), calculate position based on banner visibility
     if (window.innerWidth > 800) {
       const bannerRect = banner.getBoundingClientRect();
       const scrollY = window.pageYOffset || document.documentElement.scrollTop;
-      
+
       // Calculate how much of banner is still visible
       const bannerBottom = bannerRect.bottom;
       const topOffset = Math.max(0, bannerBottom);
-      
+
       sidebars.forEach((sidebar) => {
         sidebar.style.top = `${topOffset}px`;
         sidebar.style.height = `calc(100vh - ${topOffset}px)`;
@@ -329,6 +331,13 @@ function getUrlParameter(name) {
   return urlParams.get(name);
 }
 
+// 🔹 Helper function to apply scale attribute to images
+function applyImageScaling(container) {
+  // This function is no longer needed - width handles sizing natively
+  // Keep it as a no-op for backward compatibility
+  if (!container) return;
+}
+
 // 🔹 Initialize on load
 document.addEventListener("DOMContentLoaded", () => {
   // Initialize tooltip manager
@@ -339,14 +348,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Update sidebar position
   updateSidebarTop();
-  
+
   // Update on scroll and resize for desktop
   window.addEventListener("scroll", () => {
     if (window.innerWidth > 800) {
       updateSidebarTop();
     }
   });
-  
+
   window.addEventListener("resize", () => {
     updateSidebarTop();
   });
@@ -392,38 +401,25 @@ document.addEventListener("DOMContentLoaded", () => {
   // 🔹 Zoom on image click
   img.addEventListener("click", (e) => {
     e.stopPropagation();
+    zoomLevel = (zoomLevel + 1) % zoomScales.length;
     const cursorX = e.clientX;
     const cursorY = e.clientY;
-    zoomLevel = (zoomLevel + 1) % zoomScales.length;
     updateZoom(img, lightbox, cursorX, cursorY);
-    updateNavigationVisibility();
   });
 
-  // 🔹 Close lightbox on click outside or Escape key
+  // 🔹 Close lightbox on click
   lightbox.addEventListener("click", (e) => {
     if (e.target !== img && e.target !== prevBtn && e.target !== nextBtn) {
       lightbox.style.display = "none";
       document.body.classList.remove("lightbox-active");
-      resetZoom(img, lightbox);
-      updateNavigationVisibility();
     }
   });
 
   document.addEventListener("keydown", (e) => {
     if (lightbox.style.display === "block") {
       if (e.key === "Escape") {
-        if (zoomLevel > 0) {
-          // Reset to 1x zoom instead of closing
-          zoomLevel = 0;
-          updateZoom(img, lightbox);
-          updateNavigationVisibility();
-        } else {
-          // Close lightbox if already at 1x
-          lightbox.style.display = "none";
-          document.body.classList.remove("lightbox-active");
-          resetZoom(img, lightbox);
-          updateNavigationVisibility();
-        }
+        lightbox.style.display = "none";
+        document.body.classList.remove("lightbox-active");
         e.preventDefault();
       } else if (e.key === "ArrowLeft") {
         navigateImage(-1);
@@ -442,32 +438,27 @@ document.addEventListener("DOMContentLoaded", () => {
     imageList = Array.from(gridImages);
 
     document.querySelectorAll("img.click-zoom").forEach((thumbnail) => {
-      if (!thumbnail.parentElement.classList.contains("image-wrapper")) {
-        const wrapper = document.createElement("div");
-        wrapper.className = "image-wrapper";
-        thumbnail.parentElement.insertBefore(wrapper, thumbnail);
-        wrapper.appendChild(thumbnail);
-      }
       thumbnail.style.cursor = "pointer";
       thumbnail.removeEventListener("click", thumbnail._lightboxHandler);
       thumbnail._lightboxHandler = () => {
         // Find index in the grid images list (or -1 if not in grid)
         currentImageIndex = imageList.indexOf(thumbnail);
         img.src = thumbnail.src;
-        
+
         // Update caption with alt text
         const caption = document.getElementById("lightbox-caption");
         if (thumbnail.alt && thumbnail.alt.trim()) {
           caption.textContent = thumbnail.alt;
-          caption.style.display = zoomLevel === 0 ? "block" : "none";
+          caption.style.display = "block";
         } else {
           caption.style.display = "none";
         }
-        
+
         const openLightbox = () => {
+          zoomLevel = 0;
           lightbox.style.display = "block";
           document.body.classList.add("lightbox-active");
-          resetZoom(img, lightbox);
+          fitAndCenterImage(img);
           updateNavigationVisibility();
         };
         if (img.complete && img.naturalWidth) openLightbox();
@@ -481,21 +472,22 @@ document.addEventListener("DOMContentLoaded", () => {
   function navigateImage(direction) {
     // Only navigate if current image is in the grid (currentImageIndex >= 0)
     if (imageList.length === 0 || currentImageIndex < 0) return;
+    zoomLevel = 0;
     currentImageIndex = (currentImageIndex + direction + imageList.length) % imageList.length;
     const currentImg = imageList[currentImageIndex];
     img.src = currentImg.src;
-    
+
     // Update caption with current image's alt text
     const caption = document.getElementById("lightbox-caption");
     if (currentImg.alt && currentImg.alt.trim()) {
       caption.textContent = currentImg.alt;
-      caption.style.display = zoomLevel === 0 ? "block" : "none";
+      caption.style.display = "block";
     } else {
       caption.style.display = "none";
     }
-    
+
     const reloadImage = () => {
-      resetZoom(img, lightbox);
+      fitAndCenterImage(img);
       updateNavigationVisibility();
     };
     if (img.complete && img.naturalWidth) reloadImage();
@@ -507,8 +499,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const prevBtn = document.getElementById("lightbox-prev");
     const nextBtn = document.getElementById("lightbox-next");
 
-    // Only show navigation if: lightbox is open, at 1x zoom, image is in grid, and there are multiple grid images
-    if (lightbox.style.display === "block" && zoomLevel === 0 && currentImageIndex >= 0 && imageList.length > 1) {
+    // Only show navigation if image is in grid and there are multiple grid images
+    if (lightbox.style.display === "block" && currentImageIndex >= 0 && imageList.length > 1) {
       prevBtn.style.display = "flex";
       nextBtn.style.display = "flex";
     } else {
@@ -699,12 +691,45 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 🔹 Back to Top Button
   const backToTopBtn = document.getElementById("backToTop");
+  const themeToggle = document.getElementById("themeToggle");
+
+  if (!themeToggle) {
+    const btn = document.createElement("button");
+    btn.id = "themeToggle";
+    btn.innerHTML = "☀️";
+    btn.setAttribute("aria-label", "Toggle theme");
+    document.body.appendChild(btn);
+  }
+
+  const themeBtn = document.getElementById("themeToggle");
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  document.documentElement.setAttribute("data-theme", savedTheme);
+  updateThemeIcon(savedTheme);
+
+  themeBtn.addEventListener("click", () => {
+    const currentTheme = document.documentElement.getAttribute("data-theme");
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem("theme", newTheme);
+    updateThemeIcon(newTheme);
+  });
+
+  function updateThemeIcon(theme) {
+    if (themeBtn) {
+      themeBtn.innerHTML = theme === "dark" ? "☀️" : "🌙";
+    }
+  }
+
+  themeBtn.classList.add("visible");
+
   if (backToTopBtn) {
     window.addEventListener("scroll", () => {
       if (document.documentElement.scrollTop > 200) {
         backToTopBtn.style.display = "block";
+        backToTopBtn.classList.add("with-theme-toggle");
       } else {
         backToTopBtn.style.display = "none";
+        backToTopBtn.classList.remove("with-theme-toggle");
       }
     });
 
@@ -773,7 +798,7 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
         const index = link.dataset.index;
         const currentPoemIndex = getUrlParameter('poem');
-        
+
         // If clicking on the currently active poem
         if (index === currentPoemIndex) {
           // On mobile, just close the sidebar
@@ -783,7 +808,7 @@ document.addEventListener("DOMContentLoaded", () => {
           // On desktop, do nothing
           return;
         }
-        
+
         // Different poem selected, load it
         const poem = JSON.parse(link.getAttribute("data-poem"));
         loadPoem(poem);
@@ -834,20 +859,20 @@ document.addEventListener("DOMContentLoaded", () => {
         const poemText = document.getElementById("poemText");
         const poemContent = document.getElementById("poemContent");
         const audioPlayer = document.getElementById("audioPlayer");
-        
+
         // Extract date from simple "date: YYYY-MM-DD" or "date: YYYY-MM" line
         let dateStr = null;
         md = md.replace(/^date:\s*(\d{4}-\d{2}(?:-\d{2})?)\s*$/m, (match, extractedDate) => {
           dateStr = extractedDate;
           return ''; // Remove the date line from markdown
         });
-        
+
         // Remove any <hr> tags (---) that appear after date removal
         md = md.replace(/^\s*---\s*$/gm, '');
-        
+
         // Render markdown (without date and hr tags)
         poemText.innerHTML = marked.parse(md);
-        
+
         // Create and insert date element BEFORE audio player and poem text
         if (dateStr && poemContent) {
           // Remove any existing date element
@@ -855,20 +880,22 @@ document.addEventListener("DOMContentLoaded", () => {
           if (existingDate) {
             existingDate.remove();
           }
-          
+
           // Format the date (handles both partial and full dates)
           const formatted = formatDate(dateStr);
-          
+
           // Create date element
           const dateElement = document.createElement('p');
           dateElement.className = 'poem-date';
-          dateElement.style.cssText = 'font-style: italic; color: #8d99ae; text-align: left; margin: 0 0 16px 0; font-size: 0.9em;';
           dateElement.textContent = formatted;
-          
+
           // Insert at the top of poemContent (before audio player and poem text)
           poemContent.insertBefore(dateElement, poemContent.firstChild);
         }
-        
+
+        // Apply image scaling
+        applyImageScaling(poemText);
+
         attachLightboxEvents();
       })
       .catch((err) => {
@@ -945,7 +972,7 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
         const index = link.dataset.index;
         const currentBlogIndex = getUrlParameter('blog');
-        
+
         // If clicking on the currently active blog
         if (index === currentBlogIndex) {
           // On mobile, just close the sidebar
@@ -955,7 +982,7 @@ document.addEventListener("DOMContentLoaded", () => {
           // On desktop, do nothing
           return;
         }
-        
+
         // Different blog selected, load it
         const blog = JSON.parse(link.getAttribute("data-blog"));
         loadBlogPost(blog);
@@ -994,19 +1021,19 @@ document.addEventListener("DOMContentLoaded", () => {
           dateStr = extractedDate;
           return ''; // Remove the date line from markdown
         });
-        
+
         // Remove any <hr> tags (---) that appear after date removal
         md = md.replace(/^\s*---\s*$/gm, '');
-        
+
         // Format the date nicely (handles both partial and full dates)
         let dateHtml = '';
         if (dateStr) {
           const formatted = formatDate(dateStr);
-          dateHtml = `<p style="font-style: italic; color: #8d99ae; text-align: left; margin: 0 0 24px 0; font-size: 0.9em;">${formatted}</p>`;
+          dateHtml = `<p class="blog-date">${formatted}</p>`;
         }
-        
+
         md = md.replace(/!\[(.*?)\]\(([^)]+)\)/g, (match, alt, src) => {
-          const classes = ["hover-effect", "click-zoom"];
+          const classes = ["click-zoom"];
           if (!src.startsWith("http") && !src.includes("/")) {
             return `<div class="image-wrapper"><img class="${classes.join(
               " "
@@ -1019,7 +1046,6 @@ document.addEventListener("DOMContentLoaded", () => {
         md = md.replace(/\[<img([^>]+)>\]\(([^)]+)\)/g, (match, attrs, src) => {
           let classAttr = attrs.match(/class=["']([^"']*)["']/i);
           let classes = classAttr ? classAttr[1].split(/\s+/) : [];
-          // Only add click-zoom if it's already in the original classes
           const hasClickZoom = classes.includes("click-zoom");
           if (hasClickZoom && !classes.includes("click-zoom")) {
             classes.push("click-zoom");
@@ -1036,7 +1062,6 @@ document.addEventListener("DOMContentLoaded", () => {
           (match, before, src, after) => {
             let classAttr = before.match(/class=["']([^"']*)["']/i);
             let classes = classAttr ? classAttr[1].split(/\s+/) : [];
-            // Only add click-zoom if it's already in the original classes
             const hasClickZoom = classes.includes("click-zoom");
             if (hasClickZoom && !classes.includes("click-zoom")) {
               classes.push("click-zoom");
@@ -1082,6 +1107,9 @@ document.addEventListener("DOMContentLoaded", () => {
           hljs.highlightAll();
         }
 
+        // Apply scale to images with scale attribute in style
+        applyImageScaling(target);
+
         // Initialize tooltips after content is loaded - pass blog folder directly
         setTimeout(() => {
           if (window.tooltipManager) {
@@ -1094,7 +1122,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // NEW: if URL contains a hash when the post loads, scroll to it
         if (location.hash) {
-          // small timeout to ensure elements are laid out
           setTimeout(() => scrollToAnchor(location.hash), 50);
         }
       })
@@ -1247,38 +1274,46 @@ class TooltipManager {
     this.audioPlaying = false;
     this.tooltipDimensions = new Map();
     this.tooltipData = new Map();
-    this.allAudioElements = new Set(); // Track all audio elements
-    this.activeTooltipAudio = null; // Track audio in current tooltip
+    this.allAudioElements = new Set();
+    this.activeTooltipAudio = null;
+
+    const styles = getComputedStyle(document.documentElement);
+    this.showDelay = parseInt(styles.getPropertyValue('--tooltip-show-delay'));
+    this.hideDelay = parseInt(styles.getPropertyValue('--tooltip-hide-delay'));
+    this.verticalOffset = parseInt(styles.getPropertyValue('--tooltip-vertical-offset'));
+
     this.init();
   }
 
   init() {
-    // Close tooltip when clicking outside
     document.addEventListener('click', (e) => {
+      if (e.target.closest('#themeToggle')) {
+        return;
+      }
       if (!e.target.closest('.tooltip-trigger') && !e.target.closest('.tooltip')) {
         this.hideActiveTooltip();
       }
     });
 
-    // Store last mouse event for repositioning on scroll
-    this.lastMouseEvent = null;
-    document.addEventListener('mousemove', (e) => {
-      this.lastMouseEvent = e;
-    });
-
-    // Update tooltip position on scroll
+    // Update tooltip position on scroll to keep it aligned with trigger
     window.addEventListener('scroll', () => {
       if (this.tooltip && this.currentTrigger) {
-        // Get the data for current tooltip
-        const dataKey = this.currentTrigger.getAttribute('data-tooltip');
-        if (dataKey && this.tooltipData.has(dataKey)) {
-          const data = this.tooltipData.get(dataKey);
-          // Use cursor positioning if we have a recent mouse event, otherwise fallback to element
-          if (this.lastMouseEvent) {
-            this.positionTooltipAtCursor(this.tooltip, this.lastMouseEvent, data);
-          } else {
-            this.positionTooltipAtTrigger(this.tooltip, this.currentTrigger, data);
+        const tooltipId = this.currentTrigger.getAttribute('tt');
+        let tooltipData;
+
+        if (tooltipId) {
+          tooltipData = this.tooltipData.get(tooltipId);
+        } else {
+          try {
+            tooltipData = JSON.parse(this.currentTrigger.getAttribute('data-tooltip'));
+          } catch (e) {
+            return;
           }
+        }
+
+        if (tooltipData) {
+          // Don't pass mouseX on scroll, let it center on trigger
+          this.positionTooltipAtTrigger(this.tooltip, this.currentTrigger, tooltipData, null);
         }
       }
     });
@@ -1341,7 +1376,7 @@ class TooltipManager {
   }
 
   // 🔹 Calculate tooltip position and show
-  showTooltip(trigger, data, mouseEvent = null) {
+  showTooltip(trigger, data, mouseX = null) {
     this.hideActiveTooltip();
 
     const tooltip = this.createTooltip(data);
@@ -1356,12 +1391,8 @@ class TooltipManager {
 
     document.body.appendChild(tooltip);
 
-    // Position tooltip at cursor location if mouse event is available
-    if (mouseEvent) {
-      this.positionTooltipAtCursor(tooltip, mouseEvent, data);
-    } else {
-      this.positionTooltipAtTrigger(tooltip, trigger, data);
-    }
+    // Always position tooltip relative to trigger element at fixed distance
+    this.positionTooltipAtTrigger(tooltip, trigger, data, mouseX);
 
     // Force a reflow to ensure positioning is applied before adding show class
     tooltip.offsetHeight;
@@ -1387,16 +1418,14 @@ class TooltipManager {
     });
 
     tooltip.addEventListener('mouseleave', (e) => {
-      // If audio is playing, keep tooltip open
       if (this.audioPlaying) {
         return;
       }
-      // Otherwise add delay to allow moving back
       this.hideTimeout = setTimeout(() => {
         if (!this.audioPlaying) {
           this.hideActiveTooltip();
         }
-      }, 1000);
+      }, this.hideDelay);
     });
 
     this.currentTrigger = trigger;
@@ -1422,11 +1451,11 @@ class TooltipManager {
     // Use 'media' field for images or audio
     if (data.media) {
       if (data.media.endsWith('.mp3') || data.media.endsWith('.wav') || data.media.endsWith('.ogg')) {
-        // Create audio player similar to poems page
+        // Create audio player matching poems page - using CSS variables for dynamic theming
         const audioPlayer = document.createElement('div');
         audioPlayer.className = 'tooltip-audio-player';
         audioPlayer.style.cssText = `
-          background: #1e1e1e;
+          background: var(--audio-player-bg);
           border-radius: 6px;
           padding: 10px;
           min-width: 280px;
@@ -1442,15 +1471,14 @@ class TooltipManager {
 
         const playPauseBtn = document.createElement('button');
         playPauseBtn.innerHTML = '▶';
-        playPauseBtn.className = 'player-btn';
+        playPauseBtn.className = 'player-btn tooltip-player-btn';
         playPauseBtn.style.cssText = `
-          background: #3498db;
+          background: none;
           border: none;
-          color: white;
-          padding: 6px 10px;
-          border-radius: 4px;
+          color: var(--audio-player-text);
+          padding: 0;
           cursor: pointer;
-          font-size: 14px;
+          font-size: 1.2em;
           min-width: 32px;
           height: 32px;
           display: flex;
@@ -1459,42 +1487,35 @@ class TooltipManager {
           user-select: none;
           -webkit-user-select: none;
           outline: none;
-          transition: background-color 0.2s ease;
+          transition: color 0.2s ease;
         `;
-
-        // Add hover effects
-        playPauseBtn.addEventListener('mouseenter', () => {
-          playPauseBtn.style.backgroundColor = '#2980b9';
-        });
-
-        playPauseBtn.addEventListener('mouseleave', () => {
-          playPauseBtn.style.backgroundColor = '#3498db';
-        });
 
         const currentTime = document.createElement('span');
         currentTime.textContent = '0:00';
+        currentTime.className = 'tooltip-time';
         currentTime.style.cssText = `
-          color: #d3d7db;
+          color: var(--audio-player-text);
           font-size: 12px;
           min-width: 35px;
         `;
 
         const progressContainer = document.createElement('div');
-        progressContainer.className = 'progress-container';
+        progressContainer.className = 'progress-container tooltip-progress';
         progressContainer.style.cssText = `
           flex: 1;
           height: 8px;
-          background: #444;
+          background: var(--audio-progress-bg);
           border-radius: 999px;
           position: relative;
           cursor: pointer;
           overflow: visible;
         `;
 
-        const progressBar = document.createElement('div');
-        progressBar.style.cssText = `
+        const progressBarEl = document.createElement('div');
+        progressBarEl.className = 'tooltip-progress-bar';
+        progressBarEl.style.cssText = `
           height: 100%;
-          background: #3498db;
+          background: var(--audio-progress-bar);
           border-radius: 999px;
           width: 0%;
           transition: width 0.08s linear;
@@ -1517,20 +1538,18 @@ class TooltipManager {
           cursor: grab;
           z-index: 2;
           touch-action: none;
-          display: block !important;
-          visibility: visible !important;
-          pointer-events: auto !important;
         `;
 
         const duration = document.createElement('span');
         duration.textContent = '0:00';
+        duration.className = 'tooltip-time';
         duration.style.cssText = `
-          color: #d3d7db;
+          color: var(--audio-player-text);
           font-size: 12px;
           min-width: 35px;
         `;
 
-        progressContainer.appendChild(progressBar);
+        progressContainer.appendChild(progressBarEl);
         progressContainer.appendChild(progressHandle);
 
         const audioElement = document.createElement('audio');
@@ -1553,7 +1572,7 @@ class TooltipManager {
         const updateProgress = () => {
           if (audioElement.duration && isFinite(audioElement.duration)) {
             const percent = (audioElement.currentTime / audioElement.duration) * 100;
-            progressBar.style.width = percent + '%';
+            progressBarEl.style.width = percent + '%';
             progressHandle.style.left = percent + '%';
             currentTime.textContent = formatTime(audioElement.currentTime);
           }
@@ -1612,7 +1631,7 @@ class TooltipManager {
         const onPointerMove = (clientX) => {
           if (!audioElement || !audioElement.duration || !isFinite(audioElement.duration)) return;
           const pct = rectToPct(clientX);
-          progressBar.style.width = (pct * 100) + "%";
+          progressBarEl.style.width = (pct * 100) + "%";
           progressHandle.style.left = (pct * 100) + "%";
           currentTime.textContent = formatTime(pct * audioElement.duration);
         };
@@ -1795,7 +1814,6 @@ class TooltipManager {
   }
 
   setupTooltip(element) {
-    // Check if using ID-based tooltip (now just 'tt')
     const tooltipId = element.getAttribute('tt');
     let tooltipData;
 
@@ -1815,109 +1833,56 @@ class TooltipManager {
       }
     }
 
-    // Remove existing listeners to avoid duplicates
     element.removeEventListener('mouseenter', element._tooltipMouseEnter);
     element.removeEventListener('mouseleave', element._tooltipMouseLeave);
 
-    // Create new listeners with unified delay
     element._tooltipMouseEnter = (e) => {
-      // Clear any pending hide timeout
       if (this.hideTimeout) {
         clearTimeout(this.hideTimeout);
         this.hideTimeout = null;
       }
-      
-      // Store the event for positioning
-      element._lastMouseEvent = e;
-      
-      // If tooltip is already showing for this trigger, don't recreate it
+
       if (this.tooltip && this.currentTrigger === element) {
         return;
       }
-      
-      // Unified 500ms delay before showing tooltip for all types
+
+      // Store mouse position for tooltip positioning
+      const mouseX = e.clientX;
       element._tooltipTimeout = setTimeout(() => {
-        this.showTooltip(e.target, tooltipData, element._lastMouseEvent);
-      }, 500);
+        this.showTooltip(element, tooltipData, mouseX);
+      }, this.showDelay);
     };
 
     element._tooltipMouseLeave = (e) => {
-      // Check if mouse moved into tooltip
       const relatedTarget = e.relatedTarget;
       if (relatedTarget && this.tooltip && this.tooltip.contains(relatedTarget)) {
-        // Cancel show timeout but don't hide
         if (element._tooltipTimeout) {
           clearTimeout(element._tooltipTimeout);
           element._tooltipTimeout = null;
         }
         return;
       }
-      
-      // Clear the show timeout if mouse leaves before tooltip appears
+
       if (element._tooltipTimeout) {
         clearTimeout(element._tooltipTimeout);
         element._tooltipTimeout = null;
       }
 
-      // Unified hide delay for all tooltip types
       this.hideTimeout = setTimeout(() => {
         if (!this.audioPlaying) {
           this.hideActiveTooltip();
         }
-      }, 1000);
+      }, this.hideDelay);
     };
 
     element.addEventListener('mouseenter', element._tooltipMouseEnter);
     element.addEventListener('mouseleave', element._tooltipMouseLeave);
   }
 
-  // Position tooltip at cursor location
-  positionTooltipAtCursor(tooltip, mouseEvent, data) {
-    const dataKey = JSON.stringify(data);
 
-    // Get cached dimensions or fallback
-    let tooltipWidth, tooltipHeight;
-    if (this.tooltipDimensions.has(dataKey)) {
-      const cached = this.tooltipDimensions.get(dataKey);
-      tooltipWidth = cached.width;
-      tooltipHeight = cached.height;
-    } else {
-      const tooltipRect = tooltip.getBoundingClientRect();
-      tooltipWidth = tooltipRect.width || 250;
-      tooltipHeight = tooltipRect.height || 100;
-    }
 
-    // Get cursor position from the mouse event
-    const cursorX = mouseEvent.pageX;
-    const cursorY = mouseEvent.pageY;
-
-    // Position tooltip above and centered on cursor
-    let left = cursorX - (tooltipWidth / 2);
-    let top = cursorY - tooltipHeight - 15; // 15px gap above cursor
-
-    // Adjust if tooltip goes off screen horizontally
-    const scrollX = window.pageXOffset;
-    if (left < scrollX + 10) left = scrollX + 10;
-    if (left + tooltipWidth > scrollX + window.innerWidth - 10) {
-      left = scrollX + window.innerWidth - tooltipWidth - 10;
-    }
-
-    // If not enough space above cursor, show below
-    if (top < window.pageYOffset + 10) {
-      top = cursorY + 15; // 15px gap below cursor
-      tooltip.classList.add('bottom');
-    } else {
-      tooltip.classList.remove('bottom');
-    }
-
-    // Use absolute positioning
-    tooltip.style.position = 'absolute';
-    tooltip.style.left = left + 'px';
-    tooltip.style.top = top + 'px';
-  }
-
-  // Position tooltip relative to trigger element for scroll following
-  positionTooltipAtTrigger(tooltip, trigger, data) {
+  // Position tooltip relative to trigger element at fixed distance
+  positionTooltipAtTrigger(tooltip, trigger, data, mouseX = null) {
     const dataKey = JSON.stringify(data);
 
     // Get cached dimensions or fallback
@@ -1937,9 +1902,16 @@ class TooltipManager {
     const triggerX = triggerRect.left + window.pageXOffset;
     const triggerY = triggerRect.top + window.pageYOffset;
 
-    // Position tooltip above and centered on trigger
-    let left = triggerX + (triggerRect.width / 2) - (tooltipWidth / 2);
-    let top = triggerY - tooltipHeight - 10; // 10px gap above trigger
+    // Position tooltip horizontally near mouse, vertically above trigger
+    let left;
+    if (mouseX !== null) {
+      // Center tooltip on mouse position
+      left = mouseX + window.pageXOffset - (tooltipWidth / 2);
+    } else {
+      // Fallback: center on trigger
+      left = triggerX + (triggerRect.width / 2) - (tooltipWidth / 2);
+    }
+    let top = triggerY - tooltipHeight - this.verticalOffset;
 
     // Adjust if tooltip goes off screen horizontally
     const scrollX = window.pageXOffset;
@@ -1950,8 +1922,10 @@ class TooltipManager {
 
     // If not enough space above trigger, show below
     if (top < window.pageYOffset + 10) {
-      top = triggerY + triggerRect.height + 10; // 10px gap below trigger
+      top = triggerY + triggerRect.height + this.verticalOffset;
       tooltip.classList.add('bottom');
+    } else {
+      tooltip.classList.remove('bottom');
     }
 
     // Use absolute positioning so tooltip follows page scroll
@@ -1973,13 +1947,13 @@ class TooltipManager {
       }
 
       this.tooltip.classList.remove('show');
-      
+
       // Store reference to current tooltip for cleanup
       const tooltipToRemove = this.tooltip;
       this.tooltip = null;
       this.currentTrigger = null;
       this.activeTooltipAudio = null;
-      
+
       setTimeout(() => {
         if (tooltipToRemove && tooltipToRemove.parentNode) {
           tooltipToRemove.parentNode.removeChild(tooltipToRemove);
@@ -2095,7 +2069,7 @@ class TooltipManager {
 
     // ESC key to close
     const escHandler = (e) => {
-     
+
       if (e.key === 'Escape') {
         closeFullscreen();
       }
@@ -2120,7 +2094,7 @@ function initHomePage() {
     .catch(error => { });
 
   // Load banner.html and initialize dropdown
- 
+
   fetch("src/banner.html")
     .then(response => response.text())
     .then(data => {
@@ -2165,7 +2139,7 @@ function loadHistory() {
     .then(historyData => {
       // Data is already sorted and trimmed to 5 items by the Python script
       // No need to sort or slice here
-      
+
       const historyList = document.getElementById("historyList");
       if (!historyList) return;
 
@@ -2213,7 +2187,7 @@ function loadHistory() {
 function formatDate(dateString) {
   // Handle partial dates (YYYY-MM) and full dates (YYYY-MM-DD)
   const parts = dateString.split('-');
-  
+
   if (parts.length === 2) {
     // Partial date: YYYY-MM -> "Month Year"
     const year = parseInt(parts[0]);
@@ -2225,7 +2199,7 @@ function formatDate(dateString) {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   }
-  
+
   // Fallback for invalid format
   return dateString;
 }
@@ -2257,10 +2231,10 @@ function initBlogPage() {
       const mobileToggle = document.getElementById("sidebarFloatingToggle");
       if (banner && blogList) {
         const bannerRect = banner.getBoundingClientRect();
-        
+
         // Calculate how much of the banner is still visible
         const bannerBottom = Math.max(0, bannerRect.bottom);
-        
+
         // Apply same logic for both mobile and desktop - just use bannerRect.bottom
         blogList.style.top = `${bannerBottom}px`;
         blogList.style.height = `calc(100vh - ${bannerBottom}px)`;
@@ -2398,7 +2372,7 @@ function initPoemPage() {
       const mobileToggle = document.getElementById("sidebarFloatingToggle");
       if (banner && poemList) {
         const bannerRect = banner.getBoundingClientRect();
-        
+
         // Calculate how much of the banner is still visible
         const bannerBottom = Math.max(0, bannerRect.bottom);
 

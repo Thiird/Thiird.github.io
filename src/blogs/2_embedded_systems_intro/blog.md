@@ -1,4 +1,5 @@
-<p style="font-style: italic; color: #8d99ae; text-align: center; margin: 0 0 24px 0; font-size: 0.9em;">Nov 30, 2025</p>
+date: 2025-12-25
+---
 
 <h1 id="intro-to-embedded-systems">Intro to Embedded Systems</h1>
 
@@ -78,15 +79,15 @@ For a desktop mouse, the enclosure is made of plastic, and for a surface to air 
 
 An embedded system is made of three main elements:
 
-- <strong>Hardware</strong>: The electronics, like chips, buttons and actuators. 
-- <strong>Firmware</strong>: Low-level code running on the ES hardware, controlling its delicate basic functionalities  
+- <strong>Hardware</strong>: The electronics, like chips, buttons and actuators 
+- <strong>Firmware</strong>: Low-level code running on the ES hardware, controlling its delicate basic functionalities 
 - <strong>Software</strong>: Higher-level code that runs on or communicates with the ES to implement extra functionalities
 
-These three layers work together to create a functioning embedded system. The hardware provides the physical platform, the firmware controls it directly, and the software (when present) adds higher-level functionality.
+The hardware provides the physical platform, the firmware controls it directly, and the software (when present) adds higher-level functionality.
 
 The core of an <span tt="ES">ES</span> is the electronics. There can be an <span tt="ES">ES</span> without any software or mechanical engineering involved, but there can't be an <span tt="ES">ES</span> without electronics, i.e. an <span tt="ES">ES</span> is applied electronics.
 
-The electronics is consolidated in a single assembly called <span tt="PCB">Printed Circuit Board</span> (PCB). A PCB is a flat board made of insulating material (usually fiberglass) with copper traces etched onto it that connect different electronic components together. Components like integrated circuits, resistors, capacitors, and connectors are soldered onto the board. The PCB is the physical heart of any embedded system, it's where all the magic happens. Without it, you'd have a mess of wires connecting components, which would be unreliable and impossible to manufacture at scale.
+The electronics is consolidated in a single assembly called <span tt="PCB">Printed Circuit Board</span> (PCB). A PCB is a flat board made of alternating layers of insulating material (usually fiberglass) and copper, where the copper has been etched to leave only traces that connect the different electronic components together. Components like integrated circuits, resistors, capacitors, and connectors are soldered onto the board. The PCB is the physical heart of any embedded system, it's where all the magic happens. Without it, you'd have a mess of wires connecting components, which would be unreliable and impossible to manufacture at scale.
 
 Consider a desktop mouse as an example: the hardware includes the circuit board with its buttons, scroll wheel, and motion sensor, the firmware is the code on the circuit board that interprets input from these components and sends data to the connected device and the software is the application running on your desktop computer that interacts with the mouse to adjust settings like DPI.
 

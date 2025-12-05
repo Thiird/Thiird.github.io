@@ -27,7 +27,7 @@ I can enjoy a surprisingly varied amount of music, from <span tt="sad-music">emo
 
 Some of my favorite movies are _Tron Legacy_, _Sunshine_, _Interstellar_, _Iron Man_.
 
-I'm a very curious person. I love to ask questions.
+I'm a very curious person, I love to ask questions.
 
 I'm a huge fan of technology and I take great pride for being in a position where I get to study and develop it.
 
