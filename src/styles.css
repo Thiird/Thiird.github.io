@@ -1089,12 +1089,12 @@ body.no-scroll {
 
 #backToTop:hover,
 #themeToggle:hover {
-  background-color: var(--surface-elevated);
+  background-color: var(--accent-hover);
 }
 
 #backToTop:active,
 #themeToggle:active {
-  transform: scale(0.95);
+  opacity: 0.8;
 }
 
 pre code {
@@ -1184,7 +1184,7 @@ pre code {
 }
 
 .mobile-sidebar-toggle:active {
-  transform: scale(0.98);
+  opacity: 0.8;
 }
 
 @media (max-width: 800px) {

@@ -880,10 +880,10 @@ document.addEventListener("DOMContentLoaded", () => {
           return ''; // Remove the date line from markdown
         });
 
-        // Remove any <hr> tags (---) that appear after date removal
-        md = md.replace(/^\s*---\s*$/gm, '');
+        // Remove only the first <hr> tag (---) that appears after date removal
+        md = md.replace(/^\s*---\s*$/m, '');
 
-        // Render markdown (without date and hr tags)
+        // Render markdown (without date and first hr tag)
         poemText.innerHTML = marked.parse(md);
 
         // Create and insert date element BEFORE audio player and poem text
