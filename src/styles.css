@@ -1062,7 +1062,7 @@ body.no-scroll {
 #backToTop,
 #themeToggle {
   position: fixed;
-  z-index: 3500;
+  z-index: 2900;
   font-size: 18px;
   background-color: var(--text-secondary);
   color: var(--text-inverse);

@@ -739,6 +739,7 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("scroll", () => {
       if (document.documentElement.scrollTop > 200) {
         backToTopBtn.style.display = "block";
+        backToTopBtn.style.opacity = "1";
         backToTopBtn.classList.add("with-theme-toggle");
       } else {
         backToTopBtn.style.display = "none";
