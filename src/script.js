@@ -702,13 +702,20 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const themeBtn = document.getElementById("themeToggle");
-  const savedTheme = localStorage.getItem("theme") || "dark";
+  const savedTheme = localStorage.getItem("theme") || "darker";
   document.documentElement.setAttribute("data-theme", savedTheme);
   updateThemeIcon(savedTheme);
 
   themeBtn.addEventListener("click", () => {
     const currentTheme = document.documentElement.getAttribute("data-theme");
-    const newTheme = currentTheme === "dark" ? "light" : "dark";
+    let newTheme;
+    if (currentTheme === "light") {
+      newTheme = "middle";
+    } else if (currentTheme === "middle") {
+      newTheme = "darker";
+    } else {
+      newTheme = "light";
+    }
     document.documentElement.setAttribute("data-theme", newTheme);
     localStorage.setItem("theme", newTheme);
     updateThemeIcon(newTheme);
@@ -716,7 +723,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateThemeIcon(theme) {
     if (themeBtn) {
-      themeBtn.innerHTML = theme === "dark" ? "☀️" : "🌙";
+      if (theme === "light") {
+        themeBtn.innerHTML = "☀️";
+      } else if (theme === "middle") {
+        themeBtn.innerHTML = "🌗";
+      } else {
+        themeBtn.innerHTML = "🌙";
+      }
     }
   }
 
@@ -1298,6 +1311,11 @@ class TooltipManager {
     // Update tooltip position on scroll to keep it aligned with trigger
     window.addEventListener('scroll', () => {
       if (this.tooltip && this.currentTrigger) {
+        // Don't reposition if audio is playing
+        if (this.activeTooltipAudio && !this.activeTooltipAudio.paused) {
+          return;
+        }
+
         const tooltipId = this.currentTrigger.getAttribute('tt');
         let tooltipData;
 
@@ -1902,16 +1920,20 @@ class TooltipManager {
     const triggerX = triggerRect.left + window.pageXOffset;
     const triggerY = triggerRect.top + window.pageYOffset;
 
-    // Position tooltip horizontally near mouse, vertically above trigger
-    let left;
-    if (mouseX !== null) {
-      // Center tooltip on mouse position
-      left = mouseX + window.pageXOffset - (tooltipWidth / 2);
-    } else {
-      // Fallback: center on trigger
-      left = triggerX + (triggerRect.width / 2) - (tooltipWidth / 2);
+    // For multi-line triggers, get the position of the topmost line
+    const range = document.createRange();
+    range.selectNodeContents(trigger);
+    const rects = range.getClientRects();
+    let topLineRect = triggerRect;
+    if (rects.length > 0) {
+      topLineRect = rects[0]; // First rect is the topmost line
     }
-    let top = triggerY - tooltipHeight - this.verticalOffset;
+    const topLineX = topLineRect.left + window.pageXOffset;
+    const topLineY = topLineRect.top + window.pageYOffset;
+
+    // Position tooltip horizontally aligned with trigger, vertically above trigger
+    let left = topLineX + (topLineRect.width / 2) - (tooltipWidth / 2);
+    let top = topLineY - tooltipHeight - this.verticalOffset;
 
     // Adjust if tooltip goes off screen horizontally
     const scrollX = window.pageXOffset;
