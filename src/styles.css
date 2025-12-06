@@ -1067,7 +1067,7 @@ body.no-scroll {
   position: fixed;
   bottom: 10px;
   right: 10px;
-  z-index: 100;
+  z-index: 3500;
   font-size: 20px;
   background-color: var(--bg-secondary);
   color: var(--text-primary);
