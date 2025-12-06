@@ -702,7 +702,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const themeBtn = document.getElementById("themeToggle");
-  const savedTheme = localStorage.getItem("theme") || "darker";
+  const savedTheme = localStorage.getItem("theme") || "light";
   document.documentElement.setAttribute("data-theme", savedTheme);
   updateThemeIcon(savedTheme);
 
