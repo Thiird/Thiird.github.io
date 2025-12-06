@@ -2106,17 +2106,46 @@ class TooltipManager {
 }
 //// 🔹 Home Page Initialization
 function initHomePage() {
+  let headerLoaded = false;
+  let bannerLoaded = false;
+
+  // Position theme toggle button below banner
+  function adjustThemeTogglePosition() {
+    requestAnimationFrame(() => {
+      const banner = document.getElementById("banner-placeholder");
+      const themeToggle = document.getElementById("themeToggle");
+      if (banner && themeToggle) {
+        const bannerRect = banner.getBoundingClientRect();
+        const bannerBottom = Math.max(0, bannerRect.bottom);
+        themeToggle.style.top = `${bannerBottom + 10}px`;
+      }
+    });
+  }
+
+  // Check if both header and banner are loaded, then position theme toggle
+  function checkAndPositionThemeToggle() {
+    if (headerLoaded && bannerLoaded) {
+      // Use multiple RAF calls to ensure layout is complete
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          adjustThemeTogglePosition();
+        });
+      });
+    }
+  }
+
   // Load header.html first
   fetch("src/header.html")
     .then(response => response.text())
     .then(data => {
       const header = document.getElementById("header-placeholder");
       header.innerHTML = data;
+      headerLoaded = true;
+      checkAndPositionThemeToggle();
     })
     .catch(error => { });
 
   // Load banner.html and initialize dropdown
-
   fetch("src/banner.html")
     .then(response => response.text())
     .then(data => {
@@ -2126,8 +2155,17 @@ function initHomePage() {
       if (typeof initDropdownToggle === "function") {
         initDropdownToggle();
       }
+      bannerLoaded = true;
+      checkAndPositionThemeToggle();
     })
     .catch(error => { });
+
+  // Update position on scroll
+  window.addEventListener("scroll", adjustThemeTogglePosition);
+  window.addEventListener("touchmove", adjustThemeTogglePosition, { passive: true });
+
+  // Position on load (catch-all for timing issues)
+  window.addEventListener("load", adjustThemeTogglePosition);
 
   // Load and display history
   loadHistory();
@@ -2140,6 +2178,7 @@ function initHomePage() {
       if (typeof initDropdownToggle === "function") {
         initDropdownToggle();
       }
+      adjustThemeTogglePosition();
     }, 100);
   });
 
@@ -2264,6 +2303,12 @@ function initBlogPage() {
         // ensure mobile toggle is positioned correctly
         if (mobileToggle) {
           mobileToggle.style.top = `${bannerBottom}px`;
+        }
+
+        // Position theme toggle button below banner
+        const themeToggle = document.getElementById("themeToggle");
+        if (themeToggle) {
+          themeToggle.style.top = `${bannerBottom + 10}px`;
         }
       }
     });
@@ -2405,6 +2450,12 @@ function initPoemPage() {
         // ensure mobile toggle is positioned correctly
         if (mobileToggle) {
           mobileToggle.style.top = `${bannerBottom}px`;
+        }
+
+        // Position theme toggle button below banner
+        const themeToggle = document.getElementById("themeToggle");
+        if (themeToggle) {
+          themeToggle.style.top = `${bannerBottom + 10}px`;
         }
       }
     });

@@ -26,7 +26,6 @@
   --surface-elevated: #30363d;
   --code-bg: #0d1117;
   --code-text: #c9d1d9;
-  --shadow: rgba(0, 0, 0, 0.6);
   --header-bg: #252a31;
   --header-text: #dbe1ea;
   --banner-text: #ffffff;
@@ -62,7 +61,7 @@
   --bg-secondary: #2c3e50;
   --bg-tertiary: #34495e;
   --text-primary: #d3d7db;
-  --text-secondary: #d8d9dc;
+  --text-secondary: #ffffff;
   --text-inverse: #1a252f;
   --border-primary: #4a6076;
   --border-secondary: #6888a8;
@@ -72,10 +71,9 @@
   --surface-elevated: #4a6076;
   --code-bg: #0d1117;
   --code-text: #c9d1d9;
-  --shadow: rgba(0, 0, 0, 0.4);
   --header-bg: #34495e;
-  --header-text: #0c1116;
-  --banner-text: #ffffff;
+  --header-text: #c9d7e6;
+  --banner-text: #d8d9dc;
   --tooltip-bg: #3d3d3d;
   --tooltip-text: #ffffff;
   --tooltip-trigger-bg: lab(63.46% -8.37 -34.23 / 0.267);
@@ -118,9 +116,8 @@
   --surface-elevated: #ffffff;
   --code-bg: #f7fafc;
   --code-text: #2d3748;
-  --shadow: rgba(0, 0, 0, 0.1);
   --header-bg: #ffffff;
-  --header-text: #2c3e50;
+  --header-text: #000000;
   --banner-text: #18212b;
   --tooltip-bg: #d0d5db;
   --tooltip-text: #2c3e50;
@@ -136,7 +133,7 @@
   --menu-hover: #7c7c7c;
 
   /* Sidebar styling */
-  --sidebar-bg: #b9b9b9;
+  --sidebar-bg: #e5e5e5;
   --sidebar-header-bg: #f5f7fa;
   --sidebar-item-bg: transparent;
   --sidebar-item-hover: #e8edf2;
@@ -415,7 +412,6 @@ body.no-scroll {
   left: 50%;
   transform: translateX(-50%);
   background-color: var(--bg-tertiary);
-  box-shadow: 0 4px 8px var(--shadow);
   z-index: 3100;
 }
 
@@ -462,7 +458,7 @@ body.no-scroll {
   position: sticky;
   top: 60px;
   background-color: var(--sidebar-bg);
-  padding: 0 10px 10px;
+  padding: 0;
   border-right: 1px solid var(--border-primary);
   overflow-y: auto;
   box-sizing: border-box;
@@ -486,9 +482,8 @@ body.no-scroll {
   flex-direction: column;
   gap: 10px;
   background-color: var(--sidebar-header-bg);
-  padding: 10px;
-  margin: 0 -10px 10px -10px;
-  border-radius: 4px;
+  margin: 0 0 10px 0;
+  border-radius: 0;
   box-sizing: border-box;
 }
 
@@ -497,7 +492,7 @@ body.no-scroll {
   position: sticky;
   top: 60px;
   background-color: var(--sidebar-bg);
-  padding: 0 10px 10px;
+  padding: 0;
   border-right: 1px solid var(--border-primary);
   overflow-y: auto;
   box-sizing: border-box;
@@ -517,8 +512,13 @@ body.no-scroll {
 }
 
 #blogListItems,
+#poemListItems {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
 #blogListItems li,
-#poemListItems,
 #poemListItems li {
   list-style: none;
   padding: 0;
@@ -530,9 +530,8 @@ body.no-scroll {
   flex-direction: column;
   gap: 10px;
   background-color: var(--sidebar-header-bg);
-  padding: 10px;
-  margin: 0 -10px 10px -10px;
-  border-radius: 4px;
+  margin: 0 0 10px 0;
+  border-radius: 0;
   box-sizing: border-box;
 }
 
@@ -543,8 +542,8 @@ body.no-scroll {
   justify-content: flex-start;
   align-items: center;
   padding-top: 20px;
-  padding-left: 40px;
-  padding-right: 40px;
+  padding-left: 50px;
+  padding-right: 50px;
   margin: 0;
   width: 100%;
   max-width: 800px;
@@ -556,6 +555,7 @@ body.no-scroll {
   width: 100%;
   text-align: left;
   line-height: 1.6;
+  box-sizing: border-box;
 }
 
 .toggle-btn {
@@ -629,7 +629,7 @@ body.no-scroll {
 
 #poemList li,
 #blogList li {
-  margin: 5px 0;
+  margin: 5px 10px;
   padding: 0 10px;
   background-color: var(--sidebar-item-bg);
   border-radius: 4px;
@@ -670,8 +670,6 @@ body.no-scroll {
   padding: 8px 12px;
   border-radius: 8px;
   border: 1px solid var(--audio-player-border);
-  box-shadow: 0 2px 6px var(--shadow);
-  margin-bottom: 20px;
   max-width: 600px;
   min-width: 280px;
   width: 100%;
@@ -679,6 +677,7 @@ body.no-scroll {
   cursor: pointer;
   margin-left: 0;
   margin-right: auto;
+  box-sizing: border-box;
 }
 
 /* Make audio player responsive on narrow screens */
@@ -780,7 +779,6 @@ body.no-scroll {
   height: 14px;
   border-radius: 50%;
   background: #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
   z-index: 2;
   touch-action: none;
   cursor: grab;
@@ -788,7 +786,6 @@ body.no-scroll {
 
 .progress-handle:active {
   cursor: grabbing;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
 }
 
 .progress-handle:focus {
@@ -842,7 +839,7 @@ body.no-scroll {
   max-width: var(--site-max-width);
   width: 100%;
   margin: 0 auto;
-  padding: 12px;
+  padding: 20px;
   box-sizing: border-box;
   font-size: 16px;
   line-height: 1.6;
@@ -1065,21 +1062,29 @@ body.no-scroll {
 #backToTop,
 #themeToggle {
   position: fixed;
-  bottom: 10px;
-  right: 10px;
   z-index: 3500;
-  font-size: 20px;
-  background-color: var(--bg-secondary);
-  color: var(--text-primary);
+  font-size: 18px;
+  background-color: var(--text-secondary);
+  color: var(--text-inverse);
   border: 1px solid var(--border-primary);
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
+  border-radius: 5px;
+  width: 30px;
+  height: 30px;
   cursor: pointer;
-  box-shadow: 0 4px 10px var(--shadow);
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+#backToTop {
+  bottom: 10px;
+  right: 10px;
+  display: none;
+}
+
+#themeToggle {
+  top: 60px;
+  right: 10px;
 }
 
 #backToTop:hover,
@@ -1090,14 +1095,6 @@ body.no-scroll {
 #backToTop:active,
 #themeToggle:active {
   transform: scale(0.95);
-}
-
-#backToTop {
-  display: none;
-}
-
-#backToTop.with-theme-toggle {
-  bottom: 70px;
 }
 
 pre code {
@@ -1241,7 +1238,7 @@ pre code {
     max-width: none !important;
     top: auto;
     overflow-y: auto;
-    box-shadow: none;
+    z-index: 4000;
   }
 
   body.no-scroll .content-scale-wrapper {
@@ -1354,7 +1351,6 @@ pre code {
   border-radius: 8px;
   text-decoration: none;
   font-weight: 600;
-  box-shadow: 0 4px 10px var(--shadow);
 }
 
 .pdf-placeholder a:hover {
@@ -1395,7 +1391,6 @@ pre code {
   color: var(--tooltip-text);
   padding: 5px;
   border-radius: 8px;
-  box-shadow: 0 4px 12px var(--shadow);
   z-index: 1000;
   width: max-content;
   max-width: min(350px, calc(100vw - 20px));
