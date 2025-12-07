@@ -404,9 +404,13 @@ document.addEventListener("DOMContentLoaded", () => {
     navigateImage(1);
   });
 
-  // 🔹 Zoom on image click
+  // 🔹 Zoom on image click (disabled on mobile)
   img.addEventListener("click", (e) => {
     e.stopPropagation();
+    // Disable zoom functionality on mobile devices
+    const isMobile = window.innerWidth <= 600;
+    if (isMobile) return;
+    
     zoomLevel = (zoomLevel + 1) % zoomScales.length;
     const cursorX = e.clientX;
     const cursorY = e.clientY;
