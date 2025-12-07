@@ -221,7 +221,7 @@ I have a ich for keeping track of things, and doing statistical analysis over ev
 
 The app starts at system startup and sits on the system tray-bar. Whenever the mouse is connected via USB to the PC for charging, it detects that, connects to its COM port and logs the mouse statistics on a CSV file. When the mouse is disconnected it connects to the mouse receiver to alert the user about low battery level with a sound notification.
 
-<img src="mouse_client.png" style="width:40%;">
+<img src="mouse_client.png" style="width:70%;">
 
 _The battery level bug was later fixed._
 

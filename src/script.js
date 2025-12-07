@@ -4,10 +4,15 @@ const zoomScales = [1, 1.5, 2]; // 1x, 1.5x, 2x zoom levels
 let currentImageIndex = 0;
 let imageList = [];
 
-// 🔹 Calculate scale to fit 90% of viewport
+// 🔹 Calculate scale to fit between navigation buttons with padding
 function calculateFitScale(img) {
-  const maxWidth = window.innerWidth * 0.9;
-  const maxHeight = window.innerHeight * 0.9;
+  // Consistent button width (60px) and padding (40px) across all devices
+  const buttonWidth = 60;
+  const sidePadding = 40; // Padding between button and image
+  const horizontalSpace = buttonWidth * 2 + sidePadding * 2;
+  
+  const maxWidth = window.innerWidth - horizontalSpace;
+  const maxHeight = window.innerHeight * 0.9; // Keep 90% vertical space
   const imgWidth = img.naturalWidth;
   const imgHeight = img.naturalHeight;
   if (imgWidth === 0 || imgHeight === 0) {
