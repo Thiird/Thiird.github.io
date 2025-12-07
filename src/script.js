@@ -6,13 +6,14 @@ let imageList = [];
 
 // 🔹 Calculate scale to fit between navigation buttons with padding
 function calculateFitScale(img) {
-  // Consistent button width (60px) and padding (40px) across all devices
-  const buttonWidth = 60;
-  const sidePadding = 40; // Padding between button and image
-  const horizontalSpace = buttonWidth * 2 + sidePadding * 2;
+  const isMobile = window.innerWidth <= 600;
+  // On mobile: no buttons, use 90% width. Desktop: 40px button + 40px padding on each side
+  const buttonWidth = 40;
+  const sidePadding = 40;
+  const horizontalSpace = isMobile ? (window.innerWidth * 0.1) : (buttonWidth * 2 + sidePadding * 2);
   
   const maxWidth = window.innerWidth - horizontalSpace;
-  const maxHeight = window.innerHeight * 0.9; // Keep 90% vertical space
+  const maxHeight = window.innerHeight * 0.9;
   const imgWidth = img.naturalWidth;
   const imgHeight = img.naturalHeight;
   if (imgWidth === 0 || imgHeight === 0) {
@@ -435,6 +436,33 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   });
+
+  // 🔹 Touch swipe support for mobile navigation
+  let touchStartX = 0;
+  let touchEndX = 0;
+  const minSwipeDistance = 50;
+
+  lightbox.addEventListener("touchstart", (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  lightbox.addEventListener("touchend", (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+  }, { passive: true });
+
+  function handleSwipe() {
+    const swipeDistance = touchEndX - touchStartX;
+    if (Math.abs(swipeDistance) < minSwipeDistance) return;
+    
+    if (swipeDistance > 0) {
+      // Swipe right - previous image
+      navigateImage(-1);
+    } else {
+      // Swipe left - next image
+      navigateImage(1);
+    }
+  }
 
   // 🔹 Attach click event to images with .click-zoom class
   function attachLightboxEvents() {
