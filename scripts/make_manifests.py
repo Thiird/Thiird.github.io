@@ -1,3 +1,8 @@
+"""
+Generate manifest JSON files for poems and blogs by scanning their directories.
+Creates poems_manifest.json and blogs_manifest.json with folder names and dates.
+"""
+
 import json
 import os
 from pathlib import Path

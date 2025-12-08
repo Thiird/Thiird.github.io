@@ -1,3 +1,8 @@
+"""
+Process MP3 audio files: convert to 128kbps bitrate, add fade in/out effects,
+and clamp duration to 60 seconds maximum using ffmpeg.
+"""
+
 import os
 import subprocess
 import shutil

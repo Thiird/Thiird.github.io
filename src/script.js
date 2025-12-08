@@ -1,10 +1,8 @@
-// 🔹 Zoom variables for lightbox
 let zoomLevel = 0;
 const zoomScales = [1, 1.5, 2]; // 1x, 1.5x, 2x zoom levels
 let currentImageIndex = 0;
 let imageList = [];
 
-// 🔹 Calculate scale to fit between navigation buttons with padding
 function calculateFitScale(img) {
   const isMobile = window.innerWidth <= 600;
   // On mobile: no buttons, use 90% width. Desktop: 40px button + 40px padding on each side
@@ -24,13 +22,11 @@ function calculateFitScale(img) {
   return scale;
 }
 
-// 🔹 Apply scale to image
 function applyScale(img, scale) {
   img.style.width = img.naturalWidth * scale + "px";
   img.style.height = img.naturalHeight * scale + "px";
 }
 
-// 🔹 Center image in viewport
 function centerImage(img) {
   const viewportCenterX = window.innerWidth / 2;
   const viewportCenterY = window.innerHeight / 2;
@@ -41,7 +37,6 @@ function centerImage(img) {
   img.style.top = top + "px";
 }
 
-// 🔹 Center image if smaller than viewport
 function centerImageIfSmall(img, lightbox) {
   const imgRect = img.getBoundingClientRect();
   const lightboxRect = lightbox.getBoundingClientRect();
@@ -51,14 +46,12 @@ function centerImageIfSmall(img, lightbox) {
   img.style.top = top + "px";
 }
 
-// 🔹 Fit and center image
 function fitAndCenterImage(img) {
   const scale = calculateFitScale(img);
   applyScale(img, scale);
   centerImage(img);
 }
 
-// 🔹 Apply scale with fade effect
 function fadeApply(img, lightbox, scale, cursorX, cursorY) {
   img.style.opacity = 0; // Fade out
   setTimeout(() => {
@@ -95,7 +88,6 @@ function fadeApply(img, lightbox, scale, cursorX, cursorY) {
   }, 20); // Reduced from 50ms to 20ms for quicker transition
 }
 
-// 🔹 Reset zoom
 function resetZoom(img, lightbox) {
   zoomLevel = 0;
   img.classList.remove("zoomed");
@@ -109,7 +101,6 @@ function resetZoom(img, lightbox) {
   }
 }
 
-// 🔹 Update zoom
 function updateZoom(img, lightbox, cursorX, cursorY) {
   const fitScale = calculateFitScale(img);
   // Always use fitScale as the base, then multiply by the zoom multiplier
@@ -124,7 +115,6 @@ function updateZoom(img, lightbox, cursorX, cursorY) {
   }
 }
 
-// 🔹 Function to initialize dropdown toggle for mobile and ensure desktop reset
 function initDropdownToggle() {
   const dropdowns = document.querySelectorAll(".top-menu .dropdown");
   const isMobile = window.innerWidth <= 800;
@@ -308,7 +298,6 @@ function initDropdownToggle() {
   }
 }
 
-// 🔹 Sidebar positioning
 function updateSidebarTop() {
   const banner = document.getElementById("banner-placeholder");
   const sidebars = document.querySelectorAll(".blog-list, .poem-list");
@@ -331,31 +320,21 @@ function updateSidebarTop() {
   }
 }
 
-// 🔹 Function to get URL parameter
 function getUrlParameter(name) {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get(name);
 }
 
-// 🔹 Helper function to apply scale attribute to images
 function applyImageScaling(container) {
   // This function is no longer needed - width handles sizing natively
   // Keep it as a no-op for backward compatibility
   if (!container) return;
 }
 
-// 🔹 Initialize on load
 document.addEventListener("DOMContentLoaded", () => {
-  // Initialize tooltip manager
   window.tooltipManager = new TooltipManager();
-
-  // Initialize dropdown toggle
   initDropdownToggle();
-
-  // Update sidebar position
   updateSidebarTop();
-
-  // Update on scroll and resize for desktop
   window.addEventListener("scroll", () => {
     if (window.innerWidth > 800) {
       updateSidebarTop();
@@ -366,7 +345,6 @@ document.addEventListener("DOMContentLoaded", () => {
     updateSidebarTop();
   });
 
-  // 🔹 Lightbox Initialization
   const lightbox = document.createElement("div");
   lightbox.id = "lightbox";
   const img = document.createElement("img");
@@ -404,7 +382,6 @@ document.addEventListener("DOMContentLoaded", () => {
     navigateImage(1);
   });
 
-  // 🔹 Zoom on image click (disabled on mobile)
   img.addEventListener("click", (e) => {
     e.stopPropagation();
     // Disable zoom functionality on mobile devices
@@ -417,7 +394,6 @@ document.addEventListener("DOMContentLoaded", () => {
     updateZoom(img, lightbox, cursorX, cursorY);
   });
 
-  // 🔹 Close lightbox on click
   lightbox.addEventListener("click", (e) => {
     if (e.target !== img && e.target !== prevBtn && e.target !== nextBtn) {
       lightbox.style.display = "none";
@@ -441,7 +417,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 🔹 Touch swipe support for mobile navigation
   let touchStartX = 0;
   let touchEndX = 0;
   const minSwipeDistance = 50;
@@ -468,7 +443,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // 🔹 Attach click event to images with .click-zoom class
   function attachLightboxEvents() {
     // Build image list for navigation - only include images inside .image-grid
     const gridImages = document.querySelectorAll(".image-grid img.click-zoom");
@@ -548,7 +522,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   attachLightboxEvents();
 
-  // 🔹 Poem and Blog Initialization
   if (
     document.getElementById("poemList") &&
     window.location.pathname.includes("poems")
@@ -562,7 +535,6 @@ document.addEventListener("DOMContentLoaded", () => {
     initBlogs();
   }
 
-  // 🔹 Search filter
   const searchInput = document.getElementById("blogSearch") || document.getElementById("poemSearch");
   if (searchInput) {
     searchInput.addEventListener("input", (e) => {
@@ -575,7 +547,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 🔹 Audio Player
   const audio = document.getElementById("audioElement");
   const playPauseBtn = document.getElementById("playPause");
   const progressContainer = document.querySelector(".progress-container");
@@ -726,7 +697,6 @@ document.addEventListener("DOMContentLoaded", () => {
   } else {
   }
 
-  // 🔹 Back to Top Button
   const backToTopBtn = document.getElementById("backToTop");
   const themeToggle = document.getElementById("themeToggle");
 
@@ -792,7 +762,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 🔹 Poem Functions
   let poemsCache = [];
   function initPoems() {
     fetch("poems/poems_manifest.json")
@@ -978,7 +947,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // 🔹 Blog Functions
   let blogsCache = [];
   function initBlogs() {
     fetch("blogs/blogs_manifest.json")
@@ -1181,7 +1149,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  // 🔹 Handle URL changes (back/forward navigation)
   // Move anchor handling to the top so anchor popstates do not trigger expensive blog/poem reloads.
   window.addEventListener("popstate", (event) => {
     // If the popped history state is an anchor, handle it immediately and return
@@ -1209,7 +1176,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 🔹 Ensure initialization on load
   window.addEventListener("load", () => {
     initDropdownToggle();
     updateSidebarTop();
@@ -1431,7 +1397,6 @@ class TooltipManager {
     return null;
   }
 
-  // 🔹 Calculate tooltip position and show
   showTooltip(trigger, data, mouseX = null) {
     this.hideActiveTooltip();
 
@@ -2142,7 +2107,7 @@ class TooltipManager {
     document.body.style.overflow = 'hidden'; // Prevent scrolling
   }
 }
-//// 🔹 Home Page Initialization
+
 function initHomePage() {
   let headerLoaded = false;
   let bannerLoaded = false;
@@ -2156,6 +2121,8 @@ function initHomePage() {
         const bannerRect = banner.getBoundingClientRect();
         const bannerBottom = Math.max(0, bannerRect.bottom);
         themeToggle.style.top = `${bannerBottom + 10}px`;
+        // Make button visible after positioning
+        themeToggle.classList.add("positioned");
       }
     });
   }
@@ -2268,7 +2235,6 @@ function initHomePage() {
   });
 }
 
-// 🔹 Load and display history
 function loadHistory() {
   fetch("src/resources/history.json")
     .then(response => {
@@ -2322,7 +2288,6 @@ function loadHistory() {
     });
 }
 
-// 🔹 Format date to readable format
 function formatDate(dateString) {
   // Handle partial dates (YYYY-MM) and full dates (YYYY-MM-DD)
   const parts = dateString.split('-');
@@ -2343,7 +2308,6 @@ function formatDate(dateString) {
   return dateString;
 }
 
-// 🔹 Blog Page Initialization
 function initBlogPage() {
   // Load banner and set up page-specific functionality
   fetch("banner.html")
@@ -2387,6 +2351,7 @@ function initBlogPage() {
         const themeToggle = document.getElementById("themeToggle");
         if (themeToggle) {
           themeToggle.style.top = `${bannerBottom + 10}px`;
+          themeToggle.classList.add("positioned");
         }
       }
     });
@@ -2491,7 +2456,6 @@ function initBlogPage() {
   }
 }
 
-// 🔹 Poem Page Initialization  
 function initPoemPage() {
   // Load banner
   fetch("banner.html")
@@ -2534,6 +2498,7 @@ function initPoemPage() {
         const themeToggle = document.getElementById("themeToggle");
         if (themeToggle) {
           themeToggle.style.top = `${bannerBottom + 10}px`;
+          themeToggle.classList.add("positioned");
         }
       }
     });

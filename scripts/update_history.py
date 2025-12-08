@@ -1,3 +1,8 @@
+"""
+Update the site history by scanning all content (poems, blogs, bio) and generating
+a chronological history.json file with the 5 most recent updates.
+"""
+
 import json
 import os
 from pathlib import Path

@@ -1,9 +1,15 @@
 [
   {
-    "type": "poem",
-    "name": "0 - Intro",
+    "type": "blog",
+    "name": "2 - Embedded Systems Intro",
+    "date": "2025-12-25",
+    "link": "src/blogs.html?blog=1"
+  },
+  {
+    "type": "blog",
+    "name": "1 - Optical Mouse",
     "date": "2025-11-30",
-    "link": "src/poems.html?poem=0"
+    "link": "src/blogs.html?blog=0"
   },
   {
     "type": "poem",
@@ -22,11 +28,5 @@
     "name": "4 - Privileged Wistfulness",
     "date": "2025-06-17",
     "link": "src/poems.html?poem=4"
-  },
-  {
-    "type": "poem",
-    "name": "3 - Eulogy",
-    "date": "2025-05-28",
-    "link": "src/poems.html?poem=3"
   }
 ]

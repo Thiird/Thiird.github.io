@@ -20,13 +20,11 @@
     <link rel="stylesheet" href="styles.css" />
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-    <!-- Highlight.js Dark Theme -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
     />
 
-    <!-- Highlight.js core -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script>
       // Configure marked to open links in a new tab
@@ -65,12 +63,9 @@
         hljs.highlightAll();
       });
     </script>
-  </head>
-  <body>
-    <!-- Back to Top Button -->
-    <button id="backToTop" title="Go to top">⬆</button>
-
-    <div id="banner-placeholder"></div>
+</head>
+<body>
+    <button id="backToTop" title="Go to top">⬆</button>    <div id="banner-placeholder"></div>
 
     <section class="content-container">
       <div class="content-text" id="contentText">Loading bio...</div>
@@ -87,6 +82,7 @@
             const bannerRect = banner.getBoundingClientRect();
             const bannerBottom = Math.max(0, bannerRect.bottom);
             themeToggle.style.top = `${bannerBottom + 10}px`;
+            themeToggle.classList.add("positioned");
           }
         });
       }

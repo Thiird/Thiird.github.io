@@ -40,19 +40,13 @@
   --audio-player-text: #c9d1d9;
   --audio-progress-bg: #30363d;
   --audio-progress-bar: #58a6ff;
-
-  /* Menu styling */
   --menu-hover: #58a6ff;
-
-  /* Sidebar styling */
   --sidebar-bg: #1a1f26;
   --sidebar-header-bg: #161b22;
   --sidebar-item-bg: transparent;
   --sidebar-item-hover: #252a31;
   --sidebar-search-bg: #252a31;
   --sidebar-search-border: #30363d;
-
-  /* Text styling */
   --font-family-base: Arial, sans-serif;
   --font-weight-normal: 400;
   --font-weight-body: 400;
@@ -87,19 +81,13 @@
   --audio-player-text: #d3d7db;
   --audio-progress-bg: #4a6076;
   --audio-progress-bar: #3498db;
-
-  /* Menu styling */
   --menu-hover: #3498db;
-
-  /* Sidebar styling */
   --sidebar-bg: #2c3e50;
   --sidebar-header-bg: #243342;
   --sidebar-item-bg: transparent;
   --sidebar-item-hover: #34495e;
   --sidebar-search-bg: #34495e;
   --sidebar-search-border: #4a6076;
-
-  /* Text styling */
   --font-family-base: Arial, sans-serif;
   --font-weight-normal: 400;
   --font-weight-body: 400;
@@ -134,20 +122,13 @@
   --audio-player-text: #2c3e50;
   --audio-progress-bg: #929292;
   --audio-progress-bar: #2980b9;
-
-  /* Menu styling */
   --menu-hover: #7c7c7c;
-
-  /* Sidebar styling */
   --sidebar-bg: #e5e5e5;
   --sidebar-header-bg: #f5f7fa;
   --sidebar-item-bg: transparent;
   --sidebar-item-hover: #e8edf2;
   --sidebar-search-bg: #f5f7fa;
   --sidebar-search-border: #cbd5e0;
-
-  /* Text styling */
-  /*(300=light, 400=normal, 500=medium, 600=semi-bold, 700=bold)*/
   --font-family-base: Arial, sans-serif;
   --font-weight-normal: 600;
   --font-weight-body: 500;
@@ -687,7 +668,6 @@ body.no-scroll {
   box-sizing: border-box;
 }
 
-/* Make audio player responsive on narrow screens */
 @media (max-width: 600px) {
   .audio-player {
     max-width: 100%;
@@ -1085,6 +1065,14 @@ body.no-scroll {
 #themeToggle {
   top: 60px;
   right: 10px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+#themeToggle.positioned {
+  opacity: 1;
+  visibility: visible;
 }
 
 #backToTop:hover,
@@ -1261,7 +1249,6 @@ pre code {
     touch-action: auto;
   }
 
-  /* Force responsive sizing on all images */
   .blog-text img[width],
   .blog-text img[height],
   .blog-text img[style*="width"],
@@ -1275,7 +1262,6 @@ pre code {
     max-width: 100% !important;
   }
 
-  /* Content padding for mobile */
   .blog-content,
   .poem-content,
   .content-container {
@@ -1297,13 +1283,11 @@ pre code {
     word-wrap: break-word !important;
   }
 
-  /* Ensure body doesn't overflow */
   body {
     overflow-x: hidden !important;
     max-width: 100vw !important;
   }
 
-  /* Handle tables on mobile - allow horizontal scroll */
   table {
     display: block;
     width: 100% !important;
@@ -1466,7 +1450,6 @@ pre code {
   font-weight: 500;
 }
 
-/* Tooltip audio player button hover effect */
 .tooltip-player-btn:hover {
   color: var(--accent-primary) !important;
 }
@@ -1512,7 +1495,6 @@ pre code {
   color: var(--accent-primary);
 }
 
-/* History section styles */
 .history-section {
   max-width: 800px;
   margin: 40px auto;
@@ -1627,7 +1609,6 @@ pre code {
   }
 }
 
-/* Date styling for poems and blogs */
 .poem-date,
 .blog-date {
   font-style: italic;
@@ -1642,7 +1623,6 @@ pre code {
   margin: 0 0 24px 0;
 }
 
-/* Ensure images inside blog/poem/content text respect container */
 .blog-text img,
 .poem-text img,
 .content-text img {
@@ -1653,7 +1633,6 @@ pre code {
   object-fit: contain;
 }
 
-/* Ensure code blocks don't cause horizontal overflow on all screens */
 pre {
   max-width: 100%;
   overflow-x: auto;
@@ -1667,5 +1646,3 @@ pre code {
   white-space: pre;
   word-wrap: normal;
 }
-
-/* Remove old scale handling - not needed with width approach */

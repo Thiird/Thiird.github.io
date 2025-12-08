@@ -19,22 +19,18 @@
     <link rel="stylesheet" href="src/styles.css">
 </head>
 <body>
-    <!-- Back to Top Button -->
     <button id="backToTop" title="Go to top">⬆</button>
     
     <div id="header-placeholder"></div>
     <div id="banner-placeholder"></div>
 
-    <!-- History Section -->
     <div class="history-section" id="historySection">
         <h2>Recent Updates</h2>
         <ul class="history-list" id="historyList">
-            <!-- Dynamically populated -->
         </ul>
     </div>
 
     <script>
-        // Initialize home page
         document.addEventListener("DOMContentLoaded", () => {
             if (typeof initHomePage === "function") {
                 initHomePage();
