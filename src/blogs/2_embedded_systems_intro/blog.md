@@ -1,6 +1,8 @@
 date: 2025-12-25
 ---
 
+[   WRITING IN PROGRESS   ]
+
 <h1 id="intro-to-embedded-systems">Intro to Embedded Systems</h1>
 
 This article is meant for people that are absolutely new to embedded systems.  
