@@ -13,6 +13,12 @@
   },
   {
     "type": "poem",
+    "name": "0 - Intro",
+    "date": "2025-07",
+    "link": "src/poems.html?poem=0"
+  },
+  {
+    "type": "poem",
     "name": "5 - Letter To A Faded Friend",
     "date": "2025-07",
     "link": "src/poems.html?poem=5"
@@ -22,11 +28,5 @@
     "name": "6 - Last Moments",
     "date": "2025-07",
     "link": "src/poems.html?poem=6"
-  },
-  {
-    "type": "poem",
-    "name": "4 - Privileged Wistfulness",
-    "date": "2025-06-17",
-    "link": "src/poems.html?poem=4"
   }
 ]
