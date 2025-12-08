@@ -2172,14 +2172,54 @@ function initHomePage() {
     }
   }
 
+  // Wait for images in header to load
+  function waitForHeaderImages() {
+    const header = document.getElementById("header-placeholder");
+    const images = header.querySelectorAll("img");
+    
+    if (images.length === 0) {
+      headerLoaded = true;
+      checkAndPositionThemeToggle();
+      return;
+    }
+
+    let loadedImages = 0;
+    const totalImages = images.length;
+
+    images.forEach(img => {
+      if (img.complete) {
+        loadedImages++;
+      } else {
+        img.addEventListener("load", () => {
+          loadedImages++;
+          if (loadedImages === totalImages) {
+            headerLoaded = true;
+            checkAndPositionThemeToggle();
+          }
+        });
+        img.addEventListener("error", () => {
+          loadedImages++;
+          if (loadedImages === totalImages) {
+            headerLoaded = true;
+            checkAndPositionThemeToggle();
+          }
+        });
+      }
+    });
+
+    if (loadedImages === totalImages) {
+      headerLoaded = true;
+      checkAndPositionThemeToggle();
+    }
+  }
+
   // Load header.html first
   fetch("src/header.html")
     .then(response => response.text())
     .then(data => {
       const header = document.getElementById("header-placeholder");
       header.innerHTML = data;
-      headerLoaded = true;
-      checkAndPositionThemeToggle();
+      waitForHeaderImages();
     })
     .catch(error => { });
 

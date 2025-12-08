@@ -355,11 +355,12 @@ body.no-scroll {
 .social-icon {
   width: 30px;
   height: 30px;
-  filter: grayscale(100%);
+  filter: grayscale(0%);
 }
 
-.social-icon:hover {
-  filter: grayscale(0%);
+[data-theme="darker"] .social-icon[alt="GitHub"],
+[data-theme="middle"] .social-icon[alt="GitHub"] {
+  filter: brightness(0) invert(1);
 }
 
 .top-menu {
