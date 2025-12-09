@@ -39,6 +39,24 @@ def format_date(date_string):
     except:
         return date_string
 
+def parse_date_for_sorting(date_string):
+    """Parse date string for sorting. Handles both YYYY-MM-DD and YYYY-MM formats.
+    Returns a datetime object, using first day of month for partial dates."""
+    if not date_string:
+        return datetime(1970, 1, 1)  # Epoch for entries without dates
+    try:
+        parts = date_string.split('-')
+        if len(parts) == 2:
+            # Partial date: YYYY-MM -> treat as first day of month
+            return datetime.strptime(date_string + '-01', '%Y-%m-%d')
+        elif len(parts) == 3:
+            # Full date: YYYY-MM-DD
+            return datetime.strptime(date_string, '%Y-%m-%d')
+        else:
+            return datetime(1970, 1, 1)
+    except ValueError:
+        return datetime(1970, 1, 1)
+
 def make_blog_manifest():
     """Generate blogs_manifest.json from blog folders."""
     print("\n" + "="*70)
@@ -98,7 +116,8 @@ def make_blog_manifest():
         blogs.append(blog_entry)
         print(f"  ✅ {folder.name} - {title} ({date})")
     
-    blogs.sort(key=lambda x: x['folder'])
+    # Sort by date chronologically (oldest first)
+    blogs.sort(key=lambda x: parse_date_for_sorting(x['date']))
     
     manifest_path = blogs_dir / 'blogs_manifest.json'
     with open(manifest_path, 'w', encoding='utf-8') as f:
@@ -177,7 +196,8 @@ def make_poem_manifest():
         audio_str = f" (♪ {audio_file})" if audio_file else ""
         print(f"  ✅ {folder.name} - {name}{audio_str} ({date})")
     
-    poems.sort(key=lambda x: x['folder'])
+    # Sort by date chronologically (oldest first)
+    poems.sort(key=lambda x: parse_date_for_sorting(x['date']))
     
     manifest_path = poems_dir / 'poems_manifest.json'
     with open(manifest_path, 'w', encoding='utf-8') as f:
