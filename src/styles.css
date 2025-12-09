@@ -28,7 +28,7 @@
   --surface-elevated: #30363d;
   --code-bg: #0d1117;
   --code-text: #c9d1d9;
-  --header-bg: #252a31;
+  --header-bg: #141619;
   --header-text: #dbe1ea;
   --banner-text: #ffffff;
   --tooltip-bg: #2d333b;
@@ -41,8 +41,8 @@
   --audio-progress-bg: #30363d;
   --audio-progress-bar: #58a6ff;
   --menu-hover: #58a6ff;
-  --sidebar-bg: #1a1f26;
-  --sidebar-header-bg: #161b22;
+  --sidebar-bg: #252c36;
+  --sidebar-header-bg: #141619;
   --sidebar-item-bg: transparent;
   --sidebar-item-hover: #252a31;
   --sidebar-search-bg: #252a31;
@@ -69,7 +69,7 @@
   --surface-elevated: #4a6076;
   --code-bg: #0d1117;
   --code-text: #c9d1d9;
-  --header-bg: #34495e;
+  --header-bg: #243342;
   --header-text: #c9d7e6;
   --banner-text: #d8d9dc;
   --tooltip-bg: #3d3d3d;
@@ -82,7 +82,7 @@
   --audio-progress-bg: #4a6076;
   --audio-progress-bar: #3498db;
   --menu-hover: #3498db;
-  --sidebar-bg: #2c3e50;
+  --sidebar-bg: #374f68;
   --sidebar-header-bg: #243342;
   --sidebar-item-bg: transparent;
   --sidebar-item-hover: #34495e;
@@ -110,7 +110,7 @@
   --surface-elevated: #ffffff;
   --code-bg: #f7fafc;
   --code-text: #2d3748;
-  --header-bg: #ffffff;
+  --header-bg: #e5e5e5;
   --header-text: #000000;
   --banner-text: #18212b;
   --tooltip-bg: #d0d5db;
@@ -123,8 +123,8 @@
   --audio-progress-bg: #929292;
   --audio-progress-bar: #2980b9;
   --menu-hover: #7c7c7c;
-  --sidebar-bg: #e5e5e5;
-  --sidebar-header-bg: #f5f7fa;
+  --sidebar-bg: #f5f7fa;
+  --sidebar-header-bg: #e5e5e5;
   --sidebar-item-bg: transparent;
   --sidebar-item-hover: #e8edf2;
   --sidebar-search-bg: #f5f7fa;
