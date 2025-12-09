@@ -1204,9 +1204,6 @@ document.addEventListener("DOMContentLoaded", () => {
   updateFloatingToggleVisibility();
   window.addEventListener("resize", updateFloatingToggleVisibility);
   window.addEventListener("orientationchange", updateFloatingToggleVisibility);
-  // update after interactions that may toggle .hidden
-  document.addEventListener("click", updateFloatingToggleVisibility);
-  document.addEventListener("keydown", updateFloatingToggleVisibility);
 });
 
 function toggleEmail() {
@@ -2431,12 +2428,18 @@ function initBlogPage() {
   });
 
   // Ensure correct initial state on load and on resize
+  let lastWidth = window.innerWidth;
   window.addEventListener("load", () => {
     setInitialSidebarState();
     adjustSidebarHeight();
+    lastWidth = window.innerWidth;
   });
   window.addEventListener("resize", () => {
-    setInitialSidebarState();
+    const currentWidth = window.innerWidth;
+    if (currentWidth !== lastWidth) {
+      setInitialSidebarState();
+      lastWidth = currentWidth;
+    }
     adjustSidebarHeight();
   });
   window.addEventListener("scroll", adjustSidebarHeight);
@@ -2578,12 +2581,18 @@ function initPoemPage() {
   });
 
   // Event listeners
+  let lastWidth = window.innerWidth;
   window.addEventListener("load", () => {
     setInitialSidebarState();
     adjustSidebarHeight();
+    lastWidth = window.innerWidth;
   });
   window.addEventListener("resize", () => {
-    setInitialSidebarState();
+    const currentWidth = window.innerWidth;
+    if (currentWidth !== lastWidth) {
+      setInitialSidebarState();
+      lastWidth = currentWidth;
+    }
     adjustSidebarHeight();
   });
   window.addEventListener("scroll", adjustSidebarHeight);
