@@ -473,6 +473,7 @@ body.no-scroll {
   margin: 0 0 10px 0;
   border-radius: 0;
   box-sizing: border-box;
+  position: relative;
 }
 
 .blog-list {
@@ -521,6 +522,26 @@ body.no-scroll {
   margin: 0 0 10px 0;
   border-radius: 0;
   box-sizing: border-box;
+  position: relative;
+}
+
+/* No results list item */
+#blogListItems .no-results,
+#poemListItems .no-results {
+  color: var(--text-secondary);
+  padding: 12px;
+  text-align: center;
+  font-style: italic;
+  opacity: 0.6;
+}
+
+/* Search match highlighting */
+#blogListItems mark,
+#poemListItems mark {
+  background-color: var(--accent-primary);
+  color: var(--text-inverse);
+  padding: 1px 2px;
+  border-radius: 2px;
 }
 
 .poem-content,
@@ -650,6 +671,13 @@ body.no-scroll {
 .blog-link:hover {
   text-decoration: underline;
   color: var(--accent-primary);
+}
+
+/* Current/active item styling in sidebars */
+.poem-link.current,
+.blog-link.current {
+  color: var(--accent-primary);
+  font-weight: 700;
 }
 
 .audio-player {

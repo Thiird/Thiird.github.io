@@ -430,16 +430,36 @@ document.addEventListener("DOMContentLoaded", () => {
     handleSwipe();
   }, { passive: true });
 
+  function isPageZoomed() {
+    // Check if viewport is zoomed by comparing visual viewport to layout viewport
+    const visualViewport = window.visualViewport;
+    if (visualViewport) {
+      const scale = visualViewport.scale;
+      return scale > 1.01; // Allow small tolerance
+    }
+    // Fallback: check if window.innerWidth differs from document width
+    const scale = window.outerWidth / window.innerWidth;
+    return scale > 1.01;
+  }
+
   function handleSwipe() {
     const swipeDistance = touchEndX - touchStartX;
     if (Math.abs(swipeDistance) < minSwipeDistance) return;
     
-    if (swipeDistance > 0) {
-      // Swipe right - previous image
-      navigateImage(-1);
-    } else {
-      // Swipe left - next image
-      navigateImage(1);
+    // Check if page/viewport is zoomed or if click-zoom is active
+    const pageZoomed = isPageZoomed();
+    const clickZoomed = zoomLevel > 0;
+    const isZoomed = pageZoomed || clickZoomed;
+    
+    // Only navigate if not zoomed
+    if (!isZoomed) {
+      if (swipeDistance > 0) {
+        // Swipe right - previous image
+        navigateImage(-1);
+      } else {
+        // Swipe left - next image
+        navigateImage(1);
+      }
     }
   }
 
@@ -539,13 +559,64 @@ document.addEventListener("DOMContentLoaded", () => {
   if (searchInput) {
     searchInput.addEventListener("input", (e) => {
       const search = e.target.value.toLowerCase();
-      const listId = searchInput.id === "blogSearch" ? "blogList" : "poemList";
-      document.querySelectorAll(`#${listId} li`).forEach((item) => {
-        const title = item.textContent.toLowerCase();
-        item.style.display = title.includes(search) ? "block" : "none";
+      const itemsListId = searchInput.id === "blogSearch" ? "blogListItems" : "poemListItems";
+      document.querySelectorAll(`#${itemsListId} li`).forEach((item) => {
+        // Skip the no-results item itself
+        if (item.classList.contains('no-results')) return;
+        const link = item.querySelector('a');
+        if (!link) return;
+        const originalText = link.dataset.originalText || link.textContent;
+        if (!link.dataset.originalText) link.dataset.originalText = originalText;
+        const lowerText = originalText.toLowerCase();
+        const matches = search && lowerText.includes(search);
+        
+        if (matches) {
+          // Highlight matching parts
+          const regex = new RegExp(`(${search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+          link.innerHTML = originalText.replace(regex, '<mark>$1</mark>');
+          item.style.display = "block";
+        } else if (search) {
+          link.textContent = originalText;
+          item.style.display = "none";
+        } else {
+          link.textContent = originalText;
+          item.style.display = "block";
+        }
       });
+      // update no-results UI
+      updateNoResultsMessage(itemsListId);
     });
   }
+
+  // Prevent sidebar scroll from propagating to page
+  function setupSidebarScrollIsolation() {
+    const sidebars = [
+      document.getElementById("blogList"),
+      document.getElementById("poemList")
+    ].filter(Boolean);
+    
+    sidebars.forEach(sidebar => {
+      sidebar.addEventListener('wheel', (e) => {
+        const scrollTop = sidebar.scrollTop;
+        const scrollHeight = sidebar.scrollHeight;
+        const height = sidebar.clientHeight;
+        const wheelDelta = e.deltaY;
+        const isDeltaPositive = wheelDelta > 0;
+
+        if (isDeltaPositive && wheelDelta > scrollHeight - height - scrollTop) {
+          sidebar.scrollTop = scrollHeight;
+          e.preventDefault();
+        } else if (!isDeltaPositive && -wheelDelta > scrollTop) {
+          sidebar.scrollTop = 0;
+          e.preventDefault();
+        } else {
+          e.stopPropagation();
+        }
+      }, { passive: false });
+    });
+  }
+  
+  setupSidebarScrollIsolation();
 
   const audio = document.getElementById("audioElement");
   const playPauseBtn = document.getElementById("playPause");
@@ -772,6 +843,9 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((poems) => {
         poemsCache = poems;
         buildPoemList(poems);
+        // mark initial active poem based on URL
+        const initialPoemIndex = parseInt(getUrlParameter('poem')) || 0;
+        setActiveListItem('poemListItems', initialPoemIndex);
         const poemIndex = parseInt(getUrlParameter("poem")) || 0;
         if (poems.length > 0) {
           const selectedPoem = poems[Math.min(Math.max(poemIndex, 0), poems.length - 1)];
@@ -806,7 +880,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const li = document.createElement("li");
       const a = document.createElement("a");
       a.href = "#";
-      a.textContent = formatPoemTitle(poem.name);
+      // Display poem title without leading numeric prefix
+      let displayPoemTitle = formatPoemTitle(poem.name || poem.folder);
+      displayPoemTitle = displayPoemTitle.replace(/^\s*\d+\s*[-\.]?\s*/, '').trim();
+      a.textContent = displayPoemTitle;
       a.dataset.poem = JSON.stringify(poem);
       a.dataset.index = index;
       a.classList.add("poem-link");
@@ -824,6 +901,7 @@ document.addEventListener("DOMContentLoaded", () => {
           // On mobile, just close the sidebar
           if (window.innerWidth <= 800) {
             closeSidebarAfterSelect();
+            clearSidebarSearchInputs();
           }
           // On desktop, do nothing
           return;
@@ -833,11 +911,24 @@ document.addEventListener("DOMContentLoaded", () => {
         const poem = JSON.parse(link.getAttribute("data-poem"));
         loadPoem(poem);
         history.pushState({ poemIndex: index }, "", `?poem=${index}`);
+        // Clear search on new selection
+        clearSidebarSearchInputs();
         // only hide/collapse sidebar on mobile
         if (window.innerWidth <= 800) {
           closeSidebarAfterSelect();
         }
+        // Update active styling in the list
+        setActiveListItem('poemListItems', parseInt(index, 10));
       });
+    });
+  }
+
+  // Mark the active item in a list and remove previous marking
+  function setActiveListItem(listId, activeIndex) {
+    const list = document.getElementById(listId);
+    if (!list) return;
+    list.querySelectorAll('a').forEach((a) => {
+      a.classList.toggle('current', parseInt(a.dataset.index, 10) === Number(activeIndex));
     });
   }
 
@@ -958,7 +1049,6 @@ document.addEventListener("DOMContentLoaded", () => {
         blogsCache = blogs;
         // Store in global scope for tooltip manager access
         window.blogsCache = blogs;
-        blogs.sort((a, b) => b.folder.localeCompare(a.folder));
         const target = document.getElementById("blogText");
         if (target) target.innerHTML = "Loading blog post...";
         buildBlogList(blogs);
@@ -979,7 +1069,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const li = document.createElement("li");
       const a = document.createElement("a");
       a.href = "#";
-      a.textContent = blog.title || formatBlogTitle(blog.folder);
+      // Prefer manifest title but strip any leading numeric prefix ("1 - ") for display
+      let displayBlogTitle = (blog.title || formatBlogTitle(blog.folder)).toString();
+      displayBlogTitle = displayBlogTitle.replace(/^\s*\d+\s*[-\.]?\s*/, '').trim();
+      a.textContent = displayBlogTitle;
       a.dataset.blog = JSON.stringify(blog);
       a.dataset.index = index;
       a.classList.add("blog-link");
@@ -997,6 +1090,7 @@ document.addEventListener("DOMContentLoaded", () => {
           // On mobile, just close the sidebar
           if (window.innerWidth <= 800) {
             closeSidebarAfterSelect();
+            clearSidebarSearchInputs();
           }
           // On desktop, do nothing
           return;
@@ -1006,12 +1100,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const blog = JSON.parse(link.getAttribute("data-blog"));
         loadBlogPost(blog);
         history.pushState({ blogIndex: index }, "", `?blog=${index}`);
+        // Clear search on new selection
+        clearSidebarSearchInputs();
         // only hide/collapse sidebar on mobile
         if (window.innerWidth <= 800) {
           closeSidebarAfterSelect();
         }
+        // Update active styling in the list
+        setActiveListItem('blogListItems', parseInt(index, 10));
       });
     });
+    // Apply active class based on URL parameter after list is built
+    const initialBlogIndex = parseInt(getUrlParameter('blog')) || 0;
+    setActiveListItem('blogListItems', initialBlogIndex);
   }
 
   function formatBlogTitle(folder) {
@@ -1164,6 +1265,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const poemIndex = parseInt(getUrlParameter("poem")) || 0;
         const selectedPoem = poemsCache[Math.min(Math.max(poemIndex, 0), poemsCache.length - 1)];
         loadPoem(selectedPoem);
+        // update active class in poem list
+        setActiveListItem('poemListItems', poemIndex);
       }
     } else if (window.location.pathname.includes("blogs")) {
       if (blogsCache.length === 0) {
@@ -1172,6 +1275,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const blogIndex = parseInt(getUrlParameter("blog")) || 0;
         const selectedBlog = blogsCache[Math.min(Math.max(blogIndex, 0), blogsCache.length - 1)];
         loadBlogPost(selectedBlog);
+        // update active class in blog list
+        setActiveListItem('blogListItems', blogIndex);
       }
     }
   });
@@ -1275,6 +1380,42 @@ function closeSidebarAfterSelect() {
     document.body.classList.remove("no-scroll");
     document.documentElement.classList.remove("no-scroll");
     if (floatingToggle) floatingToggle.classList.remove("hidden");
+    // Always clear search when closing sidebar
+    clearSidebarSearchInputs();
+  }
+}
+
+// Clear any search inputs in sidebars and reset filters
+function clearSidebarSearchInputs() {
+  const blogSearch = document.getElementById('blogSearch');
+  const poemSearch = document.getElementById('poemSearch');
+  [blogSearch, poemSearch].forEach((input) => {
+    if (input) {
+      input.value = '';
+      // trigger input event so the list shows all items again
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+  });
+}
+
+// Show a "no results" message inside the given list if no visible items
+function updateNoResultsMessage(listId) {
+  const list = document.getElementById(listId);
+  if (!list) return;
+  // count visible list items excluding any existing no-results
+  const items = Array.from(list.querySelectorAll('li')).filter(li => !li.classList.contains('no-results'));
+  // Use computed style to detect visibility (handles inline styles and CSS)
+  const visible = items.filter(li => getComputedStyle(li).display !== 'none');
+  const existing = list.querySelector('.no-results');
+  if (visible.length === 0) {
+    if (!existing) {
+      const li = document.createElement('li');
+      li.className = 'no-results';
+      li.textContent = 'No results found';
+      list.appendChild(li);
+    }
+  } else {
+    if (existing) existing.remove();
   }
 }
 
@@ -2389,6 +2530,8 @@ function initBlogPage() {
         document.documentElement.classList.toggle("no-scroll", isOpen);
         const floatingToggle = document.getElementById("sidebarFloatingToggle");
         if (floatingToggle) floatingToggle.classList.toggle("hidden", isOpen);
+        // Clear search when closing
+        if (!isOpen) clearSidebarSearchInputs();
       } else {
         // Desktop: toggle collapsed state
         blogList.classList.toggle("collapsed");
@@ -2396,6 +2539,8 @@ function initBlogPage() {
         if (contentWrapper) {
           contentWrapper.classList.toggle("sidebar-collapsed", blogList.classList.contains("collapsed"));
         }
+        // Clear search when collapsing
+        if (blogList.classList.contains("collapsed")) clearSidebarSearchInputs();
       }
     });
   }
@@ -2423,6 +2568,7 @@ function initBlogPage() {
         document.body.classList.remove("no-scroll");
         document.documentElement.classList.remove("no-scroll");
         if (floatingToggle) floatingToggle.classList.remove("hidden");
+        clearSidebarSearchInputs();
       }
     }
   });
@@ -2452,9 +2598,29 @@ function initBlogPage() {
     blogSearch.addEventListener("input", (e) => {
       const search = e.target.value.toLowerCase();
       document.querySelectorAll("#blogListItems li").forEach((item) => {
-        const title = item.textContent.toLowerCase();
-        item.style.display = title.includes(search) ? "block" : "none";
+        // Skip the no-results item itself
+        if (item.classList.contains('no-results')) return;
+        const link = item.querySelector('a');
+        if (!link) return;
+        const originalText = link.dataset.originalText || link.textContent;
+        if (!link.dataset.originalText) link.dataset.originalText = originalText;
+        const lowerText = originalText.toLowerCase();
+        const matches = search && lowerText.includes(search);
+        
+        if (matches) {
+          // Highlight matching parts
+          const regex = new RegExp(`(${search.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')})`, 'gi');
+          link.innerHTML = originalText.replace(regex, '<mark>$1</mark>');
+          item.style.display = "block";
+        } else if (search) {
+          link.textContent = originalText;
+          item.style.display = "none";
+        } else {
+          link.textContent = originalText;
+          item.style.display = "block";
+        }
       });
+      updateNoResultsMessage('blogListItems');
     });
   }
 }
@@ -2542,6 +2708,8 @@ function initPoemPage() {
         document.documentElement.classList.toggle("no-scroll", isOpen);
         const floatingToggle = document.getElementById("sidebarFloatingToggle");
         if (floatingToggle) floatingToggle.classList.toggle("hidden", isOpen);
+        // Clear search when closing
+        if (!isOpen) clearSidebarSearchInputs();
       } else {
         // Desktop: toggle collapsed state
         poemList.classList.toggle("collapsed");
@@ -2549,6 +2717,8 @@ function initPoemPage() {
         if (contentWrapper) {
           contentWrapper.classList.toggle("sidebar-collapsed", poemList.classList.contains("collapsed"));
         }
+        // Clear search when collapsing
+        if (poemList.classList.contains("collapsed")) clearSidebarSearchInputs();
       }
     });
   }
@@ -2576,6 +2746,7 @@ function initPoemPage() {
         document.body.classList.remove("no-scroll");
         document.documentElement.classList.remove("no-scroll");
         if (floatingToggle) floatingToggle.classList.remove("hidden");
+        clearSidebarSearchInputs();
       }
     }
   });
@@ -2605,9 +2776,29 @@ function initPoemPage() {
     poemSearch.addEventListener("input", (e) => {
       const search = e.target.value.toLowerCase();
       document.querySelectorAll("#poemListItems li").forEach((item) => {
-        const title = item.textContent.toLowerCase();
-        item.style.display = title.includes(search) ? "block" : "none";
+        // Skip the no-results item itself
+        if (item.classList.contains('no-results')) return;
+        const link = item.querySelector('a');
+        if (!link) return;
+        const originalText = link.dataset.originalText || link.textContent;
+        if (!link.dataset.originalText) link.dataset.originalText = originalText;
+        const lowerText = originalText.toLowerCase();
+        const matches = search && lowerText.includes(search);
+        
+        if (matches) {
+          // Highlight matching parts
+          const regex = new RegExp(`(${search.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')})`, 'gi');
+          link.innerHTML = originalText.replace(regex, '<mark>$1</mark>');
+          item.style.display = "block";
+        } else if (search) {
+          link.textContent = originalText;
+          item.style.display = "none";
+        } else {
+          link.textContent = originalText;
+          item.style.display = "block";
+        }
       });
+      updateNoResultsMessage('poemListItems');
     });
   }
 }
