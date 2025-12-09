@@ -116,8 +116,8 @@ def make_blog_manifest():
         blogs.append(blog_entry)
         print(f"  ✅ {folder.name} - {title} ({date})")
     
-    # Sort by date chronologically (oldest first)
-    blogs.sort(key=lambda x: parse_date_for_sorting(x['date']))
+    # Sort by folder number (highest first, so lowest gets index 0 at bottom)
+    blogs.sort(key=lambda x: int(re.match(r'^(\d+)', x['folder']).group(1)) if re.match(r'^(\d+)', x['folder']) else 9999, reverse=True)
     
     manifest_path = blogs_dir / 'blogs_manifest.json'
     with open(manifest_path, 'w', encoding='utf-8') as f:
@@ -196,8 +196,8 @@ def make_poem_manifest():
         audio_str = f" (♪ {audio_file})" if audio_file else ""
         print(f"  ✅ {folder.name} - {name}{audio_str} ({date})")
     
-    # Sort by date chronologically (oldest first)
-    poems.sort(key=lambda x: parse_date_for_sorting(x['date']))
+    # Sort by folder number (highest first, so lowest gets index 0 at bottom)
+    poems.sort(key=lambda x: int(re.match(r'^(\d+)', x['folder']).group(1)) if re.match(r'^(\d+)', x['folder']) else 9999, reverse=True)
     
     manifest_path = poems_dir / 'poems_manifest.json'
     with open(manifest_path, 'w', encoding='utf-8') as f:

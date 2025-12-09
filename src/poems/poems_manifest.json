@@ -1,5 +1,29 @@
 [
   {
+    "folder": "6_last_moments",
+    "name": "6 - Last Moments",
+    "audio": "6.Chaos_at_the_Bottom_of_the_Bottle.mp3",
+    "date": "2025-07"
+  },
+  {
+    "folder": "5_letter_to_a_faded_friend",
+    "name": "5 - Letter To A Faded Friend",
+    "audio": "5.Broken_Couch.mp3",
+    "date": "2025-07"
+  },
+  {
+    "folder": "4_privileged_wistfulness",
+    "name": "4 - Privileged Wistfulness",
+    "audio": "4.everything_works_out_in_the_end.mp3",
+    "date": "2025-06-17"
+  },
+  {
+    "folder": "3_eulogy",
+    "name": "3 - Eulogy",
+    "audio": "3.oneheart_x_reidenshi_-_snowfall_-_Slowed_Down.mp3",
+    "date": "2025-05-28"
+  },
+  {
     "folder": "2_human_bootloader",
     "name": "2 - Human Bootloader",
     "audio": null,
@@ -12,33 +36,9 @@
     "date": "2025-04-29"
   },
   {
-    "folder": "3_eulogy",
-    "name": "3 - Eulogy",
-    "audio": "3.oneheart_x_reidenshi_-_snowfall_-_Slowed_Down.mp3",
-    "date": "2025-05-28"
-  },
-  {
-    "folder": "4_privileged_wistfulness",
-    "name": "4 - Privileged Wistfulness",
-    "audio": "4.everything_works_out_in_the_end.mp3",
-    "date": "2025-06-17"
-  },
-  {
     "folder": "0_intro",
     "name": "0 - Intro",
     "audio": null,
-    "date": "2025-07"
-  },
-  {
-    "folder": "5_letter_to_a_faded_friend",
-    "name": "5 - Letter To A Faded Friend",
-    "audio": "5.Broken_Couch.mp3",
-    "date": "2025-07"
-  },
-  {
-    "folder": "6_last_moments",
-    "name": "6 - Last Moments",
-    "audio": "6.Chaos_at_the_Bottom_of_the_Bottle.mp3",
     "date": "2025-07"
   }
 ]

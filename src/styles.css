@@ -618,7 +618,8 @@ body.no-scroll {
   width: 100%;
   padding: 8px;
   font-size: 1em;
-  border: 1px solid var(--sidebar-search-border);
+  border: none;
+  outline: none;
   box-sizing: border-box;
   background-color: var(--sidebar-search-bg);
   color: var(--text-primary);
@@ -627,6 +628,7 @@ body.no-scroll {
 .poem-search::placeholder,
 .blog-search::placeholder {
   color: var(--text-secondary);
+  opacity: 0.5;
 }
 
 #poemList,
@@ -639,7 +641,6 @@ body.no-scroll {
 #poemList li,
 #blogList li {
   margin: 5px 10px;
-  padding: 0 10px;
   background-color: var(--sidebar-item-bg);
   border-radius: 4px;
 }

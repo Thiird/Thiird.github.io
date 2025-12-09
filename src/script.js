@@ -880,10 +880,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const li = document.createElement("li");
       const a = document.createElement("a");
       a.href = "#";
-      // Display poem title without leading numeric prefix
+      // Display poem with chronological index number (oldest = 0)
       let displayPoemTitle = formatPoemTitle(poem.name || poem.folder);
       displayPoemTitle = displayPoemTitle.replace(/^\s*\d+\s*[-\.]?\s*/, '').trim();
-      a.textContent = displayPoemTitle;
+      const chronologicalIndex = poems.length - 1 - index;
+      a.textContent = `${chronologicalIndex} - ${displayPoemTitle}`;
       a.dataset.poem = JSON.stringify(poem);
       a.dataset.index = index;
       a.classList.add("poem-link");
@@ -1069,10 +1070,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const li = document.createElement("li");
       const a = document.createElement("a");
       a.href = "#";
-      // Prefer manifest title but strip any leading numeric prefix ("1 - ") for display
+      // Prefer manifest title and add chronological index number (oldest = 0)
       let displayBlogTitle = (blog.title || formatBlogTitle(blog.folder)).toString();
       displayBlogTitle = displayBlogTitle.replace(/^\s*\d+\s*[-\.]?\s*/, '').trim();
-      a.textContent = displayBlogTitle;
+      const chronologicalIndex = blogs.length - 1 - index;
+      a.textContent = `${chronologicalIndex} - ${displayBlogTitle}`;
       a.dataset.blog = JSON.stringify(blog);
       a.dataset.index = index;
       a.classList.add("blog-link");
