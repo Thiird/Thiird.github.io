@@ -1,12 +1,18 @@
-date: 2025-12-25
+date: 2025-12-26
 ---
 
 [   WRITING IN PROGRESS   ]
 
-<h1 id="intro-to-embedded-systems">Intro to Embedded Systems</h1>
+<h1 id="intro-to-embedded-systems">Embedded Systems Overview</h1>
 
-This article is meant for people that are absolutely new to embedded systems.  
-Here you will find an overview of the various concepts and straightforward directions about how to get started.
+This article is a conceptual overview of embedded systems meant for people who are absolutely new to the field. Whether you're a student, a hobbyist, or a software developer curious about this field, here you will find high-level explanations to help you understand the fundamental concepts and terminology.
+
+**What you'll learn:**
+- What embedded systems are and where the term 'embedded' comes from
+- Essential tools in an embedded systems engineer's toolbox
+- Where to go next for hands-on learning
+
+Let's dive in!
 
 ## Index
 
@@ -24,7 +30,7 @@ Here you will find an overview of the various concepts and straightforward direc
         <li><a href="#hardware">2.1 Hardware</a>
           <ul class="index-subsection">
             <li><a href="#input-elements">2.1.1 Input Elements</a></li>
-            <li><a href="#computational-unit">2.1.2 Computational Unit</a>
+            <li><a href="#computational-unit">2.1.2 Computational Unit</a></li>
             <li><a href="#output-elements">2.1.3 Output Elements</a></li>
           </ul>
         </li>
@@ -50,14 +56,11 @@ Here you will find an overview of the various concepts and straightforward direc
         <li><a href="#learning-resources">4.2 Learning resources</a></li>
       </ul>
     </li>
-    <li class="index-section">
-      <a href="#closing-thoughts">5. Closing thoughts</a>
-    </li>
   </ul>
 </div>
 
 <h1 id="what-is-it">1. What's an Embedded System?</h1>
-Embedded Systems, <span tt="ES">ES</span> from now on, is an application field that merges computer science, electrical engineering and mechanical engineering to create electronic systems for specific use cases.
+Embedded Systems, (<span tt="ES">ES</span>), is an application field that merges computer science, electrical engineering and mechanical engineering to create electronic systems for <strong>specific</strong> use cases.
 
 It's important to define the distinction between an <em>electrical</em> and an <em>electronic</em> system.
 
@@ -73,21 +76,21 @@ Some <span tt="ES">ES</span> examples are:
 - <span tt="SAM_computer">the guidance system of a surface to air missile</span>
 
 <h2 id="why-embedded">1.1 Why <em>'embedded'</em>?</h2>
-The result of the engineer's work is the electronic system, which can't be handed to the customer as it is, it first needs to be integrated, e.g. embedded, in some kind of enclosure, hence the term embedded system.
+Embedded Systems is basically applied electronics. Such electronics can't be handed to the customer as it is, it first needs to be integrated, e.g. embedded, in some kind of enclosure, hence the term embedded system.
 
-For a desktop mouse, the enclosure is made of plastic, and for a surface to air missile the enclouse is made of metal.
+For a desktop mouse, the enclosure is made of plastic, and for a surface to air missile the enclosure is made of metal.
 
-<h1 id="how-is-it-made">2. How is it made</h1>
+<h1 id="how-is-it-made">2. How it is made</h1>
 
 An embedded system is made of three main elements:
 
 - <strong>Hardware</strong>: The electronics, like chips, buttons and actuators 
-- <strong>Firmware</strong>: Low-level code running on the ES hardware, controlling its delicate basic functionalities 
+- <strong>Firmware</strong>: Low-level code running directly on the hardware, controlling its delicate basic functionalities 
 - <strong>Software</strong>: Higher-level code that runs on or communicates with the ES to implement extra functionalities
 
 The hardware provides the physical platform, the firmware controls it directly, and the software (when present) adds higher-level functionality.
 
-The core of an <span tt="ES">ES</span> is the electronics. There can be an <span tt="ES">ES</span> without any software or mechanical engineering involved, but there can't be an <span tt="ES">ES</span> without electronics, i.e. an <span tt="ES">ES</span> is applied electronics.
+The core of an <span tt="ES">ES</span> is the electronic hardware. There can be an <span tt="ES">ES</span> without any software or mechanical engineering involved, but there can't be an <span tt="ES">ES</span> without electronics, i.e. an <span tt="ES">ES</span> is applied electronics.
 
 The electronics is consolidated in a single assembly called <span tt="PCB">Printed Circuit Board</span> (PCB). A PCB is a flat board made of alternating layers of insulating material (usually fiberglass) and copper, where the copper has been etched to leave only traces that connect the different electronic components together. Components like integrated circuits, resistors, capacitors, and connectors are soldered onto the board. The PCB is the physical heart of any embedded system, it's where all the magic happens. Without it, you'd have a mess of wires connecting components, which would be unreliable and impossible to manufacture at scale.
 
@@ -318,23 +321,3 @@ Here are some excellent resources organized by topic to help you dive deeper int
 <strong>Online Communities:</strong>
 - [r/embedded](https://www.reddit.com/r/embedded/) on Reddit: active community for questions and discussions 
 - [Stack Overflow embedded tags](https://stackoverflow.com/questions/tagged/embedded): good for specific programming questions
-
-<h2 id="closing-thoughts">5. Closing thoughts</h2>
-
-At this point you must be thrilled to get started. Good.  
-You are gonna build tech, earn good money and have high status. Good.  
-However, engineering is not fun.  
-It's fun once the project is finished and you see it working.  
-
-This is just a heads up: if you really like this stuff, go for it, you have everything to gain, but it's gonna be rough.
-
-When it comes to making projects for learning purposes, instead of just "trying out things", I strongly suggest to build things that are needed, either by you or someone else. Engineering thrives the most when there is a feedback loop from the user of the product to the engineer that built it. Nowadays, time to market is such a strong pressure on engineers that there is no time to get feedback from customers.
-
-Also, please take a moment to realize the immense responsibility that lies on your shoulders.
-Take a look around you: we are surrounded by wealth. All of this wealth was created by Humans using technology, technology that was built by engineers. We enable all of this wealth. People nowadays are better off than people of the past because they have technology, not because they are better than people from the past.
-
-Moreover, doctors, lawyers and engineers are the typical professions that earn high money and status, but only engineers build careers on success alone.
-
-Engineers have immense power in their hands, so try to seize it and use it for good.
-
-Good luck.

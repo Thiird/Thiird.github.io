@@ -843,13 +843,23 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((poems) => {
         poemsCache = poems;
         buildPoemList(poems);
-        // mark initial active poem based on URL
-        const initialPoemIndex = parseInt(getUrlParameter('poem')) || 0;
-        setActiveListItem('poemListItems', initialPoemIndex);
-        const poemIndex = parseInt(getUrlParameter("poem")) || 0;
+        const poemParam = getUrlParameter('poem');
         if (poems.length > 0) {
-          const selectedPoem = poems[Math.min(Math.max(poemIndex, 0), poems.length - 1)];
+          let selectedPoem;
+          if (poemParam !== null) {
+            // Find poem by folder number
+            const folderNum = parseInt(poemParam);
+            selectedPoem = poems.find(p => {
+              const match = p.folder.match(/^(\d+)/);
+              return match && parseInt(match[1]) === folderNum;
+            });
+          }
+          // Default to first poem if not found or no param
+          selectedPoem = selectedPoem || poems[0];
           loadPoem(selectedPoem);
+          // mark initial active poem based on loaded poem
+          const loadedIndex = poems.indexOf(selectedPoem);
+          setActiveListItem('poemListItems', loadedIndex);
         }
       })
       .catch((err) => { });
@@ -895,10 +905,15 @@ document.addEventListener("DOMContentLoaded", () => {
       link.addEventListener("click", (e) => {
         e.preventDefault();
         const index = link.dataset.index;
-        const currentPoemIndex = getUrlParameter('poem');
+        const poem = JSON.parse(link.getAttribute("data-poem"));
+        const currentPoemParam = getUrlParameter('poem');
+        
+        // Extract folder number from the clicked poem
+        const folderMatch = poem.folder.match(/^(\d+)/);
+        const folderNum = folderMatch ? folderMatch[1] : null;
 
-        // If clicking on the currently active poem
-        if (index === currentPoemIndex) {
+        // If clicking on the currently active poem (compare folder numbers)
+        if (folderNum !== null && folderNum === currentPoemParam) {
           // On mobile, just close the sidebar
           if (window.innerWidth <= 800) {
             closeSidebarAfterSelect();
@@ -909,9 +924,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // Different poem selected, load it
-        const poem = JSON.parse(link.getAttribute("data-poem"));
         loadPoem(poem);
-        history.pushState({ poemIndex: index }, "", `?poem=${index}`);
+        history.pushState({ poemIndex: index }, "", `?poem=${folderNum}`);
         // Clear search on new selection
         clearSidebarSearchInputs();
         // only hide/collapse sidebar on mobile
@@ -1053,9 +1067,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const target = document.getElementById("blogText");
         if (target) target.innerHTML = "Loading blog post...";
         buildBlogList(blogs);
-        const blogIndex = parseInt(getUrlParameter("blog")) || 0;
+        const blogParam = getUrlParameter("blog");
         if (blogs.length > 0) {
-          const selectedBlog = blogs[Math.min(Math.max(blogIndex, 0), blogs.length - 1)];
+          let selectedBlog;
+          if (blogParam !== null) {
+            // Find blog by folder number
+            const folderNum = parseInt(blogParam);
+            selectedBlog = blogs.find(b => {
+              const match = b.folder.match(/^(\d+)/);
+              return match && parseInt(match[1]) === folderNum;
+            });
+          }
+          // Default to first blog if not found or no param
+          selectedBlog = selectedBlog || blogs[0];
           loadBlogPost(selectedBlog);
         }
       })
@@ -1085,10 +1109,15 @@ document.addEventListener("DOMContentLoaded", () => {
       link.addEventListener("click", (e) => {
         e.preventDefault();
         const index = link.dataset.index;
-        const currentBlogIndex = getUrlParameter('blog');
+        const blog = JSON.parse(link.getAttribute("data-blog"));
+        const currentBlogParam = getUrlParameter('blog');
+        
+        // Extract folder number from the clicked blog
+        const folderMatch = blog.folder.match(/^(\d+)/);
+        const folderNum = folderMatch ? folderMatch[1] : null;
 
-        // If clicking on the currently active blog
-        if (index === currentBlogIndex) {
+        // If clicking on the currently active blog (compare folder numbers)
+        if (folderNum !== null && folderNum === currentBlogParam) {
           // On mobile, just close the sidebar
           if (window.innerWidth <= 800) {
             closeSidebarAfterSelect();
@@ -1099,9 +1128,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // Different blog selected, load it
-        const blog = JSON.parse(link.getAttribute("data-blog"));
         loadBlogPost(blog);
-        history.pushState({ blogIndex: index }, "", `?blog=${index}`);
+        history.pushState({ blogIndex: index }, "", `?blog=${folderNum}`);
         // Clear search on new selection
         clearSidebarSearchInputs();
         // only hide/collapse sidebar on mobile
@@ -1112,9 +1140,20 @@ document.addEventListener("DOMContentLoaded", () => {
         setActiveListItem('blogListItems', parseInt(index, 10));
       });
     });
-    // Apply active class based on URL parameter after list is built
-    const initialBlogIndex = parseInt(getUrlParameter('blog')) || 0;
-    setActiveListItem('blogListItems', initialBlogIndex);
+    // Apply active class based on loaded blog after list is built
+    const blogParam = getUrlParameter('blog');
+    if (blogParam !== null && blogsCache) {
+      const folderNum = parseInt(blogParam);
+      const blogIndex = blogsCache.findIndex(b => {
+        const match = b.folder.match(/^(\d+)/);
+        return match && parseInt(match[1]) === folderNum;
+      });
+      if (blogIndex >= 0) {
+        setActiveListItem('blogListItems', blogIndex);
+      }
+    } else {
+      setActiveListItem('blogListItems', 0);
+    }
   }
 
   function formatBlogTitle(folder) {
@@ -1264,8 +1303,21 @@ document.addEventListener("DOMContentLoaded", () => {
       if (poemsCache.length === 0) {
         initPoems();
       } else {
-        const poemIndex = parseInt(getUrlParameter("poem")) || 0;
-        const selectedPoem = poemsCache[Math.min(Math.max(poemIndex, 0), poemsCache.length - 1)];
+        const poemParam = getUrlParameter("poem");
+        let selectedPoem;
+        let poemIndex = 0;
+        if (poemParam !== null) {
+          // Find poem by folder number
+          const folderNum = parseInt(poemParam);
+          selectedPoem = poemsCache.find(p => {
+            const match = p.folder.match(/^(\d+)/);
+            return match && parseInt(match[1]) === folderNum;
+          });
+          if (selectedPoem) {
+            poemIndex = poemsCache.indexOf(selectedPoem);
+          }
+        }
+        selectedPoem = selectedPoem || poemsCache[0];
         loadPoem(selectedPoem);
         // update active class in poem list
         setActiveListItem('poemListItems', poemIndex);
@@ -1274,8 +1326,21 @@ document.addEventListener("DOMContentLoaded", () => {
       if (blogsCache.length === 0) {
         initBlogs();
       } else {
-        const blogIndex = parseInt(getUrlParameter("blog")) || 0;
-        const selectedBlog = blogsCache[Math.min(Math.max(blogIndex, 0), blogsCache.length - 1)];
+        const blogParam = getUrlParameter("blog");
+        let selectedBlog;
+        let blogIndex = 0;
+        if (blogParam !== null) {
+          // Find blog by folder number
+          const folderNum = parseInt(blogParam);
+          selectedBlog = blogsCache.find(b => {
+            const match = b.folder.match(/^(\d+)/);
+            return match && parseInt(match[1]) === folderNum;
+          });
+          if (selectedBlog) {
+            blogIndex = blogsCache.indexOf(selectedBlog);
+          }
+        }
+        selectedBlog = selectedBlog || blogsCache[0];
         loadBlogPost(selectedBlog);
         // update active class in blog list
         setActiveListItem('blogListItems', blogIndex);
