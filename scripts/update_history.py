@@ -85,11 +85,16 @@ def get_blog_entries(blogs_dir):
             print(f"    ⚠️  Skipping [{idx}] {title} - no date")
             continue
         
+        # Extract folder number from folder name (e.g., "1_embedded_systems_intro" -> "1")
+        import re
+        folder_match = re.match(r'^(\d+)', folder)
+        folder_num = folder_match.group(1) if folder_match else str(idx)
+        
         entry = {
             'type': 'blog',
             'name': title,
             'date': date,
-            'link': f'src/blogs.html?blog={idx}'
+            'link': f'src/blogs.html?blog={folder_num}'
         }
         entries.append(entry)
         print(f"    • [{idx}] {title}")
@@ -117,7 +122,8 @@ def get_poem_entries(poems_dir):
     
     entries = []
     for idx, poem in enumerate(manifest):
-        name = poem.get('name', poem.get('folder', '').replace('_', ' ').title())
+        folder = poem.get('folder', '')
+        name = poem.get('name', folder.replace('_', ' ').title())
         date = poem.get('date', '')
         
         # Skip entries without dates (empty string)
@@ -125,11 +131,16 @@ def get_poem_entries(poems_dir):
             print(f"    ⚠️  Skipping [{idx}] {name} - no date")
             continue
         
+        # Extract folder number from folder name (e.g., "5_letter_to_a_faded_friend" -> "5")
+        import re
+        folder_match = re.match(r'^(\d+)', folder)
+        folder_num = folder_match.group(1) if folder_match else str(idx)
+        
         entry = {
             'type': 'poem',
             'name': name,
             'date': date,
-            'link': f'src/poems.html?poem={idx}'
+            'link': f'src/poems.html?poem={folder_num}'
         }
         entries.append(entry)
         print(f"    • [{idx}] {name}")

@@ -1244,7 +1244,7 @@ document.addEventListener("DOMContentLoaded", () => {
               href = `blogs/${blog.folder}/res/${src}`;
             }
             const filename = href.split("/").pop();
-            return `<div class="pdf-placeholder"><a href="${href}" target="_blank" rel="noopener noreferrer">Open schematic: ${filename}</a></div>`;
+            return `<div class="pdf-placeholder"><a href="${href}" target="_blank" rel="noopener noreferrer">Open: ${filename}</a></div>`;
           }
         );
         md = md.replace(
