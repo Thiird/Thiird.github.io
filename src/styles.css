@@ -1062,6 +1062,7 @@ body.no-scroll {
 }
 
 @media (max-width: 600px) {
+
   #lightbox-prev,
   #lightbox-next {
     display: none !important;
@@ -1398,21 +1399,43 @@ pre code {
 .tooltip-trigger {
   background: var(--tooltip-trigger-bg);
   border-radius: 2px;
+  position: relative;
+  z-index: 2960;
 }
 
 .tooltip-trigger:hover {
   background: var(--tooltip-trigger-hover);
 }
 
+.tooltip-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 2950;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  pointer-events: none;
+}
+
+.tooltip-overlay.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
 .tooltip {
   position: fixed;
   background: var(--tooltip-bg);
   color: var(--tooltip-text);
-  padding: 5px;
-  border-radius: 8px;
-  z-index: 1000;
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 3000;
   width: max-content;
-  max-width: min(350px, calc(100vw - 20px));
+  max-width: min(450px, calc(100vw - 20px));
   opacity: 0;
   visibility: hidden;
   transform: translateY(-15px);
@@ -1431,7 +1454,7 @@ pre code {
   }
 
   .tooltip-text {
-    font-size: 13px !important;
+    font-size: 15px !important;
   }
 }
 
@@ -1456,6 +1479,8 @@ pre code {
   visibility: visible;
   transform: translateY(0);
   pointer-events: auto;
+  border: 2px;
+  border-style: solid;
 }
 
 .tooltip-content {
@@ -1481,6 +1506,62 @@ pre code {
 
 .tooltip-player-btn:hover {
   color: var(--accent-primary) !important;
+}
+
+.tooltip-fullscreen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+  cursor: pointer;
+}
+
+.tooltip-zoomed {
+  background: var(--tooltip-bg);
+  border: 2px solid var(--border-secondary);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  max-width: 80vw;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  cursor: auto;
+  overflow: auto;
+}
+
+.tooltip-zoomed-text {
+  color: var(--text-primary);
+  font-size: 18px;
+  line-height: 1.5;
+  font-weight: 500;
+  flex-shrink: 0;
+  user-select: text;
+  cursor: text;
+}
+
+.tooltip-zoomed-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.tooltip-zoomed-image {
+  max-width: calc(80vw - 40px);
+  max-height: calc(80vh - 40px);
+  width: auto;
+  height: auto;
+  border-radius: 4px;
+  display: block;
+  object-fit: contain;
 }
 
 .custom-index {

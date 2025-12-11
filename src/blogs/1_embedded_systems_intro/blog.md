@@ -5,10 +5,11 @@ date: 2025-12-26
 
 <h1 id="intro-to-embedded-systems">Embedded Systems Overview</h1>
 
-This article is a conceptual overview of embedded systems meant for people who are absolutely new to the field. Whether you're a student, a hobbyist, or a software developer curious about this field, here you will find high-level explanations to help you understand the fundamental concepts and terminology.
+This article is a conceptual overview of embedded systems, meant for people who are absolutely new to the field. Whether you're a student, a hobbyist, or a software developer curious about this field, here you will find high-level explanations to help you understand the fundamental concepts and terminology.
 
 **What you'll learn:**
 - What embedded systems are and where the term 'embedded' comes from
+- What are the different elements of an embedded system
 - Essential tools in an embedded systems engineer's toolbox
 - Where to go next for hands-on learning
 
@@ -60,14 +61,7 @@ Let's dive in!
 </div>
 
 <h1 id="what-is-it">1. What's an Embedded System?</h1>
-Embedded Systems, (<span tt="ES">ES</span>), is an application field that merges computer science, electrical engineering and mechanical engineering to create electronic systems for <strong>specific</strong> use cases.
-
-It's important to define the distinction between an <em>electrical</em> and an <em>electronic</em> system.
-
-Electrical means anything where "current flows through wires", like motors, simple wirings and lighting.  
-Electronic means anything where "current flows through active components that perform computation", like diodes, transistor and ultimately computers.
-
-Not all computers are referred to as Embedded Systems though: any general purpose computer like desktop PCs, laptops or smartphones, is *not* an embedded system.
+Embedded Systems, (<span tt="ES">ES</span>), is an application field that merges computer science, electrical engineering and mechanical engineering to create <span tt="electronic">electronic</span> systems for <strong>specific</strong> use cases. This specificity is important: while all embedded systems are computers that perform computation, not all computers are embedded systems. General-purpose computers like desktop PCs, laptops, and smartphones are not considered embedded systems.
 
 Some <span tt="ES">ES</span> examples are:
 - <span tt="keyboard">computer keyboard</span>
@@ -118,7 +112,7 @@ Computational Units, CUs from now on, are <span tt="IC">integrated circuits</spa
 
 There are several different kinds of computational units, so let's start from something that most people are familiar with: your desktop PC.
 
-The CU of dekstop PCs is called <strong>Central Processing Unit</strong> (CPU). The CPU is a general purpose computer, meaning that when it's turned on, it starts executing a list of instructions specified by a program, written by a programmer: the list of instructions determine what the CPU does, so if the instructions are changed, the CPU will do different things. The hardware remains the same, but it carries out different computations based on the instructions given (e.g. the software). This is not a trivial thing: considering that integrated circuits are machines, the bare fact that a general purpose machine is manufacturable makes it so that everyone can have a computer for their own needs at low cost: simply make 100 CPUs and program them differently. I cannot overstate how much this changed the world.
+The CU of desktop PCs is called <strong>Central Processing Unit</strong> (CPU). The CPU is a general purpose computer, meaning that when it's turned on, it starts executing a list of instructions specified by a program, written by a programmer: the list of instructions determine what the CPU does, so if the instructions are changed, the CPU will do different things. The hardware remains the same, but it carries out different computations based on the instructions given (e.g. the software). This is not a trivial thing: considering that integrated circuits are machines, the bare fact that a general purpose machine is manufacturable makes it so that everyone can have a computer for their own needs at low cost: simply make 100 CPUs and program them differently. I cannot overstate how much this changed the world.
 
 CPUs are chips that change what they do based on their programming. This flexibility is great, but it comes at a cost: speed. Following a list of instructions takes time, as the CPU needs to read the next instruction, see what that is, activate the part of the chip that does that, and then actually execute it. This is called the <em>Fetch-Decode-Execute</em> cycle: the CPU fetches the next instruction, decodes what it is, and then executes it.
 

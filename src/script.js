@@ -9,7 +9,7 @@ function calculateFitScale(img) {
   const buttonWidth = 40;
   const sidePadding = 40;
   const horizontalSpace = isMobile ? (window.innerWidth * 0.1) : (buttonWidth * 2 + sidePadding * 2);
-  
+
   const maxWidth = window.innerWidth - horizontalSpace;
   const maxHeight = window.innerHeight * 0.9;
   const imgWidth = img.naturalWidth;
@@ -387,7 +387,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Disable zoom functionality on mobile devices
     const isMobile = window.innerWidth <= 600;
     if (isMobile) return;
-    
+
     zoomLevel = (zoomLevel + 1) % zoomScales.length;
     const cursorX = e.clientX;
     const cursorY = e.clientY;
@@ -445,12 +445,12 @@ document.addEventListener("DOMContentLoaded", () => {
   function handleSwipe() {
     const swipeDistance = touchEndX - touchStartX;
     if (Math.abs(swipeDistance) < minSwipeDistance) return;
-    
+
     // Check if page/viewport is zoomed or if click-zoom is active
     const pageZoomed = isPageZoomed();
     const clickZoomed = zoomLevel > 0;
     const isZoomed = pageZoomed || clickZoomed;
-    
+
     // Only navigate if not zoomed
     if (!isZoomed) {
       if (swipeDistance > 0) {
@@ -569,7 +569,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!link.dataset.originalText) link.dataset.originalText = originalText;
         const lowerText = originalText.toLowerCase();
         const matches = search && lowerText.includes(search);
-        
+
         if (matches) {
           // Highlight matching parts
           const regex = new RegExp(`(${search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
@@ -594,7 +594,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("blogList"),
       document.getElementById("poemList")
     ].filter(Boolean);
-    
+
     sidebars.forEach(sidebar => {
       sidebar.addEventListener('wheel', (e) => {
         const scrollTop = sidebar.scrollTop;
@@ -615,7 +615,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }, { passive: false });
     });
   }
-  
+
   setupSidebarScrollIsolation();
 
   const audio = document.getElementById("audioElement");
@@ -907,7 +907,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const index = link.dataset.index;
         const poem = JSON.parse(link.getAttribute("data-poem"));
         const currentPoemParam = getUrlParameter('poem');
-        
+
         // Extract folder number from the clicked poem
         const folderMatch = poem.folder.match(/^(\d+)/);
         const folderNum = folderMatch ? folderMatch[1] : null;
@@ -1111,7 +1111,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const index = link.dataset.index;
         const blog = JSON.parse(link.getAttribute("data-blog"));
         const currentBlogParam = getUrlParameter('blog');
-        
+
         // Extract folder number from the clicked blog
         const folderMatch = blog.folder.match(/^(\d+)/);
         const folderNum = folderMatch ? folderMatch[1] : null;
@@ -1490,6 +1490,7 @@ function updateNoResultsMessage(listId) {
 class TooltipManager {
   constructor() {
     this.tooltip = null;
+    this.overlay = null;
     this.currentTrigger = null;
     this.hideTimeout = null;
     this.currentAudio = null;
@@ -1504,7 +1505,17 @@ class TooltipManager {
     this.hideDelay = parseInt(styles.getPropertyValue('--tooltip-hide-delay'));
     this.verticalOffset = parseInt(styles.getPropertyValue('--tooltip-vertical-offset'));
 
+    this.createOverlay();
     this.init();
+  }
+
+  createOverlay() {
+    this.overlay = document.createElement('div');
+    this.overlay.className = 'tooltip-overlay';
+    this.overlay.addEventListener('click', () => {
+      this.hideActiveTooltip();
+    });
+    document.body.appendChild(this.overlay);
   }
 
   init() {
@@ -1622,6 +1633,11 @@ class TooltipManager {
 
     // Force a reflow to ensure positioning is applied before adding show class
     tooltip.offsetHeight;
+
+    // Show overlay
+    if (this.overlay) {
+      this.overlay.classList.add('show');
+    }
 
     // Add show class for animation
     tooltip.classList.add('show');
@@ -2081,6 +2097,8 @@ class TooltipManager {
 
     element._tooltipMouseLeave = (e) => {
       const relatedTarget = e.relatedTarget;
+
+      // Don't hide if moving to the tooltip itself
       if (relatedTarget && this.tooltip && this.tooltip.contains(relatedTarget)) {
         if (element._tooltipTimeout) {
           clearTimeout(element._tooltipTimeout);
@@ -2178,6 +2196,11 @@ class TooltipManager {
 
       this.tooltip.classList.remove('show');
 
+      // Hide overlay
+      if (this.overlay) {
+        this.overlay.classList.remove('show');
+      }
+
       // Store reference to current tooltip for cleanup
       const tooltipToRemove = this.tooltip;
       this.tooltip = null;
@@ -2219,47 +2242,16 @@ class TooltipManager {
   showImageFullscreen(imageSrc, altText, tooltipData) {
     // Create fullscreen overlay
     const overlay = document.createElement('div');
-    overlay.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.9);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 99999;
-      cursor: pointer;
-    `;
+    overlay.className = 'tooltip-fullscreen-overlay';
 
     // Create zoomed tooltip container
     const zoomedTooltip = document.createElement('div');
-    zoomedTooltip.style.cssText = `
-      background: #2c2c2c;
-      border: 1px solid #555;
-      border-radius: 8px;
-      padding: 20px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-      max-width: 95vw;
-      max-height: 90vh;
-      display: flex;
-      flex-direction: column;
-      cursor: auto;
-      overflow: hidden;
-    `;
+    zoomedTooltip.className = 'tooltip-zoomed';
 
     // Add text if available
     if (tooltipData && tooltipData.text) {
       const text = document.createElement('div');
-      text.style.cssText = `
-        color: #fff;
-        font-size: 22px;
-        line-height: 1.4;
-        margin-bottom: 20px;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        flex-shrink: 0;
-      `;
+      text.className = 'tooltip-zoomed-text';
       text.innerHTML = tooltipData.text.replace(/\n/g, '<br>');
       zoomedTooltip.appendChild(text);
     }
@@ -2267,39 +2259,39 @@ class TooltipManager {
     // Add image if available
     if (imageSrc) {
       const imageContainer = document.createElement('div');
-      imageContainer.style.cssText = `
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      `;
+      imageContainer.className = 'tooltip-zoomed-image-container';
 
       const img = document.createElement('img');
       img.src = imageSrc;
-      img.alt = altText || 'Zoomed image';
-      img.style.cssText = `
-        max-width: calc(95vw - 40px);
-        max-height: calc(90vh - ${tooltipData && tooltipData.text ? '120px' : '40px'});
-        border-radius: 4px;
-        display: block;
-      `;
+      // Use alt text if provided, otherwise use empty string (not the full text)
+      img.alt = altText || '';
+      img.className = 'tooltip-zoomed-image';
 
       imageContainer.appendChild(img);
       zoomedTooltip.appendChild(imageContainer);
     }
 
-    // Close handlers - click anywhere to close
+    // Close handlers
     const closeFullscreen = () => {
       document.body.removeChild(overlay);
       document.body.style.overflow = '';
       document.removeEventListener('keydown', escHandler);
     };
 
-    overlay.addEventListener('click', closeFullscreen);
-    zoomedTooltip.addEventListener('click', closeFullscreen);
+    // Only close when clicking the overlay (background), not the tooltip content
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+        closeFullscreen();
+      }
+    });
+
+    // Prevent clicks inside the tooltip from closing it
+    zoomedTooltip.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
 
     // ESC key to close
     const escHandler = (e) => {
-
       if (e.key === 'Escape') {
         closeFullscreen();
       }
@@ -2348,7 +2340,7 @@ function initHomePage() {
   function waitForHeaderImages() {
     const header = document.getElementById("header-placeholder");
     const images = header.querySelectorAll("img");
-    
+
     if (images.length === 0) {
       headerLoaded = true;
       checkAndPositionThemeToggle();
@@ -2673,7 +2665,7 @@ function initBlogPage() {
         if (!link.dataset.originalText) link.dataset.originalText = originalText;
         const lowerText = originalText.toLowerCase();
         const matches = search && lowerText.includes(search);
-        
+
         if (matches) {
           // Highlight matching parts
           const regex = new RegExp(`(${search.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')})`, 'gi');
@@ -2851,7 +2843,7 @@ function initPoemPage() {
         if (!link.dataset.originalText) link.dataset.originalText = originalText;
         const lowerText = originalText.toLowerCase();
         const matches = search && lowerText.includes(search);
-        
+
         if (matches) {
           // Highlight matching parts
           const regex = new RegExp(`(${search.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')})`, 'gi');

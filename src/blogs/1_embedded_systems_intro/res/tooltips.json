@@ -43,6 +43,10 @@
     },
     "IC": {
         "text": "<strong>Integrated Circuit</strong><br><br>A set of electronic circuits on a small flat piece of semiconductor material (usually silicon). An IC can contain billions of transistors, resistors, and capacitors working together to perform complex functions.",
+        "media": "CII_72_silicon_die.jpg"
+    },
+    "electronic": {
+        "text": "It's important to define the distinction between <em>electrical</em> and <em>electronic</em>.<br><br>- <strong>Electrical</strong>: means \"current flowing through wires\", for example motors, simple wirings and lighting.<br>- <strong>Electronic</strong>: means \"current flowing through active components that perform computation\", like diodes, transistor and ultimately computers.",
         "media": ""
     }
 }
