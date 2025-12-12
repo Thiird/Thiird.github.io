@@ -565,21 +565,24 @@ document.addEventListener("DOMContentLoaded", () => {
         if (item.classList.contains('no-results')) return;
         const link = item.querySelector('a');
         if (!link) return;
-        const originalText = link.dataset.originalText || link.textContent;
-        if (!link.dataset.originalText) link.dataset.originalText = originalText;
+        const titleSpan = link.querySelector('.list-item-title');
+        if (!titleSpan) return;
+
+        const originalText = titleSpan.dataset.originalText || titleSpan.textContent;
+        if (!titleSpan.dataset.originalText) titleSpan.dataset.originalText = originalText;
         const lowerText = originalText.toLowerCase();
         const matches = search && lowerText.includes(search);
 
         if (matches) {
           // Highlight matching parts
           const regex = new RegExp(`(${search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-          link.innerHTML = originalText.replace(regex, '<mark>$1</mark>');
+          titleSpan.innerHTML = originalText.replace(regex, '<mark>$1</mark>');
           item.style.display = "block";
         } else if (search) {
-          link.textContent = originalText;
+          titleSpan.textContent = originalText;
           item.style.display = "none";
         } else {
-          link.textContent = originalText;
+          titleSpan.textContent = originalText;
           item.style.display = "block";
         }
       });
@@ -886,7 +889,19 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
     poemListItems.innerHTML = "";
+    let previousYear = null;
     poems.forEach((poem, index) => {
+      // Extract year from poem date
+      const currentYear = poem.date ? new Date(poem.date).getFullYear() : null;
+
+      // Add year separator if year changed
+      if (previousYear !== null && currentYear !== null && currentYear !== previousYear) {
+        const separator = document.createElement("hr");
+        separator.className = "year-separator";
+        poemListItems.appendChild(separator);
+      }
+      previousYear = currentYear;
+
       const li = document.createElement("li");
       const a = document.createElement("a");
       a.href = "#";
@@ -894,10 +909,43 @@ document.addEventListener("DOMContentLoaded", () => {
       let displayPoemTitle = formatPoemTitle(poem.name || poem.folder);
       displayPoemTitle = displayPoemTitle.replace(/^\s*\d+\s*[-\.]?\s*/, '').trim();
       const chronologicalIndex = poems.length - 1 - index;
-      a.textContent = `${chronologicalIndex} - ${displayPoemTitle}`;
+
+      // Create title span
+      const titleSpan = document.createElement("span");
+      titleSpan.className = "list-item-title";
+      titleSpan.textContent = `${chronologicalIndex} - ${displayPoemTitle}`;
+
+      a.appendChild(titleSpan);
+
+      // Create date span only if date exists
+      if (poem.date) {
+        const dateSpan = document.createElement("span");
+        dateSpan.className = "list-item-date";
+        const date = new Date(poem.date);
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        dateSpan.textContent = `${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+        a.appendChild(dateSpan);
+      }
+
       a.dataset.poem = JSON.stringify(poem);
       a.dataset.index = index;
       a.classList.add("poem-link");
+
+      // Add touch support for mobile to show/hide date
+      a.addEventListener('touchstart', (e) => {
+        // Check if this touch is just for showing the date (not navigating)
+        if (!a.classList.contains('show-date') && poem.date) {
+          e.preventDefault();
+          // Hide all other dates
+          document.querySelectorAll('.poem-link.show-date').forEach(link => {
+            link.classList.remove('show-date');
+          });
+          // Show this date
+          a.classList.add('show-date');
+        }
+        // If already showing date, let the click navigate
+      });
+
       li.appendChild(a);
       poemListItems.appendChild(li);
     });
@@ -1090,7 +1138,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const listEl = document.getElementById("blogListItems");
     if (!listEl) return;
     listEl.innerHTML = "";
+    let previousYear = null;
     blogs.forEach((blog, index) => {
+      // Extract year from blog date
+      const currentYear = blog.date ? new Date(blog.date).getFullYear() : null;
+
+      // Add year separator if year changed
+      if (previousYear !== null && currentYear !== null && currentYear !== previousYear) {
+        const separator = document.createElement("hr");
+        separator.className = "year-separator";
+        listEl.appendChild(separator);
+      }
+      previousYear = currentYear;
+
       const li = document.createElement("li");
       const a = document.createElement("a");
       a.href = "#";
@@ -1098,10 +1158,43 @@ document.addEventListener("DOMContentLoaded", () => {
       let displayBlogTitle = (blog.title || formatBlogTitle(blog.folder)).toString();
       displayBlogTitle = displayBlogTitle.replace(/^\s*\d+\s*[-\.]?\s*/, '').trim();
       const chronologicalIndex = blogs.length - 1 - index;
-      a.textContent = `${chronologicalIndex} - ${displayBlogTitle}`;
+
+      // Create title span
+      const titleSpan = document.createElement("span");
+      titleSpan.className = "list-item-title";
+      titleSpan.textContent = `${chronologicalIndex} - ${displayBlogTitle}`;
+
+      a.appendChild(titleSpan);
+
+      // Create date span only if date exists
+      if (blog.date) {
+        const dateSpan = document.createElement("span");
+        dateSpan.className = "list-item-date";
+        const date = new Date(blog.date);
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        dateSpan.textContent = `${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+        a.appendChild(dateSpan);
+      }
+
       a.dataset.blog = JSON.stringify(blog);
       a.dataset.index = index;
       a.classList.add("blog-link");
+
+      // Add touch support for mobile to show/hide date
+      a.addEventListener('touchstart', (e) => {
+        // Check if this touch is just for showing the date (not navigating)
+        if (!a.classList.contains('show-date') && blog.date) {
+          e.preventDefault();
+          // Hide all other dates
+          document.querySelectorAll('.blog-link.show-date').forEach(link => {
+            link.classList.remove('show-date');
+          });
+          // Show this date
+          a.classList.add('show-date');
+        }
+        // If already showing date, let the click navigate
+      });
+
       li.appendChild(a);
       listEl.appendChild(li);
     });
@@ -1463,6 +1556,11 @@ function clearSidebarSearchInputs() {
       input.dispatchEvent(new Event('input', { bubbles: true }));
     }
   });
+
+  // Clear all show-date classes when sidebar is toggled
+  document.querySelectorAll('.poem-link.show-date, .blog-link.show-date').forEach(link => {
+    link.classList.remove('show-date');
+  });
 }
 
 // Show a "no results" message inside the given list if no visible items
@@ -1696,100 +1794,30 @@ class TooltipManager {
         // Create audio player matching poems page - using CSS variables for dynamic theming
         const audioPlayer = document.createElement('div');
         audioPlayer.className = 'tooltip-audio-player';
-        audioPlayer.style.cssText = `
-          background: var(--audio-player-bg);
-          border-radius: 6px;
-          padding: 10px;
-          min-width: 280px;
-        `;
 
         const playerControls = document.createElement('div');
         playerControls.className = 'player-controls';
-        playerControls.style.cssText = `
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        `;
 
         const playPauseBtn = document.createElement('button');
         playPauseBtn.innerHTML = '▶';
         playPauseBtn.className = 'player-btn tooltip-player-btn';
-        playPauseBtn.style.cssText = `
-          background: none;
-          border: none;
-          color: var(--audio-player-text);
-          padding: 0;
-          cursor: pointer;
-          font-size: 1.2em;
-          min-width: 32px;
-          height: 32px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          user-select: none;
-          -webkit-user-select: none;
-          outline: none;
-          transition: color 0.2s ease;
-        `;
 
         const currentTime = document.createElement('span');
         currentTime.textContent = '0:00';
         currentTime.className = 'tooltip-time';
-        currentTime.style.cssText = `
-          color: var(--audio-player-text);
-          font-size: 12px;
-          min-width: 35px;
-        `;
 
         const progressContainer = document.createElement('div');
         progressContainer.className = 'progress-container tooltip-progress';
-        progressContainer.style.cssText = `
-          flex: 1;
-          height: 8px;
-          background: var(--audio-progress-bg);
-          border-radius: 999px;
-          position: relative;
-          cursor: pointer;
-          overflow: visible;
-        `;
 
         const progressBarEl = document.createElement('div');
         progressBarEl.className = 'tooltip-progress-bar';
-        progressBarEl.style.cssText = `
-          height: 100%;
-          background: var(--audio-progress-bar);
-          border-radius: 999px;
-          width: 0%;
-          transition: width 0.08s linear;
-          position: relative;
-          z-index: 1;
-        `;
 
         const progressHandle = document.createElement('div');
         progressHandle.className = 'progress-handle';
-        progressHandle.style.cssText = `
-          position: absolute;
-          top: 50%;
-          left: 0%;
-          width: 14px;
-          height: 14px;
-          background: #ffffff;
-          border-radius: 50%;
-          transform: translate(-50%, -50%);
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
-          cursor: grab;
-          z-index: 2;
-          touch-action: none;
-        `;
 
         const duration = document.createElement('span');
         duration.textContent = '0:00';
         duration.className = 'tooltip-time';
-        duration.style.cssText = `
-          color: var(--audio-player-text);
-          font-size: 12px;
-          min-width: 35px;
-        `;
 
         progressContainer.appendChild(progressBarEl);
         progressContainer.appendChild(progressHandle);
@@ -2661,21 +2689,24 @@ function initBlogPage() {
         if (item.classList.contains('no-results')) return;
         const link = item.querySelector('a');
         if (!link) return;
-        const originalText = link.dataset.originalText || link.textContent;
-        if (!link.dataset.originalText) link.dataset.originalText = originalText;
+        const titleSpan = link.querySelector('.list-item-title');
+        if (!titleSpan) return;
+
+        const originalText = titleSpan.dataset.originalText || titleSpan.textContent;
+        if (!titleSpan.dataset.originalText) titleSpan.dataset.originalText = originalText;
         const lowerText = originalText.toLowerCase();
         const matches = search && lowerText.includes(search);
 
         if (matches) {
           // Highlight matching parts
           const regex = new RegExp(`(${search.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')})`, 'gi');
-          link.innerHTML = originalText.replace(regex, '<mark>$1</mark>');
+          titleSpan.innerHTML = originalText.replace(regex, '<mark>$1</mark>');
           item.style.display = "block";
         } else if (search) {
-          link.textContent = originalText;
+          titleSpan.textContent = originalText;
           item.style.display = "none";
         } else {
-          link.textContent = originalText;
+          titleSpan.textContent = originalText;
           item.style.display = "block";
         }
       });
@@ -2839,21 +2870,24 @@ function initPoemPage() {
         if (item.classList.contains('no-results')) return;
         const link = item.querySelector('a');
         if (!link) return;
-        const originalText = link.dataset.originalText || link.textContent;
-        if (!link.dataset.originalText) link.dataset.originalText = originalText;
+        const titleSpan = link.querySelector('.list-item-title');
+        if (!titleSpan) return;
+
+        const originalText = titleSpan.dataset.originalText || titleSpan.textContent;
+        if (!titleSpan.dataset.originalText) titleSpan.dataset.originalText = originalText;
         const lowerText = originalText.toLowerCase();
         const matches = search && lowerText.includes(search);
 
         if (matches) {
           // Highlight matching parts
           const regex = new RegExp(`(${search.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')})`, 'gi');
-          link.innerHTML = originalText.replace(regex, '<mark>$1</mark>');
+          titleSpan.innerHTML = originalText.replace(regex, '<mark>$1</mark>');
           item.style.display = "block";
         } else if (search) {
-          link.textContent = originalText;
+          titleSpan.textContent = originalText;
           item.style.display = "none";
         } else {
-          link.textContent = originalText;
+          titleSpan.textContent = originalText;
           item.style.display = "block";
         }
       });

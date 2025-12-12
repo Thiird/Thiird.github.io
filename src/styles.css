@@ -35,7 +35,7 @@
   --tooltip-text: #ffffff;
   --tooltip-trigger-bg: rgba(88, 166, 255, 0.15);
   --tooltip-trigger-hover: rgba(88, 166, 255, 0.25);
-  --audio-player-bg: rgba(26, 31, 38, 0.8);
+  --audio-player-bg: rgb(82, 100, 128);
   --audio-player-border: #30363d;
   --audio-player-text: #c9d1d9;
   --audio-progress-bg: #30363d;
@@ -117,7 +117,7 @@
   --tooltip-text: #2c3e50;
   --tooltip-trigger-bg: rgba(41, 128, 185, 0.12);
   --tooltip-trigger-hover: rgba(41, 128, 185, 0.22);
-  --audio-player-bg: rgba(200, 210, 220, 0.9);
+  --audio-player-bg: rgba(165, 174, 182, 0.9);
   --audio-player-border: #a0aec0;
   --audio-player-text: #2c3e50;
   --audio-progress-bg: #929292;
@@ -512,6 +512,48 @@ body.no-scroll {
   list-style: none;
   padding: 0;
   margin: 0;
+  position: relative;
+}
+
+.poem-link,
+.blog-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.list-item-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.list-item-date {
+  font-style: italic;
+  font-size: 0.85em;
+  color: var(--text-secondary);
+  display: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-decoration: none !important;
+}
+
+.poem-link:hover .list-item-date,
+.blog-link:hover .list-item-date,
+.poem-link.show-date .list-item-date,
+.blog-link.show-date .list-item-date {
+  display: block;
+}
+
+.year-separator {
+  border: none;
+  border-top: 1px solid var(--border-primary);
+  margin: 12px 0;
+  opacity: 0.2;
 }
 
 .blog-list-header {
@@ -658,7 +700,6 @@ body.no-scroll {
 
 #poemList a:hover,
 #blogList a:hover {
-  text-decoration: underline;
   color: var(--accent-primary);
 }
 
@@ -670,7 +711,6 @@ body.no-scroll {
 
 .poem-link:hover,
 .blog-link:hover {
-  text-decoration: underline;
   color: var(--accent-primary);
 }
 
@@ -1506,6 +1546,81 @@ pre code {
 
 .tooltip-player-btn:hover {
   color: var(--accent-primary) !important;
+}
+
+.tooltip-audio-player {
+  background: var(--audio-player-bg);
+  border-radius: 6px;
+  padding: 10px;
+  min-width: 280px;
+}
+
+.tooltip-audio-player .player-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tooltip-audio-player .tooltip-player-btn {
+  background: none;
+  border: none;
+  color: var(--audio-player-text);
+  padding: 0;
+  cursor: pointer;
+  font-size: 1.2em;
+  min-width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-user-select: none;
+  outline: none;
+  transition: color 0.2s ease;
+}
+
+.tooltip-time {
+  color: var(--audio-player-text);
+  font-size: 12px;
+  min-width: 35px;
+}
+
+.tooltip-progress {
+  flex: 1;
+  height: 8px;
+  background: var(--audio-progress-bg);
+  border-radius: 999px;
+  position: relative;
+  cursor: pointer;
+  overflow: visible;
+}
+
+.tooltip-progress-bar {
+  height: 100%;
+  background: var(--audio-progress-bar);
+  border-radius: 999px;
+  width: 0%;
+  transition: width 0.08s linear;
+  position: relative;
+  z-index: 1;
+}
+
+.tooltip-progress .progress-handle {
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  width: 14px;
+  height: 14px;
+  background: #ffffff;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  cursor: grab;
+  z-index: 2;
+  touch-action: none;
+  display: block !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
 }
 
 .tooltip-fullscreen-overlay {

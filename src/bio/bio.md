@@ -1,3 +1,9 @@
+# Present
+I'm currently working as an Embedded Systems Engineer in Bologna, Italy.
+
+When I'm not working, you will find me chatting with people online, working out doing calisthenics, planning stuff.
+I used to be an avid PC gamer, but nowadays I mostly play just to meet people or for the nostalgia.
+
 # Background
 I was born and raised in the Verona province, northern Italy.
 
@@ -9,15 +15,9 @@ I started with embedded systems in 2020 when I accidentally discovered the field
 I got hooked up very quickly.
 I built a macropad, then a keyboard, then a better keyboard, then a mouse, then I landed my first job (thanks to the mouse).
 
-I'm currently working as an Embedded Systems Engineer in Bologna, Italy.
-
 # My personality, hobbies and interests
-
 I'm a very attentive, self-critical and innerly emotional person.  
 I like to be in order, on time, and know how things work down to the single atom. This attention to details is what draws me to embedded systems, where single bits matter.
-
-My brain works like a computer, I don't work well without data and I work best with known patterns.
-This works against me when I'm not dealing with computers.
 
 I rode a <span tt="drz400">Suzuki DRZ-400 SM</span> that I passionately maintained for six years.
 I dabble in tennis, calisthenics, running, powerlifting and weightlifting.
