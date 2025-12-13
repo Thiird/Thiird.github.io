@@ -3,6 +3,16 @@ const zoomScales = [1, 1.5, 2]; // 1x, 1.5x, 2x zoom levels
 let currentImageIndex = 0;
 let imageList = [];
 
+// Global function to close all dropdown menus
+function closeAllDropdowns() {
+  const dropdowns = document.querySelectorAll(".top-menu .dropdown");
+  dropdowns.forEach((dropdown) => {
+    dropdown.classList.remove("active");
+    const menu = dropdown.querySelector(".dropdown-menu");
+    if (menu) menu.style.display = "none";
+  });
+}
+
 function calculateFitScale(img) {
   const isMobile = window.innerWidth <= 600;
   // On mobile: no buttons, use 90% width. Desktop: 40px button + 40px padding on each side
@@ -201,6 +211,14 @@ function initDropdownToggle() {
         menu.style.display = isActive ? "none" : "block";
       };
       button.addEventListener("click", button._clickHandler);
+      
+      // Close menu when any link inside is clicked
+      const menuLinks = menu.querySelectorAll("a");
+      menuLinks.forEach(link => {
+        link.addEventListener("click", () => {
+          closeAllDropdowns();
+        });
+      });
     } else {
       // Desktop: show on hover, position as fixed so it floats above content
       dropdown._mouseenterHandler = (e) => {
@@ -828,11 +846,13 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    backToTopBtn.addEventListener("click", () => {
+    backToTopBtn.addEventListener("click", (e) => {
       window.scrollTo({
         top: 0,
         behavior: "smooth",
       });
+      // Remove focus to prevent persistent highlight on mobile
+      e.currentTarget.blur();
     });
   }
 
@@ -1415,12 +1435,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Move anchor handling to the top so anchor popstates do not trigger expensive blog/poem reloads.
   window.addEventListener("popstate", (event) => {
     // Close all dropdown menus when navigating back/forward
-    const dropdowns = document.querySelectorAll(".top-menu .dropdown");
-    dropdowns.forEach((dropdown) => {
-      dropdown.classList.remove("active");
-      const menu = dropdown.querySelector(".dropdown-menu");
-      if (menu) menu.style.display = "none";
-    });
+    closeAllDropdowns();
     
     // If the popped history state is an anchor, handle it immediately and return
     if (event.state && event.state.anchor) {
@@ -1819,8 +1834,14 @@ class TooltipManager {
     if (data.text) {
       const text = document.createElement('div');
       text.className = 'tooltip-text';
-      // Use innerHTML to support HTML formatting and convert \n to <br>
-      text.innerHTML = data.text.replace(/\n/g, '<br>');
+      // Convert custom tags and newlines to HTML
+      let formattedText = data.text
+        .replace(/<bold>/g, '<strong>')
+        .replace(/<\/bold>/g, '</strong>')
+        .replace(/<italics>/g, '<em>')
+        .replace(/<\/italics>/g, '</em>')
+        .replace(/\n/g, '<br>');
+      text.innerHTML = formattedText;
       content.appendChild(text);
     }
 
@@ -2342,7 +2363,14 @@ class TooltipManager {
     if (tooltipData && tooltipData.text) {
       const text = document.createElement('div');
       text.className = 'tooltip-zoomed-text';
-      text.innerHTML = tooltipData.text.replace(/\n/g, '<br>');
+      // Convert custom tags and newlines to HTML
+      let formattedText = tooltipData.text
+        .replace(/<bold>/g, '<strong>')
+        .replace(/<\/bold>/g, '</strong>')
+        .replace(/<italics>/g, '<em>')
+        .replace(/<\/italics>/g, '</em>')
+        .replace(/\n/g, '<br>');
+      text.innerHTML = formattedText;
       zoomedTooltip.appendChild(text);
     }
 

@@ -1738,6 +1738,7 @@ pre code {
   max-width: 800px;
   margin: 40px auto;
   padding: 20px;
+  container-type: inline-size;
 }
 
 .history-section h2 {
@@ -1770,14 +1771,20 @@ pre code {
 .history-item a {
   text-decoration: none;
   color: inherit;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto;
   align-items: center;
-  justify-content: space-between;
-  gap: 15px;
+  gap: 12px;
+  min-width: 0;
 }
 
 .history-item-content {
-  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+}
   display: flex;
   align-items: center;
   gap: 12px;
@@ -1811,12 +1818,50 @@ pre code {
 .history-item-name {
   color: var(--text-primary);
   font-size: 1em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .history-item-date {
   color: var(--text-secondary);
   font-size: 0.85em;
-  flex-shrink: 0;
+  white-space: nowrap;
+  grid-column: 2;
+}
+
+/* Use CSS to hide date when there's not enough space - fallback to viewport */
+@supports not (container-type: inline-size) {
+  @media (max-width: 450px) {
+    .history-item a {
+      grid-template-columns: 1fr;
+    }
+    
+    .history-item-date {
+      display: none;
+    }
+  }
+}
+
+/* Container-based: hide date at narrower threshold - date stays visible longer */
+@container (max-width: 480px) {
+  .history-item a {
+    grid-template-columns: 1fr;
+  }
+  
+  .history-item-date {
+    display: none;
+  }
+}
+
+/* Fallback for browsers without container query support - hide date on very narrow viewports */
+@supports not (container-type: inline-size) {
+  @media (max-width: 500px) {
+    .history-item-date {
+      display: none;
+    }
+  }
 }
 
 @media (max-width: 600px) {
@@ -1826,25 +1871,7 @@ pre code {
   }
 
   .history-item a {
-    flex-wrap: nowrap;
     gap: 8px;
-  }
-
-  .history-item-content {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .history-item-name {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .history-item-date {
-    margin-left: 0;
-    padding-left: 0;
-    white-space: nowrap;
   }
 }
 

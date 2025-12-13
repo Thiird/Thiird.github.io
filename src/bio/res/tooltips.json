@@ -5,12 +5,12 @@
         "alt": "power-ranger"
     },
     "sad-music": {
-        "text": "",
+        "text": "<italics>Farewell Life - Arn Andersson (slowed + reverb)</italics>",
         "media": "sad-music.mp3",
         "alt": ""
     },
     "crazy-music": {
-        "text": "<bold>Warning</bold>: High BPM music!",
+        "text": "<bold>Warning: High BPM music!</bold>",
         "media": "crazy-music.mp3",
         "alt": ""
     }
