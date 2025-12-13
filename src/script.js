@@ -2242,55 +2242,32 @@ class TooltipManager {
     const topLineX = topLineRect.left + window.pageXOffset;
     const topLineY = topLineRect.top + window.pageYOffset;
 
-    // On mobile, use full width with margins
-    const isMobile = window.innerWidth <= 600;
-    const margin = isMobile ? (window.innerWidth <= 400 ? 8 : 10) : 10;
-    
-    if (isMobile) {
-      // Mobile: position centered horizontally with margins
-      const left = margin;
-      let top = topLineY - tooltipHeight - this.verticalOffset;
-      
-      // If not enough space above trigger, show below
-      if (top < window.pageYOffset + margin) {
-        top = triggerY + triggerRect.height + this.verticalOffset;
-        tooltip.classList.add('bottom');
-      } else {
-        tooltip.classList.remove('bottom');
-      }
-      
-      tooltip.style.position = 'absolute';
-      tooltip.style.left = left + 'px';
-      tooltip.style.top = top + 'px';
-      tooltip.style.right = margin + 'px';
-      tooltip.style.width = 'auto';
-    } else {
-      // Desktop: position aligned with trigger
-      let left = topLineX + (topLineRect.width / 2) - (tooltipWidth / 2);
-      let top = topLineY - tooltipHeight - this.verticalOffset;
+    // Position tooltip - same logic for mobile and desktop
+    const margin = 10;
+    let left = topLineX + (topLineRect.width / 2) - (tooltipWidth / 2);
+    let top = topLineY - tooltipHeight - this.verticalOffset;
 
-      // Adjust if tooltip goes off screen horizontally
-      const scrollX = window.pageXOffset;
-      if (left < scrollX + margin) left = scrollX + margin;
-      if (left + tooltipWidth > scrollX + window.innerWidth - margin) {
-        left = scrollX + window.innerWidth - tooltipWidth - margin;
-      }
-
-      // If not enough space above trigger, show below
-      if (top < window.pageYOffset + margin) {
-        top = triggerY + triggerRect.height + this.verticalOffset;
-        tooltip.classList.add('bottom');
-      } else {
-        tooltip.classList.remove('bottom');
-      }
-
-      // Use absolute positioning so tooltip follows page scroll
-      tooltip.style.position = 'absolute';
-      tooltip.style.left = left + 'px';
-      tooltip.style.top = top + 'px';
-      tooltip.style.right = '';
-      tooltip.style.width = '';
+    // Adjust if tooltip goes off screen horizontally
+    const scrollX = window.pageXOffset;
+    if (left < scrollX + margin) left = scrollX + margin;
+    if (left + tooltipWidth > scrollX + window.innerWidth - margin) {
+      left = scrollX + window.innerWidth - tooltipWidth - margin;
     }
+
+    // If not enough space above trigger, show below
+    if (top < window.pageYOffset + margin) {
+      top = triggerY + triggerRect.height + this.verticalOffset;
+      tooltip.classList.add('bottom');
+    } else {
+      tooltip.classList.remove('bottom');
+    }
+
+    // Use absolute positioning so tooltip follows page scroll
+    tooltip.style.position = 'absolute';
+    tooltip.style.left = left + 'px';
+    tooltip.style.top = top + 'px';
+    tooltip.style.right = '';
+    tooltip.style.width = '';
   }
 
 

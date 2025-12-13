@@ -1494,9 +1494,7 @@ pre code {
     max-width: calc(100vw - 20px);
     padding: 8px;
     font-size: 0.9em;
-    left: 10px !important;
-    right: 10px !important;
-    width: auto !important;
+    width: max-content;
   }
 
   .tooltip-gif {
@@ -1515,8 +1513,7 @@ pre code {
     max-width: calc(100vw - 16px);
     padding: 6px;
     font-size: 0.85em;
-    left: 8px !important;
-    right: 8px !important;
+    width: max-content;
   }
 
   .tooltip-gif {
