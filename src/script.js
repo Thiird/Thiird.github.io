@@ -1414,6 +1414,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Move anchor handling to the top so anchor popstates do not trigger expensive blog/poem reloads.
   window.addEventListener("popstate", (event) => {
+    // Close all dropdown menus when navigating back/forward
+    const dropdowns = document.querySelectorAll(".top-menu .dropdown");
+    dropdowns.forEach((dropdown) => {
+      dropdown.classList.remove("active");
+      const menu = dropdown.querySelector(".dropdown-menu");
+      if (menu) menu.style.display = "none";
+    });
+    
     // If the popped history state is an anchor, handle it immediately and return
     if (event.state && event.state.anchor) {
       scrollToAnchor("#" + event.state.anchor);
@@ -2213,29 +2221,55 @@ class TooltipManager {
     const topLineX = topLineRect.left + window.pageXOffset;
     const topLineY = topLineRect.top + window.pageYOffset;
 
-    // Position tooltip horizontally aligned with trigger, vertically above trigger
-    let left = topLineX + (topLineRect.width / 2) - (tooltipWidth / 2);
-    let top = topLineY - tooltipHeight - this.verticalOffset;
-
-    // Adjust if tooltip goes off screen horizontally
-    const scrollX = window.pageXOffset;
-    if (left < scrollX + 10) left = scrollX + 10;
-    if (left + tooltipWidth > scrollX + window.innerWidth - 10) {
-      left = scrollX + window.innerWidth - tooltipWidth - 10;
-    }
-
-    // If not enough space above trigger, show below
-    if (top < window.pageYOffset + 10) {
-      top = triggerY + triggerRect.height + this.verticalOffset;
-      tooltip.classList.add('bottom');
+    // On mobile, use full width with margins
+    const isMobile = window.innerWidth <= 600;
+    const margin = isMobile ? (window.innerWidth <= 400 ? 8 : 10) : 10;
+    
+    if (isMobile) {
+      // Mobile: position centered horizontally with margins
+      const left = margin;
+      let top = topLineY - tooltipHeight - this.verticalOffset;
+      
+      // If not enough space above trigger, show below
+      if (top < window.pageYOffset + margin) {
+        top = triggerY + triggerRect.height + this.verticalOffset;
+        tooltip.classList.add('bottom');
+      } else {
+        tooltip.classList.remove('bottom');
+      }
+      
+      tooltip.style.position = 'absolute';
+      tooltip.style.left = left + 'px';
+      tooltip.style.top = top + 'px';
+      tooltip.style.right = margin + 'px';
+      tooltip.style.width = 'auto';
     } else {
-      tooltip.classList.remove('bottom');
-    }
+      // Desktop: position aligned with trigger
+      let left = topLineX + (topLineRect.width / 2) - (tooltipWidth / 2);
+      let top = topLineY - tooltipHeight - this.verticalOffset;
 
-    // Use absolute positioning so tooltip follows page scroll
-    tooltip.style.position = 'absolute';
-    tooltip.style.left = left + 'px';
-    tooltip.style.top = top + 'px';
+      // Adjust if tooltip goes off screen horizontally
+      const scrollX = window.pageXOffset;
+      if (left < scrollX + margin) left = scrollX + margin;
+      if (left + tooltipWidth > scrollX + window.innerWidth - margin) {
+        left = scrollX + window.innerWidth - tooltipWidth - margin;
+      }
+
+      // If not enough space above trigger, show below
+      if (top < window.pageYOffset + margin) {
+        top = triggerY + triggerRect.height + this.verticalOffset;
+        tooltip.classList.add('bottom');
+      } else {
+        tooltip.classList.remove('bottom');
+      }
+
+      // Use absolute positioning so tooltip follows page scroll
+      tooltip.style.position = 'absolute';
+      tooltip.style.left = left + 'px';
+      tooltip.style.top = top + 'px';
+      tooltip.style.right = '';
+      tooltip.style.width = '';
+    }
   }
 
 
