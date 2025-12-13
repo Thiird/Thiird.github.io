@@ -931,19 +931,26 @@ document.addEventListener("DOMContentLoaded", () => {
       a.dataset.index = index;
       a.classList.add("poem-link");
 
-      // Add touch support for mobile to show/hide date
-      a.addEventListener('touchstart', (e) => {
-        // Check if this touch is just for showing the date (not navigating)
+      // Mobile touch handling: track whether we're preventing navigation
+      let preventNextClick = false;
+
+      a.addEventListener('touchend', (e) => {
+        // Check if this is the first tap (date not showing yet)
         if (!a.classList.contains('show-date') && poem.date) {
           e.preventDefault();
-          // Hide all other dates
+          e.stopPropagation();
+          preventNextClick = true;
+          
+          // Hide all other dates and highlights
           document.querySelectorAll('.poem-link.show-date').forEach(link => {
             link.classList.remove('show-date');
           });
-          // Show this date
+          // Show this date and add highlight
           a.classList.add('show-date');
+          
+          // Reset flag after a short delay
+          setTimeout(() => { preventNextClick = false; }, 100);
         }
-        // If already showing date, let the click navigate
       });
 
       li.appendChild(a);
@@ -952,6 +959,13 @@ document.addEventListener("DOMContentLoaded", () => {
     poemListItems.querySelectorAll("a").forEach((link) => {
       link.addEventListener("click", (e) => {
         e.preventDefault();
+        
+        // Only apply two-tap logic on touch devices with narrow screens
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        if (isTouchDevice && window.innerWidth <= 800 && !link.classList.contains('show-date')) {
+          return; // Touch handler already handled showing the date
+        }
+        
         const index = link.dataset.index;
         const poem = JSON.parse(link.getAttribute("data-poem"));
         const currentPoemParam = getUrlParameter('poem');
@@ -1180,19 +1194,26 @@ document.addEventListener("DOMContentLoaded", () => {
       a.dataset.index = index;
       a.classList.add("blog-link");
 
-      // Add touch support for mobile to show/hide date
-      a.addEventListener('touchstart', (e) => {
-        // Check if this touch is just for showing the date (not navigating)
+      // Mobile touch handling: track whether we're preventing navigation
+      let preventNextClick = false;
+
+      a.addEventListener('touchend', (e) => {
+        // Check if this is the first tap (date not showing yet)
         if (!a.classList.contains('show-date') && blog.date) {
           e.preventDefault();
-          // Hide all other dates
+          e.stopPropagation();
+          preventNextClick = true;
+          
+          // Hide all other dates and highlights
           document.querySelectorAll('.blog-link.show-date').forEach(link => {
             link.classList.remove('show-date');
           });
-          // Show this date
+          // Show this date and add highlight
           a.classList.add('show-date');
+          
+          // Reset flag after a short delay
+          setTimeout(() => { preventNextClick = false; }, 100);
         }
-        // If already showing date, let the click navigate
       });
 
       li.appendChild(a);
@@ -1201,6 +1222,13 @@ document.addEventListener("DOMContentLoaded", () => {
     listEl.querySelectorAll("a").forEach((link) => {
       link.addEventListener("click", (e) => {
         e.preventDefault();
+        
+        // Only apply two-tap logic on touch devices with narrow screens
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        if (isTouchDevice && window.innerWidth <= 800 && !link.classList.contains('show-date')) {
+          return; // Touch handler already handled showing the date
+        }
+        
         const index = link.dataset.index;
         const blog = JSON.parse(link.getAttribute("data-blog"));
         const currentBlogParam = getUrlParameter('blog');
@@ -1461,7 +1489,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ft.setAttribute("aria-hidden", "true");
     } else {
       ft.style.display = "";
-      ft.setAttribute("aria-hidden", "false");
+      ft.removeAttribute("aria-hidden"); // Remove aria-hidden when visible to avoid accessibility violation
     }
   }
 
