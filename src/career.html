@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SN - Career</title>
+    <link rel="icon" type="image/x-icon" href="resources/icons/favicon.ico">
+    <script>
+        (function() {
+            try {
+                const savedTheme = localStorage.getItem("theme") || "light";
+                document.documentElement.setAttribute("data-theme", savedTheme);
+            } catch(e) {
+                document.documentElement.setAttribute("data-theme", "light");
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  </head>
+  <body>
+    <button id="backToTop" title="Go to top">⬆</button>
+    <div id="banner-placeholder"></div>
+
+    <section class="content-container">
+      <div class="content-text" id="contentText">Loading career info...</div>
+    </section>
+
+    <script src="script.js"></script>
+    <script>
+      function adjustThemeTogglePosition() {
+        requestAnimationFrame(() => {
+          const banner = document.getElementById("banner-placeholder");
+          const themeToggle = document.getElementById("themeToggle");
+          if (banner && themeToggle) {
+            const bannerRect = banner.getBoundingClientRect();
+            const bannerBottom = Math.max(0, bannerRect.bottom);
+            themeToggle.style.top = `${bannerBottom + 10}px`;
+            themeToggle.classList.add("positioned");
+          }
+        });
+      }
+
+      fetch("banner.html")
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById("banner-placeholder").innerHTML = html;
+          if (typeof initDropdownToggle === "function") {
+            initDropdownToggle();
+          }
+          adjustThemeTogglePosition();
+        })
+        .catch(err => console.error("Failed to load banner:", err));
+
+      // Update position on scroll
+      window.addEventListener("scroll", adjustThemeTogglePosition);
+      window.addEventListener("touchmove", adjustThemeTogglePosition, { passive: true });
+      window.addEventListener("load", adjustThemeTogglePosition);
+
+      fetch("career/career.md")
+        .then(response => response.text())
+        .then(markdown => {
+          const html = marked.parse(markdown);
+          document.getElementById("contentText").innerHTML = html;
+        })
+        .catch(err => {
+          document.getElementById("contentText").innerHTML = '<p>Failed to load career information.</p>';
+          console.error("Failed to load career markdown:", err);
+        });
+    </script>
+  </body>
+</html>
