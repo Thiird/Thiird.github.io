@@ -846,13 +846,20 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
+    // Blur immediately on touch to prevent staying pressed
+    backToTopBtn.addEventListener("touchstart", (e) => {
+      e.currentTarget.blur();
+    });
+
     backToTopBtn.addEventListener("click", (e) => {
+      // Blur immediately for desktop
+      e.currentTarget.blur();
+      
+      // Instant scroll (no smooth animation)
       window.scrollTo({
         top: 0,
-        behavior: "smooth",
+        behavior: "auto",
       });
-      // Remove focus to prevent persistent highlight on mobile
-      e.currentTarget.blur();
     });
   }
 

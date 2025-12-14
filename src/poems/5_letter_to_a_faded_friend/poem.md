@@ -42,7 +42,7 @@ Sometimes it's a good reason, sometimes it's not. I get it, it's complicated.
 Nonetheless, I find this extremely sad.
 
 To honor a friendship that I lost, I wrote this letter.  
-It doesn't contain any obviously specific information, so just as it did with me, I publish it in hope it helps to quite the mind of others.
+It doesn't contain any obviously specific information, so just as it did with me, I publish it in hope it helps to quite the mind of others in similar situations.
 
 The "good" mentioned in the letter is something huge and non trivial.
 

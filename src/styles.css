@@ -1782,10 +1782,6 @@ pre code {
   min-width: 0;
   overflow: hidden;
 }
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
 
 .history-item-type {
   display: inline-block;
