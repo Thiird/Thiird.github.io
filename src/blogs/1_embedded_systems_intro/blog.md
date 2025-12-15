@@ -135,7 +135,7 @@ Talking about CPUs and ASICs, we have gone from extreme flexibility and low spee
 What if we wanted the performance of ASICs with some computational flexibility? That's what FPGAs are for.
 
 <div class="highlight-box">
-<strong>Field Programmable Gate Arrays</strong> (FPGA) are integrated circuits that implement a matrix of logic blocks, each of which is configurable in the way it connects to the other blocks. A precise setup in how these blocks are connected allows different kinds of digital functions to be implemented, from a simple binary counter to a complex Fourier transform.
+<strong>Field Programmable Gate Arrays</strong> (FPGA) are integrated circuits that implement a matrix of logic blocks, each of which is configurable in the way it connects to the other blocks. A precise setup in how these blocks are connected allows different kinds of digital functions to be implemented directly in hardware, from a simple binary counter to a complex Fourier transform.
 </div>
 
 Any digital circuit can be implemented on an FPGA, granted that the FPGA has enough logic blocks to implement it. For example, you can configure an FPGA to be a CPU, which takes the name of a [softcore](https://en.wikipedia.org/wiki/Field-programmable_gate_array#Soft_core).
