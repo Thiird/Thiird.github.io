@@ -61,7 +61,11 @@ Let's dive in!
 </div>
 
 <h1 id="what-is-it">1. What's an Embedded System?</h1>
-Embedded Systems, (<span tt="ES">ES</span>), is an application field that merges computer science, electrical engineering and mechanical engineering to create <span tt="electronic">electronic</span> systems for <strong>specific</strong> use cases. This specificity is important: while all embedded systems are computers that perform computation, not all computers are embedded systems. General-purpose computers like desktop PCs, laptops, and smartphones are not considered embedded systems.
+<div class="highlight-box">
+Embedded Systems, (<span tt="ES">ES</span>), is an application field that merges computer science, electrical engineering and mechanical engineering to create <span tt="electronic">electronic</span> systems for <strong>specific</strong> use cases.
+</div>
+
+While all embedded systems are computers that perform computation, not all computers are embedded systems: general-purpose computers like desktop PCs, laptops, and smartphones are not considered embedded systems.
 
 Some <span tt="ES">ES</span> examples are:
 - <span tt="keyboard">computer keyboard</span>
@@ -72,10 +76,7 @@ Some <span tt="ES">ES</span> examples are:
 <h2 id="why-embedded">1.1 Why <em>'embedded'</em>?</h2>
 Embedded Systems is basically applied electronics. Such electronics can't be handed to the customer as it is, it first needs to be integrated, e.g. embedded, in some kind of enclosure, hence the term embedded system.
 
-For a desktop mouse, the enclosure is made of plastic, and for a surface to air missile the enclosure is made of metal.
-
 <h1 id="how-is-it-made">2. How it is made</h1>
-
 An embedded system is made of three main elements:
 
 - <strong>Hardware</strong>: The electronics, like chips, buttons and actuators 
@@ -84,13 +85,13 @@ An embedded system is made of three main elements:
 
 The hardware provides the physical platform, the firmware controls it directly, and the software (when present) adds higher-level functionality.
 
-The core of an <span tt="ES">ES</span> is the electronic hardware. There can be an <span tt="ES">ES</span> without any software or mechanical engineering involved, but there can't be an <span tt="ES">ES</span> without electronics, i.e. an <span tt="ES">ES</span> is applied electronics.
-
-The electronics is consolidated in a single assembly called <span tt="PCB">Printed Circuit Board</span> (PCB). A PCB is a flat board made of alternating layers of insulating material (usually fiberglass) and copper, where the copper has been etched to leave only traces that connect the different electronic components together. Components like integrated circuits, resistors, capacitors, and connectors are soldered onto the board. The PCB is the physical heart of any embedded system, it's where all the magic happens. Without it, you'd have a mess of wires connecting components, which would be unreliable and impossible to manufacture at scale.
-
-Consider a desktop mouse as an example: the hardware includes the circuit board with its buttons, scroll wheel, and motion sensor, the firmware is the code on the circuit board that interprets input from these components and sends data to the connected device and the software is the application running on your desktop computer that interacts with the mouse to adjust settings like DPI.
+Consider a desktop mouse as an example: the hardware includes the circuit board with its buttons, scroll wheel, and motion sensor, the firmware is the code on the circuit board that interprets input from these components and sends data to the desktop PC, and the software is the application running on your desktop PC that interacts with the mouse to adjust settings like DPI.
 
 <h2 id="hardware">2.1 Hardware</h2>
+
+The core of an <span tt="ES">ES</span> is the electronic hardware. There can be an <span tt="ES">ES</span> without any software or mechanical engineering involved, but there can't be an <span tt="ES">ES</span> without electronics, i.e. an <span tt="ES">ES</span> is applied electronics.
+
+The electronics is consolidated in a single assembly called <span tt="PCB">Printed Circuit Board</span> (PCB). A PCB is a flat board made of alternating layers of insulating material (usually fiberglass) and copper, where the copper layers has been etched to leave behind only individual traces, which connect the different electronic components together. Components like integrated circuits, resistors, capacitors, and connectors are soldered onto the board. The PCB is the physical heart of any embedded system, it's where all the magic happens. Building electronics without PCBs would require a mess of wires connecting components, which would be unreliable and impossible to manufacture at scale.
 
 Functionally speaking, all the hardware elements of an ES fall into one of three categories:
 
@@ -112,32 +113,34 @@ Computational Units, CUs from now on, are <span tt="IC">integrated circuits</spa
 
 There are several different kinds of computational units, so let's start from something that most people are familiar with: your desktop PC.
 
-The CU of desktop PCs is called <strong>Central Processing Unit</strong> (CPU). The CPU is a general purpose computer, meaning that when it's turned on, it starts executing a list of instructions specified by a program, written by a programmer: the list of instructions determine what the CPU does, so if the instructions are changed, the CPU will do different things. The hardware remains the same, but it carries out different computations based on the instructions given (e.g. the software). This is not a trivial thing: considering that integrated circuits are machines, the bare fact that a general purpose machine is manufacturable makes it so that everyone can have a computer for their own needs at low cost: simply make 100 CPUs and program them differently. I cannot overstate how much this changed the world.
+The CU of desktop PCs is called <strong>Central Processing Unit</strong> (CPU). The CPU is a general purpose computer, meaning that when it's turned on, it starts executing a list of instructions specified by a program, written by a programmer: the list of instructions determine what the CPU does. The hardware remains the same, but it carries out different computations based on the instructions given (e.g. the software).
 
-CPUs are chips that change what they do based on their programming. This flexibility is great, but it comes at a cost: speed. Following a list of instructions takes time, as the CPU needs to read the next instruction, see what that is, activate the part of the chip that does that, and then actually execute it. This is called the <em>Fetch-Decode-Execute</em> cycle: the CPU fetches the next instruction, decodes what it is, and then executes it.
+This is not a trivial thing: considering that integrated circuits are machines, the bare fact that a general purpose machine is manufacturable makes it so that everyone can have a computer for their own needs at low cost: simply make 100 CPUs and program them differently. I cannot overstate how much this changed the world.
 
-In embedded systems, many different types of CPUs are used as the computational unit. The terminology can be confusing at first, as we use different names based on clock speed, core count, RAM size, available peripherals, etc. Here are the most common types you'll encounter, ordered from simplest to most complex:
+In embedded systems, <span tt="cpu_types">many different types of CPUs</span> are used as the computational unit. The terminology can be confusing at first, as we use different names based on clock speed, core count, integrated RAM size and capabilities.
 
-- <strong>MCU (Microcontroller Unit)</strong>: A complete computer system on a single chip, including CPU, memory, and I/O peripherals. For example, the STM32F4.
-- <strong>MPU (Microprocessor Unit)</strong>: A CPU on a single chip, typically without integrated memory or peripherals. For example, the Intel 8086.
-- <strong>CPU (Central Processing Unit)</strong>: The general term for a processor. For example, the Intel Core i7.
-- <strong>DSP (Digital Signal Processor)</strong>: A specialized processor optimized for digital signal processing operations like filtering, FFT, and audio/video processing. For example, Texas Instruments TMS320C6000.
-- <strong>APU (Accelerated Processing Unit)</strong>: A processor that combines CPU and GPU on the same die. For example, AMD Ryzen with integrated graphics.
-- <strong>SoC (System on Chip)</strong>: An integrated circuit that contains multiple components of a computer system, including CPU cores, GPU, memory controllers, and various peripherals. For example, the Raspberry Pi's BCM2711.
+CPUs are chips that change what they do based on their programming. This flexibility is great, but it comes at a cost: speed. Following a list of instructions takes time, as the CPU needs to read the next instruction, activate the part of the chip that does that, and then actually execute it. This is called the <em>Fetch-Decode-Execute</em> cycle: the CPU fetches the next instruction, decodes what it is, and then executes it.
 
-The Fetch-Decode-Execute cycle is less than ideal for applications where no decision making is needed and maximum speed is required. CPUs exist because when you give a computer to a person, you don't know what they will use it for, so we make it programmable via software. But what if we know exactly what the computer will be used for? What if we're willing to trade all the flexibility for maximum speed? This is needed in high-performance applications like digital signal processing, where the computation is already known and we can't afford to waste time fetching and decoding instructions.
+The Fetch-Decode-Execute cycle is less than ideal for applications where no decision making is needed and maximum speed is required. CPUs exist because when you give a computer to a user, you don't know what they will use it for, so we make it programmable via software. But what if we know exactly what the computer will be used for? What if we're willing to trade all the flexibility for maximum speed? This is needed in high-performance applications like digital signal processing, where the computation is already known and we can't afford to waste time fetching and decoding instructions.
 
-We can achieve this with an <strong>Application Specific Integrated Circuit</strong> (ASIC).
+We can achieve this with an <strong>ASIC</strong>.
 
-ASICs come with significant trade-offs: development cost and inflexibility. Developing a chip is very expensive regardless of what it does, and making one for a narrow market makes it even more expensive, as it won't sell as many units. Moreover, once manufactured, the circuit cannot be changed: if there's a design error you are stuck with it. This is true for all ICs, but it's particularly painful for ASICs as they are, unlike CPUs, not configurable in any way. This makes ASICs economically viable only for markets where the high per-unit cost is acceptable, such as Bitcoin mining, high-speed networking equipment, or when manufacturing millions of units (like the chips in your phone).
+<div class="highlight-box">
+<strong>Application Specific Integrated Circuit</strong> (ASIC), are integrated circuit that implement a fixed-purpose computer. When turned on, it will always do the same thing, as it's not configurable via software lice CPUs
+</div>
 
+ASICs come with significant trade-offs: high development cost and inflexibility. Developing an IC is very expensive, regardless of what it does, and making one for a specific use case like ASICs, which usually target narrow markets, makes it even more expensive, as it won't sell as many units. Moreover, once manufactured, ICs cannot be changed: if there's a design error you are stuck with it. This is true for all ICs, but it's particularly painful for ASICs as they are, unlike CPUs, not configurable in any way. This makes ASICs economically viable only for markets where the high per-unit cost is acceptable, such as Bitcoin mining, high-speed networking equipment, military applications.
+
+Talking about CPUs and ASICs, we have gone from extreme flexibility and low speed, to zero flexiblity and high-speed.  
 What if we wanted the performance of ASICs with some computational flexibility? That's what FPGAs are for.
 
-<strong>Field Programmable Gate Arrays</strong> (FPGAs) are integrated circuits that implement a matrix of logic blocks, each of which is configurable in the way it connects to the other blocks. A precise setup in how these blocks are connected allows different kinds of digital functions to be implemented, from a simple binary counter to a complex Fourier transform.
+<div class="highlight-box">
+<strong>Field Programmable Gate Arrays</strong> (FPGA) are integrated circuits that implement a matrix of logic blocks, each of which is configurable in the way it connects to the other blocks. A precise setup in how these blocks are connected allows different kinds of digital functions to be implemented, from a simple binary counter to a complex Fourier transform.
+</div>
 
 Any digital circuit can be implemented on an FPGA, granted that the FPGA has enough logic blocks to implement it. For example, you can configure an FPGA to be a CPU, which takes the name of a [softcore](https://en.wikipedia.org/wiki/Field-programmable_gate_array#Soft_core).
 
-In terms of performance, FPGAs sit between CPUs and ASICs, but are generally much closer to ASICs. With an FPGA, the algorithm is implemented in hardware, which gives a significant speed advantage over CPUs. However, because FPGAs use a matrix of configurable logic blocks rather than fixed-purpose circuitry like an ASIC, they are usually less efficient in both speed and energy consumption compared to ASICs.
+In terms of performance, FPGAs sit between CPUs and ASICs, but much closer to ASICs. With an FPGA, the algorithm is implemented in hardware, which gives a significant speed advantage over CPUs. However, because FPGAs use a matrix of configurable logic blocks rather than fixed-purpose circuitry like an ASIC, they are usually less efficient in both speed and energy consumption compared to ASICs.
 
 For a more detailed view of how such logic blocks are made, see [here](https://en.wikipedia.org/wiki/Field-programmable_gate_array#Logic_blocks).
 

@@ -1,4 +1,12 @@
+.highlight-box {
+  background: var(--highlight-box-bg);
+  padding: 1em 1.5em;
+  border-radius: 6px;
+  font-size: 1em;
+}
+
 :root {
+  --highlight-box-bg: #f0f6ff;
   --sidebar-width: 250px;
   --sidebar-medium: clamp(160px, 22vw, 240px);
   --sidebar-collapsed: 56px;
@@ -12,6 +20,7 @@
 }
 
 [data-theme="darker"] {
+  --highlight-box-bg: #2a323f;
   --bg-primary: #0d1014;
   --bg-secondary: #1a1f26;
   --bg-tertiary: #252a31;
@@ -53,6 +62,7 @@
 }
 
 [data-theme="middle"] {
+  --highlight-box-bg: #22334a;
   --bg-primary: #1a252f;
   --bg-secondary: #2c3e50;
   --bg-tertiary: #34495e;
@@ -94,6 +104,7 @@
 }
 
 [data-theme="light"] {
+  --highlight-box-bg: #b9d1fd4b;
   --bg-primary: #f5f7fa;
   --bg-secondary: #b9b9b9;
   --bg-tertiary: #e8edf2;
@@ -156,7 +167,6 @@
   font-size: 1em;
   line-height: 1.6;
   color: var(--text-secondary);
-  text-align: left;
   max-width: 600px;
   margin: 0;
 }
@@ -1854,7 +1864,7 @@ pre code {
     .history-item a {
       grid-template-columns: 1fr;
     }
-    
+
     .history-item-date {
       display: none;
     }
@@ -1866,7 +1876,7 @@ pre code {
   .history-item a {
     grid-template-columns: 1fr;
   }
-  
+
   .history-item-date {
     display: none;
   }
@@ -2142,16 +2152,16 @@ pre code {
     align-items: flex-start;
     gap: 10px;
   }
-  
+
   .skill-row {
     grid-template-columns: 1fr;
     gap: 5px;
   }
-  
+
   .skill-label {
     font-weight: 700;
   }
-  
+
   .skills-grid {
     grid-template-columns: 1fr;
   }
@@ -2161,11 +2171,11 @@ pre code {
   .career-header h1 {
     font-size: 2em;
   }
-  
+
   .projects-section h2 {
     font-size: 1.6em;
   }
-  
+
   .project-list {
     grid-template-columns: 1fr;
   }
