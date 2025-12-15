@@ -1,6 +1,6 @@
 {
     "cpu_types": {
-        "text": "<strong>MCU (Microcontroller Unit)</strong>: A complete computer system on a single chip, including CPU, memory, and I/O peripherals. For example, the STM32F4.<br><strong>MPU (Microprocessor Unit)</strong>: A CPU on a single chip, typically without integrated memory or peripherals. For example, the Intel 8086.<br><strong>CPU (Central Processing Unit)</strong>: The general term for a processor. For example, the Intel Core i7.<br><strong>DSP (Digital Signal Processor)</strong>: A specialized processor optimized for digital signal processing operations like filtering, FFT, and audio/video processing. For example, Texas Instruments TMS320C6000.<br><strong>APU (Accelerated Processing Unit)</strong>: A processor that combines CPU and GPU on the same die. For example, AMD Ryzen with integrated graphics.<br><strong>SoC (System on Chip)</strong>: An integrated circuit that contains multiple components of a computer system, including CPU cores, GPU, memory controllers, and various peripherals. For example, the Raspberry Pi's BCM2711.",
+        "text": "<strong>CPU (Central Processing Unit)</strong>: The general term for a general-purpose computer. Typically run at high clock speeds (GHz range).<br><strong>MCU (Microcontroller Unit)</strong>: The same base architecture as a CPu complete computer system on a single chip, including CPU, memory, and I/O peripherals. For example, the STM32F4. MCUs usually operate at much lower clock speeds (MHz range) compared to CPUs, focusing on low power and real-time control.<br><strong>DSP (Digital Signal Processor)</strong>: A specialized processor optimized for digital signal processing operations like filtering, FFT, and audio/video processing. For example, Texas Instruments TMS320C6000.",
         "media": "",
         "alt": ""
     },
@@ -52,6 +52,10 @@
     },
     "electronic": {
         "text": "It's important to define the distinction between <em>electrical</em> and <em>electronic</em>.<br><br>- <strong>Electrical</strong>: means \"current flowing through wires\", for example motors, simple wirings and lighting.<br>- <strong>Electronic</strong>: means \"current flowing through active components that perform computation\", like diodes, transistor and ultimately computers.",
+        "media": ""
+    },
+    "cpu_non_triviality": {
+        "text": "This is not a trivial thing: considering that integrated circuits are machines, the bare fact that a general purpose machine is manufacturable makes it so that everyone can have a computer for their own needs at low cost: make 100 CPUs and program them differently. I cannot overstate how much this changed the world.",
         "media": ""
     }
 }

@@ -111,22 +111,22 @@ This is the core of the system, this is where the actual computation is performe
 
 Computational Units, CUs from now on, are <span tt="IC">integrated circuits</span> that implement some kind of computer.
 
-There are several different kinds of computational units, so let's start from something that most people are familiar with: your desktop PC.
+There are several different kinds of computational units, so let's start from the one present in desktop PCs: the CPU.
 
-The CU of desktop PCs is called <strong>Central Processing Unit</strong> (CPU). The CPU is a general purpose computer, meaning that when it's turned on, it starts executing a list of instructions specified by a program, written by a programmer: the list of instructions determine what the CPU does. The hardware remains the same, but it carries out different computations based on the instructions given (e.g. the software).
-
-This is not a trivial thing: considering that integrated circuits are machines, the bare fact that a general purpose machine is manufacturable makes it so that everyone can have a computer for their own needs at low cost: simply make 100 CPUs and program them differently. I cannot overstate how much this changed the world.
+<div class="highlight-box">
+The <strong>Central Processing Unit</strong> (CPU) is an integrated circuit that implements a general-purpose computer. When turned on, it starts executing a list of instructions specified by a program. The hardware remains the same, but it carries out <span tt="cpu_non_triviality">different computations</span> based on the instructions given (e.g. the software).
+</div>
 
 In embedded systems, <span tt="cpu_types">many different types of CPUs</span> are used as the computational unit. The terminology can be confusing at first, as we use different names based on clock speed, core count, integrated RAM size and capabilities.
 
-CPUs are chips that change what they do based on their programming. This flexibility is great, but it comes at a cost: speed. Following a list of instructions takes time, as the CPU needs to read the next instruction, activate the part of the chip that does that, and then actually execute it. This is called the <em>Fetch-Decode-Execute</em> cycle: the CPU fetches the next instruction, decodes what it is, and then executes it.
+The flexibility that CPUs have comes at the cost of speed. Following a list of instructions takes time, as the CPU needs to read the next instruction, activate the part of the chip that does that, and then actually execute it. This is called the [<em>Fetch-Decode-Execute</em>](https://en.wikipedia.org/wiki/Instruction_cycle) cycle: the CPU fetches the next instruction, decodes it, and then executes it.
 
-The Fetch-Decode-Execute cycle is less than ideal for applications where no decision making is needed and maximum speed is required. CPUs exist because when you give a computer to a user, you don't know what they will use it for, so we make it programmable via software. But what if we know exactly what the computer will be used for? What if we're willing to trade all the flexibility for maximum speed? This is needed in high-performance applications like digital signal processing, where the computation is already known and we can't afford to waste time fetching and decoding instructions.
+The F-D-E cycle is less than ideal for applications where no decision making is needed and maximum speed is required. What if we're willing to trade all the flexibility for maximum speed? The scenario we are talking about is high-performance applications like digital signal processing, where the computation is already known and we can't afford to waste time fetching and decoding instructions.
 
 We can achieve this with an <strong>ASIC</strong>.
 
 <div class="highlight-box">
-<strong>Application Specific Integrated Circuit</strong> (ASIC), are integrated circuit that implement a fixed-purpose computer. When turned on, it will always do the same thing, as it's not configurable via software lice CPUs
+The <strong>Application Specific Integrated Circuit</strong> (ASIC), is an integrated circuit that implement a fixed-purpose computer. When turned on, it will always do the same thing, as it's not configurable in anyway.
 </div>
 
 ASICs come with significant trade-offs: high development cost and inflexibility. Developing an IC is very expensive, regardless of what it does, and making one for a specific use case like ASICs, which usually target narrow markets, makes it even more expensive, as it won't sell as many units. Moreover, once manufactured, ICs cannot be changed: if there's a design error you are stuck with it. This is true for all ICs, but it's particularly painful for ASICs as they are, unlike CPUs, not configurable in any way. This makes ASICs economically viable only for markets where the high per-unit cost is acceptable, such as Bitcoin mining, high-speed networking equipment, military applications.
