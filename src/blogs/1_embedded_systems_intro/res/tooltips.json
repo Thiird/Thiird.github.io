@@ -57,5 +57,9 @@
     "cpu_non_triviality": {
         "text": "This is not a trivial thing: considering that integrated circuits are machines, the bare fact that a general purpose machine is manufacturable makes it so that everyone can have a computer for their own needs at low cost: make 100 CPUs and program them differently. I cannot overstate how much this changed the world.",
         "media": ""
+    },
+    "softcore": {
+        "text": "For example, you can configure an FPGA to be a CPU, which takes the name of <a href=\"https://en.wikipedia.org/wiki/Field-programmable_gate_array#Soft_core\" target=\"_blank\"><strong>softcore</strong></a>. A softcore is a CPU implemented using the programmable logic of an FPGA, rather than as a fixed silicon design.",
+        "media": ""
     }
 }

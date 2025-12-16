@@ -135,28 +135,21 @@ Talking about CPUs and ASICs, we have gone from extreme flexibility and low spee
 What if we wanted the performance of ASICs with some computational flexibility? That's what FPGAs are for.
 
 <div class="highlight-box">
-<strong>Field Programmable Gate Arrays</strong> (FPGA) are integrated circuits that implement a matrix of logic blocks, each of which is configurable in the way it connects to the other blocks. A precise setup in how these blocks are connected allows different kinds of digital functions to be implemented directly in hardware, from a simple binary counter to a complex Fourier transform.
+<strong>Field Programmable Gate Arrays</strong> (FPGA) are integrated circuits that implement a matrix of <a href="https://en.wikipedia.org/wiki/Field-programmable_gate_array#Logic_blocks" target="_blank"> logic blocks</a>, each of which is configurable in the way it connects to the other blocks. This is done by providing a bitstream to the FPGA at startup time. A precise setup in how these blocks are connected allows different kinds of digital functions to be implemented directly in hardware, from a simple binary counter to a complex Fourier transform.
 </div>
 
-Any digital circuit can be implemented on an FPGA, granted that the FPGA has enough logic blocks to implement it. For example, you can configure an FPGA to be a CPU, which takes the name of a [softcore](https://en.wikipedia.org/wiki/Field-programmable_gate_array#Soft_core).
+<span tt="softcore">Any digital circuit can be implemented on an FPGA</span>, granted that the FPGA has enough logic blocks to implement it.
 
 In terms of performance, FPGAs sit between CPUs and ASICs, but much closer to ASICs. With an FPGA, the algorithm is implemented in hardware, which gives a significant speed advantage over CPUs. However, because FPGAs use a matrix of configurable logic blocks rather than fixed-purpose circuitry like an ASIC, they are usually less efficient in both speed and energy consumption compared to ASICs.
 
-For a more detailed view of how such logic blocks are made, see [here](https://en.wikipedia.org/wiki/Field-programmable_gate_array#Logic_blocks).
-
-Both CPUs and FPGAs are general purpose computational units, but it's important to highlight the difference in flexibility: CPUs are flexible because you can change what they do by changing the next instruction; FPGAs instead are flexible because you turn them off, change the fabric configuration, and then turn them back on.
+Both CPUs and FPGAs are general purpose computational units, but it's important to highlight the difference: CPUs get reconfigured at run-time by changing the next instruction, FPGAs instead, are reprogrammable at startup time by changing the bitstream.
 
 When talking about CPUs we use the terms "software" and "programming". These can and are indeed used for FPGAs as well, but they mean totally different things. Let's be specific about what these terms mean for CPUs and FPGAs.
 
-The software of CPUs is the list of machine instructions that the CPU executes. This list is obtained starting from a program, which is code written by a programmer in a programming language, like C/C++. This program gets compiled (translated) to machine code, a list of instructions that the CPU can understand and execute. The complete set of all possible valid CPU instructions is defined in the Instruction Set Architecture (<span tt="isa">ISA</span>) of the target CPU.
-
-Programming a CPU means: writing a program, compiling it to machine code, placing that code in RAM where the CPU can access it, and setting the Instruction Pointer register of the CPU to the RAM address of the first instruction. From there, the CPU simply executes these instructions one by one, without caring about the overall outcome, it just follows orders.
-
-The software of FPGAs is code written in a hardware description language, like Verilog, that gets translated to a bitstream and then used to set the logic blocks in the FPGA in order to implement a certain function.
-
-Programming an FPGA means writing the HDL to implement something, compiling it to a bitstream and placing it in a memory inside or beside the FPGA that will be read at startup and used to set the logic blocks.
-
-Calling HDL code "software" is quite a stretch, as the "soft" in software implies being straightforward to change and done so on a regular basis (think of how often you update apps on your phone), which is definitely not the case with FPGA code.
+<ul>
+  <li><strong>CPU software:</strong> The software of CPUs is the list of machine instructions that the CPU executes. This list is obtained starting from a program, which is code written by a programmer in a programming language, like C/C++. This program gets compiled (translated) to machine code, a list of instructions that the CPU can understand and execute. The complete set of all possible valid CPU instructions is defined in the Instruction Set Architecture (<span tt="isa">ISA</span>) of the target CPU.</li>
+  <li><strong>FPGA software:</strong> The software of FPGAs is code written in a hardware description language, like Verilog, that gets translated to a bitstream and then used to set the logic blocks in the FPGA in order to implement a certain function.</li>
+</ul>
 
 <h3 id="output-elements">2.1.3 Output Elements</h3>
 
