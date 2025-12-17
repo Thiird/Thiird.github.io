@@ -1,4 +1,9 @@
 {
+    "fpga_bitstream": {
+        "text": "This is done by providing a bitstream to the FPGA at startup time.",
+        "media": "",
+        "alt": ""
+    },
     "cpu_types": {
         "text": "<strong>CPU (Central Processing Unit)</strong>: The general term for a general-purpose computer. Typically run at high clock speeds (GHz range).<br><strong>MCU (Microcontroller Unit)</strong>: The same base architecture as a CPu complete computer system on a single chip, including CPU, memory, and I/O peripherals. For example, the STM32F4. MCUs usually operate at much lower clock speeds (MHz range) compared to CPUs, focusing on low power and real-time control.<br><strong>DSP (Digital Signal Processor)</strong>: A specialized processor optimized for digital signal processing operations like filtering, FFT, and audio/video processing. For example, Texas Instruments TMS320C6000.",
         "media": "",

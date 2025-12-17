@@ -65,7 +65,7 @@ Let's dive in!
 Embedded Systems, (<span tt="ES">ES</span>), is an application field that merges computer science, electrical engineering and mechanical engineering to create <span tt="electronic">electronic</span> systems for <strong>specific</strong> use cases.
 </div>
 
-While all embedded systems are computers that perform computation, not all computers are embedded systems: general-purpose computers like desktop PCs, laptops, and smartphones are not considered embedded systems.
+While all embedded systems are computers, not all computers are embedded systems: general-purpose computers like desktop PCs, laptops, and smartphones are not considered embedded systems.
 
 Some <span tt="ES">ES</span> examples are:
 - <span tt="keyboard">computer keyboard</span>
@@ -79,13 +79,13 @@ Embedded Systems is basically applied electronics. Such electronics can't be han
 <h1 id="how-is-it-made">2. How it is made</h1>
 An embedded system is made of three main elements:
 
-- <strong>Hardware</strong>: The electronics, like chips, buttons and actuators 
-- <strong>Firmware</strong>: Low-level code running directly on the hardware, controlling its delicate basic functionalities 
+- <strong>Hardware</strong>: The electronics and the mechanical components 
+- <strong>Firmware</strong>: Low-level code running directly on the hardware, controlling its basic functionalities 
 - <strong>Software</strong>: Higher-level code that runs on or communicates with the ES to implement extra functionalities
 
 The hardware provides the physical platform, the firmware controls it directly, and the software (when present) adds higher-level functionality.
 
-Consider a desktop mouse as an example: the hardware includes the circuit board with its buttons, scroll wheel, and motion sensor, the firmware is the code on the circuit board that interprets input from these components and sends data to the desktop PC, and the software is the application running on your desktop PC that interacts with the mouse to adjust settings like DPI.
+Consider a desktop mouse as an example: the hardware includes the circuit board with its buttons, scroll wheel, and motion sensor, the firmware is the code on the circuit board that interprets input from these components and sends data to the desktop PC, and the software can be the application running on your desktop PC that interacts with the mouse to adjust settings like DPI.
 
 <h2 id="hardware">2.1 Hardware</h2>
 
@@ -126,19 +126,19 @@ The F-D-E cycle is less than ideal for applications where no decision making is 
 We can achieve this with an <strong>ASIC</strong>.
 
 <div class="highlight-box">
-The <strong>Application Specific Integrated Circuit</strong> (ASIC), is an integrated circuit that implement a fixed-purpose computer. When turned on, it will always do the same thing, as it's not configurable in anyway.
+The <strong>Application Specific Integrated Circuit</strong> (ASIC), is an integrated circuit that implements a fixed-purpose computer. When turned on, it will always do the same thing, as it's not configurable in anyway.
 </div>
 
-ASICs come with significant trade-offs: high development cost and inflexibility. Developing an IC is very expensive, regardless of what it does, and making one for a specific use case like ASICs, which usually target narrow markets, makes it even more expensive, as it won't sell as many units. Moreover, once manufactured, ICs cannot be changed: if there's a design error you are stuck with it. This is true for all ICs, but it's particularly painful for ASICs as they are, unlike CPUs, not configurable in any way. This makes ASICs economically viable only for markets where the high per-unit cost is acceptable, such as Bitcoin mining, high-speed networking equipment, military applications.
+ASICs come with significant trade-offs: high development cost and inflexibility. Developing an IC is very expensive, regardless of what it does, and making one for a specific use case like ASICs, which usually target narrow markets, makes it even more expensive, as it won't sell as many units. Moreover, once manufactured, ICs cannot be changed: if there's a design error you are stuck with it. This is true for all ICs, but it's particularly painful for ASICs as they are, unlike CPUs, not configurable in any way. This makes ASICs economically viable only for markets where the high per-unit cost is acceptable, high-speed networking equipment and military applications.
 
 Talking about CPUs and ASICs, we have gone from extreme flexibility and low speed, to zero flexiblity and high-speed.  
 What if we wanted the performance of ASICs with some computational flexibility? That's what FPGAs are for.
 
 <div class="highlight-box">
-<strong>Field Programmable Gate Arrays</strong> (FPGA) are integrated circuits that implement a matrix of <a href="https://en.wikipedia.org/wiki/Field-programmable_gate_array#Logic_blocks" target="_blank"> logic blocks</a>, each of which is configurable in the way it connects to the other blocks. This is done by providing a bitstream to the FPGA at startup time. A precise setup in how these blocks are connected allows different kinds of digital functions to be implemented directly in hardware, from a simple binary counter to a complex Fourier transform.
+<strong>Field Programmable Gate Arrays</strong> (FPGA) are integrated circuits that implement a matrix of <a href="https://en.wikipedia.org/wiki/Field-programmable_gate_array#Logic_blocks" target="_blank"> logic blocks</a>, each of which is <span tt="fpga_bitstream" tooltip="fpga_bitstream">configurable in the way it connects to the other blocks</span>. A precise setup in how these blocks are connected allows different kinds of digital functions to be implemented directly in hardware.
 </div>
 
-<span tt="softcore">Any digital circuit can be implemented on an FPGA</span>, granted that the FPGA has enough logic blocks to implement it.
+<span tt="softcore">Any digital circuit can be implemented on an FPGA</span>, granted that the FPGA has enough logic blocks to implement it, from a simple binary counter to a complex Fourier transform.
 
 In terms of performance, FPGAs sit between CPUs and ASICs, but much closer to ASICs. With an FPGA, the algorithm is implemented in hardware, which gives a significant speed advantage over CPUs. However, because FPGAs use a matrix of configurable logic blocks rather than fixed-purpose circuitry like an ASIC, they are usually less efficient in both speed and energy consumption compared to ASICs.
 
