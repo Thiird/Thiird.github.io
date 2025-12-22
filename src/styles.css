@@ -53,6 +53,14 @@
     text-align: center !important;
   }
 }
+/* Section divider */
+.section-divider {
+  max-width: 800px;
+  margin: 20px auto;
+  border: none;
+  border-top: 1px solid var(--text-primary, #333);
+  opacity: 0.3;
+}
 
 /* Default: horizontal showcase windows side-by-side (desktop/tablet) */
 #image-showcase-container {

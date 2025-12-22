@@ -25,7 +25,7 @@ import subprocess
 import tempfile
 
 # ----------------------------- CONFIG -----------------------------
-TARGET_QV = 12          # Quality: 2 = best (large files), 31 = worst (small files). 12 is good balance.
+TARGET_QV = 5          # Quality: 2 = best (large files), 31 = worst (small files).
 MIN_SAVINGS_PERCENT = 3 # Only overwrite if new file is at least this % smaller
 TARGET_FOLDER_REL = "../src/resources/images/overview"  # Fixed folder relative to script location
 # ------------------------------------------------------------------
