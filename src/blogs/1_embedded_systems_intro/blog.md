@@ -192,55 +192,46 @@ Let's go through the essential tools you'll need to get started.
 
 <strong>Caution:</strong>  
 If you have never handled electronics before, stick to low-energy components like cell batteries and LEDs.  
-You can burn your house down or hurt
+You can burn your house down or hurt yourself pretty badly with electronics.  
 The best way to get started is having someone in person showing you the basics, but don't be afraid to try on your own.
 
 <h2 id="multimeter">3.1 Multimeter</h2>
 
 This is the first tool you should get acquainted with and is also the most basic lab tool.
-A [multimeter](https://en.wikipedia.org/wiki/Multimeter) is, for the most part, a diagnostic tool. It can take voltage, current and resistance readings, so it's the tool you need to use first after learning about Ohm's Law.
-
-Beware though, you can still break things and burn your house down by misusing a multimeter!
+A [multimeter](https://en.wikipedia.org/wiki/Multimeter) is, for the most part, a diagnostic tool. It can take instantaneous voltage, current, resistance, inductance and capacitance readings. Beware though, you can still break things and burn your house down by misusing a multimeter!
 
 <h2 id="soldering-iron">3.2 Soldering Iron</h2>
 
-An embedded system is made of many different components, which need to be joined electrically when assembling the system.
-This is done with [solder](https://en.wikipedia.org/wiki/Solder), a metal alloy that melts around 180-300°C (depending on the lead content).
+An embedded system is made of many different components, which need to be joined electrically.  
+This is done with [solder](https://en.wikipedia.org/wiki/Solder), a metal alloy that melts between 180-300°C (depending on the lead content).
 The melting temperature is low enough that soldering can be safely done at home with a simple (yet very dangerous if misused) tool called a soldering iron, basically a metal rod where the pointy end is heated via electric current.
 
 Soldering is a fundamental skill in embedded systems. You'll use it to:
 
 - Assemble prototype circuits on perfboard or PCBs
-- Attach header pins to development boards
 - Replace faulty components
 - Make connections between wires and components
-- Repair broken solder joints
 
-The soldering iron heats both the component and the pad simultaneously, then you apply solder which melts and flows into the joint, creating both an electrical and mechanical connection. Good soldering technique takes practice, too little heat and the solder won't flow properly (creating a "cold joint"), too much heat and you can damage the component or lift the copper pad from the board.
-
-Modern lead-free solder requires higher temperatures (around 300°C) compared to traditional leaded solder (around 230°C), but is safer for the environment and your health.
-
-<h2 id="power-supply">3.3 Power Supply</h2>
+<h2 id="power-supply">Power Supply</h2>
 
 Electronics need power to function. Some boards need 24 Volts, some need 5V, some need 3.3V. A bench [power supply](https://en.wikipedia.org/wiki/Power_supply) is a voltage and current source that can be set to specific values, allowing you to power your embedded system during development and testing.
 
-Unlike wall adapters or USB power, a bench power supply gives you precise control over both voltage and current. This is crucial for embedded systems work because:
+Unlike wall adapters or USB power bricks, a bench power supply allows you to:
 
-- You can set the exact voltage your circuit needs
-- You can limit the maximum current to protect your circuit from damage in case of a short circuit
-- You can monitor real-time power consumption
-- You can quickly adjust voltage to test different operating conditions
+- set the exact voltage your circuit needs
+- limit the maximum current to protect your circuit from damage in case of a short circuit
+- monitor real-time power consumption
+- quickly adjust voltage to test different operating conditions
 
 <h2 id="oscilloscope">3.4 Oscilloscope</h2>
 
-Using a multimeter you can verify the current voltage difference between two points, but what if you wanted to visualize how that voltage changes over time? This is where an [oscilloscope](https://en.wikipedia.org/wiki/Oscilloscope) comes in, it's a tool used to graph voltage over time.
+We have talked about how a multimeter can take instantaneous measurements of voltage, current, etc. This is very useful, but it's only useful for circuits with very simple behaviors. What if our system is more complex? In that case, to fully visualize the behavior of the system we need an  [oscilloscope](https://en.wikipedia.org/wiki/Oscilloscope) comes in, which is a tool used to graph voltage over time.
 
-An oscilloscope allows to perform:
-- [<strong>Signal integrity</strong>](https://en.wikipedia.org/wiki/Signal_integrity): Check for noise, ringing, overshoot, or distortion on your signals
+By doing that we can perform:
+- [<strong>Signal integrity</strong>](https://en.wikipedia.org/wiki/Signal_integrity) analysis: Check for noise, ringing, overshoot, or distortion on your signals
 - <strong>Frequency measurement</strong>: See the actual frequency and duty cycle of clock signals or [PWM](https://en.wikipedia.org/wiki/Pulse-width_modulation) outputs
-- <strong>Waveform analysis</strong>: Observe the shape of analog signals to ensure they match expectations
 
-For example, a multimeter might show you that a signal is at 3.3V, but an oscilloscope will show you if that signal is actually switching between 0V and 3.3V at 1MHz, or if there's 500mV of noise on top of it, or if it has dangerous voltage spikes.
+For example, a multimeter might show you that a signal is at 3.3V, but an oscilloscope will show you if that signal is actually switching between 0V and 3.3V at 1MHz, or if there's 500mV of noise on top of it.
 
 <h2 id="the-debugger">3.6 The programmer/debugger</h2>
 

@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SN - Home</title>
     <script>
         // Set theme immediately to prevent FOUC (Flash of Unstyled Content)
-        (function() {
+        (function () {
             try {
                 const savedTheme = localStorage.getItem("theme") || "light";
                 document.documentElement.setAttribute("data-theme", savedTheme);
-            } catch(e) {
+            } catch (e) {
                 // Fallback if localStorage is blocked
                 document.documentElement.setAttribute("data-theme", "light");
             }
@@ -18,11 +19,13 @@
     </script>
     <link rel="stylesheet" href="src/styles.css">
 </head>
+
 <body>
     <button id="backToTop" title="Go to top">⬆</button>
-    
+
     <div id="header-placeholder"></div>
     <div id="banner-placeholder"></div>
+
 
     <div class="history-section" id="historySection">
         <h2>Recent Updates</h2>
@@ -30,8 +33,18 @@
         </ul>
     </div>
 
+    <!-- Image Showcase Windows -->
+    <div id="image-showcase-container">
+        <div class="showcase-window showcase-window-1"></div>
+        <div class="showcase-window showcase-window-2"></div>
+    </div>
+
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            // Initialize showcase slideshow
+            if (typeof initShowcaseSlideshow === "function") {
+                initShowcaseSlideshow();
+            }
             if (typeof initHomePage === "function") {
                 initHomePage();
             }
@@ -39,4 +52,5 @@
     </script>
     <script src="src/script.js"></script>
 </body>
+
 </html>

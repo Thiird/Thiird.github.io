@@ -211,7 +211,7 @@ function initDropdownToggle() {
         menu.style.display = isActive ? "none" : "block";
       };
       button.addEventListener("click", button._clickHandler);
-      
+
       // Close menu when any link inside is clicked
       const menuLinks = menu.querySelectorAll("a");
       menuLinks.forEach(link => {
@@ -560,6 +560,138 @@ document.addEventListener("DOMContentLoaded", () => {
 
   attachLightboxEvents();
 
+  // Initialize overview slideshow by loading a manifest file from the overview images folder
+  function initOverviewSlideshow() {
+    const container = document.querySelector('#overview-slideshow .slideshow-images');
+    if (!container) return;
+    const manifestPath = 'src/resources/images/overview/overview_manifest.json';
+
+    fetch(manifestPath)
+      .then((res) => {
+        if (!res.ok) throw new Error('No manifest');
+        return res.json();
+      })
+      .then((list) => {
+        if (!Array.isArray(list) || list.length === 0) return;
+
+        let current = 0;
+        // Create two slots for sliding animation (CSS already expects these classes)
+        const slot1 = document.createElement('div');
+        slot1.className = 'slideshow-image1';
+        const img1 = document.createElement('img');
+        img1.className = 'slideshow-img click-zoom';
+        slot1.appendChild(img1);
+
+        const slot2 = document.createElement('div');
+        slot2.className = 'slideshow-image2';
+        const img2 = document.createElement('img');
+        img2.className = 'slideshow-img click-zoom';
+        slot2.appendChild(img2);
+
+        container.innerHTML = '';
+        container.appendChild(slot1);
+        container.appendChild(slot2);
+
+        function pathFor(name) {
+          return 'src/resources/images/overview/' + encodeURIComponent(name).replace(/%2F/g, '/');
+        }
+
+        function setSrc(imgEl, idx) {
+          const name = list[idx];
+          imgEl.src = pathFor(name);
+          imgEl.alt = '';
+        }
+
+        setSrc(img1, current);
+        setSrc(img2, (current + 1) % list.length);
+
+        // Apply orientation (vertical/horizontal) sizing: choose container class based on the
+        // currently-displayed image so vertical images show fully scaled inside vertical window
+        function applyOrientation(imgEl) {
+          try {
+            const isVertical = imgEl.naturalHeight >= imgEl.naturalWidth;
+            if (isVertical) {
+              container.classList.add('vertical');
+              container.classList.remove('horizontal');
+            } else {
+              container.classList.add('horizontal');
+              container.classList.remove('vertical');
+            }
+
+            // Ensure images are shown fully (no cropping) by using contain fit
+            container.querySelectorAll('.slideshow-img').forEach((ie) => {
+              ie.classList.add('contain');
+              ie.classList.remove('cover');
+            });
+          } catch (e) {
+            // ignore
+          }
+        }
+
+        img1.addEventListener('load', () => applyOrientation(img1));
+        img2.addEventListener('load', () => applyOrientation(img1));
+
+        // if already cached/loaded, apply immediately
+        if (img1.complete && img1.naturalWidth) applyOrientation(img1);
+
+        const prevBtn = document.querySelector('.slideshow-prev');
+        const nextBtn = document.querySelector('.slideshow-next');
+        let animating = false;
+
+        function show(direction) {
+          if (animating) return;
+          animating = true;
+          const nextIndex = (current + (direction > 0 ? 1 : -1) + list.length) % list.length;
+
+          if (direction > 0) {
+            // forward: prepare slot2 with next, animate slot1 out and slot2 in
+            setSrc(img2, nextIndex);
+            slot1.classList.add('fade-out-in-place');
+            slot2.classList.add('slide-left-overlap');
+            setTimeout(() => {
+              // swap: make slot1 show the new current, reset classes
+              setSrc(img1, nextIndex);
+              slot1.classList.remove('fade-out-in-place');
+              slot2.classList.remove('slide-left-overlap');
+              current = nextIndex;
+              setSrc(img2, (current + 1) % list.length);
+              animating = false;
+              attachLightboxEvents();
+            }, 520);
+          } else {
+            // backward: show previous in slot2 and animate fade-in-from-right
+            setSrc(img2, nextIndex);
+            slot2.classList.add('fade-in-on-right');
+            slot1.classList.add('fade-out-in-place');
+            setTimeout(() => {
+              setSrc(img1, nextIndex);
+              slot1.classList.remove('fade-out-in-place');
+              slot2.classList.remove('fade-in-on-right');
+              current = nextIndex;
+              setSrc(img2, (current + 1) % list.length);
+              animating = false;
+              attachLightboxEvents();
+            }, 520);
+          }
+        }
+
+        if (prevBtn) prevBtn.addEventListener('click', (e) => { e.preventDefault(); show(-1); });
+        if (nextBtn) nextBtn.addEventListener('click', (e) => { e.preventDefault(); show(1); });
+
+        // auto advance
+        let interval = setInterval(() => show(1), 6000);
+        container.addEventListener('mouseenter', () => clearInterval(interval));
+        container.addEventListener('mouseleave', () => { clearInterval(interval); interval = setInterval(() => show(1), 6000); });
+
+        // ensure lightbox handlers are attached for initial images
+        attachLightboxEvents();
+      })
+      .catch(() => {
+        // no manifest or error - leave slideshow empty
+      });
+  }
+
+  initOverviewSlideshow();
   if (
     document.getElementById("poemList") &&
     window.location.pathname.includes("poems")
@@ -854,7 +986,7 @@ document.addEventListener("DOMContentLoaded", () => {
     backToTopBtn.addEventListener("click", (e) => {
       // Blur immediately for desktop
       e.currentTarget.blur();
-      
+
       // Instant scroll (no smooth animation)
       window.scrollTo({
         top: 0,
@@ -967,14 +1099,14 @@ document.addEventListener("DOMContentLoaded", () => {
           e.preventDefault();
           e.stopPropagation();
           preventNextClick = true;
-          
+
           // Hide all other dates and highlights
           document.querySelectorAll('.poem-link.show-date').forEach(link => {
             link.classList.remove('show-date');
           });
           // Show this date and add highlight
           a.classList.add('show-date');
-          
+
           // Reset flag after a short delay
           setTimeout(() => { preventNextClick = false; }, 100);
         }
@@ -986,13 +1118,13 @@ document.addEventListener("DOMContentLoaded", () => {
     poemListItems.querySelectorAll("a").forEach((link) => {
       link.addEventListener("click", (e) => {
         e.preventDefault();
-        
+
         // Only apply two-tap logic on touch devices with narrow screens
         const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
         if (isTouchDevice && window.innerWidth <= 800 && !link.classList.contains('show-date')) {
           return; // Touch handler already handled showing the date
         }
-        
+
         const index = link.dataset.index;
         const poem = JSON.parse(link.getAttribute("data-poem"));
         const currentPoemParam = getUrlParameter('poem');
@@ -1230,14 +1362,14 @@ document.addEventListener("DOMContentLoaded", () => {
           e.preventDefault();
           e.stopPropagation();
           preventNextClick = true;
-          
+
           // Hide all other dates and highlights
           document.querySelectorAll('.blog-link.show-date').forEach(link => {
             link.classList.remove('show-date');
           });
           // Show this date and add highlight
           a.classList.add('show-date');
-          
+
           // Reset flag after a short delay
           setTimeout(() => { preventNextClick = false; }, 100);
         }
@@ -1249,13 +1381,13 @@ document.addEventListener("DOMContentLoaded", () => {
     listEl.querySelectorAll("a").forEach((link) => {
       link.addEventListener("click", (e) => {
         e.preventDefault();
-        
+
         // Only apply two-tap logic on touch devices with narrow screens
         const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
         if (isTouchDevice && window.innerWidth <= 800 && !link.classList.contains('show-date')) {
           return; // Touch handler already handled showing the date
         }
-        
+
         const index = link.dataset.index;
         const blog = JSON.parse(link.getAttribute("data-blog"));
         const currentBlogParam = getUrlParameter('blog');
@@ -1443,7 +1575,7 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("popstate", (event) => {
     // Close all dropdown menus when navigating back/forward
     closeAllDropdowns();
-    
+
     // If the popped history state is an anchor, handle it immediately and return
     if (event.state && event.state.anchor) {
       scrollToAnchor("#" + event.state.anchor);
@@ -2968,4 +3100,351 @@ function initPoemPage() {
       updateNoResultsMessage('poemListItems');
     });
   }
+  // Initialize overview slideshow after DOM is ready
+  setTimeout(initOverviewSlideshow, 0); // Ensure DOM is ready
 }
+
+// Slideshow logic for showcase windows
+function initShowcaseSlideshow() {
+  const MANIFEST = 'src/resources/images/overview/overview_manifest.json';
+  const container = document.getElementById('image-showcase-container');
+  if (!container) return;
+
+  let images = [];
+  let current = 0;
+  let animating = false;
+  let autoTimer = null;
+
+  function render() {
+    if (!images || images.length === 0) return;
+    const isMobile = window.innerWidth <= 799;
+    
+    const window1 = container.querySelector('.showcase-window-1');
+    const window2 = container.querySelector('.showcase-window-2');
+    if (!window1) return;
+
+    // Clear windows
+    window1.innerHTML = '';
+    if (window2) window2.innerHTML = '';
+
+    // Create image for first window
+    const img1 = document.createElement('img');
+    img1.className = 'showcase-img contain click-zoom';
+    img1.src = images[current];
+    img1.alt = `Overview image ${current + 1}`;
+    img1.style.cursor = 'zoom-in';
+    img1.style.pointerEvents = 'auto';
+    img1.addEventListener('click', () => openImageFullscreen(img1.src, img1.alt));
+    window1.appendChild(img1);
+
+    // Create image for second window (desktop only)
+    if (!isMobile && window2) {
+      const img2 = document.createElement('img');
+      img2.className = 'showcase-img contain click-zoom';
+      img2.src = images[(current + 1) % images.length];
+      img2.alt = `Overview image ${(current + 2)}`;
+      img2.style.cursor = 'zoom-in';
+      img2.style.pointerEvents = 'auto';
+      img2.addEventListener('click', () => openImageFullscreen(img2.src, img2.alt));
+      window2.appendChild(img2);
+    }
+  }
+
+  function next() {
+    if (animating) return;
+    animating = true;
+    
+    const isMobile = window.innerWidth <= 799;
+    const window1 = container.querySelector('.showcase-window-1');
+    const window2 = container.querySelector('.showcase-window-2');
+    
+    if (isMobile || !window2) {
+      // Mobile: simple swap
+      current = (current + 1) % images.length;
+      render();
+      animating = false;
+      return;
+    }
+
+    // Desktop: animated swap
+    const img1 = window1.querySelector('img');
+    const img2 = window2.querySelector('img');
+    if (!img1 || !img2) { animating = false; return; }
+
+    // Calculate proper slide distance including gap
+    const window1Rect = window1.getBoundingClientRect();
+    const window2Rect = window2.getBoundingClientRect();
+    const slideDistance = window2Rect.left - window1Rect.left;
+
+    // Fade out first window, slide second window
+    img1.style.transition = 'opacity 0.45s';
+    img1.style.opacity = '0';
+    window2.style.transition = 'transform 0.45s cubic-bezier(.4, 0, .2, 1)';
+    window2.style.transform = `translateX(-${slideDistance}px)`;
+
+    setTimeout(() => {
+      // Update first window to show what was in second
+      img1.src = img2.src;
+      img1.alt = img2.alt;
+      img1.style.opacity = '1';
+      img1.style.transition = 'none';
+      img1.style.borderRadius = '12px';
+      
+      // Update second window to next image and reset position
+      const nextIdx = (current + 2) % images.length;
+      img2.style.opacity = '0'; // Hide during load
+      img2.src = images[nextIdx];
+      img2.alt = `Overview image ${nextIdx + 1}`;
+      // Show when loaded
+      img2.onload = () => { img2.style.opacity = '1'; };
+      window2.style.transform = 'translateX(0)';
+      window2.style.transition = 'none';
+      
+      current = (current + 1) % images.length;
+      animating = false;
+    }, 470);
+  }
+
+  function startAuto() {
+    if (autoTimer) clearInterval(autoTimer);
+    // Faster interval for mobile since it's a single image
+    const interval = window.innerWidth <= 799 ? 2000 : 3000;
+    autoTimer = setInterval(next, interval);
+  }
+
+  function stopAuto() { 
+    if (autoTimer) { 
+      clearInterval(autoTimer); 
+      autoTimer = null; 
+    } 
+  }
+
+  // Load manifest and start
+  fetch(MANIFEST).then(r => r.json()).then(list => {
+    if (!Array.isArray(list) || list.length === 0) return;
+    images = list.map(n => 'src/resources/images/overview/' + encodeURIComponent(n).replace(/%2F/g, '/'));
+    render();
+    startAuto();
+  }).catch(() => {
+    // fallback to empty render
+  });
+
+  window.addEventListener('resize', () => {
+    render();
+  });
+}
+
+// Slideshow logic for overview images
+function initOverviewSlideshow() {
+  const MANIFEST = 'src/resources/images/overview/overview_manifest.json';
+  const container = document.querySelector('#overview-slideshow .slideshow-images');
+  const prevBtn = document.querySelector('#overview-slideshow .slideshow-prev');
+  const nextBtn = document.querySelector('#overview-slideshow .slideshow-next');
+  if (!container) return;
+
+  let images = [];
+  let current = 0;
+  let animating = false;
+  let autoTimer = null;
+
+  function readCSSVar(name, fallback) {
+    const val = getComputedStyle(document.documentElement).getPropertyValue(name);
+    return val ? parseInt(val.trim(), 10) : fallback;
+  }
+
+  function computeSizing(isVertical) {
+    const isMobile = window.innerWidth <= 800;
+    const styles = getComputedStyle(document.documentElement);
+    const cssMaxHeight = readCSSVar('--slideshow-max-height', 480);
+
+    const wVar = isVertical ? (isMobile ? '--slideshow-mobile-vertical-width' : '--slideshow-vertical-width') : (isMobile ? '--slideshow-mobile-horizontal-width' : '--slideshow-horizontal-width');
+    const hVar = isVertical ? (isMobile ? '--slideshow-mobile-vertical-height' : '--slideshow-vertical-height') : (isMobile ? '--slideshow-mobile-horizontal-height' : '--slideshow-horizontal-height');
+
+    const orientationW = readCSSVar(wVar, isVertical ? 320 : 420);
+    const orientationH = readCSSVar(hVar, isVertical ? 480 : 260);
+
+    const historyEl = document.getElementById('historySection');
+    const halfHistory = historyEl ? Math.floor(historyEl.clientWidth / 2) : Math.floor(document.documentElement.clientWidth / 2);
+
+    const finalWidth = Math.min(orientationW, halfHistory);
+    const finalHeight = Math.min(orientationH, cssMaxHeight);
+    return { width: finalWidth, height: finalHeight };
+  }
+
+  function applySizingForImage(imgEl) {
+    const isVertical = imgEl.naturalHeight >= imgEl.naturalWidth;
+    const sizing = computeSizing(isVertical);
+    // Apply inline styles to container so dynamic JS calculation takes effect
+    container.style.width = sizing.width + 'px';
+    container.style.height = sizing.height + 'px';
+    // Ensure images scale down to fit the window (no cropping)
+    container.querySelectorAll('.slideshow-img').forEach((ie) => {
+      ie.classList.add('contain');
+      ie.classList.remove('cover');
+      // Clear any hard width/height on image elements to allow object-fit to work
+      ie.style.width = '';
+      ie.style.height = '';
+    });
+  }
+
+  function render() {
+    if (!images || images.length === 0) return;
+    container.innerHTML = '';
+    if (window.innerWidth < 800) {
+      const img = document.createElement('img');
+      img.className = 'slideshow-img contain click-zoom';
+      img.src = images[current];
+      img.alt = `Overview image ${current + 1}`;
+      img.style.cursor = 'zoom-in';
+      img.addEventListener('click', () => openImageFullscreen(img.src, img.alt));
+      img.addEventListener('load', () => applySizingForImage(img));
+      container.appendChild(img);
+    } else {
+      const div1 = document.createElement('div');
+      div1.className = 'slideshow-image1';
+      const img1 = document.createElement('img');
+      img1.className = 'slideshow-img contain click-zoom';
+      img1.src = images[current];
+      img1.alt = `Overview image ${current + 1}`;
+      img1.style.cursor = 'zoom-in';
+      img1.addEventListener('click', () => openImageFullscreen(img1.src, img1.alt));
+      div1.appendChild(img1);
+
+      const div2 = document.createElement('div');
+      div2.className = 'slideshow-image2';
+      const img2 = document.createElement('img');
+      img2.className = 'slideshow-img contain click-zoom';
+      img2.src = images[(current + 1) % images.length];
+      img2.alt = `Overview image ${(current + 2)}`;
+      img2.style.cursor = 'zoom-in';
+      img2.addEventListener('click', () => openImageFullscreen(img2.src, img2.alt));
+      div2.appendChild(img2);
+
+      container.appendChild(div1);
+      container.appendChild(div2);
+
+      img1.addEventListener('load', () => applySizingForImage(img1));
+      img2.addEventListener('load', () => applySizingForImage(img1));
+      if (img1.complete && img1.naturalWidth) applySizingForImage(img1);
+    }
+  }
+
+  function next() {
+    if (animating) return;
+    animating = true;
+    if (window.innerWidth < 800) {
+      current = (current + 1) % images.length;
+      render();
+      animating = false;
+      return;
+    }
+    const div1 = container.querySelector('.slideshow-image1');
+    const div2 = container.querySelector('.slideshow-image2');
+    if (!div1 || !div2) { animating = false; return; }
+    div1.classList.add('fade-out-in-place');
+    div2.classList.add('slide-left-overlap');
+    setTimeout(() => {
+      const img1 = div1.querySelector('img');
+      const img2 = div2.querySelector('img');
+      img1.src = img2.src;
+      img1.alt = img2.alt;
+      div1.classList.remove('fade-out-in-place');
+      const nextIdx = (current + 2) % images.length;
+      img2.src = images[nextIdx];
+      img2.alt = `Overview image ${nextIdx + 1}`;
+      div2.classList.remove('slide-left-overlap');
+      div2.classList.add('fade-in-on-right');
+      setTimeout(() => {
+        div2.classList.remove('fade-in-on-right');
+        animating = false;
+        current = (current + 1) % images.length;
+      }, 470);
+    }, 470);
+  }
+
+  function prev() {
+    if (animating) return;
+    animating = true;
+    current = (current - 1 + images.length) % images.length;
+    render();
+    animating = false;
+  }
+
+  function startAuto() {
+    if (autoTimer) clearInterval(autoTimer);
+    autoTimer = setInterval(next, 4000);
+  }
+
+  function stopAuto() { if (autoTimer) { clearInterval(autoTimer); autoTimer = null; } }
+
+  // Load manifest and start
+  fetch(MANIFEST).then(r => r.json()).then(list => {
+    if (!Array.isArray(list) || list.length === 0) return;
+    images = list.map(n => 'src/resources/images/overview/' + encodeURIComponent(n).replace(/%2F/g, '/'));
+    render();
+    startAuto();
+  }).catch(() => {
+    // fallback to empty render
+  });
+
+  if (prevBtn) prevBtn.addEventListener('click', (e) => { e.preventDefault(); stopAuto(); prev(); startAuto(); });
+  if (nextBtn) nextBtn.addEventListener('click', (e) => { e.preventDefault(); stopAuto(); next(); startAuto(); });
+
+  window.addEventListener('resize', () => {
+    // Recompute sizing for current displayed image
+    const firstImg = container.querySelector('.slideshow-img');
+    if (firstImg) applySizingForImage(firstImg);
+  });
+}
+
+// Helper for fullscreen image zoom (like blog)
+function openImageFullscreen(src, alt) {
+  // Remove any existing overlay
+  const oldOverlay = document.getElementById('fullscreen-image-overlay');
+  if (oldOverlay) oldOverlay.remove();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'fullscreen-image-overlay';
+  overlay.style.position = 'fixed';
+  overlay.style.top = 0;
+  overlay.style.left = 0;
+  overlay.style.width = '100vw';
+  overlay.style.height = '100vh';
+  overlay.style.background = 'rgba(0,0,0,0.95)';
+  overlay.style.display = 'flex';
+  overlay.style.alignItems = 'center';
+  overlay.style.justifyContent = 'center';
+  overlay.style.zIndex = 99999;
+  overlay.style.cursor = 'zoom-out';
+
+  const img = document.createElement('img');
+  img.src = src;
+  img.alt = alt || '';
+  img.style.maxWidth = '95vw';
+  img.style.maxHeight = '95vh';
+  img.style.boxShadow = '0 0 32px #000a';
+  img.style.borderRadius = '8px';
+  img.style.background = '#222';
+
+  overlay.appendChild(img);
+
+  // Close on click or ESC
+  overlay.addEventListener('click', () => overlay.remove());
+  document.addEventListener('keydown', function escHandler(e) {
+    if (e.key === 'Escape') {
+      overlay.remove();
+      document.removeEventListener('keydown', escHandler);
+    }
+  });
+
+  document.body.appendChild(overlay);
+}
+
+// Ensure slideshow runs on DOMContentLoaded in case other init paths were skipped
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    initOverviewSlideshow();
+  } catch (e) {
+    console.warn('[Slideshow] initOverviewSlideshow failed to start on DOMContentLoaded', e);
+  }
+});
