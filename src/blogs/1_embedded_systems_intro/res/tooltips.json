@@ -1,9 +1,4 @@
 {
-    "fpga_bitstream": {
-        "text": "This is done by providing a bitstream to the FPGA at startup time.",
-        "media": "",
-        "alt": ""
-    },
     "cpu_types": {
         "text": "<strong>CPU (Central Processing Unit)</strong>: The general term for a general-purpose computer. Typically run at high clock speeds (GHz range).<br><strong>MCU (Microcontroller Unit)</strong>: The same base architecture as a CPu complete computer system on a single chip, including CPU, memory, and I/O peripherals. For example, the STM32F4. MCUs usually operate at much lower clock speeds (MHz range) compared to CPUs, focusing on low power and real-time control.<br><strong>DSP (Digital Signal Processor)</strong>: A specialized processor optimized for digital signal processing operations like filtering, FFT, and audio/video processing. For example, Texas Instruments TMS320C6000.",
         "media": "",
@@ -65,6 +60,18 @@
     },
     "softcore": {
         "text": "For example, you can configure an FPGA to be a CPU, which takes the name of <a href=\"https://en.wikipedia.org/wiki/Field-programmable_gate_array#Soft_core\" target=\"_blank\"><strong>softcore</strong></a>. A softcore is a CPU implemented using the programmable logic of an FPGA, rather than as a fixed silicon design.",
+        "media": ""
+    },
+    "logic_block_details": {
+        "text": "Logic blocks can implement <a href=\"https://en.wikipedia.org/wiki/Combinational_logic\" target=\"_blank\">combinational logic</a> (via lookup tables) and typically include flip-flops for <a href=\"https://en.wikipedia.org/wiki/Sequential_logic\" target=\"_blank\">sequential logic</a> and state storage.",
+        "media": ""
+    },
+    "target_fpga_model": {
+        "text": "Different FPGAs have different architectures and resources available (number of logic blocks, RAM blocks, etc.), so they need different configurations to yield the same result.",
+        "media": ""
+    },
+    "synthesis_toolchain": {
+        "text": "This is akin to how different CPU compilers generate different assembly for the same input code.",
         "media": ""
     }
 }

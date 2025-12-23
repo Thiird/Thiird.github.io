@@ -1556,6 +1556,10 @@ document.addEventListener("DOMContentLoaded", () => {
           if (window.tooltipManager) {
             window.tooltipManager.reinitialize(blog.folder);
           }
+          // Trigger anchor highlight after content is loaded
+          if (typeof handleAnchorHighlight === 'function') {
+            handleAnchorHighlight();
+          }
         }, 100);
 
         attachLightboxEvents();
@@ -1707,6 +1711,11 @@ function enableInternalAnchorScrolling(container) {
         history.pushState({ anchor: id }, "", hash);
       } catch (err) {
         // ignore
+      }
+      // Explicitly trigger highlight (pushState doesn't fire hashchange)
+      if (typeof handleAnchorHighlight === 'function') {
+        // small delay to ensure layout/scroll is applied before highlighting
+        setTimeout(handleAnchorHighlight, 30);
       }
     }
   };
@@ -3439,6 +3448,37 @@ function openImageFullscreen(src, alt) {
 
   document.body.appendChild(overlay);
 }
+
+// Handle anchor link highlighting with fade effect
+function handleAnchorHighlight() {
+  const hash = window.location.hash;
+  if (hash) {
+    const targetElement = document.querySelector(hash);
+    if (targetElement) {
+      // Remove class first if it exists (to restart animation)
+      targetElement.classList.remove('anchor-highlight');
+      
+      // Force reflow to restart animation
+      void targetElement.offsetWidth;
+      
+      // Add class to trigger animation
+      targetElement.classList.add('anchor-highlight');
+      setTimeout(() => {
+        targetElement.classList.remove('anchor-highlight');
+      }, 2000);
+    }
+  }
+}
+
+// Listen for hash changes (when clicking anchor links on same page)
+window.addEventListener('hashchange', () => {
+  setTimeout(handleAnchorHighlight, 50); // Small delay to ensure element exists
+});
+
+// Call on page load (after content is loaded)
+window.addEventListener('load', () => {
+  setTimeout(handleAnchorHighlight, 100); // Small delay to ensure content is rendered
+});
 
 // Ensure slideshow runs on DOMContentLoaded in case other init paths were skipped
 document.addEventListener('DOMContentLoaded', () => {

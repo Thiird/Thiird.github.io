@@ -381,6 +381,8 @@
   --tooltip-show-delay: 300;
   --tooltip-hide-delay: 300;
   --tooltip-vertical-offset: 10;
+  /* Anchor highlight default (overridden per theme) */
+  --anchor-highlight-bg: rgba(255, 220, 100, 0.6);
 }
 
 [data-theme="darker"] {
@@ -424,6 +426,8 @@
   --font-family-base: Arial, sans-serif;
   --font-weight-normal: 400;
   --font-weight-body: 400;
+  /* Light overlay on dark backgrounds */
+  --anchor-highlight-bg: rgba(255, 255, 255, 0.10);
 }
 
 [data-theme="middle"] {
@@ -467,6 +471,8 @@
   --font-family-base: Arial, sans-serif;
   --font-weight-normal: 400;
   --font-weight-body: 400;
+  /* Light overlay on blue-ish background */
+  --anchor-highlight-bg: rgba(255, 255, 255, 0.12);
 }
 
 [data-theme="light"] {
@@ -510,6 +516,8 @@
   --font-family-base: Arial, sans-serif;
   --font-weight-normal: 600;
   --font-weight-body: 500;
+  /* Blue-tinted highlight for light theme */
+  --anchor-highlight-bg: rgba(41, 128, 185, 0.18);
 }
 
 * {
@@ -2587,4 +2595,20 @@ pre code {
   max-width: 100%;
   white-space: pre;
   word-wrap: normal;
+}
+
+/* Highlight target when navigating to anchor links */
+:target,
+.anchor-highlight {
+  animation: highlight-fade 2s ease-out;
+  border-radius: 4px;
+}
+
+@keyframes highlight-fade {
+  0% {
+    background-color: var(--anchor-highlight-bg);
+  }
+  100% {
+    background-color: transparent;
+  }
 }
