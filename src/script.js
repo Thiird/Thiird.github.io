@@ -1544,6 +1544,12 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         // Render markdown and prepend styled date
         target.innerHTML = dateHtml + marked.parse(md);
+        // Group headings and their following content into blocks for full-section highlighting
+        try {
+          wrapBlogSections(target);
+        } catch (e) {
+          // non-fatal
+        }
         if (window.hljs) {
           hljs.highlightAll();
         }
@@ -3455,19 +3461,70 @@ function handleAnchorHighlight() {
   if (hash) {
     const targetElement = document.querySelector(hash);
     if (targetElement) {
+      // Choose the most appropriate container to highlight
+      const id = targetElement.id;
+      let highlightEl = null;
+
+      // If targeting a heading, highlight the entire section block
+      if (targetElement.matches('h1, h2, h3, h4, h5, h6')) {
+        const block = targetElement.closest('.anchor-block') || (id ? document.querySelector(`.anchor-block[data-anchor-id='${CSS.escape(id)}']`) : null);
+        highlightEl = block || targetElement;
+      } else {
+        // Otherwise, highlight the nearest block element (prefer li over ul/ol)
+        const nearestLi = targetElement.closest('li');
+        const nearestBlock = targetElement.closest('p, pre, blockquote, table, dl, ol, ul, .image-wrapper, .pdf-placeholder, .video-player');
+        if (nearestLi) {
+          highlightEl = nearestLi;
+        } else if (nearestBlock) {
+          // Avoid highlighting entire UL/OL when a specific item is intended
+          if (nearestBlock.tagName && (nearestBlock.tagName.toLowerCase() === 'ul' || nearestBlock.tagName.toLowerCase() === 'ol')) {
+            // Fall back to anchor-block or the target itself
+            const block = targetElement.closest('.anchor-block') || (id ? document.querySelector(`.anchor-block[data-anchor-id='${CSS.escape(id)}']`) : null);
+            highlightEl = block || targetElement;
+          } else {
+            highlightEl = nearestBlock;
+          }
+        } else {
+          const block = targetElement.closest('.anchor-block') || (id ? document.querySelector(`.anchor-block[data-anchor-id='${CSS.escape(id)}']`) : null);
+          highlightEl = block || targetElement;
+        }
+      }
+
       // Remove class first if it exists (to restart animation)
-      targetElement.classList.remove('anchor-highlight');
-      
+      highlightEl.classList.remove('anchor-highlight');
+
       // Force reflow to restart animation
-      void targetElement.offsetWidth;
-      
+      void highlightEl.offsetWidth;
+
       // Add class to trigger animation
-      targetElement.classList.add('anchor-highlight');
+      highlightEl.classList.add('anchor-highlight');
       setTimeout(() => {
-        targetElement.classList.remove('anchor-highlight');
+        highlightEl.classList.remove('anchor-highlight');
       }, 2000);
     }
   }
+}
+
+// Wrap blog content into sections: each heading and its following siblings until next heading
+function wrapBlogSections(root) {
+  if (!root) return;
+  const headingSelector = 'h1, h2, h3, h4, h5, h6';
+  const nodes = Array.from(root.childNodes);
+  let currentBlock = null;
+  nodes.forEach((node) => {
+    if (node.nodeType === 1 && node.matches(headingSelector)) {
+      // Start a new block with this heading
+      const block = document.createElement('div');
+      block.className = 'anchor-block';
+      const hid = node.id;
+      if (hid) block.setAttribute('data-anchor-id', hid);
+      node.parentNode.insertBefore(block, node);
+      block.appendChild(node);
+      currentBlock = block;
+    } else if (currentBlock) {
+      currentBlock.appendChild(node);
+    }
+  });
 }
 
 // Listen for hash changes (when clicking anchor links on same page)
