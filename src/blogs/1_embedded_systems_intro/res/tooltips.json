@@ -109,5 +109,13 @@
         "text": "<strong>Perfboard</strong><br><br>A prototyping board with pre-drilled holes arranged in a grid pattern. Components are inserted from one side and soldered on the other, with connections made by soldering component leads together or using wire jumpers. Unlike breadboards, perfboard connections are permanent.",
         "media": "perfboard.png",
         "alt": ""
+    },
+    "intermediate_circuitry_input": {
+        "text": "<strong>Intermediate Circuitry for Inputs</strong><br><br>Sometimes sensors can't connect directly to the computational unit and need interface circuitry in between.<br><br>For example, to measure a 12V battery voltage with a microcontroller that only tolerates 3.3V on its pins, you'd use a <em>voltage divider</em> - two resistors in series that scale down the voltage to a safe range (e.g., 12V → 3V) before connecting to the MCU's analog input pin.",
+        "media": ""
+    },
+    "intermediate_circuitry_output": {
+        "text": "<strong>Intermediate Circuitry for Outputs</strong><br><br>Sometimes output devices can't be driven directly by the computational unit and need interface circuitry in between.<br><br>For example, high-power LEDs require much more current than a microcontroller pin can provide (typically 20-40mA max). An <em>LED driver</em> circuit takes the low-power control signal from the MCU and uses it to switch higher currents (hundreds of mA or more) through the LED safely.",
+        "media": ""
     }
 }

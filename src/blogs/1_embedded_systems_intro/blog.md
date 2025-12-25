@@ -103,7 +103,9 @@ Functionally speaking, all the hardware elements of an <span tt="ES">ES</span> f
 
 <h3 id="input-elements">2.1.1 Input Elements</h3>
 
-Think of a button, dial, touch screen, a receiving antenna, magnetic sensor, light sensor, humidity sensor: anything that can produce electrical signals that describe the surrounding enviroment.
+Think of a button, dial, touch screen, a receiving antenna, magnetic sensor, light sensor, humidity sensor: anything that can produce electrical signals that describe the surrounding environment.
+
+All of these devices are connected, either directly or <span tt="intermediate_circuitry_input">through intermediate circuitry</span>, to the computational unit.
 
 In the case of a desktop mouse, the input elements are the buttons, scroll wheel and motion sensor.
 
@@ -163,7 +165,9 @@ Output elements are how the <span tt="ES">ES</span> talks back to you or to othe
 
 Think of LEDs, displays (LCD, OLED, seven-segment, e-paper), buzzers, speakers, motors (DC, stepper, servo), relays, heating elements, and communication outputs like WiFi, Bluetooth.
 
-In the case of a desktop mouse, the output of the system is the buttons and motion data encoded as USB or Bluetooth signals sent to the PC.
+All of these devices are controlled, either directly or <span tt="intermediate_circuitry_output">through intermediate circuitry</span>, by the CU.
+
+In the case of a desktop mouse, the output of the system is the buttons and motion data encoded as USB or Bluetooth packets sent to whatever the mouse is connected to.
 
 <h2 id="firmware">2.2 Firmware</h2>
 
