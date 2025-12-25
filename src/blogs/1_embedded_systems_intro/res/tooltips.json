@@ -1,6 +1,6 @@
 {
     "cpu_types": {
-        "text": "<strong>CPU (Central Processing Unit)</strong>: The general term for a general-purpose computer. Typically run at high clock speeds (GHz range).<br><strong>MCU (Microcontroller Unit)</strong>: The same base architecture as a CPu complete computer system on a single chip, including CPU, memory, and I/O peripherals. For example, the STM32F4. MCUs usually operate at much lower clock speeds (MHz range) compared to CPUs, focusing on low power and real-time control.<br><strong>DSP (Digital Signal Processor)</strong>: A specialized processor optimized for digital signal processing operations like filtering, FFT, and audio/video processing. For example, Texas Instruments TMS320C6000.",
+        "text": "<strong>CPU (Central Processing Unit)</strong>: The general term for a general-purpose computer. Typically run at high clock speeds (GHz range).<br>For example, the AMD FX 6300.<br><br><strong>MCU (Microcontroller Unit)</strong>: The same base architecture as a CPU, but with integrated RAM, EEPROM and run at lower clock speeds (MHz range). For example, the STM32F4.<br><br><strong>DSP (Digital Signal Processor)</strong>: A specialized processor optimized for digital signal processing operations like filtering, FFT, and audio/video processing. For example, Texas Instruments TMS320C6000.",
         "media": "",
         "alt": ""
     },
@@ -29,7 +29,7 @@
         "media": "tooltip.gif"
     },
     "isa": {
-        "text": "<strong>Instruction Set Architecture</strong><br><br>The set of instructions that a processor can execute",
+        "text": "<strong>Instruction Set Architecture</strong><br><br>The ISA defines the complete set of operations that a CPU can perform, along with how those operations are encoded as binary numbers.<br><br>Examples of common instructions include:<br>- <strong>ADD</strong>: Add two numbers<br>- <strong>MUL</strong>: Multiply two numbers<br>- <strong>CMP</strong>: Compare two values<br>- <strong>JMP</strong>: Jump to a different location in code<br>- <strong>LOAD</strong>: Read data from memory<br>- <strong>STORE</strong>: Write data to memory<br><br>These instructions can be written in <em>assembly language</em> (human-readable text like \"ADD R1, R2, R3\"), but the CPU actually executes them as binary machine code (e.g., 0x4A320001). The assembler translates assembly text to binary.",
         "media": ""
     },
     "ES": {
@@ -55,7 +55,7 @@
         "media": ""
     },
     "cpu_non_triviality": {
-        "text": "This is not a trivial thing: considering that integrated circuits are machines, the bare fact that a general purpose machine is manufacturable makes it so that everyone can have a computer for their own needs at low cost: make 100 CPUs and program them differently. I cannot overstate how much this changed the world.",
+        "text": "CPUs allow everyone to have a computer for their own needs at low cost: just make as many CPUs as needed and program them differently. It's hard to overstate how much this changed the world.",
         "media": ""
     },
     "softcore": {
@@ -73,5 +73,41 @@
     "synthesis_toolchain": {
         "text": "This is akin to how different CPU compilers generate different assembly for the same input code.",
         "media": ""
+    },
+    "vias": {
+        "text": "<strong>Vias</strong><br><br>Small plated holes that connect copper traces on different layers of a PCB, allowing electrical signals to pass between layers.",
+        "media": ""
+    },
+    "resistors": {
+        "text": "<strong>Resistors</strong><br><br>Electronic components that resist the flow of electrical current, used to control voltage and current levels in a circuit.",
+        "media": ""
+    },
+    "capacitors": {
+        "text": "<strong>Capacitors</strong><br><br>Electronic components that store electrical energy in an electric field, used for filtering, timing, and energy storage applications.",
+        "media": ""
+    },
+    "connectors": {
+        "text": "<strong>Connectors</strong><br><br>Physical interfaces that allow electrical connections to be made and broken between different parts of a system, such as USB ports, pin headers, and terminal blocks.",
+        "media": ""
+    },
+    "soldering_iron": {
+        "text": "",
+        "media": "soldering_iron.gif",
+        "alt": ""
+    },
+    "soldering_robot": {
+        "text": "",
+        "media": "soldering_robot.gif",
+        "alt": ""
+    },
+    "reflow_ovens": {
+        "text": "<strong>Reflow Ovens</strong><br><br>Industrial ovens that heat PCBs with pre-applied solder paste to precisely controlled temperatures, melting the solder and creating permanent connections between components and the board. Commonly used in mass production of electronics.",
+        "media": "reflow_ovens.gif",
+        "alt": ""
+    },
+    "perfboard": {
+        "text": "<strong>Perfboard</strong><br><br>A prototyping board with pre-drilled holes arranged in a grid pattern. Components are inserted from one side and soldered on the other, with connections made by soldering component leads together or using wire jumpers. Unlike breadboards, perfboard connections are permanent.",
+        "media": "perfboard.png",
+        "alt": ""
     }
 }

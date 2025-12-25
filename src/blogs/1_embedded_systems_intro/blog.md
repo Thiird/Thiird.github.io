@@ -81,19 +81,21 @@ An embedded system is made of three main elements:
 
 - <strong>Hardware</strong>: The electronics and the mechanical components 
 - <strong>Firmware</strong>: Low-level code running directly on the hardware, controlling its basic functionalities 
-- <strong>Software</strong>: Higher-level code that runs on or communicates with the ES to implement extra functionalities
+- <strong>Software</strong>: Higher-level code that runs on or communicates with the <span tt="ES">ES</span> to implement extra functionalities
 
 The hardware provides the physical platform, the firmware controls it directly, and the software (when present) adds higher-level functionality.
 
-Consider a desktop mouse as an example: the hardware includes the circuit board with its buttons, scroll wheel, and motion sensor, the firmware is the code on the circuit board that interprets input from these components and sends data to the desktop PC, and the software can be the application running on your desktop PC that interacts with the mouse to adjust settings like DPI.
+Consider a desktop mouse as an example: the hardware is the circuit board with its buttons, scroll wheel, and motion sensor, the firmware is the code that runs on the circuit board, interpreting the signals from these components and sending them off the device, and the software is, for example, the application running on your desktop PC that allows the user to adjust the mouse sensitivity. All is left to do is to design a plastic enclosure in which to embed the circuit board into, so that the user can easily and comfortably hold and operate the mouse.
 
 <h2 id="hardware">2.1 Hardware</h2>
 
-The core of an <span tt="ES">ES</span> is the electronic hardware. There can be an <span tt="ES">ES</span> without any software or mechanical engineering involved, but there can't be an <span tt="ES">ES</span> without electronics, i.e. an <span tt="ES">ES</span> is applied electronics.
+The core of an <span tt="ES">ES</span> is the electronic hardware. There can be an <span tt="ES">ES</span> without any software or mechanical engineering involved, but there can't be an <span tt="ES">ES</span> without electronics.
 
-The electronics is consolidated in a single assembly called <span tt="PCB">Printed Circuit Board</span> (PCB). A PCB is a flat board made of alternating layers of insulating material (usually fiberglass) and copper, where the copper layers has been etched to leave behind only individual traces, which connect the different electronic components together. Components like integrated circuits, resistors, capacitors, and connectors are soldered onto the board. The PCB is the physical heart of any embedded system, it's where all the magic happens. Building electronics without PCBs would require a mess of wires connecting components, which would be unreliable and impossible to manufacture at scale.
+The electronics is consolidated in a single assembly called <span tt="PCB">Printed Circuit Board</span> (PCB). A PCB it's an assembly made of alternating layers of insulating material (usually fiberglass) and copper, where the copper layers has been precisely etched/milled to leave behind only individual traces, which connect the different electronic components together. Traces on different layers are connected with <span tt="vias">vias</span>. Components like integrated circuits, <span tt="resistors">resistors</span>, <span tt="capacitors">capacitors</span>, and <span tt="connectors">connectors</span> are [soldered](#soldering-iron) onto the traces to wire them together.  
 
-Functionally speaking, all the hardware elements of an ES fall into one of three categories:
+The PCB is the physical heart of any embedded system, it's where all the magic happens. Building electronics without PCBs would require a mess of wires connecting components, which would be unreliable and impossible to automate for mass production.
+
+Functionally speaking, all the hardware elements of an <span tt="ES">ES</span> fall into one of three categories:
 
 - <strong>input elements</strong>
 - <strong>computational unit</strong>
@@ -114,7 +116,7 @@ Computational Units, CUs from now on, are <span tt="IC">integrated circuits</spa
 There are several different kinds of computational units, so let's start from the one present in desktop PCs: the CPU.
 
 <div class="highlight-box">
-The <strong>Central Processing Unit</strong> (CPU) is an integrated circuit that implements a general-purpose computer. When turned on, it starts executing a list of instructions specified by a program. The hardware remains the same, but it carries out <span tt="cpu_non_triviality">different computations</span> based on the instructions given (e.g. the software).
+The <strong>Central Processing Unit</strong> (CPU) is an integrated circuit that implements a general-purpose computer, capable of performing a fixed number of operations. These operations are called <strong>machine instructions</strong>. Once turned on, <span tt="cpu_non_triviality">the CPU starts executing the machine instructions specified in a program</span>, which is a finite list of machine instructions. The set of all valid machine instructions that a program can use, is defined in the <strong>Instruction Set Architecture</strong> (<span tt="isa">ISA</span>) of the CPU.
 </div>
 
 In embedded systems, <span tt="cpu_types">many different types of CPUs</span> are used as the computational unit. The terminology can be confusing at first, as we use different names based on clock speed, core count, integrated RAM size and capabilities.
@@ -151,7 +153,7 @@ Both CPUs and FPGAs are general-purpose computational devices, but the key diffe
 When discussing CPUs, we use terms like "software" and "programming", which are also used with FPGAs, but they mean very different things:
 
 <ul>
-  <li><strong>CPU software:</strong> The software of CPUs is the list of machine instructions that the CPU executes. This list is obtained starting from a program, which is code written by a programmer in a programming language, like C/C++. This program gets compiled (translated) to machine code, a list of instructions that the CPU can understand and execute. The complete set of all possible valid CPU instructions is defined in the Instruction Set Architecture (<span tt="isa">ISA</span>) of the target CPU.</li>
+  <li id="cpu-software"><strong>CPU software:</strong> The software of CPUs is the list of machine instructions that the CPU executes. This list is obtained starting from a program, which is code written by a programmer in a programming language, like C/C++. This program gets compiled (translated) to machine code, a list of instructions that the CPU can understand and execute. 
   <li id="fpga-software"><strong>FPGA software:</strong> The software of FPGAs is code written in a Hardware Description Language (HDL), like Verilog or VHDL, that gets synthesized to a bitstream and then used to configure the logic blocks in the FPGA to implement a certain function. The resulting bitstream depends on the input HDL code, <span tt="target_fpga_model">the target FPGA model</span>, and <span tt="synthesis_toolchain">the synthesis toolchain used</span>.</li>
 </ul>
 
@@ -208,13 +210,15 @@ A [multimeter](https://en.wikipedia.org/wiki/Multimeter) is, for the most part, 
 
 An embedded system is made of many different components, which need to be joined electrically.  
 This is done with [solder](https://en.wikipedia.org/wiki/Solder), a metal alloy that melts between 180-300°C (depending on the lead content).
-The melting temperature is low enough that soldering can be safely done at home with a simple (yet very dangerous if misused) tool called a soldering iron, basically a metal rod where the pointy end is heated via electric current.
+The melting temperature is low enough that soldering can be safely done at home with a simple (yet very dangerous if misused) tool called a <span tt="soldering_iron">soldering iron</span>, basically a metal rod where the pointy end is heated by passing electric current through it.
 
 Soldering is a fundamental skill in embedded systems. You'll use it to:
 
-- Assemble prototype circuits on perfboard or PCBs
+- Assemble prototype circuits on <span tt="perfboard">perfboard</span> or PCBs
 - Replace faulty components
 - Make connections between wires and components
+
+In industrial settings, the soldering process is automated by a <span tt="soldering_robot">soldering-iron-wielding robot</span> or by using <span tt="reflow_ovens">reflow-ovens</span>.
 
 <h2 id="power-supply">Power Supply</h2>
 
