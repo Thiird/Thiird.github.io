@@ -116,7 +116,7 @@ Computational Units, CUs from now on, are <span tt="IC">integrated circuits</spa
 There are several different kinds of computational units, so let's start from the one present in desktop PCs: the CPU.
 
 <div class="highlight-box">
-The <strong>Central Processing Unit</strong> (CPU) is an integrated circuit that implements a general-purpose computer, capable of performing a fixed number of operations. These operations are called <strong>machine instructions</strong>. Once turned on, <span tt="cpu_non_triviality">the CPU starts executing the machine instructions specified in a program</span>, which is a finite list of machine instructions. The set of all valid machine instructions that a program can use, is defined in the <strong>Instruction Set Architecture</strong> (<span tt="isa">ISA</span>) of the CPU.
+The <strong>Central Processing Unit</strong> (CPU) is an integrated circuit that implements a computer capable of performing a fixed number of operations. These operations are called <strong>machine instructions</strong>. Once turned on, the CPU starts executing the machine instructions specified in a program, which is a finite list of machine instructions. The set of all valid machine instructions that a program can use, is defined in the <strong>Instruction Set Architecture</strong> (<span tt="isa">ISA</span>) of the CPU. Changing the program changes what the CPU does, which <span tt="cpu_non_triviality">makes the CPU a general-purpose computer</span>.
 </div>
 
 In embedded systems, <span tt="cpu_types">many different types of CPUs</span> are used as the computational unit. The terminology can be confusing at first, as we use different names based on clock speed, core count, integrated RAM size and capabilities.
@@ -128,7 +128,7 @@ The F-D-E cycle is less than ideal for applications where no decision making is 
 We can achieve this with an <strong>ASIC</strong>.
 
 <div class="highlight-box">
-The <strong>Application Specific Integrated Circuit</strong> (ASIC), is an integrated circuit that implements a fixed-purpose computer. When turned on, it will always do the same thing, as it's not configurable in anyway.
+The <strong>Application Specific Integrated Circuit</strong> (ASIC), is an integrated circuit that implements a fixed-purpose computer. When turned on, it will always execute the same computation, as it's not configurable in anyway.
 </div>
 
 ASICs come with significant trade-offs: high development cost and inflexibility. Developing an IC is very expensive, regardless of what it does, and making one for a specific use case like ASICs, which usually target narrow markets, makes it even more expensive, as it won't sell as many units. Moreover, once manufactured, ICs cannot be changed: if there's a design error you are stuck with it. This is true for all ICs, but it's particularly painful for ASICs as they are, unlike CPUs, not configurable in any way. This makes ASICs economically viable only for markets where the high per-unit cost is acceptable, high-speed networking equipment and military applications.
@@ -140,7 +140,7 @@ What if we wanted the performance of ASICs with some computational flexibility? 
 A <strong>Field-Programmable Gate Array</strong> (FPGA) is an integrated circuit containing an array of <a href="https://en.wikipedia.org/wiki/Logic_block" target="_blank">configurable logic blocks</a>. Each block can be configured in both the <span tt="logic_block_details">logical function</span> it performs and how they interconnect with each other. At startup, the FPGA loads a <a href="#fpga-software">bitstream</a> that precisely defines the function of each block and its routing, enabling virtually any digital circuit to be realized directly in hardware.
 </div>
 
-<span tt="softcore">Any digital circuit can be implemented on an FPGA</span>, provided that the FPGA has sufficient resources (logic blocks, RAM, etc.), from a simple binary counter to a complex Fourier transform.
+<span tt="softcore">Any digital circuit can be implemented on an FPGA</span>, from a simple binary counter to a complex Fourier transform.
 
 In terms of performance, FPGAs sit between CPUs and ASICs but much closer to ASICs. With an FPGA, algorithms run directly in  hardware, providing massive speedups over CPU execution. However, due to the overhead of configurable (rather than fixed) circuitry, FPGAs are typically less efficient in speed and power than ASICs.
 

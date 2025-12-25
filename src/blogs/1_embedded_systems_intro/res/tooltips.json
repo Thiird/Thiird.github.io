@@ -1,6 +1,6 @@
 {
     "cpu_types": {
-        "text": "<strong>CPU (Central Processing Unit)</strong>: The general term for a general-purpose computer. Typically run at high clock speeds (GHz range).<br>For example, the AMD FX 6300.<br><br><strong>MCU (Microcontroller Unit)</strong>: The same base architecture as a CPU, but with integrated RAM, EEPROM and run at lower clock speeds (MHz range). For example, the STM32F4.<br><br><strong>DSP (Digital Signal Processor)</strong>: A specialized processor optimized for digital signal processing operations like filtering, FFT, and audio/video processing. For example, Texas Instruments TMS320C6000.",
+        "text": "<strong>CPU (Central Processing Unit)</strong>: The general term for a general-purpose computer IC. Typically run at high clock speeds (GHz range).<br>For example, the ARM Cortex-A53 .<br><br><strong>MCU (Microcontroller Unit)</strong>: The same base architecture as a CPU, but with integrated RAM, EEPROM and run at lower clock speeds (MHz range).<br>For example, the STM32F4.<br><br><strong>DSP (Digital Signal Processor)</strong>: A specialized processor optimized for digital signal processing operations like filtering, FFT, and audio/video processing.<br>For example, the Texas Instruments TMS320C6000.",
         "media": "",
         "alt": ""
     },
@@ -59,7 +59,7 @@
         "media": ""
     },
     "softcore": {
-        "text": "For example, you can configure an FPGA to be a CPU, which takes the name of <a href=\"https://en.wikipedia.org/wiki/Field-programmable_gate_array#Soft_core\" target=\"_blank\"><strong>softcore</strong></a>. A softcore is a CPU implemented using the programmable logic of an FPGA, rather than as a fixed silicon design.",
+        "text": "<italics>This assumes the FPGA has sufficient resources (logic blocks, RAM, etc.).</italics><br><br>For example, you can configure an FPGA to be a CPU, which takes the name of <a href=\"https://en.wikipedia.org/wiki/Field-programmable_gate_array#Soft_core\" target=\"_blank\"><strong>softcore</strong></a>. A softcore is a CPU implemented using the programmable logic of an FPGA, rather than as a fixed silicon design.",
         "media": ""
     },
     "logic_block_details": {
