@@ -113,7 +113,7 @@ In the case of a desktop mouse, the input elements are the buttons, scroll wheel
 
 This is the core of the system, this is where the actual computation is performed.
 
-Computational Units, CUs from now on, are <span tt="IC">integrated circuits</span> that implement some kind of computer.
+Computational Units, <span tt="CU">CUs</span> from now on, are <span tt="IC">integrated circuits</span> that implement some kind of computer.
 
 There are several different kinds of computational units, so let's start from the one present in desktop PCs: the CPU.
 
@@ -125,7 +125,7 @@ In embedded systems, <span tt="cpu_types">many different types of CPUs</span> ar
 
 The flexibility that CPUs have comes at the cost of speed. Following a list of instructions takes time, as the CPU needs to read the next instruction, activate the part of the chip that does that, and then actually execute it. This is called the [<em>Fetch-Decode-Execute</em>](https://en.wikipedia.org/wiki/Instruction_cycle) cycle: the CPU fetches the next instruction, decodes it, and then executes it.
 
-The F-D-E cycle is less than ideal for applications where no decision making is needed and maximum speed is required. What if we're willing to trade all the flexibility for maximum speed? The scenario we are talking about is high-performance applications like digital signal processing, where the computation is already known and we can't afford to waste time fetching and decoding instructions.
+The F-D-E cycle is less than ideal for applications where the computation to be performed is 'already known' and maximum speed is required. Think of high-performance applications like <span tt="dsp_example">digital signal processing</span>, where we can't waste time fetching and decoding instructions. What we need in those cases, is to trade all the flexibility for all the speed.
 
 We can achieve this with an <strong>ASIC</strong>.
 
@@ -133,13 +133,13 @@ We can achieve this with an <strong>ASIC</strong>.
 The <strong>Application Specific Integrated Circuit</strong> (ASIC), is an integrated circuit that implements a fixed-purpose computer. When turned on, it will always execute the same computation, as it's not configurable in anyway.
 </div>
 
-ASICs come with significant trade-offs: high development cost and inflexibility. Developing an IC is very expensive, regardless of what it does, and making one for a specific use case like ASICs, which usually target narrow markets, makes it even more expensive, as it won't sell as many units. Moreover, once manufactured, ICs cannot be changed: if there's a design error you are stuck with it. This is true for all ICs, but it's particularly painful for ASICs as they are, unlike CPUs, not configurable in any way. This makes ASICs economically viable only for markets where the high per-unit cost is acceptable, high-speed networking equipment and military applications.
+ASICs come with significant trade-offs: high development cost and inflexibility. Developing an IC is very expensive, regardless of what it does, and making one for a specific use case, like ASICs are, makes it even more expensive, as the narrow markets will result in fewer units sold. Moreover, once manufactured, ICs cannot be changed: if there's a design error you are stuck with it. This is true for all ICs, but it's particularly painful for ASICs as they are, unlike CPUs, not configurable in any way. This makes ASICs economically viable only for markets where performance comes before cost, like military applications.
 
-Talking about CPUs and ASICs, we have gone from extreme flexibility and low speed, to zero flexiblity and high-speed.  
+Talking about CPUs and ASICs, we have gone from extreme flexibility and low speed, to zero flexibility and high-speed.  
 What if we wanted the performance of ASICs with some computational flexibility? That's what FPGAs are for.
 
 <div class="highlight-box">
-A <strong>Field-Programmable Gate Array</strong> (FPGA) is an integrated circuit containing an array of <a href="https://en.wikipedia.org/wiki/Logic_block" target="_blank">configurable logic blocks</a>. Each block can be configured in both the <span tt="logic_block_details">logical function</span> it performs and how they interconnect with each other. At startup, the FPGA loads a <a href="#fpga-software">bitstream</a> that precisely defines the function of each block and its routing, enabling virtually any digital circuit to be realized directly in hardware.
+A <strong>Field-Programmable Gate Array</strong> (FPGA) is an integrated circuit containing an array of <a href="https://en.wikipedia.org/wiki/Logic_block" target="_blank">configurable logic blocks</a> (CLBs). Each block can be configured in both the <span tt="logic_block_details">logical function</span> it performs and how they interconnect with each other. At startup, the FPGA loads a <a href="#fpga-software">bitstream</a> that precisely defines the function of each block and its routing, enabling virtually any digital circuit to be realized directly in hardware.
 </div>
 
 <span tt="softcore">Any digital circuit can be implemented on an FPGA</span>, from a simple binary counter to a complex Fourier transform.
@@ -155,8 +155,8 @@ Both CPUs and FPGAs are general-purpose computational devices, but the key diffe
 When discussing CPUs, we use terms like "software" and "programming", which are also used with FPGAs, but they mean very different things:
 
 <ul>
-  <li id="cpu-software"><strong>CPU software:</strong> The software of CPUs is the list of machine instructions that the CPU executes. This list is obtained starting from a program, which is code written by a programmer in a programming language, like C/C++. This program gets compiled (translated) to machine code, a list of instructions that the CPU can understand and execute. 
-  <li id="fpga-software"><strong>FPGA software:</strong> The software of FPGAs is code written in a Hardware Description Language (HDL), like Verilog or VHDL, that gets synthesized to a bitstream and then used to configure the logic blocks in the FPGA to implement a certain function. The resulting bitstream depends on the input HDL code, <span tt="target_fpga_model">the target FPGA model</span>, and <span tt="synthesis_toolchain">the synthesis toolchain used</span>.</li>
+  <li id="cpu-software"><strong>CPU software:</strong> The software of CPUs is the list of machine instructions that the CPU executes. This list is obtained starting from a program, which is code written by a programmer in a programming language, like C or C++. This program gets <strong>compiled</strong> (translated) to machine code, a list of instructions that the CPU can understand and execute.</li>
+  <li id="fpga-software"><strong>FPGA software:</strong> The software of FPGAs is code written in a <a href="https://en.wikipedia.org/wiki/Hardware_description_language" target="_blank">Hardware Description Language</a> (HDL), like Verilog or VHDL, that gets <strong>synthesized</strong> to a bitstream and then used to configure the CLBs in the FPGA to implement a certain function. The resulting bitstream depends on the input HDL code, <span tt="target_fpga_model">the target FPGA model</span>, and <span tt="synthesis_toolchain">the synthesis toolchain used</span>.</li>
 </ul>
 
 <h3 id="output-elements">2.1.3 Output Elements</h3>
@@ -165,7 +165,7 @@ Output elements are how the <span tt="ES">ES</span> talks back to you or to othe
 
 Think of LEDs, displays (LCD, OLED, seven-segment, e-paper), buzzers, speakers, motors (DC, stepper, servo), relays, heating elements, and communication outputs like WiFi, Bluetooth.
 
-All of these devices are controlled, either directly or <span tt="intermediate_circuitry_output">through intermediate circuitry</span>, by the CU.
+All of these devices are controlled, either directly or <span tt="intermediate_circuitry_output">through intermediate circuitry</span>, by the <span tt="CU">CU</span>.
 
 In the case of a desktop mouse, the output of the system is the buttons and motion data encoded as USB or Bluetooth packets sent to whatever the mouse is connected to.
 
@@ -190,7 +190,7 @@ Modern embedded products often use both: firmware handles low level hardware fac
 
 An example is a modern bench power supply: the firmware precisely controls the voltage and current settings based on the front panel buttons and dials, while the software provides a web interface for remote control and configuration. You might update the software to add new features, but the firmware remains stable (unless a bug is found) as the front panel is always the same.
 
-Note that code running on real-time operating systems like [FreeRTOS](https://en.wikipedia.org/wiki/FreeRTOS) and [Zephyr](https://en.wikipedia.org/wiki/Zephyr_(operating_system)) is still considered firmware, as these RTOSes are minimal and you're still programming close to the hardware, configuring registers and managing peripherals directly.
+Note that code running on real-time operating systems like [FreeRTOS](https://en.wikipedia.org/wiki/FreeRTOS) and [Zephyr](https://en.wikipedia.org/wiki/Zephyr_(operating_system)) is still considered firmware, as these OSs provide very minimal abstraction and you're still programming close to the hardware, configuring registers and managing peripherals directly.
 
 <h1 id="tools-of-the-trade">3. Tools of the trade</h1>
 

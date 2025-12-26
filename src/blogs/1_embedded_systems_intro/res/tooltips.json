@@ -1,6 +1,6 @@
 {
     "cpu_types": {
-        "text": "<strong>CPU (Central Processing Unit)</strong>: The general term for a general-purpose computer IC. Typically run at high clock speeds (GHz range).<br>For example, the ARM Cortex-A53 .<br><br><strong>MCU (Microcontroller Unit)</strong>: The same base architecture as a CPU, but with integrated RAM, EEPROM and run at lower clock speeds (MHz range).<br>For example, the STM32F4.<br><br><strong>DSP (Digital Signal Processor)</strong>: A specialized processor optimized for digital signal processing operations like filtering, FFT, and audio/video processing.<br>For example, the Texas Instruments TMS320C6000.",
+        "text": "<strong>CPU (Central Processing Unit)</strong>: The general term for a general-purpose computer IC. Typically run at high clock speeds (GHz range). Used for complex devices devices like TVs.<br>For example, the ARM Cortex-A53 .<br><br><strong>MCU (Microcontroller Unit)</strong>: The same base architecture as a CPU, but with integrated RAM, EEPROM and run at lower clock speeds (MHz range). Used for simple devices like a mouse and keyboard.<br>For example, the STM32F4.<br><br><strong>DSP (Digital Signal Processor)</strong>: A specialized processor optimized for digital signal processing operations like filtering, FFT, and audio/video processing.<br>For example, the Texas Instruments TMS320C6000.",
         "media": "",
         "alt": ""
     },
@@ -29,11 +29,15 @@
         "media": "tooltip.gif"
     },
     "isa": {
-        "text": "<strong>Instruction Set Architecture</strong><br><br>The ISA defines the complete set of operations that a CPU can perform, along with how those operations are encoded as binary numbers.<br><br>Examples of common instructions include:<br>- <strong>ADD</strong>: Add two numbers<br>- <strong>MUL</strong>: Multiply two numbers<br>- <strong>CMP</strong>: Compare two values<br>- <strong>JMP</strong>: Jump to a different location in code<br>- <strong>LOAD</strong>: Read data from memory<br>- <strong>STORE</strong>: Write data to memory<br><br>These instructions can be written in <em>assembly language</em> (human-readable text like \"ADD R1, R2, R3\"), but the CPU actually executes them as binary machine code (e.g., 0x4A320001). The assembler translates assembly text to binary.",
+        "text": "The ISA defines, along <em>many</em> other things, both the text and the binary representation of the machine instructions.<br><br>The text-form is used to write programs directly in machine language, which takes the name of <strong>assembly language</strong>. To execute it on the CPU, it then needs to be translated via an <em>assembler</em>, to the binary representation.<br><br>Some of the most common CPU instructions are:<br><em>(R = CPU register)</em><br>- <strong>ADD R1, R2, R3</strong>: (R1 = R2 + R3)<br>- <strong>MUL R1, R2, R3</strong>: (R1 = R2 × R3)<br>- <strong>CMP R1, R2</strong>: Compare two values<br>- <strong>JMP 0x1000</strong>: Jump to the given memory address",
         "media": ""
     },
     "ES": {
         "text": "Embedded System",
+        "media": ""
+    },
+    "CU": {
+        "text": "Computational Unit",
         "media": ""
     },
     "heat_seeking_missile": {
@@ -47,7 +51,7 @@
         "alt": ""
     },
     "IC": {
-        "text": "<strong>Integrated Circuit</strong><br><br>A set of electronic circuits on a small flat piece of semiconductor material (usually silicon). An IC can contain billions of transistors, resistors, and capacitors working together to perform complex functions.",
+        "text": "<strong>Integrated Circuit</strong><br><br>A set of electronic circuits on a small flat piece of semiconductor material (usually silicon). An IC can contain billions of transistors, resistors, and capacitors working together to perform complex functions.<br><br><em>Shown below, a die shot of the <a href=\"https://en.wikipedia.org/wiki/Electronics_industry_in_the_Socialist_Republic_of_Romania#History\" target=\"_blank\">CII 72</a>, which comprises two voltage comparators with separate differential inputs</em>",
         "media": "CII_72_silicon_die.jpg"
     },
     "electronic": {
@@ -67,7 +71,7 @@
         "media": ""
     },
     "target_fpga_model": {
-        "text": "Different FPGAs have different architectures and resources available (number of logic blocks, RAM blocks, etc.), so they need different configurations to yield the same result.",
+        "text": "Different FPGAs have different architectures and resources available (number of CLBs, RAM blocks, etc.), so they need different configurations to yield the same result.",
         "media": ""
     },
     "synthesis_toolchain": {
@@ -116,6 +120,10 @@
     },
     "intermediate_circuitry_output": {
         "text": "<strong>Intermediate Circuitry for Outputs</strong><br><br>Sometimes output devices can't be driven directly by the computational unit and need interface circuitry in between.<br><br>For example, high-power LEDs require much more current than a microcontroller pin can provide (typically 20-40mA max). An <em>LED driver</em> circuit takes the low-power control signal from the MCU and uses it to switch higher currents (hundreds of mA or more) through the LED safely.",
+        "media": ""
+    },
+    "dsp_example": {
+        "text": "Think of the electronics that controls a RADAR, for example",
         "media": ""
     }
 }
