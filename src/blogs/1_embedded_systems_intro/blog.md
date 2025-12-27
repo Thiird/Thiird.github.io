@@ -71,7 +71,7 @@ Some <span tt="ES">ES</span> examples are:
 - <span tt="keyboard">computer keyboard</span>
 - <span tt="wrist_clock">digital wrist clock</span>
 - <span tt="ECU">the computer inside cars</span>
-- <span tt="SAM_computer">the guidance system of a surface to air missile</span>
+- <span tt="soviet_seeker">the guidance system of a surface to air missile</span>
 
 <h2 id="why-embedded">1.1 Why <em>'embedded'</em>?</h2>
 Embedded Systems is basically applied electronics. Such electronics can't be handed to the customer as it is, it first needs to be integrated, e.g. embedded, in some kind of enclosure, hence the term embedded system.
@@ -185,7 +185,7 @@ In the embedded world, we use the term <em>software</em> to refer to both the hi
 
 In particular, we refer to the former as <em>embedded software</em> and the latter as just <em>software</em>.
 
-Embedded software is about <en>on-device</en> user-space application development and the system programming required to support those.
+Embedded software is about <en>on-device</en>, user-space application development and the system programming required to support those.
 
 Software is about <en>off-device</en> code that adds extra functionality to the device, and it's often about making it easier to interact with it.
 
