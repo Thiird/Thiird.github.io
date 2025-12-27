@@ -68,15 +68,15 @@ Embedded Systems, (<span tt="ES">ES</span>), is an application field that merges
 While all embedded systems are computers, not all computers are embedded systems: general-purpose computers like desktop PCs, laptops, and smartphones are not considered embedded systems.
 
 Some <span tt="ES">ES</span> examples are:
-- <span tt="keyboard">computer keyboard</span>
-- <span tt="wrist_clock">digital wrist clock</span>
-- <span tt="ECU">the computer inside cars</span>
-- <span tt="soviet_seeker">the guidance system of a surface to air missile</span>
+- <span tt="awareness_keyboard">computer keyboard</span>
+- <span tt="casio_watch">digital wrist clock</span>
+- <span tt="ecu">the computer inside cars</span>
+- <span tt="soviet_seeker">the infrared seeker of an air-to-air missile</span>
 
 <h2 id="why-embedded">1.1 Why <em>'embedded'</em>?</h2>
-Embedded Systems is basically applied electronics. Such electronics can't be handed to the customer as it is, it first needs to be integrated, e.g. embedded, in some kind of enclosure, hence the term embedded system.
+Embedded Systems is basically applied electronics. Such electronics can't be handed to the customer as it is, it first needs to be integrated, e.g. embedded, <span tt="embedded">in some kind of enclosure</span>, hence the term embedded system.
 
-<h1 id="how-is-it-made">2. How it is made</h1>
+<h1 id="how-is-it-made">2. How is it made</h1>
 An embedded system is made of three main elements:
 
 - <strong>Hardware</strong>: The electronics and the mechanical components 
@@ -113,7 +113,7 @@ In the case of a desktop mouse, the input elements are the buttons, scroll wheel
 
 This is the core of the system, this is where the actual computation is performed.
 
-Computational Units, <span tt="CU">CUs</span> from now on, are <span tt="IC">integrated circuits</span> that implement some kind of computer.
+Computational Units, <span tt="CU">CU</span>s from now on, are <span tt="IC">integrated circuits</span> that implement some kind of computer.
 
 There are several different kinds of computational units, so let's start from the one present in desktop PCs: the CPU.
 
@@ -185,9 +185,9 @@ In the embedded world, we use the term <em>software</em> to refer to both the hi
 
 In particular, we refer to the former as <em>embedded software</em> and the latter as just <em>software</em>.
 
-Embedded software is about <en>on-device</en>, user-space application development and the system programming required to support those.
+Embedded software is about <em>on-device</em>, user-space application development and the system programming required to support those.
 
-Software is about <en>off-device</en> code that adds extra functionality to the device, and it's often about making it easier to interact with it.
+Software is about <em>off-device</em> code that adds extra functionality to the device, and it's often about making it easier to interact with it.
 
 All of this is different from firmware, as software uses operating system APIs and libraries rather than directly controlling hardware to provide high-level functionalities. Also, being applications running in an operative system, software is much easier to update, as a simple change of the executable file is often the only thing needed.
 
@@ -228,7 +228,7 @@ Soldering is a fundamental skill in embedded systems. You'll use it to:
 
 In industrial settings, the soldering process is automated by a <span tt="soldering_robot">soldering-iron-wielding robot</span> or by using <span tt="reflow_ovens">reflow-ovens</span>.
 
-<h2 id="power-supply">Power Supply</h2>
+<h2 id="power-supply">3.3 Power Supply</h2>
 
 Electronics need power to function. Some boards need 24 Volts, some need 5V, some need 3.3V. A bench [power supply](https://en.wikipedia.org/wiki/Power_supply) is a voltage and current source that can be set to specific values, allowing you to power your embedded system during development and testing.
 
@@ -241,7 +241,7 @@ Unlike wall adapters or USB power bricks, a bench power supply allows you to:
 
 <h2 id="oscilloscope">3.4 Oscilloscope</h2>
 
-We have talked about how a multimeter can take instantaneous measurements of voltage, current, etc. This is very useful, but it's only useful for circuits with very simple behaviors. What if our system is more complex? In that case, to fully visualize the behavior of the system we need an  [oscilloscope](https://en.wikipedia.org/wiki/Oscilloscope) comes in, which is a tool used to graph voltage over time.
+We have talked about how a multimeter can take instantaneous measurements of voltage, current, etc. This is very useful, but it's only useful for circuits with very simple behaviors. What if our system is more complex? In that case, to fully visualize the behavior of the system we need an [oscilloscope](https://en.wikipedia.org/wiki/Oscilloscope), which is a tool used to graph voltage over time.
 
 By doing that we can perform:
 - [<strong>Signal integrity</strong>](https://en.wikipedia.org/wiki/Signal_integrity) analysis: Check for noise, ringing, overshoot, or distortion on your signals

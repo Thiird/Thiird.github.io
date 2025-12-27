@@ -4,22 +4,22 @@
         "media": "",
         "alt": ""
     },
-    "keyboard": {
+    "awareness_keyboard": {
         "text": "",
-        "media": "pic.png",
+        "media": "awareness_keyboard.gif",
         "alt": ""
     },
-    "wrist_clock": {
+    "casio_watch": {
         "text": "",
-        "media": "pic.jpg",
+        "media": "casio_watch.png",
         "alt": ""
     },
-    "ECU": {
+    "ecu": {
         "text": "",
-        "media": "kb.gif",
+        "media": "ecu.jpg",
         "alt": ""
     },
-    "SAM_computer": {
+    "soviet_seeker": {
         "text": "",
         "media": "soviet_seeker.gif",
         "alt": ""
@@ -47,7 +47,12 @@
     },
     "PCB": {
         "text": "",
-        "media": "",
+        "media": "awareness_macropad_pcb.jpg",
+        "alt": ""
+    },
+    "embedded": {
+        "text": "",
+        "media": "embedded.gif",
         "alt": ""
     },
     "IC": {
