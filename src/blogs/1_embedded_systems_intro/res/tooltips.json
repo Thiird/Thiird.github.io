@@ -125,5 +125,21 @@
     "dsp_example": {
         "text": "Think of the electronics that controls a RADAR, for example",
         "media": ""
+    },
+    "firmware_unchanged": {
+        "text": "This is because:<br>- The code directly controls the hardware, and the hardware doesn't change<br>- Specialized tools are needed to program embedded devices, end users don't have them",
+        "media": ""
+    },
+    "bare_metal_example": {
+        "text": "A single line of code can change the voltage level of a single pin of a microcontroller, allowing it, for example, to toggle an LED.",
+        "media": ""
+    },
+    "hardware_capabilities": {
+        "text": "Think of systems with many cores, many peripherals",
+        "media": ""
+    },
+    "system_logic": {
+        "text": "Multiple input/output data streams over many different communication protocols",
+        "media": ""
     }
 }

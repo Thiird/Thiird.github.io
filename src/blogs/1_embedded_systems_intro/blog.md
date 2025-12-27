@@ -171,11 +171,13 @@ In the case of a desktop mouse, the output of the system is the buttons and moti
 
 <h2 id="firmware">2.2 Firmware</h2>
 
-Firmware is the code that runs directly on the computational unit (MCU, CPU, or FPGA), without an operating system in between. It's called firmware and not software because it's typically written once and remains mostly unchanged for the lifetime of the product. Think about how many times you updated your HVAC firmware, right, you never did.
+Firmware is the low-level code that runs on the CU and directly controls the hardware: it configures registers, handles interrupts, manages timers, and interfaces with peripherals.
 
-Firmware is low-level code that directly controls the hardware: it configures registers, manages interrupts, handles timers, and interfaces with peripherals. There's no abstraction layer like you'd find in desktop applications. When you write firmware, you're programming the bare metal.
+It's called <em>firm</em> and not <em>soft</em>(ware) because <span tt="firmware_unchanged">it's typically written once and remains mostly unchanged for the lifetime of the product</span>.
 
-For example, the firmware in your computer keyboard reads which keys are pressed, debounces the switches, and sends the appropriate USB signals to your PC. It runs the same code every single time you press a key, without any operating system.
+Firmware programming is mostly characterized by the absence of an operating system. The absence of an abstraction layer between the code and its effect is called <em>bare metal</em> programming, <span tt="bare_metal_example">as single lines of code result in measurable changes in reality.</span> This is not always the case. Modern embedded systems can be quite complicated, both in the <span tt="hardware_capabilities">hardware capabilities</span> and the <span tt="system_logic">logic of the system</span>, so a minimal operating system can be used to aid the programmer in managing the system. These operative systems provide minimal abstraction over the hardware, allowing the programmer to make full and efficient use of the capabilities of the system by using constructs like threads and work queues.
+
+Some examples of such opeartive systems are <a href="https://www.freertos.org/" target="_blank">FreeRTOS</a> and <a href="https://www.zephyrproject.org/" target="_blank">Zephyr</a>.
 
 <h2 id="software">2.3 Software</h2>
 
