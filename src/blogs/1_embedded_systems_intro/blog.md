@@ -177,34 +177,36 @@ It's called <em>firm</em> and not <em>soft</em>(ware) because <span tt="firmware
 
 Firmware programming is mostly characterized by the absence of an operating system. The absence of an abstraction layer between the code and its effect is called <em>bare metal</em> programming, <span tt="bare_metal_example">as single lines of code result in measurable changes in reality.</span> This is not always the case. Modern embedded systems can be quite complicated, both in the <span tt="hardware_capabilities">hardware capabilities</span> and the <span tt="system_logic">logic of the system</span>, so a minimal operating system can be used to aid the programmer in managing the system. These operative systems provide minimal abstraction over the hardware, allowing the programmer to make full and efficient use of the capabilities of the system by using constructs like threads and work queues.
 
-Some examples of such opeartive systems are <a href="https://www.freertos.org/" target="_blank">FreeRTOS</a> and <a href="https://www.zephyrproject.org/" target="_blank">Zephyr</a>.
+Some examples of such operative systems are <a href="https://www.freertos.org/" target="_blank">FreeRTOS</a> and <a href="https://www.zephyrproject.org/" target="_blank">Zephyr</a>.
 
 <h2 id="software">2.3 Software</h2>
 
-In the embedded world, when we say "software" (as opposed to firmware), we're usually talking about higher-level code that runs on top of an operating system like Linux or Android. This is different from firmware in several ways:
+In the embedded world, we use the term <em>software</em> to refer to both the high-level code running on-device, on top of a full fledged operative system like Linux or Android, and the code running off-device that interacts with the embedded device.
 
-- <strong>Abstraction level</strong>: Software uses operating system APIs and libraries rather than directly controlling hardware
-- <strong>Update frequency</strong>: Software can get updated more frequently and more easily, as there is no need to know the intricacies of the hardware
+In particular, we refer to the former as <em>embedded software</em> and the latter as just <em>software</em>.
 
-For example, a Raspberry Pi running a web server to control your home automation is running software on Linux. The same Pi also has firmware to read data from the humidity and temperature sensor.
+Embedded software is about <en>on-device</en> user-space application development and the system programming required to support those.
 
-Modern embedded products often use both: firmware handles low level hardware facing functionalities (like reading sensors or controlling motors), while software handles user interfaces, network communication, and business logic.
+Software is about <en>off-device</en> code that adds extra functionality to the device, and it's often about making it easier to interact with it.
+
+All of this is different from firmware, as software uses operating system APIs and libraries rather than directly controlling hardware to provide high-level functionalities. Also, being applications running in an operative system, software is much easier to update, as a simple change of the executable file is often the only thing needed.
+
+Complex embedded products use both: firmware handles low level hardware functionalities (like reading sensors or controlling motors), while software handles the user-level applications, like graphical interfaces and networking.
 
 An example is a modern bench power supply: the firmware precisely controls the voltage and current settings based on the front panel buttons and dials, while the software provides a web interface for remote control and configuration. You might update the software to add new features, but the firmware remains stable (unless a bug is found) as the front panel is always the same.
 
-Note that code running on real-time operating systems like [FreeRTOS](https://en.wikipedia.org/wiki/FreeRTOS) and [Zephyr](https://en.wikipedia.org/wiki/Zephyr_(operating_system)) is still considered firmware, as these OSs provide very minimal abstraction and you're still programming close to the hardware, configuring registers and managing peripherals directly.
+Note that code running on real-time operating systems like [FreeRTOS](https://en.wikipedia.org/wiki/FreeRTOS) and [Zephyr](https://en.wikipedia.org/wiki/Zephyr_(operating_system)) is still considered firmware, as these OSs provide very minimal abstraction and you're still programming close to the hardware.
 
 <h1 id="tools-of-the-trade">3. Tools of the trade</h1>
 
 If you work in embedded systems, you cannot be scared of electronics. You'll be working directly with circuits, components, and electrical signals on a daily basis. Understanding how to safely handle, test, and debug electronic systems is fundamental to the job.
 
-Having the right tools and knowing how to use them is just as important as knowing how to write code. While software engineers have their IDEs and debuggers, embedded systems engineers have their lab equipment. These tools allow you to see what's actually happening in your circuit by measuring voltages, observing signal waveforms, and diagnosing hardware issues that no amount of code inspection can reveal.
+Having the right tools and knowing how to use them is just as important as knowing how to write code. While software engineers have their IDEs and debuggers, embedded systems engineers have their lab equipment. These tools allow you to see what's actually happening in your circuit, allowing you to diagnose hardware issues that no amount of code can reveal.
 
-Let's go through the essential tools you'll need to get started.
+Let's go through the essential tools used on the job.
 
 <strong>Caution:</strong>  
-If you have never handled electronics before, stick to low-energy components like cell batteries and LEDs.  
-You can burn your house down or hurt yourself pretty badly with electronics.  
+If you have never handled electronics before, stick to low-energy components like cell batteries and LEDs. You can burn your house down or hurt yourself pretty badly with electronics.  
 The best way to get started is having someone in person showing you the basics, but don't be afraid to try on your own.
 
 <h2 id="multimeter">3.1 Multimeter</h2>
