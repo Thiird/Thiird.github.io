@@ -102,23 +102,23 @@
     },
     "soldering_iron": {
         "text": "",
-        "media": "soldering_iron.gif",
-        "alt": ""
+        "media": "soldering_iron.jpg",
+        "alt": "https://www.aixuntech.com/"
     },
     "soldering_robot": {
         "text": "",
         "media": "soldering_robot.gif",
-        "alt": ""
+        "alt": "Weller youtube channel"
     },
-    "reflow_ovens": {
-        "text": "<strong>Reflow Ovens</strong><br><br>Industrial ovens that heat PCBs with pre-applied solder paste to precisely controlled temperatures, melting the solder and creating permanent connections between components and the board. Commonly used in mass production of electronics.",
-        "media": "reflow_ovens.gif",
-        "alt": ""
+    "reflow_oven": {
+        "text": "<strong>Reflow Oven</strong><br><br>Industrial ovens that heat PCBs with pre-applied solder paste to precisely controlled temperatures, melting the solder and creating permanent connections between components and the board. Commonly used in mass production of electronics.",
+        "media": "reflow_oven.jpg",
+        "alt": "https://en.wikipedia.org/wiki/Reflow_oven"
     },
     "perfboard": {
-        "text": "<strong>Perfboard</strong><br><br>A prototyping board with pre-drilled holes arranged in a grid pattern. Components are inserted from one side and soldered on the other, with connections made by soldering component leads together or using wire jumpers. Unlike breadboards, perfboard connections are permanent.",
-        "media": "perfboard.png",
-        "alt": ""
+        "text": "<strong>Perfboard</strong><br><br>A prototyping board with pre-drilled holes arranged in a grid pattern. Components are inserted from one side and soldered on the other, with connections made by soldering component leads together or using wire jumpers.",
+        "media": "perfboard.gif",
+        "alt": "https://www.bestpcbs.com/, https://electronics.stackexchange.com/"
     },
     "intermediate_circuitry_input": {
         "text": "<strong>Intermediate Circuitry for Inputs</strong><br><br>Sometimes sensors can't connect directly to the computational unit and need interface circuitry in between.<br><br>For example, to measure a 12V battery voltage with a microcontroller that only tolerates 3.3V on its pins, you'd use a <em>voltage divider</em> - two resistors in series that scale down the voltage to a safe range (e.g., 12V → 3V) before connecting to the MCU's analog input pin.",
