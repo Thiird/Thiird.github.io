@@ -2209,6 +2209,17 @@ class TooltipManager {
         mediaEl.alt = data.text || 'Tooltip media';
         mediaEl.onerror = () => { };
         content.appendChild(mediaEl);
+        
+        // Add alt text below image in italics if it exists
+        if (data.alt) {
+          const altText = document.createElement('div');
+          altText.className = 'tooltip-alt';
+          altText.style.fontStyle = 'italic';
+          altText.style.marginTop = '8px';
+          altText.style.fontSize = '0.9em';
+          altText.innerHTML = data.alt;
+          content.appendChild(altText);
+        }
       }
     }
 
@@ -2518,6 +2529,17 @@ class TooltipManager {
 
       imageContainer.appendChild(img);
       zoomedTooltip.appendChild(imageContainer);
+      
+      // Add alt text below image in italics if it exists
+      if (tooltipData && tooltipData.alt) {
+        const altTextEl = document.createElement('div');
+        altTextEl.className = 'tooltip-zoomed-alt';
+        altTextEl.style.fontStyle = 'italic';
+        altTextEl.style.marginTop = '12px';
+        altTextEl.style.fontSize = '0.95em';
+        altTextEl.innerHTML = tooltipData.alt;
+        zoomedTooltip.appendChild(altTextEl);
+      }
     }
 
     // Close handlers

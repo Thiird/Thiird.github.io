@@ -2071,13 +2071,13 @@ pre code {
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-  max-width: 80vw;
-  max-height: 80vh;
+  max-width: 90vw;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
   gap: 15px;
   cursor: auto;
-  overflow: auto;
+  overflow-y: auto;
 }
 
 .tooltip-zoomed-text {
@@ -2094,12 +2094,13 @@ pre code {
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  flex-shrink: 1;
+  min-height: 0;
 }
 
 .tooltip-zoomed-image {
-  max-width: calc(80vw - 40px);
-  max-height: calc(80vh - 40px);
+  max-width: 100%;
+  max-height: calc(90vh - 120px);
   width: auto;
   height: auto;
   border-radius: 4px;

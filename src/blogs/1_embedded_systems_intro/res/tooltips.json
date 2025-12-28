@@ -84,20 +84,21 @@
         "media": ""
     },
     "vias": {
-        "text": "<strong>Vias</strong><br><br>Small plated holes that connect copper traces on different layers of a PCB, allowing electrical signals to pass between layers.",
-        "media": ""
+        "text": "<strong><a href=\"https://en.wikipedia.org/wiki/Via_(electronics)\" target=\"_blank\">Vias</a></strong><br><br>Small plated holes that connect copper traces on different layers of a PCB, allowing electrical signals to pass between layers.",
+        "media": "vias.png",
+        "alt": "Taken from https://www.vse.com/blog/how-are-pcb-vias-plated/"
     },
     "resistors": {
-        "text": "<strong>Resistors</strong><br><br>Electronic components that resist the flow of electrical current, used to control voltage and current levels in a circuit.",
-        "media": ""
+        "text": "<strong>Resistors</strong><br><br>Electrical components that resist the flow of electrical current, used to control voltage and current levels in a circuit.",
+        "media": "resistors.jpg"
     },
     "capacitors": {
-        "text": "<strong>Capacitors</strong><br><br>Electronic components that store electrical energy in an electric field, used for filtering, timing, and energy storage applications.",
-        "media": ""
+        "text": "<strong>Capacitors</strong><br><br>Electrical components that store electrical energy in an electric field, used for filtering, timing, and energy storage applications.",
+        "media": "capacitors.jpg"
     },
     "connectors": {
         "text": "<strong>Connectors</strong><br><br>Physical interfaces that allow electrical connections to be made and broken between different parts of a system, such as USB ports, pin headers, and terminal blocks.",
-        "media": ""
+        "media": "connectors.gif"
     },
     "soldering_iron": {
         "text": "",
@@ -128,7 +129,7 @@
         "media": ""
     },
     "dsp_example": {
-        "text": "Think of the electronics that controls a RADAR, for example",
+        "text": "Think of the electronics that controls a RADAR, for example.",
         "media": ""
     },
     "firmware_unchanged": {
@@ -140,11 +141,13 @@
         "media": ""
     },
     "hardware_capabilities": {
-        "text": "Think of systems with many cores, many peripherals",
+        "text": "Think of systems with many cores, many peripherals.",
         "media": ""
     },
     "system_logic": {
-        "text": "Multiple input/output data streams over many different communication protocols",
-        "media": ""
-    }
+        "text": "Think of a system that is handling multiple input/output data streams over many different communication protocols.",
+        "media": ""    },
+    "bench_power_supply_example": {
+        "text": "An example is a modern bench power supply: the firmware controls the voltage and current settings based on the front panel buttons and dials, while the software exposes a web interface for remote control and configuration. You might update the software to add new features, but the firmware remains stable (unless a bug is found) as the front panel is always the same.",
+        "media": ""    }
 }

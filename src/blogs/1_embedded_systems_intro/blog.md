@@ -181,7 +181,7 @@ Some examples of such operative systems are <a href="https://www.freertos.org/" 
 
 <h2 id="software">2.3 Software</h2>
 
-In the embedded world, we use the term <em>software</em> to refer to both the high-level code running on-device, on top of a full fledged operative system like Linux or Android, and the code running off-device that interacts with the embedded device.
+In the embedded world, we use the term <em>software</em> to refer to both the high-level code running <em>on-device</em>, on top of a full fledged operative system like Linux or Android, and the code running <em>off-device</em> that interacts with the embedded device.
 
 In particular, we refer to the former as <em>embedded software</em> and the latter as just <em>software</em>.
 
@@ -191,9 +191,7 @@ Software is about <em>off-device</em> code that adds extra functionality to the 
 
 All of this is different from firmware, as software uses operating system APIs and libraries rather than directly controlling hardware to provide high-level functionalities. Also, being applications running in an operative system, software is much easier to update, as a simple change of the executable file is often the only thing needed.
 
-Complex embedded products use both: firmware handles low level hardware functionalities (like reading sensors or controlling motors), while software handles the user-level applications, like graphical interfaces and networking.
-
-An example is a modern bench power supply: the firmware precisely controls the voltage and current settings based on the front panel buttons and dials, while the software provides a web interface for remote control and configuration. You might update the software to add new features, but the firmware remains stable (unless a bug is found) as the front panel is always the same.
+<span tt="bench_power_supply_example">Complex embedded products use both</span>: firmware handles low level hardware functionalities (like reading sensors or controlling motors), while software handles the user-level applications, like graphical interfaces and networking.
 
 Note that code running on real-time operating systems like [FreeRTOS](https://en.wikipedia.org/wiki/FreeRTOS) and [Zephyr](https://en.wikipedia.org/wiki/Zephyr_(operating_system)) is still considered firmware, as these OSs provide very minimal abstraction and you're still programming close to the hardware.
 
@@ -228,7 +226,7 @@ Soldering is a fundamental skill in embedded systems. You'll use it to:
 
 In industrial settings, the soldering process is automated by a <span tt="soldering_robot">soldering-iron-wielding robot</span> or by using <span tt="reflow_ovens">reflow-ovens</span>.
 
-<h2 id="power-supply">3.3 Power Supply</h2>
+<h2 id="power-supply">Power Supply</h2>
 
 Electronics need power to function. Some boards need 24 Volts, some need 5V, some need 3.3V. A bench [power supply](https://en.wikipedia.org/wiki/Power_supply) is a voltage and current source that can be set to specific values, allowing you to power your embedded system during development and testing.
 
@@ -241,7 +239,7 @@ Unlike wall adapters or USB power bricks, a bench power supply allows you to:
 
 <h2 id="oscilloscope">3.4 Oscilloscope</h2>
 
-We have talked about how a multimeter can take instantaneous measurements of voltage, current, etc. This is very useful, but it's only useful for circuits with very simple behaviors. What if our system is more complex? In that case, to fully visualize the behavior of the system we need an [oscilloscope](https://en.wikipedia.org/wiki/Oscilloscope), which is a tool used to graph voltage over time.
+We have talked about how a multimeter can take instantaneous measurements of voltage, current, etc. This is very useful, but it's only useful for circuits with very simple behaviors. What if our system is more complex? In that case, to fully visualize the behavior of the system we need an  [oscilloscope](https://en.wikipedia.org/wiki/Oscilloscope) comes in, which is a tool used to graph voltage over time.
 
 By doing that we can perform:
 - [<strong>Signal integrity</strong>](https://en.wikipedia.org/wiki/Signal_integrity) analysis: Check for noise, ringing, overshoot, or distortion on your signals
