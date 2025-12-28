@@ -30,9 +30,10 @@ Let's dive in!
       <ul class="index-subsection">
         <li><a href="#hardware">2.1 Hardware</a>
           <ul class="index-subsection">
-            <li><a href="#input-elements">2.1.1 Input Elements</a></li>
+            <li><a href="#input-elements">2.1.1 Input Components</a></li>
             <li><a href="#computational-unit">2.1.2 Computational Unit</a></li>
-            <li><a href="#output-elements">2.1.3 Output Elements</a></li>
+            <li><a href="#output-elements">2.1.3 Output Components</a></li>
+            <li><a href="#support-components">2.1.4 Support Components</a></li>
           </ul>
         </li>
         <li><a href="#firmware">2.2 Firmware</a></li>
@@ -62,7 +63,7 @@ Let's dive in!
 
 <h1 id="what-is-it">1. What's an Embedded System?</h1>
 <div class="highlight-box">
-Embedded Systems, (<span tt="ES">ES</span>), is an application field that merges computer science, electrical engineering and mechanical engineering to create <span tt="electronic">electronic</span> systems for <strong>specific</strong> use cases.
+Embedded Systems (<span tt="ES">ES</span>), is an application field that merges computer science, electrical engineering and mechanical engineering to create <span tt="electronic">electronic</span> systems for <strong>specific</strong> use cases.
 </div>
 
 While all embedded systems are computers, not all computers are embedded systems: general-purpose computers like desktop PCs, laptops, and smartphones are not considered embedded systems.
@@ -81,33 +82,34 @@ An embedded system is made of three main elements:
 
 - <strong>Hardware</strong>: The electronics and the mechanical components 
 - <strong>Firmware</strong>: Low-level code running directly on the hardware, controlling its basic functionalities 
-- <strong>Software</strong>: Higher-level code that runs on or communicates with the <span tt="ES">ES</span> to implement extra functionalities
+- <strong>Software</strong>: Higher-level code that runs on or communicates with the <span tt="ES">ES</span> to implement higher-level functionalities
 
 The hardware provides the physical platform, the firmware controls it directly, and the software (when present) adds higher-level functionality.
 
-Consider a desktop mouse as an example: the hardware is the circuit board with its buttons, scroll wheel, and motion sensor, the firmware is the code that runs on the circuit board, interpreting the signals from these components and sending them off the device, and the software is, for example, the application running on your desktop PC that allows the user to adjust the mouse sensitivity. All is left to do is to design a plastic enclosure in which to embed the circuit board into, so that the user can easily and comfortably hold and operate the mouse.
+Consider a desktop mouse as an example: the hardware is the circuit board with its buttons, scroll wheel, and motion sensor, the firmware is the code that runs on the circuit board, interpreting the signals from these components and sending them off the device, and the software is, for example, the application running on your desktop PC that allows the user to adjust the mouse sensitivity. All is left to do is to design a plastic enclosure in which to embed the circuit board into, so that the user can easily and comfortably operate the mouse.
 
 <h2 id="hardware">2.1 Hardware</h2>
 
-The core of an <span tt="ES">ES</span> is the electronic hardware. There can be an <span tt="ES">ES</span> without any software or mechanical engineering involved, but there can't be an <span tt="ES">ES</span> without electronics.
+The core of an <span tt="ES">ES</span> is the electronic hardware.
 
 The electronics is consolidated in a single assembly called <span tt="PCB">Printed Circuit Board</span> (PCB). A PCB it's an assembly made of alternating layers of insulating material (usually fiberglass) and copper, where the copper layers has been precisely etched/milled to leave behind only individual traces, which connect the different electronic components together. Traces on different layers are connected with <span tt="vias">vias</span>. Components like integrated circuits, <span tt="resistors">resistors</span>, <span tt="capacitors">capacitors</span>, and <span tt="connectors">connectors</span> are [soldered](#soldering-iron) onto the traces to wire them together.  
 
-The PCB is the physical heart of any embedded system, it's where all the magic happens. Building electronics without PCBs would require a mess of wires connecting components, which would be unreliable and impossible to automate for mass production.
+The PCB is the physical heart of any embedded system, it's where all the magic happens. Building electronics without PCBs would require a mess of wires connecting components, which would make it impossible to automate the production process for mass production.
 
-Functionally speaking, all the hardware elements of an <span tt="ES">ES</span> fall into one of three categories:
+Functionally speaking, the components on a PCB fall into one of four categories:
 
-- <strong>input elements</strong>
+- <strong>input components</strong>
 - <strong>computational unit</strong>
-- <strong>output elements</strong>
+- <strong>output components</strong>
+- <strong>support components</strong>
 
-<h3 id="input-elements">2.1.1 Input Elements</h3>
+<h3 id="input-elements">2.1.1 Input Components</h3>
 
 Think of a button, dial, touch screen, a receiving antenna, magnetic sensor, light sensor, humidity sensor: anything that can produce electrical signals that describe the surrounding environment.
 
-All of these devices are connected, either directly or <span tt="intermediate_circuitry_input">through intermediate circuitry</span>, to the computational unit.
+All of these devices are connected, either directly or [through intermediate circuitry](#support-components), to the computational unit.
 
-In the case of a desktop mouse, the input elements are the buttons, scroll wheel and motion sensor.
+In the case of a desktop mouse, the input components are the buttons, scroll wheel and motion sensor.
 
 <h3 id="computational-unit">2.1.2 Computational Unit</h3>
 
@@ -159,15 +161,25 @@ When discussing CPUs, we use terms like "software" and "programming", which are 
   <li id="fpga-software"><strong>FPGA software:</strong> The software of FPGAs is code written in a <a href="https://en.wikipedia.org/wiki/Hardware_description_language" target="_blank">Hardware Description Language</a> (HDL), like Verilog or VHDL, that gets <strong>synthesized</strong> to a bitstream and then used to configure the CLBs in the FPGA to implement a certain function. The resulting bitstream depends on the input HDL code, <span tt="target_fpga_model">the target FPGA model</span>, and <span tt="synthesis_toolchain">the synthesis toolchain used</span>.</li>
 </ul>
 
-<h3 id="output-elements">2.1.3 Output Elements</h3>
+<h3 id="output-elements">2.1.3 Output Components</h3>
 
 Output elements are how the <span tt="ES">ES</span> talks back to you or to other systems.
 
 Think of LEDs, displays (LCD, OLED, seven-segment, e-paper), buzzers, speakers, motors (DC, stepper, servo), relays, heating elements, and communication outputs like WiFi, Bluetooth.
 
-All of these devices are controlled, either directly or <span tt="intermediate_circuitry_output">through intermediate circuitry</span>, by the <span tt="CU">CU</span>.
+All of these devices are controlled, either directly or [through intermediate circuitry](#support-components), by the <span tt="CU">CU</span>.
 
 In the case of a desktop mouse, the output of the system is the buttons and motion data encoded as USB or Bluetooth packets sent to whatever the mouse is connected to.
+
+<h3 id="support-components">2.1.4 Support Components</h3>
+
+Support components don't directly participate in sensing, computing, or actuating, but provide the necessary electrical environment for the system to [power on](#voltage-regulators), [function properly](#passive-components) and [maintain reliability](#protection-circuits) across all intended operating conditions.
+
+These include:
+
+- <strong id="voltage-regulators">Voltage regulators:</strong> they convert whatever input voltage you have to the specific voltages required by different parts of the circuit.
+- <strong id="passive-components">Passive components:</strong> <span tt="resistors">resistors</span>, <span tt="capacitors">capacitors</span>, and inductors that filter noise and set timing constants.
+- <strong id="protection-circuits">Protection circuits:</strong> <span tt="ESD_protection">ESD protection</span>, <span tt="reverse_polarity_protection">reverse polarity protection</span>, <span tt="overcurrent_protection">overcurrent protection</span>  
 
 <h2 id="firmware">2.2 Firmware</h2>
 
