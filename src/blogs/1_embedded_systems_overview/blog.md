@@ -31,7 +31,7 @@ Let's dive in!
         <li><a href="#hardware">2.1 Hardware</a>
           <ul class="index-subsection">
             <li><a href="#input-elements">2.1.1 Input Components</a></li>
-            <li><a href="#computational-unit">2.1.2 Computational Unit</a></li>
+            <li><a href="#computational-unit">2.1.2 Computational Units</a></li>
             <li><a href="#output-elements">2.1.3 Output Components</a></li>
             <li><a href="#support-components">2.1.4 Support Components</a></li>
           </ul>
@@ -92,14 +92,14 @@ Consider a desktop mouse as an example: the hardware is the circuit board with i
 
 The core of an <span tt="ES">ES</span> is the electronic hardware.
 
-The electronics is consolidated in a single assembly called <span tt="PCB">Printed Circuit Board</span> (PCB). A PCB it's an assembly made of alternating layers of insulating material (usually fiberglass) and copper, where the copper layers has been precisely etched/milled to leave behind only individual traces, which connect the different electronic components together. Traces on different layers are connected with <span tt="vias">vias</span>. Components like integrated circuits, <span tt="resistors">resistors</span>, <span tt="capacitors">capacitors</span>, and <span tt="connectors">connectors</span> are [soldered](#soldering-iron) onto the traces to wire them together.  
+The electronics is consolidated in a single assembly called <span tt="PCB_image">Printed Circuit Board</span> (<span tt="PCB">PCB</span>). A <span tt="PCB">PCB</span> is an assembly made of alternating layers of insulating material (usually fiberglass) and copper, where the copper layers has been precisely etched/milled to leave behind only individual traces, which connect the different electronic components together. Traces on different layers are connected with <span tt="vias">vias</span>. Components like <span tt="chip">chips</span>, <span tt="resistors">resistors</span>, <span tt="capacitors">capacitors</span>, and <span tt="connectors">connectors</span> are [soldered](#soldering-iron) onto the traces to wire them together.  
 
-The PCB is the physical heart of any embedded system, it's where all the magic happens. Building electronics without PCBs would require a mess of wires connecting components, which would make it impossible to automate the production process for mass production.
+The <span tt="PCB">PCB</span> is the physical heart of any embedded system, it's where all the magic happens. Building electronics without <span tt="PCB">PCB</span>s would require a mess of wires connecting components, which would make it impossible to automate the production process for mass production.
 
-Functionally speaking, the components on a PCB fall into one of four categories:
+Functionally speaking, the components on a <span tt="PCB">PCB</span> fall into one of four categories:
 
 - <strong>input components</strong>
-- <strong>computational unit</strong>
+- <strong>computational units</strong>
 - <strong>output components</strong>
 - <strong>support components</strong>
 
@@ -111,23 +111,25 @@ All of these devices are connected, either directly or [through intermediate cir
 
 In the case of a desktop mouse, the input components are the buttons, scroll wheel and motion sensor.
 
-<h3 id="computational-unit">2.1.2 Computational Unit</h3>
+<h3 id="computational-unit">2.1.2 Computational Units</h3>
 
 This is the core of the system, this is where the actual computation is performed.
 
 Computational Units, <span tt="CU">CU</span>s from now on, are <span tt="IC">integrated circuits</span> that implement some kind of computer.
 
-There are several different kinds of computational units, so let's start from the one present in desktop PCs: the CPU.
+Most embedded systems have only one <span tt="CU">CU</span>, but it's common for more advanced systems to have more than one, either on the same or separate <span tt="PCB">PCB</span>s.
+
+Architecture wise, there are a few different kind of computational units. Let's start from the one present in desktop PCs: the <span tt="CPU">CPU</span>.
 
 <div class="highlight-box">
-The <strong>Central Processing Unit</strong> (CPU) is an integrated circuit that implements a computer capable of performing a fixed number of operations. These operations are called <strong>machine instructions</strong>. Once turned on, the CPU starts executing the machine instructions specified in a program, which is a finite list of machine instructions. The set of all valid machine instructions that a program can use, is defined in the <strong>Instruction Set Architecture</strong> (<span tt="isa">ISA</span>) of the CPU. Changing the program changes what the CPU does, which <span tt="cpu_non_triviality">makes the CPU a general-purpose computer</span>.
+The <strong>Central Processing Unit</strong> (<span tt="CPU">CPU</span>) is an integrated circuit that implements a computer capable of performing a fixed number of operations. These operations are called <strong>machine instructions</strong>. Once turned on, the <span tt="CPU">CPU</span> starts executing the machine instructions specified in a program, which is a finite list of machine instructions. The set of all valid machine instructions that a program can use, is defined in the <strong>Instruction Set Architecture</strong> (<span tt="isa">ISA</span>) of the <span tt="CPU">CPU</span>. Changing the program changes what the <span tt="CPU">CPU</span> does, which <span tt="cpu_non_triviality">makes the <span tt="CPU">CPU</span> a general-purpose computer</span>.
 </div>
 
-In embedded systems, <span tt="cpu_types">many different types of CPUs</span> are used as the computational unit. The terminology can be confusing at first, as we use different names based on clock speed, core count, integrated RAM size and capabilities.
+In embedded systems, <span tt="cpu_types">many different types of <span tt="CPU">CPU</span>s</span> are used as the computational unit. The difference in name tries to capture the difference in clock speed, core count, presence of integrated RAM and capabilities.
 
-The flexibility that CPUs have comes at the cost of speed. Following a list of instructions takes time, as the CPU needs to read the next instruction, activate the part of the chip that does that, and then actually execute it. This is called the [<em>Fetch-Decode-Execute</em>](https://en.wikipedia.org/wiki/Instruction_cycle) cycle: the CPU fetches the next instruction, decodes it, and then executes it.
+The flexibility that <span tt="CPU">CPU</span>s have comes at the cost of speed. Following a list of instructions takes time, as the <span tt="CPU">CPU</span> needs to read the next instruction, activate the part of the chip that does that, and then actually execute it. This is called the [<em>Fetch-Decode-Execute</em>](https://en.wikipedia.org/wiki/Instruction_cycle) cycle: the <span tt="CPU">CPU</span> fetches the next instruction, decodes it, and then executes it.
 
-The F-D-E cycle is less than ideal for applications where the computation to be performed is 'already known' and maximum speed is required. Think of high-performance applications like <span tt="dsp_example">digital signal processing</span>, where we can't waste time fetching and decoding instructions. What we need in those cases, is to trade all the flexibility for all the speed.
+The F-D-E cycle is less than ideal for applications where the computation to be performed is 'already known', and maximum speed is required. Think of high-performance applications like <span tt="dsp_example">digital signal processing</span>. What we need in those cases, is to trade all the flexibility for all the speed.
 
 We can achieve this with an <strong>ASIC</strong>.
 
@@ -135,10 +137,10 @@ We can achieve this with an <strong>ASIC</strong>.
 The <strong>Application Specific Integrated Circuit</strong> (ASIC), is an integrated circuit that implements a fixed-purpose computer. When turned on, it will always execute the same computation, as it's not configurable in anyway.
 </div>
 
-ASICs come with significant trade-offs: high development cost and inflexibility. Developing an IC is very expensive, regardless of what it does, and making one for a specific use case, like ASICs are, makes it even more expensive, as the narrow markets will result in fewer units sold. Moreover, once manufactured, ICs cannot be changed: if there's a design error you are stuck with it. This is true for all ICs, but it's particularly painful for ASICs as they are, unlike CPUs, not configurable in any way. This makes ASICs economically viable only for markets where performance comes before cost, like military applications.
+<span tt="ASIC">ASIC</span>s come with significant trade-offs: high development cost and inflexibility. Developing an <span tt="IC">IC</span> is very expensive (regardless of what it does), and making one for a specific use case, makes it even more expensive, as the narrow markets will result in fewer units sold. Moreover, once manufactured, <span tt="IC">IC</span>s cannot be changed: if there's a design error you are stuck with it. This is true for all <span tt="IC">IC</span>s, but it's particularly painful for <span tt="ASIC">ASIC</span>s as they are, unlike <span tt="CPU">CPU</span>s, not configurable in any way. This makes <span tt="ASIC">ASIC</span>s economically viable only for markets where performance comes before cost, like military applications.
 
-Talking about CPUs and ASICs, we have gone from extreme flexibility and low speed, to zero flexibility and high-speed.  
-What if we wanted the performance of ASICs with some computational flexibility? That's what FPGAs are for.
+Talking about <span tt="CPU">CPU</span>s and <span tt="ASIC">ASIC</span>s, we have gone from extreme flexibility and low speed, to zero flexibility and high-speed.  
+What if we wanted the performance of <span tt="ASIC">ASIC</span>s with some computational flexibility? That's what <span tt="FPGA">FPGA</span>s are for.
 
 <div class="highlight-box">
 A <strong>Field-Programmable Gate Array</strong> (FPGA) is an integrated circuit containing an array of <a href="https://en.wikipedia.org/wiki/Logic_block" target="_blank">configurable logic blocks</a> (CLBs). Each block can be configured in both the <span tt="logic_block_details">logical function</span> it performs and how it connects with the other blocks. At startup, the FPGA loads a <a href="#fpga-software">bitstream</a> that precisely defines the function of each block and its routing, enabling virtually any digital circuit to be realized directly in hardware.
@@ -146,30 +148,30 @@ A <strong>Field-Programmable Gate Array</strong> (FPGA) is an integrated circuit
 
 <span tt="softcore">Any digital circuit can be implemented on an FPGA</span>, from a simple binary counter to a complex Fourier transform.
 
-In terms of performance, FPGAs sit between CPUs and ASICs but much closer to ASICs. With an FPGA, algorithms run directly in  hardware, providing massive speedups over CPU execution. However, due to the overhead of configurable (rather than fixed) circuitry, FPGAs are typically less efficient in speed and power than ASICs.
+In terms of performance, <span tt="FPGA">FPGA</span>s sit between <span tt="CPU">CPU</span>s and <span tt="ASIC">ASIC</span>s but much closer to <span tt="ASIC">ASIC</span>s. With an <span tt="FPGA">FPGA</span>, algorithms run directly in  hardware, providing massive speedups over <span tt="CPU">CPU</span> execution. However, due to the overhead of configurable (rather than fixed) circuitry, <span tt="FPGA">FPGA</span>s are typically less efficient in speed and power than <span tt="ASIC">ASIC</span>s.
 
-Modern FPGA chips integrate far more than just the CLBs matrix, like dedicated RAM blocks, and high-speed I/O transceivers.
+Modern <span tt="FPGA">FPGA</span> chips integrate far more than just the CLBs matrix, like dedicated RAM blocks, and high-speed I/O transceivers.
 
-It is also common to integrate a CPU and an FPGA on the same die, so that the CPU can run an OS like Linux while offloading compute-intensive operations, like image processing or cryptography, to the FPGA for acceleration.
+It is also common to integrate a <span tt="CPU">CPU</span> and an <span tt="FPGA">FPGA</span> on the same die, so that, for example, the <span tt="CPU">CPU</span> can run an OS like Linux while offloading compute-intensive operations, like image processing or cryptography, to the <span tt="FPGA">FPGA</span> for acceleration.
 
-Both CPUs and FPGAs are general-purpose computational devices, but the key difference lies in how they can be reprogrammed: CPUs dynamically select the next instruction at runtime, while FPGAs are reconfigured at startup via a new bitstream.
+Both <span tt="CPU">CPU</span>s and <span tt="FPGA">FPGA</span>s are general-purpose computational devices, but the key difference lies in how they can be reprogrammed: <span tt="CPU">CPU</span>s dynamically select the next instruction at runtime, while <span tt="FPGA">FPGA</span>s are reconfigured at startup via a new bitstream.
 
-When discussing CPUs, we use terms like "software" and "programming", which are also used with FPGAs, but they mean very different things:
+When discussing <span tt="CPU">CPU</span>s, we use terms like "software" and "programming", which are also used with <span tt="FPGA">FPGA</span>s, but they mean very different things:
 
 <ul>
-  <li id="cpu-software"><strong>CPU software:</strong> The software of CPUs is the list of machine instructions that the CPU executes. This list is obtained starting from a program, which is code written by a programmer in a programming language, like C or C++. This program gets <strong>compiled</strong> (translated) to machine code, a list of instructions that the CPU can understand and execute.</li>
-  <li id="fpga-software"><strong>FPGA software:</strong> The software of FPGAs is code written in a <a href="https://en.wikipedia.org/wiki/Hardware_description_language" target="_blank">Hardware Description Language</a> (HDL), like Verilog or VHDL, that gets <strong>synthesized</strong> to a bitstream and then used to configure the CLBs in the FPGA to implement a certain function. The resulting bitstream depends on the input HDL code, <span tt="target_fpga_model">the target FPGA model</span>, and <span tt="synthesis_toolchain">the synthesis toolchain used</span>.</li>
+  <li id="cpu-software"><strong>CPU software:</strong> The software of <span tt="CPU">CPU</span>s is the list of machine instructions that the <span tt="CPU">CPU</span> executes. This list is obtained starting from a program, which is code written by a programmer in a programming language, like C or C++. This program gets <strong>compiled</strong> (translated) to machine code, a list of instructions that the <span tt="CPU">CPU</span> can understand and execute.</li>
+  <li id="fpga-software"><strong>FPGA software:</strong> The software of <span tt="FPGA">FPGA</span>s is code written in an <a href="https://en.wikipedia.org/wiki/Hardware_description_language" target="_blank">Hardware Description Language</a> (HDL), like Verilog or VHDL, that gets <strong>synthesized</strong> to a bitstream and then used to configure the CLBs in the <span tt="FPGA">FPGA</span> to implement a certain function. The resulting bitstream depends on the input HDL code, <span tt="target_fpga_model">the target <span tt="FPGA">FPGA</span> model</span>, and <span tt="synthesis_toolchain">the synthesis toolchain used</span>.</li>
 </ul>
 
 <h3 id="output-elements">2.1.3 Output Components</h3>
 
-Output elements are how the <span tt="ES">ES</span> talks back to you or to other systems.
+Output components are how the <span tt="ES">ES</span> talks back to you or to other systems.
 
-Think of LEDs, displays (LCD, OLED, seven-segment, e-paper), buzzers, speakers, motors (DC, stepper, servo), relays, heating elements, and communication outputs like WiFi, Bluetooth.
+Think of LEDs, displays (LCD, OLED, seven-segment, e-paper), buzzers, speakers, motors (DC, stepper, servo), relays, heating elements, and RF protocols like Bluetooth.
 
-All of these devices are controlled, either directly or [through intermediate circuitry](#support-components), by the <span tt="CU">CU</span>.
+All of these components are controlled, either directly or [through intermediate circuitry](#support-components), by the <span tt="CU">CU</span>.
 
-In the case of a desktop mouse, the output of the system is the buttons and motion data encoded as USB or Bluetooth packets sent to whatever the mouse is connected to.
+In the case of a desktop mouse, the output of the system is the USB or Bluetooth packets that encode the buttons state and motion data.
 
 <h3 id="support-components">2.1.4 Support Components</h3>
 
@@ -177,9 +179,9 @@ Support components don't directly participate in sensing, computing, or actuatin
 
 These include:
 
-- <strong id="voltage-regulators">Voltage regulators:</strong> they convert whatever input voltage you have to the specific voltages required by different parts of the circuit.
-- <strong id="passive-components">Passive components:</strong> <span tt="resistors">resistors</span>, <span tt="capacitors">capacitors</span>, and inductors that filter noise and set timing constants.
-- <strong id="protection-circuits">Protection circuits:</strong> <span tt="ESD_protection">ESD protection</span>, <span tt="reverse_polarity_protection">reverse polarity protection</span>, <span tt="overcurrent_protection">overcurrent protection</span>  
+- <strong id="voltage-regulators">Voltage regulators:</strong> they convert the input voltage of the system to the specific voltages required by different parts of the circuit.
+- <strong id="passive-components">Passive components:</strong> <span tt="resistors">resistors</span>, <span tt="capacitors">capacitors</span>, and <span tt="inductors">inductors</span> that filter noise and set timing constants.
+- <strong id="protection-circuits">Protection circuits:</strong> <span tt="ESD_protection">ESD protection</span>, <span tt="reverse_polarity_protection">reverse polarity protection</span>, <span tt="overcurrent_protection">overcurrent protection</span>.  
 
 <h2 id="firmware">2.2 Firmware</h2>
 
@@ -187,37 +189,41 @@ Firmware is the low-level code that runs on the CU and directly controls the har
 
 It's called <em>firm</em> and not <em>soft</em>(ware) because <span tt="firmware_unchanged">it's typically written once and remains mostly unchanged for the lifetime of the product</span>.
 
-Firmware programming is mostly characterized by the absence of an operating system. The absence of an abstraction layer between the code and its effect is called <em>bare metal</em> programming, <span tt="bare_metal_example">as single lines of code result in measurable changes in reality.</span> This is not always the case. Modern embedded systems can be quite complicated, both in the <span tt="hardware_capabilities">hardware capabilities</span> and the <span tt="system_logic">logic of the system</span>, so a minimal operating system can be used to aid the programmer in managing the system. These operative systems provide minimal abstraction over the hardware, allowing the programmer to make full and efficient use of the capabilities of the system by using constructs like threads and work queues.
+Firmware programming is mostly characterized by the absence of an operating system. The absence of an abstraction layer between the code and its effect is called <em>bare metal</em> programming, <span tt="bare_metal_example">as single lines of code result in measurable changes in reality</span>.  
+This is not always the case. Modern embedded systems can be quite complicated, both in the <span tt="hardware_capabilities">hardware capabilities</span> and the <span tt="system_logic">logic of the system</span>, so a minimal operating system can be used to aid the programmer in managing the system. These operative systems provide minimal abstraction over the hardware, allowing the programmer to make full and efficient use of the capabilities of the system by using constructs like threads and work queues.
 
-Some examples of such operative systems are <a href="https://www.freertos.org/" target="_blank">FreeRTOS</a> and <a href="https://www.zephyrproject.org/" target="_blank">Zephyr</a>.
+Some examples of such minimal, so called <em>embedded operative systems</em>, are <a href="https://www.freertos.org/" target="_blank">FreeRTOS</a> and <a href="https://www.zephyrproject.org/" target="_blank">Zephyr</a>.
 
 <h2 id="software">2.3 Software</h2>
 
-In the embedded world, we use the term <em>software</em> to refer to both the high-level code running <em>on-device</em>, on top of a full fledged operative system like Linux or Android, and the code running <em>off-device</em> that interacts with the embedded device.
+In the embedded world, we use the term <em>software</em> to refer to both the high-level code running <em>on-device</em>, on top of a canonical operative system like Linux or Android, and the code running <em>off-device</em> that interacts with the embedded device nonetheless.
 
-In particular, we refer to the former as <em>embedded software</em> and the latter as just <em>software</em>.
+In particular, we refer to the former as <strong><em>embedded software</em></strong> and the latter as just <strong><em>software</em></strong>.
 
-Embedded software is about <em>on-device</em>, user-space application development and the system programming required to support those.
+<strong><em>Embedded software</em></strong> is about <em>on-device</em>, user-space application development and the system programming required to support those.
 
-Software is about <em>off-device</em> code that adds extra functionality to the device, and it's often about making it easier to interact with it.
+<strong><em>Software</em></strong> is about <em>off-device</em> code that adds extra functionality to the device, and it's often about making it easier to interact with the <span tt="ES">ES</span>.
 
-All of this is different from firmware, as software uses operating system APIs and libraries rather than directly controlling hardware to provide high-level functionalities. Also, being applications running in an operative system, software is much easier to update, as a simple change of the executable file is often the only thing needed.
+Software uses operating system APIs and libraries to provide high-level functionalities. Being applications running on top of an OS, software is much easier to update, as a simple change of the executable file is often the only needed thing.
 
 <span tt="bench_power_supply_example">Complex embedded products use both</span>: firmware handles low level hardware functionalities (like reading sensors or controlling motors), while software handles the user-level applications, like graphical interfaces and networking.
 
-Note that code running on real-time operating systems like [FreeRTOS](https://en.wikipedia.org/wiki/FreeRTOS) and [Zephyr](https://en.wikipedia.org/wiki/Zephyr_(operating_system)) is still considered firmware, as these OSs provide very minimal abstraction and you're still programming close to the hardware.
+Note that code running on real-time operating systems like [FreeRTOS](https://en.wikipedia.org/wiki/FreeRTOS) and [Zephyr](https://en.wikipedia.org/wiki/Zephyr_(operating_system)) is still considered firmware, as those OSs provide very minimal abstraction and the code is still directly programming the hardware.
 
 <h1 id="tools-of-the-trade">3. Tools of the trade</h1>
 
-If you work in embedded systems, you cannot be scared of electronics. You'll be working directly with circuits, components, and electrical signals on a daily basis. Understanding how to safely handle, test, and debug electronic systems is fundamental to the job.
+If you work in embedded systems, you must love electronics.  
+You'll be working directly with circuits, components, and electrical signals on a daily basis.  Understanding how to safely handle, test, and debug electronic systems is fundamental to the job.
 
-Having the right tools and knowing how to use them is just as important as knowing how to write code. While software engineers have their IDEs and debuggers, embedded systems engineers have their lab equipment. These tools allow you to see what's actually happening in your circuit, allowing you to diagnose hardware issues that no amount of code can reveal.
+Having the right tools and knowing how to use them is just as important as knowing how to write code. While software engineers have their IDEs and debuggers, embedded systems engineers have their lab equipment. These tools allow you to diagnose hardware issues that no amount of print statements can reveal.
 
-Let's go through the essential tools used on the job.
+Let's go through the essential tools that you will need.
 
+<div class="highlight-box">
 <strong>Caution:</strong>  
 If you have never handled electronics before, stick to low-energy components like cell batteries and LEDs. You can burn your house down or hurt yourself pretty badly with electronics.  
 The best way to get started is having someone in person showing you the basics, but don't be afraid to try on your own.
+</div>
 
 <h2 id="multimeter">3.1 Multimeter</h2>
 
@@ -232,7 +238,7 @@ The melting temperature is low enough that soldering can be safely done at home 
 
 Soldering is a fundamental skill in embedded systems. You'll use it to:
 
-- Assemble prototype circuits on <span tt="perfboard">perfboard</span> or PCBs
+- Assemble prototype circuits on <span tt="perfboard">perfboard</span> or <span tt="PCB">PCB</span>s
 - Replace faulty components
 - Make connections between wires and components
 
@@ -319,7 +325,7 @@ Whereas putting it into the hands of a user will highlight several things that s
 Here are some excellent resources organized by topic to help you dive deeper into embedded systems:
 
 <strong>YouTube Channels & Video Content:</strong>
-- [<strong>Philip Salmony</strong>](https://www.youtube.com/@PhilSalmony)'s PCB design and DSP theory videos: excellent for understanding signal processing and board design fundamentals
+- [<strong>Philip Salmony</strong>](https://www.youtube.com/@PhilSalmony)'s <span tt="PCB">PCB</span> design and DSP theory videos: excellent for understanding signal processing and board design fundamentals
 - [<strong>Dave Jones</strong>](https://www.youtube.com/@EEVblog)'s [<em>EEVblog</em>](https://www.eevblog.com/): comprehensive electronics theory videos covering everything from basic circuits to advanced measurement techniques
 - [<strong>Shahriar Shahramian</strong>](https://www.youtube.com/@TheSignalPathBlog)'s [<em>The Signal Path</em>](https://thesignalpath.com/): metrology theory and teardowns of high-end test equipment
 - [<strong>Ben Eater</strong>](https://www.youtube.com/@BenEater)'s channel: incredible step-by-step build videos showing how computers work from the ground up

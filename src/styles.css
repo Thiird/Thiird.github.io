@@ -1955,14 +1955,17 @@ pre code {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .tooltip-gif {
-  width: 100%;
   max-width: 200px;
+  width: auto;
   height: auto;
   border-radius: 4px;
   align-self: center;
+  object-fit: contain;
 }
 
 .tooltip-text {

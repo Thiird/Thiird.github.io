@@ -40,14 +40,31 @@
         "text": "Computational Unit",
         "media": ""
     },
+    "CPU": {
+        "text": "Central Processing Unit",
+        "media": ""
+    },
+    "ASIC": {
+        "text": "Application Specific Integrated Circuit",
+        "media": ""
+    },
+    "FPGA": {
+        "text": "Field-Programmable Gate Array",
+        "media": ""
+    },
     "heat_seeking_missile": {
         "text": "",
         "media": "",
         "alt": ""
     },
-    "PCB": {
+    "PCB_image": {
         "text": "",
         "media": "awareness_macropad_pcb.jpg",
+        "alt": ""
+    },
+    "PCB": {
+        "text": "Printed Circuit Board",
+        "media": "",
         "alt": ""
     },
     "embedded": {
@@ -56,7 +73,7 @@
         "alt": ""
     },
     "IC": {
-        "text": "<strong>Integrated Circuit</strong><br><br>A set of electronic circuits on a small flat piece of semiconductor material (usually silicon). An IC can contain billions of transistors, resistors, and capacitors working together to perform complex functions.<br><br><em>Shown below, a die shot of the <a href=\"https://en.wikipedia.org/wiki/Electronics_industry_in_the_Socialist_Republic_of_Romania#History\" target=\"_blank\">CII 72</a>, which comprises two voltage comparators with separate differential inputs</em>",
+        "text": "<strong>Integrated Circuit</strong><br><br>A set of transistors, resistors, and capacitors implemented on a semiconductor material, working together to perform complex functions. Modern integrated circuits contain billions of transistors.<br><br><em>Shown below, a die shot of the <a href=\"https://en.wikipedia.org/wiki/Electronics_industry_in_the_Socialist_Republic_of_Romania#History\" target=\"_blank\">CII 72</a>, which comprises two voltage comparators with separate differential inputs</em>",
         "media": "CII_72_silicon_die.jpg"
     },
     "electronic": {
@@ -88,13 +105,25 @@
         "media": "vias.png",
         "alt": "Taken from https://www.vse.com/blog/how-are-pcb-vias-plated/"
     },
+    "chip": {
+        "text": "Chips are integrated circuits embedded in a package that provides physical protection and electrical connections.<br><br>Shown below, is the commonly used Quad Flat No-lead (QFN) package.",
+        "media": "qfn_hand_shot.jpg",
+        "alt": "https://www.top-electronics.com/"
+    },
     "resistors": {
         "text": "<strong>Resistors</strong><br><br>Electrical components that resist the flow of electrical current, used to control voltage and current levels in a circuit.",
-        "media": "resistors.jpg"
+        "media": "resistors.jpg",
+        "alt": "https://icdigest.com/"
     },
     "capacitors": {
         "text": "<strong>Capacitors</strong><br><br>Electrical components that store electrical energy in an electric field, used for filtering, timing, and energy storage applications.",
-        "media": "capacitors.jpg"
+        "media": "capacitors.jpg",
+        "alt": "https://icdigest.com/"
+    },
+    "inductors": {
+        "text": "<strong>Inductors</strong><br><br>Electrical components that store energy in a magnetic field when electrical current flows through them, used for filtering and energy storage.",
+        "media": "inductors.jpg",
+        "alt": "https://icdigest.com/"
     },
     "connectors": {
         "text": "<strong>Connectors</strong><br><br>Physical interfaces that allow electrical connections to be made and broken between different parts of a system, such as USB ports, pin headers, and terminal blocks.",
@@ -133,7 +162,7 @@
         "media": ""
     },
     "firmware_unchanged": {
-        "text": "This is because:<br>- The code directly controls the hardware, and the hardware doesn't change<br>- Specialized tools are needed to program embedded devices, end users don't have them",
+        "text": "This is because:<br>- Firmware directly controls the hardware, and the hardware doesn't change: once it's done it's done<br>- Specialized tools are needed to program embedded devices, end users don't have them",
         "media": ""
     },
     "bare_metal_example": {
@@ -149,5 +178,17 @@
         "media": ""    },
     "bench_power_supply_example": {
         "text": "An example is a modern bench power supply: the firmware controls the voltage and current settings based on the front panel buttons and dials, while the software exposes a web interface for remote control and configuration. You might update the software to add new features, but the firmware remains stable (unless a bug is found) as the front panel is always the same.",
-        "media": ""    }
+        "media": ""    },
+    "ESD_protection": {
+        "text": "<strong>ESD Protection</strong><br><br>Electrostatic Discharge protection circuits prevent damage from static electricity. Clamping voltage spikes to safe levels, protects sensitive electronics from the thousands of volts that can build up from simple actions like touching a doorknob.",
+        "media": ""
+    },
+    "reverse_polarity_protection": {
+        "text": "<strong>Reverse Polarity Protection</strong><br><br>Prevents damage when power is connected backwards. Reversing power can instantly destroy components.",
+        "media": ""
+    },
+    "overcurrent_protection": {
+        "text": "<strong>Overcurrent Protection</strong><br><br>Limits or cuts off current flow when it exceeds safe levels, preventing component damage and fire hazards.",
+        "media": ""
+    }
 }
