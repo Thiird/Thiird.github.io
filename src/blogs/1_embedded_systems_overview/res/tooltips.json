@@ -52,6 +52,15 @@
         "text": "Field-Programmable Gate Array",
         "media": ""
     },
+    "dmm": {
+        "text": "Digital Multimeter",
+        "media": "dmm.jpg"
+    },
+    "oscilloscope": {
+        "text": "Three channel oscilloscope measuring the output of a circuit.",
+        "media": "oscilloscope.jpg",
+        "alt": "https://learn.sparkfun.com/"
+    },
     "heat_seeking_missile": {
         "text": "",
         "media": "",
@@ -133,6 +142,11 @@
         "text": "",
         "media": "soldering_iron.jpg",
         "alt": "https://www.aixuntech.com/"
+    },
+    "bench_power_supply": {
+        "text": "High-end bench power supply with three channels.",
+        "media": "bench_power_supply.png",
+        "alt": "https://www.keysight.com/"
     },
     "soldering_robot": {
         "text": "",

@@ -227,8 +227,8 @@ The best way to get started is having someone in person showing you the basics, 
 
 <h2 id="multimeter">3.1 Multimeter</h2>
 
-This is the first tool you should get acquainted with and is also the most basic lab tool.
-A [multimeter](https://en.wikipedia.org/wiki/Multimeter) is, for the most part, a diagnostic tool. It can take instantaneous voltage, current, resistance, inductance and capacitance readings. Beware though, you can still break things and burn your house down by misusing a multimeter!
+This is the first tool you should get acquainted with and is also the most basic lab tool.  
+A <span tt="dmm">multimeter</span> is, for the most part, a diagnostic tool. It can take instantaneous voltage, current, resistance, inductance and capacitance readings. Beware though, you can still break things and burn your house down by misusing a multimeter!
 
 <h2 id="soldering-iron">3.2 Soldering Iron</h2>
 
@@ -242,28 +242,27 @@ Soldering is a fundamental skill in embedded systems. You'll use it to:
 - Replace faulty components
 - Make connections between wires and components
 
-In industrial settings, the soldering process is automated by a <span tt="soldering_robot">soldering-iron-wielding robot</span> or by using <span tt="reflow_ovens">reflow-ovens</span>.
+In industrial settings, the soldering process is automated by a <span tt="soldering_robot">soldering-iron-wielding robot</span> or by using <span tt="reflow_oven">reflow-ovens</span>.
 
 <h2 id="power-supply">Power Supply</h2>
 
 Electronics need power to function. Some boards need 24 Volts, some need 5V, some need 3.3V. A bench [power supply](https://en.wikipedia.org/wiki/Power_supply) is a voltage and current source that can be set to specific values, allowing you to power your embedded system during development and testing.
 
-Unlike wall adapters or USB power bricks, a bench power supply allows you to:
+Unlike wall adapters or USB power bricks, a <span tt="bench_power_supply">bench power supply</span> allows you to:
 
 - set the exact voltage your circuit needs
 - limit the maximum current to protect your circuit from damage in case of a short circuit
 - monitor real-time power consumption
-- quickly adjust voltage to test different operating conditions
 
 <h2 id="oscilloscope">3.4 Oscilloscope</h2>
 
-We have talked about how a multimeter can take instantaneous measurements of voltage, current, etc. This is very useful, but it's only useful for circuits with very simple behaviors. What if our system is more complex? In that case, to fully visualize the behavior of the system we need an  [oscilloscope](https://en.wikipedia.org/wiki/Oscilloscope) comes in, which is a tool used to graph voltage over time.
+We have talked about how a multimeter can take instantaneous measurements of voltage, current, etc. This is very useful, but it's only useful for circuits with very simple behaviors. What if our system is more complex? In that case, to fully visualize the behavior of the system we need an  <span tt="oscilloscope">oscilloscope</span> comes in, which is a tool used to graph voltage over time.
 
 By doing that we can perform:
 - [<strong>Signal integrity</strong>](https://en.wikipedia.org/wiki/Signal_integrity) analysis: Check for noise, ringing, overshoot, or distortion on your signals
 - <strong>Frequency measurement</strong>: See the actual frequency and duty cycle of clock signals or [PWM](https://en.wikipedia.org/wiki/Pulse-width_modulation) outputs
 
-For example, a multimeter might show you that a signal is at 3.3V, but an oscilloscope will show you if that signal is actually switching between 0V and 3.3V at 1MHz, or if there's 500mV of noise on top of it.
+For example, a multimeter might show you that a signal is at 3.3V, but an <span tt="oscilloscope">oscilloscope</span> will show you if that signal is actually switching between 0V and 3.3V at 1MHz, or if there's 500mV of noise on top of it.
 
 <h2 id="the-debugger">3.6 The programmer/debugger</h2>
 
