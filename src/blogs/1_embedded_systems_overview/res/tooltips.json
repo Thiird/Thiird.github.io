@@ -57,9 +57,41 @@
         "media": "dmm.jpg"
     },
     "oscilloscope": {
-        "text": "Three channel oscilloscope measuring the output of a circuit.",
+        "text": "Two channel oscilloscope measuring the output of a circuit.",
         "media": "oscilloscope.jpg",
         "alt": "https://learn.sparkfun.com/"
+    },
+    "oscilloscope_data_rate": {
+        "text": "<strong>Example:</strong> Sampling a <strong>1 MHz signal</strong> at the minimum recommended rate (Nyquist theorem) requires at least <strong>2 million samples per second</strong>. That means one sample every <strong>0.5 microseconds</strong>. To display this meaningfully, the screen would need to update thousands of times per second—far beyond what a simple digit display can handle. This is why oscilloscopes use graphical displays that show the waveform over time.",
+        "media": ""
+    },
+    "digit_screen": {
+        "text": "",
+        "media": ""
+    },
+    "oscilloscope_channels": {
+        "text": "<strong>Input Channels</strong><br><br>The maximum number of signals an oscilloscope can measure and display simultaneously. Entry-level oscilloscopes typically have 2 or 4 channels, while professional models can have 8 or more. Multiple channels let you compare signals side-by-side, essential for debugging communication protocols or analyzing circuit interactions.",
+        "media": ""
+    },
+    "signal_analysis_capabilities": {
+        "text": "<strong>Advanced Signal Analysis</strong><br><br>Higher-end oscilloscopes include built-in analysis functions beyond basic waveform display:<br><br>- <strong>FFT (Fast Fourier Transform)</strong>: Converts time-domain signals to frequency domain, revealing harmonic content and noise characteristics<br>- <strong>Protocol Decoding</strong>: Automatically decodes digital protocols like I2C, SPI, UART, CAN<br>- <strong>Math Functions</strong>: Perform operations like addition, subtraction, integration, differentiation on signals<br>- <strong>Automated Measurements</strong>: Calculate rise time, fall time, jitter, phase differences automatically",
+        "media": ""
+    },
+    "oscilloscope_signal_visualization": {
+        "text": "Oscilloscopes are designed as engineering tools, with displays optimized for human visual analysis. The graphical representation makes it easy to spot anomalies, measure timing, and understand signal behavior at a glance. While signals can also be captured and analyzed by computers using data acquisition systems, the oscilloscope's real-time visual feedback is invaluable for hands-on debugging and circuit development.",
+        "media": ""
+    },
+    "amm": {
+        "text": "Analog Multimeter",
+        "media": ""
+    },
+    "square_wave": {
+        "text": "",
+        "media": ""
+    },
+    "es_nuances": {
+        "text": "This is true for both the software and the hardware side.",
+        "media": ""
     },
     "heat_seeking_missile": {
         "text": "",

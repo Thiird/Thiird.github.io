@@ -228,9 +228,23 @@ The best way to get started is having someone in person showing you the basics, 
 <h2 id="multimeter">3.1 Multimeter</h2>
 
 This is the first tool you should get acquainted with and is also the most basic lab tool.  
-A <span tt="dmm">multimeter</span> is, for the most part, a diagnostic tool. It takes instantaneous voltage, current, resistance, inductance and capacitance readings. Beware though, you can still break things and burn your house down by misusing a multimeter!
+A multimeter is, for the most part, a diagnostic tool. It takes instantaneous voltage, current, resistance, inductance and capacitance readings and displays it to the user. Multimeters can both be analog and digital. <span tt="amm">Analog multimeters</span> take a continuous reading and display it with a needle meter, whereas <span tt="dmm">digital multimeters</span> take discrete readings with a frequency of a few Hertz and display the reading on a digital screen.
 
-<h2 id="soldering-iron">3.2 Soldering Iron</h2>
+A multimeter is used to characterize simple behaviors, as it only answers to wether a signal is there and how much it measures in that instant, while saying nothing about its behavior.
+
+<h2 id="oscilloscope">3.2 Oscilloscope</h2>
+
+When dealing with complex signals, we want to know more than just if the signal is present or not. To actually analyze a signal behavior by eye, we need to record many different samples of it and display them over time. To do this, we need a high-frequency sampling rate and a way to <span tt="oscilloscope_data_rate">display such an immense amount of data</span> in a way that is <span tt="oscilloscope_signal_visualization">easy for the human brain to understand</span>.
+
+The tool for the job is the <span tt="oscilloscope">oscilloscope</span>, which is a tool that plots the voltage value of the signal over time.
+
+This is used to verify [<strong>signal integrity</strong>](https://en.wikipedia.org/wiki/Signal_integrity) (looking for issues like noise, ringing, overshoot, or distortion) and measure frequencies.
+
+For example, what a multimeter might show as a steady 3.3V signal, an oscilloscope will reveal it's actually a <span tt="square_wave">square wave</span>, switching between 0V and 3.3V at 10MHz.
+
+Oscilloscopes differ in number of <span tt="oscilloscope_channels">input channels</span>, sampling frequency and <span tt="signal_analysis_capabilities">signal analysis capabilities</span>. Modern, top of the line oscilloscopes have sampling frequency in range of tens of GHz.
+
+<h2 id="soldering-iron">3.3 Soldering Iron</h2>
 
 An embedded system is made of many different components, which need to be joined electrically.  
 This is done with [solder](https://en.wikipedia.org/wiki/Solder), a metal alloy that melts between 180-300°C (depending on the lead content).
@@ -244,7 +258,7 @@ Soldering is a fundamental skill in embedded systems. You'll use it to:
 
 In industrial settings, the soldering process is automated by a <span tt="soldering_robot">soldering-iron-wielding robot</span> or by using <span tt="reflow_oven">reflow-ovens</span>.
 
-<h2 id="power-supply">Power Supply</h2>
+<h2 id="power-supply">3.4 Power Supply</h2>
 
 Electronics need power to function. Some boards need 24 Volts, some need 5V, some need 3.3V. A bench [power supply](https://en.wikipedia.org/wiki/Power_supply) is a voltage and current source that can be set to specific values, allowing you to power your embedded system during development and testing.
 
@@ -254,15 +268,7 @@ Unlike wall adapters or USB power bricks, a <span tt="bench_power_supply">bench 
 - limit the maximum current to protect your circuit from damage in case of a short circuit
 - monitor real-time power consumption
 
-<h2 id="oscilloscope">3.4 Oscilloscope</h2>
-
-A multimeter ability to take instantaneous voltage and current readings is only useful to analyze circuits with very simple behaviors. To analyze more complex behaviors, we need continuous readings visualized over time. This is done with an <span tt="oscilloscope">oscilloscope</span>.
-
-An oscilloscope essentially allows to graph voltage over time, enabling [<strong>signal integrity</strong>](https://en.wikipedia.org/wiki/Signal_integrity) analysis (checking for noise, ringing, overshoot, or distortion) and <strong>frequency measurement</strong> (measuring the actual frequency and duty cycle of clock signals or [PWM](https://en.wikipedia.org/wiki/Pulse-width_modulation) outputs).
-
-For example, a multimeter might show you that a signal is at 3.3V, but an <span tt="oscilloscope">oscilloscope</span> will show you if that signal is actually a steady 3.3V or if it's a square wave switching back and forth between 0V and 3.3V.
-
-<h2 id="the-debugger">3.6 The programmer/debugger</h2>
+<h2 id="the-debugger">3.5 The programmer/debugger</h2>
 
 In software engineering the debugger is a program that runs on the same machine where the debuggee is running.  
 In embedded systems, the debugger is much more than a piece of software.
@@ -287,25 +293,17 @@ You are incredibly lucky: getting started with embedded systems has never been e
 Knowledge is basically free thanks to the internet, writing software is free, and making hardware has never been cheaper, both mechanical and electrical.
 Most low-cost prototyping services are from China, but some western alternatives are also available.
 
-Embedded systems can be very diverse, but I think the best way to start is with a microcontroller development board.
-A microcontroller is exactly the same as a desktop CPU, plus/minus some things, and you program it the same way: you write code in whatever language you want (usually C/C++/Rust/Assembly), you compile it and then use a debugger to flash it on the microcontroller.
+Embedded systems can be very diverse, but I think the best way to start is with a microcontroller development board. It's something that you can plug into your computer and start to program right away, with no other hardware necessary.
 
-There are a number of them available for cheap online, most commonly Arduino boards like the Uno and Micro.
-
-The real difficulty is getting the basics down. Embedded Systems is very finicky and full of nuances that if not done correctly will make your project NOT work.
-Either you do it right or it won't work, not for long at least.
+The real difficulty is getting the basics down. Embedded Systems is very finicky and <span tt="es_nuances">full of nuances</span>, that if accounted for will make your project NOT work. Either you do it right or it won't work, not for long at least.
 
 Just like you can write a program that seems to work but crashes after 5 hours, you can build a circuit that seems to work but turns off after 2 hours.
 
-The good news is that you will discover most of them by just studying the basics and doing very very simple projects.
-Try to turn on an LED. If it's your first time, you can't do it. Lookup a tutorial and you will learn so much.
+The good news is that you will discover most these nuances by just studying the basics and doing very very simple projects. Try to turn on an LED. If it's your first time, chances are you will burn it. Lookup a tutorial and you will learn so much.
 
-You don't know what you are doing anyway, so it's important to just start, not worry about where.
-Go with:
-- A beginner friendly development board (anyone will do, it's not important which)
-- breadboard
-- through-hole LEDs and resistors
-- dupont wires (all genders)
+Again, embedded system is a vast field, it's easy to waste time thinking about where to start.  
+Just start: you don't know what you are doing anyway.  
+It's important to just start, don't worry about where.
 
 <h2 id="how-to-grow-meaningful-knowledge">4.1 How to grow meaningful knowledge</h2>
 
