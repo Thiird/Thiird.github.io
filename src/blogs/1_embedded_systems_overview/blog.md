@@ -260,32 +260,23 @@ In industrial settings, the soldering process is automated by a <span tt="solder
 
 <h2 id="power-supply">3.4 Power Supply</h2>
 
-Electronics need power to function. Some boards need 24 Volts, some need 5V, some need 3.3V. A bench [power supply](https://en.wikipedia.org/wiki/Power_supply) is a voltage and current source that can be set to specific values, allowing you to power your embedded system during development and testing.
+Electronics need power to function. Some boards need 24 Volts, some need 5V, some need 3.3V. A <span tt="bench_power_supply">bench power supply</span> is a voltage and current source that can be set to specific values, allowing you to power your embedded system during development and testing.
 
-Unlike wall adapters or USB power bricks, a <span tt="bench_power_supply">bench power supply</span> allows you to:
+Unlike wall adapters or USB power bricks, a bench power supply allows you to:
 
 - set the exact voltage your circuit needs
 - limit the maximum current to protect your circuit from damage in case of a short circuit
 - monitor real-time power consumption
 
 <h2 id="the-debugger">3.5 The programmer/debugger</h2>
+In embedded systems, the <span tt="debugger">debugger</span> a device that sits between the <span tt="ES">ES</span> and the desktop machine, used for:
 
-In software engineering the debugger is a program that runs on the same machine where the debuggee is running.  
-In embedded systems, the debugger is much more than a piece of software.
+- <strong>Programming</strong>: <span tt="flash_program">Flashing</span> the compiled code onto the microcontroller's memory
+- <strong>Debugging</strong>: Setting breakpoints, stepping through code, and inspecting variables while the program runs on the embedded system
+- <strong>Real-time monitoring</strong>: Observing program execution and hardware state without halting the processor
 
-Imagine this situation.  
-We write the code on our Desktop machine, and we need to move this code to the embedded system. How can we do that?
-Our desktop machine only speaks USB and Ethernet, and indeed some <span tt="ES">ES</span>s can be flashed via those protocols, but what if they don't? We need something to bridge the gap.
-We need a so called programmer, a piece of hardware that bridges the USB/Ethernet coming from the PC to whatever the <span tt="ES">ES</span> uses for flashing the internal memory.
-
-Now the code is running on the <span tt="ES">ES</span>, but after a while it gets stuck. How can we debug this?
-
-Embedded systems use two debugging protocols, [SWD and JTAG](https://en.wikipedia.org/wiki/JTAG).
-The two serve the same code-debugging purpose, but JTAG also offers other advanced functionalities.
-
-These two functions, programming and debugging, are usually combined in the same hardware device, usually called programmer or debugger.
-
-On the PC side, we usually connect to the debugger via software like `gdb`.
+Embedded systems use two debugging protocols, Serial Wire Debug (SWD) and Joint Test Action Group (JTAG).
+The two serve the same code-debugging purpose, but JTAG also offers <span tt="jtag_advanced_functionalities">other advanced functionalities</span>.
 
 <h1 id="how-to-get-started">4. How to get started</h1>
 

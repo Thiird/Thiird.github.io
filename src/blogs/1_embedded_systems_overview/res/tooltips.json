@@ -99,7 +99,16 @@
     "signal_characteristics": {
         "text": "<strong>Frequency</strong>: How many times per second the signal repeats (measured in Hz).<br><br><strong>Rise/Fall Time</strong>: How quickly a signal transitions between low and high states, important for high-speed digital circuits.<br><br><strong>Timing Relationships</strong>: Phase differences and synchronization between multiple signals.",
         "media": ""
-    },    "heat_seeking_missile": {
+    },
+    "flash_program": {
+        "text": "Writing the program binary file on the MCU EEPROM",
+        "media": ""
+    },
+    "jtag_advanced_functionalities": {
+        "text": "<strong>Boundary Scan</strong>: Test connections between chips on a PCB without physical probes<br> <strong>Chain Debugging</strong>: Debug multiple devices connected in a daisy-chain topology",
+        "media": ""
+    },
+    "heat_seeking_missile": {
         "text": "",
         "media": "",
         "alt": ""
@@ -242,5 +251,9 @@
     "overcurrent_protection": {
         "text": "<strong>Overcurrent Protection</strong><br><br>Limits or cuts off current flow when it exceeds safe levels, preventing component damage and fire hazards.",
         "media": ""
+    },
+    "debugger": {
+        "text": "A JLink debugger.<br>On the top side, the debugger is connected via USB to the PC, on the bottom side instead, it's connected to a PCB for programming and debugging.<br> The PC side is always either USB or Ethernet, the device side is device dependant, both in the protocol used and the cable/connectors required.",
+        "media": "debugger.jpg"
     }
 }
