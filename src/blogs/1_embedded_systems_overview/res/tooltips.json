@@ -62,7 +62,7 @@
         "alt": "https://learn.sparkfun.com/"
     },
     "oscilloscope_data_rate": {
-        "text": "<strong>Example:</strong> Sampling a <strong>1 MHz signal</strong> at the minimum recommended rate (Nyquist theorem) requires at least <strong>2 million samples per second</strong>. That means one sample every <strong>0.5 microseconds</strong>. To display this meaningfully, the screen would need to update thousands of times per second—far beyond what a simple digit display can handle. This is why oscilloscopes use graphical displays that show the waveform over time.",
+        "text": "<strong>Example:<br></strong> To correctly sample a <strong>1 MHz signal</strong>, a minimum of <strong>2 million samples per second</strong> are required (Nyquist theorem). To display all of this data, a digit screen would need to update every <strong>0.5 microseconds</strong>, far beyond what a simple digit display can handle, let alone a human reading it.",
         "media": ""
     },
     "digit_screen": {
@@ -70,7 +70,7 @@
         "media": ""
     },
     "oscilloscope_channels": {
-        "text": "<strong>Input Channels</strong><br><br>The maximum number of signals an oscilloscope can measure and display simultaneously. Entry-level oscilloscopes typically have 2 or 4 channels, while professional models can have 8 or more. Multiple channels let you compare signals side-by-side, essential for debugging communication protocols or analyzing circuit interactions.",
+        "text": "<strong>Input Channels</strong><br><br>The maximum number of signals an oscilloscope can measure and display simultaneously. Entry-level oscilloscopes typically have 2 to 4 channels, while professional models have more. Multiple channels let you compare signals side-by-side, essential for debugging communication protocols.",
         "media": ""
     },
     "signal_analysis_capabilities": {
@@ -78,22 +78,28 @@
         "media": ""
     },
     "oscilloscope_signal_visualization": {
-        "text": "Oscilloscopes are designed as engineering tools, with displays optimized for human visual analysis. The graphical representation makes it easy to spot anomalies, measure timing, and understand signal behavior at a glance. While signals can also be captured and analyzed by computers using data acquisition systems, the oscilloscope's real-time visual feedback is invaluable for hands-on debugging and circuit development.",
+        "text": "The graphical representation makes it easy to understand signal behavior at a glance. While signals can also be analyzed by computers using math, the oscilloscope is designed to be an hands-on debugging.",
         "media": ""
     },
     "amm": {
         "text": "Analog Multimeter",
         "media": ""
     },
-    "square_wave": {
-        "text": "",
-        "media": ""
+    "waves": {
+        "text": "From top to bottom, a sine wave, a square wave, and a triangular wave.<br>Note how, if the period of the multimeter sampling would correspond with the middle point of the on part of the square wave, the multimeter would always read the maximum voltage, completely hiding the switching behavior of all three signals",
+        "media": "waves.jpg"
     },
     "es_nuances": {
         "text": "This is true for both the software and the hardware side.",
         "media": ""
+    },    "signal_integrity_issues": {
+        "text": "<strong>Noise</strong>: Unwanted electrical interference that appears on top of the signal.<br><br><strong>Ringing</strong>: Oscillations that occur when a signal changes value fast.",
+        "media": ""
     },
-    "heat_seeking_missile": {
+    "signal_characteristics": {
+        "text": "<strong>Frequency</strong>: How many times per second the signal repeats (measured in Hz).<br><br><strong>Rise/Fall Time</strong>: How quickly a signal transitions between low and high states, important for high-speed digital circuits.<br><br><strong>Timing Relationships</strong>: Phase differences and synchronization between multiple signals.",
+        "media": ""
+    },    "heat_seeking_missile": {
         "text": "",
         "media": "",
         "alt": ""

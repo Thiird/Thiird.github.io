@@ -234,15 +234,15 @@ A multimeter is used to characterize simple behaviors, as it only answers to wet
 
 <h2 id="oscilloscope">3.2 Oscilloscope</h2>
 
-When dealing with complex signals, we want to know more than just if the signal is present or not. To actually analyze a signal behavior by eye, we need to record many different samples of it and display them over time. To do this, we need a high-frequency sampling rate and a way to <span tt="oscilloscope_data_rate">display such an immense amount of data</span> in a way that is <span tt="oscilloscope_signal_visualization">easy for the human brain to understand</span>.
+When dealing with complex signals, we want to know more than just whether the signal is present or not. To understand a signal's behavior, we need to record many different samples of it and display them over time. To do this, we need a high-frequency sampling rate and a way to <span tt="oscilloscope_data_rate">display such an immense amount of data</span> in a way that is <span tt="oscilloscope_signal_visualization">easy for the human brain to understand</span>.
 
-The tool for the job is the <span tt="oscilloscope">oscilloscope</span>, which is a tool that plots the voltage value of the signal over time.
+The tool for the job is the <span tt="oscilloscope">oscilloscope</span>, which plots the voltage value of a signal over time.
 
-This is used to verify [<strong>signal integrity</strong>](https://en.wikipedia.org/wiki/Signal_integrity) (looking for issues like noise, ringing, overshoot, or distortion) and measure frequencies.
+It's used to verify [<strong>signal integrity</strong>](https://en.wikipedia.org/wiki/Signal_integrity) (<span tt="signal_integrity_issues">looking for issues like noise and ringing</span>) and measure signal characteristics (<span tt="signal_characteristics">like frequency, rise time, or timing relationships between signals</span>).
 
-For example, what a multimeter might show as a steady 3.3V signal, an oscilloscope will reveal it's actually a <span tt="square_wave">square wave</span>, switching between 0V and 3.3V at 10MHz.
+For example, what a multimeter might show as a steady 3.3V signal, an oscilloscope will reveal is actually a <span tt="waves">more complex signal</span> switching between 0V and 3.3V at 10MHz.
 
-Oscilloscopes differ in number of <span tt="oscilloscope_channels">input channels</span>, sampling frequency and <span tt="signal_analysis_capabilities">signal analysis capabilities</span>. Modern, top of the line oscilloscopes have sampling frequency in range of tens of GHz.
+Oscilloscopes differ in number of <span tt="oscilloscope_channels">input channels</span>, sampling frequency and <span tt="signal_analysis_capabilities">signal analysis capabilities</span>. Modern, top-of-the-line oscilloscopes have sampling frequencies in the range of tens of GHz.
 
 <h2 id="soldering-iron">3.3 Soldering Iron</h2>
 
