@@ -44,7 +44,7 @@ Let's dive in!
       <a href="#tools-of-the-trade">3. Tools of the trade</a>
       <ul class="index-subsection">
         <li><a href="#multimeter">3.1 Multimeter</a></li>
-        <li><a href="#soldering-iron">3.2 Soldering Iron</a></li>
+        <li><a href="#soldering-tools">3.2 Soldering Tools</a></li>
         <li><a href="#power-supply">3.3 Power Supply</a></li>
         <li><a href="#oscilloscope">3.4 Oscilloscope</a></li>
         <li><a href="#logic-analyzer">3.5 Logic Analyzer</a></li>
@@ -92,9 +92,23 @@ Consider a desktop mouse as an example: the hardware is the circuit board with i
 
 The core of an <span tt="ES">ES</span> is the electronic hardware.
 
-The electronics is consolidated in a single assembly called <span tt="PCB_image">Printed Circuit Board</span> (<span tt="PCB">PCB</span>). A <span tt="PCB">PCB</span> is an assembly made of alternating layers of insulating material (usually fiberglass) and copper, where the copper layers has been precisely etched/milled to leave behind only individual traces, which connect the different electronic components together. Traces on different layers are connected with <span tt="vias">vias</span>. Components like <span tt="chip">chips</span>, <span tt="resistors">resistors</span>, <span tt="capacitors">capacitors</span>, and <span tt="connectors">connectors</span> are [soldered](#soldering-iron) onto the traces to wire them together.  
+The electronics is an assembly called Printed Circuit Board Assembly (PCBA), which consists of a number of components that have been electrically joined to a base board. This base board is called <span tt="PCB_image">Printed Circuit Board</span> (<span tt="PCB">PCB</span>) and it's made of alternating layers of insulating material (usually fiberglass) and copper, where the copper layers has been precisely <span tt="PCB_manufacturing">manufactured</span> to leave behind only individual traces. Traces are used to route signals from one component to the other. PCBs can have one layer, two layers, four layers, etc. Traces on different layers are connected together with <span tt="vias">vias</span>, and the ones on the external layers are used to connect the electronic components together by [soldering](#soldering-tools) them onto the traces.
 
-The <span tt="PCB">PCB</span> is the physical heart of any embedded system, it's where all the magic happens. Building electronics without <span tt="PCB">PCB</span>s would require a mess of wires connecting components, which would make it impossible to automate the production process for mass production.
+Modern electronics needs to be as small as possible in order to fit inside our pockets. This need for smaller and smaller electronics has made components significantly decrease in size over the past decades. Nowadays, some components are in the millimeter or even sub-millimeter scale.
+
+In the beginning, electronic components were connected to the PCB through metal leads, which are inserted from one side of the pcb and soldered from the other.
+
+This kind of mounting is called Through Hole Technology (THT).
+
+As components became smaller, leads were discarded in favour of integrated contact points. This new kind of packaging doesn't require holes in the PCB, so components get soldered directly on the traces of the two external layers of the PCB.
+
+This kind of mounting is called Surface Mounted Device (SMD).
+
+Modern, high-end electronics, use SMD components for the most part, but THT still finds its way in many other applications. This is because of physics constraints: millimeter-sized passive components do exist, but they don't have the same electrical characteristics of the bigger, THT version.
+
+Some SMD components, like USB connectors, feature both SMD-style and THT-style connections, where the latter is used to ensure mechanical stability.
+
+Building electronics without <span tt="PCB">PCB</span>s would require a mess of wires connecting components, which would make it impossible to automate the production process, let alone create complex electronics.
 
 Functionally speaking, the components on a <span tt="PCB">PCB</span> fall into one of four categories:
 
@@ -103,9 +117,11 @@ Functionally speaking, the components on a <span tt="PCB">PCB</span> fall into o
 - <strong>output components</strong>
 - <strong>support components</strong>
 
+Let's analyze these four categories.
+
 <h3 id="input-elements">2.1.1 Input Components</h3>
 
-Think of a button, dial, touch screen, a receiving antenna, magnetic sensor, light sensor, humidity sensor: anything that can produce electrical signals that describe the surrounding environment.
+Think of a button, dial, touch screen, receiving antenna, magnetic sensor, light sensor, humidity sensor: anything that can produce electrical signals that describe the surrounding environment.
 
 All of these devices are connected, either directly or [through intermediate circuitry](#support-components), to the computational unit.
 
@@ -115,7 +131,7 @@ In the case of a desktop mouse, the input components are the buttons, scroll whe
 
 This is the core of the system, this is where the actual computation is performed.
 
-Computational Units, <span tt="CU">CU</span>s from now on, are <span tt="IC">integrated circuits</span> that implement some kind of computer.
+Computational Units, <span tt="CU">CU</span>s from now on, are <span tt="IC">integrated circuits</span> (ICs) that implement some kind of computer.
 
 Most embedded systems have only one <span tt="CU">CU</span>, but it's common for more advanced systems to have more than one, either on the same or separate <span tt="PCB">PCB</span>s.
 
@@ -244,17 +260,28 @@ For example, what a multimeter might show as a steady 3.3V signal, an oscillosco
 
 Oscilloscopes differ in number of <span tt="oscilloscope_channels">input channels</span>, sampling frequency and <span tt="signal_analysis_capabilities">signal analysis capabilities</span>. Modern, top-of-the-line oscilloscopes have sampling frequencies in the range of tens of GHz.
 
-<h2 id="soldering-iron">3.3 Soldering Iron</h2>
+<h2 id="soldering-tools">3.3 Soldering Tools</h2>
 
 An embedded system is made of many different components, which need to be joined electrically.  
 This is done with [solder](https://en.wikipedia.org/wiki/Solder), a metal alloy that melts between 180-300°C (depending on the lead content).
-The melting temperature is low enough that soldering can be safely done at home with a simple (yet very dangerous if misused) tool called a <span tt="soldering_iron">soldering iron</span>, basically a metal rod where the pointy end is heated by passing electric current through it.
+The melting temperature is low enough that soldering can be safely done at home.
 
 Soldering is a fundamental skill in embedded systems. You'll use it to:
 
 - Assemble prototype circuits on <span tt="perfboard">perfboard</span> or <span tt="PCB">PCB</span>s
 - Replace faulty components
 - Make connections between wires and components
+
+The quintessential soldering tool is the <span tt="soldering_iron">soldering iron</span>, basically a metal rod where the pointy end is heated by passing electric current through it. A soldering iron is mostly used with THT components, 
+
+SMD components instead, are soldered with <strong>solder paste</strong> (a mixture of tiny solder balls and flux) and a reflow process. The paste is applied to <span tt="PCB">PCB</span> pads, components are placed on top, and then heat is applied to melt the solder all at once.
+
+This can be achieved with:
+- <strong>Hot air station</strong>: Directs a controlled stream of heated air to reflow solder without direct contact, making it ideal for reworking or removing components. The heat melts the solder paste applied to the pads, allowing precise component placement and removal.
+- <strong>Reflow oven</strong>: A specialized oven that heats the entire PCB assembly following a precise temperature profile. This is the standard soldering method for high-density, SMD-based designs. 
+- <strong>Reflow plate</strong>: A heated plate that heats the PCB from below, melting the solder paste. More affordable than a reflow oven and suitable for hobbyists and small-scale production.
+
+Conventional soldering works best with THT components and reflowing works best for SMD components, nevertheless, a soldering iron can be used for SMD components too. Needless to say this requires <span tt="">skills and the right tools</span>.
 
 In industrial settings, the soldering process is automated by a <span tt="soldering_robot">soldering-iron-wielding robot</span> or by using <span tt="reflow_oven">reflow-ovens</span>.
 

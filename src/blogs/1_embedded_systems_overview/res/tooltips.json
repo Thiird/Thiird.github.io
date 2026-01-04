@@ -255,5 +255,11 @@
     "debugger": {
         "text": "A JLink debugger.<br>On the top side, the debugger is connected via USB to the PC, on the bottom side instead, it's connected to a PCB for programming and debugging.<br> The PC side is always either USB or Ethernet, the device side is device dependant, both in the protocol used and the cable/connectors required.",
         "media": "debugger.jpg"
+    },
+    "PCB_manufacturing": {
+        "text": "etched/milled",
+        "media": ""
     }
+
+    
 }
