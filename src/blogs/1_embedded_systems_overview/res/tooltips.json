@@ -265,5 +265,20 @@
     "full_os_requirements": {
         "text": "Not all embedded systems can run full-fledged OSes like Linux or Android. These OSes require a <strong>Memory Management Unit (MMU)</strong>, a hardware component that translates virtual addresses to physical addresses.<br><br>The MMU enables each process to have its own isolated address space, which is fundamental to how Linux and Android manage multiple applications. Most microcontrollers lack an MMU, which is why they run bare-metal code or lightweight RTOSes instead.",
         "media": ""
+    },
+    "pcb_pads": {
+        "text": "<strong>PCB Pads</strong><br><br>Exposed metal areas on a PCB where components are soldered. Pads provide both mechanical support and electrical connection between components and the PCB traces.",
+        "media": "pcb_pads.jpg",
+        "alt": ""
+    },
+    "solder_paste": {
+        "text": "<strong>Solder Paste</strong><br><br>A sticky mixture of tiny solder balls suspended in flux. Applied to PCB pads before component placement, it melts during the reflow process to create permanent electrical connections.",
+        "media": "solder_paste.jpg",
+        "alt": ""
+    },
+    "mesmerizing_reflow": {
+        "text": "Watching solder paste melt and components seemingly snap into perfect alignment as surface tension pulls them into place is genuinely fascinating.",
+        "media": "reflow_mesmerizing.gif",
+        "alt": ""
     }
 }

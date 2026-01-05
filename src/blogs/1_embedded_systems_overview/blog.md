@@ -272,7 +272,7 @@ Soldering is a fundamental skill in embedded systems. You'll use it to:
 
 The quintessential soldering tool is the <span tt="soldering_iron">soldering iron</span>, basically a metal rod where the pointy end is heated by passing electric current through it. A soldering iron is mostly used with THT components.
 
-SMD components instead, are conventionally soldered with  <strong>solder paste</strong>, a mixture of tiny solder balls and flux that gets applied to the PCB pads, exactly between the unsoldered parts and the PCB. The whole PCBA is then put throught the so called reflow process, basically a process where the assembly is heated up as a whole to make the solder balls melt and solder the individual parts to the PCB. This process is quite mesmerizing to witness in person.
+SMD components instead, are conventionally soldered with <span tt="solder_paste">solder paste</span>, a mixture of tiny solder balls and flux that gets applied to the <span tt="pcb_pads">PCB pads</span>, exactly between the unsoldered parts and the PCB. The whole PCBA is then put throught the so called reflow process, basically a process where the assembly is heated up as a whole to make the solder balls melt and solder the individual parts to the PCB. This process is quite <span tt="mesmerizing_reflow">mesmerizing</span>.
 
 Reflow can be done with different tools:
 - <strong>Reflow oven</strong>: A specialized oven that heats the entire PCB assembly following a precise temperature profile. This is the standard soldering method for high-density, SMD-based designs. 
