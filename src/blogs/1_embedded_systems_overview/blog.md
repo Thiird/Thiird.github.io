@@ -48,7 +48,7 @@ Let's dive in!
         <li><a href="#power-supply">3.3 Power Supply</a></li>
         <li><a href="#oscilloscope">3.4 Oscilloscope</a></li>
         <li><a href="#logic-analyzer">3.5 Logic Analyzer</a></li>
-        <li><a href="#the-debugger">3.6 The debugger</a></li>
+        <li><a href="#the-debugger">3.6 Debugger</a></li>
       </ul>
     </li>
     <li class="index-section">
@@ -86,13 +86,11 @@ An embedded system is made of three main elements:
 
 The hardware provides the physical platform, the firmware controls it directly, and the software (when present) adds higher-level functionality.
 
-Consider a desktop mouse as an example: the hardware is the circuit board with its buttons, scroll wheel, and motion sensor, the firmware is the code that runs on the circuit board, interpreting the signals from these components and sending them off the device, and the software is, for example, the application running on your desktop PC that allows the user to adjust the mouse sensitivity. All is left to do is to design a plastic enclosure in which to embed the circuit board into, so that the user can easily and comfortably operate the mouse.
-
 <h2 id="hardware">2.1 Hardware</h2>
 
 The core of an <span tt="ES">ES</span> is the electronic hardware.
 
-The electronics is an assembly called Printed Circuit Board Assembly (PCBA), which consists of a number of components that have been electrically joined to a base board. This base board is called <span tt="PCB_image">Printed Circuit Board</span> (<span tt="PCB">PCB</span>) and it's made of alternating layers of insulating material (usually fiberglass) and copper, where the copper layers has been precisely <span tt="PCB_manufacturing">manufactured</span> to leave behind only individual traces. Traces are used to route signals from one component to the other. PCBs can have one layer, two layers, four layers, etc. Traces on different layers are connected together with <span tt="vias">vias</span>, and the ones on the external layers are used to connect the electronic components together by [soldering](#soldering-tools) them onto the traces.
+The electronics is consolidated in an assembly called Printed Circuit Board Assembly (PCBA), which consists of a number of components that have been electrically joined to a base board. This base board is called <span tt="PCB_image">Printed Circuit Board</span> (<span tt="PCB">PCB</span>) and it's made of alternating layers of insulating material and copper, where the copper layers have been precisely <span tt="PCB_manufacturing">manufactured</span> to leave behind only individual traces. Traces are used to route signals from one component to the other. PCBs can have one layer, two layers, four layers, etc. Traces on different layers are connected together with <span tt="vias">vias</span>, and the ones on the external layers are what connects the electronic components together to the PCB itself by [soldering](#soldering-tools) them on specific spots on the traces.
 
 Modern electronics needs to be as small as possible in order to fit inside our pockets. This need for smaller and smaller electronics has made components significantly decrease in size over the past decades. Nowadays, some components are in the millimeter or even sub-millimeter scale.
 
@@ -104,7 +102,7 @@ As components became smaller, leads were discarded in favour of integrated conta
 
 This kind of mounting is called Surface Mounted Device (SMD).
 
-Modern, high-end electronics, use SMD components for the most part, but THT still finds its way in many other applications. This is because of physics constraints: millimeter-sized passive components do exist, but they don't have the same electrical characteristics of the bigger, THT version.
+Modern, high-end electronics, uses SMD components for the most part, but THT still finds its way in many applications. This is because of physics constraints: millimeter-size SMD components do exist, but they don't have the same electrical characteristics of the bigger, THT version.
 
 Some SMD components, like USB connectors, feature both SMD-style and THT-style connections, where the latter is used to ensure mechanical stability.
 
@@ -135,15 +133,15 @@ Computational Units, <span tt="CU">CU</span>s from now on, are <span tt="IC">int
 
 Most embedded systems have only one <span tt="CU">CU</span>, but it's common for more advanced systems to have more than one, either on the same or separate <span tt="PCB">PCB</span>s.
 
-Architecture wise, there are a few different kind of computational units. Let's start from the one present in desktop PCs: the <span tt="CPU">CPU</span>.
+Architecture wise, there are three main kinds computational units. Let's analyze all of them starting from the one found in desktop PCs: the <span tt="CPU">CPU</span>.
 
 <div class="highlight-box">
-The <strong>Central Processing Unit</strong> (<span tt="CPU">CPU</span>) is an integrated circuit that implements a computer capable of performing a fixed number of operations. These operations are called <strong>machine instructions</strong>. Once turned on, the <span tt="CPU">CPU</span> starts executing the machine instructions specified in a program, which is a finite list of machine instructions. The set of all valid machine instructions that a program can use, is defined in the <strong>Instruction Set Architecture</strong> (<span tt="isa">ISA</span>) of the <span tt="CPU">CPU</span>. Changing the program changes what the <span tt="CPU">CPU</span> does, which <span tt="cpu_non_triviality">makes the <span tt="CPU">CPU</span> a general-purpose computer</span>.
+The <strong>Central Processing Unit</strong> (<span tt="CPU">CPU</span>) is an integrated circuit that implements a computer capable of performing a fixed number of operations. These operations are called <strong>machine instructions</strong>. Once turned on, the <span tt="CPU">CPU</span> starts executing the machine instructions specified in a program, which is a finite list of machine instructions. The set of all valid machine instructions that a program can use, is defined in the <strong>Instruction Set Architecture</strong> (<span tt="isa">ISA</span>) of the <span tt="CPU">CPU</span>. Changing the program changes what the <span tt="CPU">CPU</span> does, which <span tt="cpu_non_triviality">makes the CPU a general-purpose computer</span>.
 </div>
 
 In embedded systems, <span tt="cpu_types">many different types of <span tt="CPU">CPU</span>s</span> are used as the computational unit. The difference in name tries to capture the difference in clock speed, core count, presence of integrated RAM and capabilities.
 
-The flexibility that <span tt="CPU">CPU</span>s have comes at the cost of speed. Following a list of instructions takes time, as the <span tt="CPU">CPU</span> needs to read the next instruction, activate the part of the chip that does that, and then actually execute it. This is called the [<em>Fetch-Decode-Execute</em>](https://en.wikipedia.org/wiki/Instruction_cycle) cycle: the <span tt="CPU">CPU</span> fetches the next instruction, decodes it, and then executes it.
+The flexibility that <span tt="CPU">CPU</span>s have, comes at the cost of speed. Following a list of instructions takes time, as the <span tt="CPU">CPU</span> needs to read the next instruction, activate the part of the chip that does that, and then actually execute it. This is called the [<em>Fetch-Decode-Execute</em>](https://en.wikipedia.org/wiki/Instruction_cycle) cycle.
 
 The F-D-E cycle is less than ideal for applications where the computation to be performed is 'already known', and maximum speed is required. Think of high-performance applications like <span tt="dsp_example">digital signal processing</span>. What we need in those cases, is to trade all the flexibility for all the speed.
 
@@ -153,7 +151,7 @@ We can achieve this with an <strong>ASIC</strong>.
 The <strong>Application Specific Integrated Circuit</strong> (ASIC), is an integrated circuit that implements a fixed-purpose computer. When turned on, it will always execute the same computation, as it's not configurable in anyway.
 </div>
 
-<span tt="ASIC">ASIC</span>s come with significant trade-offs: high development cost and inflexibility. Developing an <span tt="IC">IC</span> is very expensive (regardless of what it does), and making one for a specific use case, makes it even more expensive, as the narrow markets will result in fewer units sold. Moreover, once manufactured, <span tt="IC">IC</span>s cannot be changed: if there's a design error you are stuck with it. This is true for all <span tt="IC">IC</span>s, but it's particularly painful for <span tt="ASIC">ASIC</span>s as they are, unlike <span tt="CPU">CPU</span>s, not configurable in any way. This makes <span tt="ASIC">ASIC</span>s economically viable only for markets where performance comes before cost, like military applications.
+<span tt="ASIC">ASIC</span>s come with significant trade-offs: high development cost and inflexibility. Developing an <span tt="IC">IC</span> is very expensive (regardless of what it does), and making one for a specific use case, makes it even more expensive, as the narrow markets will result in fewer units sold. Moreover, once manufactured, <span tt="IC">IC</span>s cannot be changed: if there's a design error you are stuck with it. This is true for all <span tt="IC">IC</span>s, but it's particularly painful for <span tt="ASIC">ASIC</span>s as they are, unlike <span tt="CPU">CPU</span>s, not configurable in any way. This makes <span tt="ASIC">ASIC</span>s economically viable only for markets where, for example, performance comes before cost, like military applications.
 
 Talking about <span tt="CPU">CPU</span>s and <span tt="ASIC">ASIC</span>s, we have gone from extreme flexibility and low speed, to zero flexibility and high-speed.  
 What if we wanted the performance of <span tt="ASIC">ASIC</span>s with some computational flexibility? That's what <span tt="FPGA">FPGA</span>s are for.
@@ -164,7 +162,7 @@ A <strong>Field-Programmable Gate Array</strong> (FPGA) is an integrated circuit
 
 <span tt="softcore">Any digital circuit can be implemented on an FPGA</span>, from a simple binary counter to a complex Fourier transform.
 
-In terms of performance, <span tt="FPGA">FPGA</span>s sit between <span tt="CPU">CPU</span>s and <span tt="ASIC">ASIC</span>s but much closer to <span tt="ASIC">ASIC</span>s. With an <span tt="FPGA">FPGA</span>, algorithms run directly in  hardware, providing massive speedups over <span tt="CPU">CPU</span> execution. However, due to the overhead of configurable (rather than fixed) circuitry, <span tt="FPGA">FPGA</span>s are typically less efficient in speed and power than <span tt="ASIC">ASIC</span>s.
+In terms of performance, <span tt="FPGA">FPGA</span>s sit between <span tt="CPU">CPU</span>s and <span tt="ASIC">ASIC</span>s but much closer to <span tt="ASIC">ASIC</span>s. With an <span tt="FPGA">FPGA</span>, algorithms run directly in  hardware, providing massive speedups over <span tt="CPU">CPU</span> execution. However, due to the overhead of the configurable circuitry, <span tt="FPGA">FPGA</span>s are typically less efficient in speed and power than <span tt="ASIC">ASIC</span>s.
 
 Modern <span tt="FPGA">FPGA</span> chips integrate far more than just the CLBs matrix, like dedicated RAM blocks, and high-speed I/O transceivers.
 
@@ -175,8 +173,8 @@ Both <span tt="CPU">CPU</span>s and <span tt="FPGA">FPGA</span>s are general-pur
 When discussing <span tt="CPU">CPU</span>s, we use terms like "software" and "programming", which are also used with <span tt="FPGA">FPGA</span>s, but they mean very different things:
 
 <ul>
-  <li id="cpu-software"><strong>CPU software:</strong> The software of <span tt="CPU">CPU</span>s is the list of machine instructions that the <span tt="CPU">CPU</span> executes. This list is obtained starting from a program, which is code written by a programmer in a programming language, like C or C++. This program gets <strong>compiled</strong> (translated) to machine code, a list of instructions that the <span tt="CPU">CPU</span> can understand and execute.</li>
-  <li id="fpga-software"><strong>FPGA software:</strong> The software of <span tt="FPGA">FPGA</span>s is code written in an <a href="https://en.wikipedia.org/wiki/Hardware_description_language" target="_blank">Hardware Description Language</a> (HDL), like Verilog or VHDL, that gets <strong>synthesized</strong> to a bitstream and then used to configure the CLBs in the <span tt="FPGA">FPGA</span> to implement a certain function. The resulting bitstream depends on the input HDL code, <span tt="target_fpga_model">the target <span tt="FPGA">FPGA</span> model</span>, and <span tt="synthesis_toolchain">the synthesis toolchain used</span>.</li>
+  <li id="cpu-software"><strong>CPU software:</strong> The software of <span tt="CPU">CPU</span>s is the list of machine instructions that the <span tt="CPU">CPU</span> executes. This list is what makes up the program the CPU executes, and it's either written directly in machine code or obtained through <strong>compilation</strong>, a process that translates higher-level code written by a programmer in a programming language like C or C++ to the equivalent machine code of the target CPU.
+  <li id="fpga-software"><strong>FPGA software:</strong> The software of <span tt="FPGA">FPGA</span>s is code written in an <a href="https://en.wikipedia.org/wiki/Hardware_description_language" target="_blank">Hardware Description Language</a> (HDL), like Verilog or VHDL, that gets <strong>synthesized</strong> to a bitstream and then used to configure the CLBs in the <span tt="FPGA">FPGA</span> to implement a certain function. The resulting bitstream depends on the input HDL code, <span tt="target_fpga_model">the target  model</span>, and <span tt="synthesis_toolchain">the synthesis toolchain used</span>.</li>
 </ul>
 
 <h3 id="output-elements">2.1.3 Output Components</h3>
@@ -212,7 +210,7 @@ Some examples of such minimal, so called <em>embedded operative systems</em>, ar
 
 <h2 id="software">2.3 Software</h2>
 
-In the embedded world, we use the term <em>software</em> to refer to both the high-level code running <em>on-device</em>, on top of a canonical operative system like Linux or Android, and the code running <em>off-device</em> that interacts with the embedded device nonetheless.
+In the embedded world, we use the term <em>software</em> to refer to both the high-level code running <em>on-device</em>, on top of a <span tt="full_os_requirements">canonical operative system like Linux or Android</span>, and the code running <em>off-device</em> that interacts with the embedded device nonetheless.
 
 In particular, we refer to the former as <strong><em>embedded software</em></strong> and the latter as just <strong><em>software</em></strong>.
 
@@ -224,7 +222,7 @@ Software uses operating system APIs and libraries to provide high-level function
 
 <span tt="bench_power_supply_example">Complex embedded products use both</span>: firmware handles low level hardware functionalities (like reading sensors or controlling motors), while software handles the user-level applications, like graphical interfaces and networking.
 
-Note that code running on real-time operating systems like [FreeRTOS](https://en.wikipedia.org/wiki/FreeRTOS) and [Zephyr](https://en.wikipedia.org/wiki/Zephyr_(operating_system)) is still considered firmware, as those OSs provide very minimal abstraction and the code is still directly programming the hardware.
+Note that code running embedded operating systems like [FreeRTOS](https://en.wikipedia.org/wiki/FreeRTOS) and [Zephyr](https://en.wikipedia.org/wiki/Zephyr_(operating_system)) is still considered firmware, as those OSs provide very minimal abstraction and the code is still directly programming the hardware.
 
 <h1 id="tools-of-the-trade">3. Tools of the trade</h1>
 
@@ -238,7 +236,7 @@ Let's go through the essential tools that you will need.
 <div class="highlight-box">
 <strong>Caution:</strong>  
 If you have never handled electronics before, stick to low-energy components like cell batteries and LEDs. You can burn your house down or hurt yourself pretty badly with electronics.  
-The best way to get started is having someone in person showing you the basics, but don't be afraid to try on your own.
+The best way to get started is having someone showing you the basics in persons. Nevertheless, don't be afraid to try on your own.
 </div>
 
 <h2 id="multimeter">3.1 Multimeter</h2>
@@ -246,7 +244,7 @@ The best way to get started is having someone in person showing you the basics, 
 This is the first tool you should get acquainted with and is also the most basic lab tool.  
 A multimeter is, for the most part, a diagnostic tool. It takes instantaneous voltage, current, resistance, inductance and capacitance readings and displays it to the user. Multimeters can both be analog and digital. <span tt="amm">Analog multimeters</span> take a continuous reading and display it with a needle meter, whereas <span tt="dmm">digital multimeters</span> take discrete readings with a frequency of a few Hertz and display the reading on a digital screen.
 
-A multimeter is used to characterize simple behaviors, as it only answers to wether a signal is there and how much it measures in that instant, while saying nothing about its behavior.
+A multimeter is used to characterize simple signals, as it only answers to wether it is there and how much it measures in that instant, while saying nothing about its behavior.
 
 <h2 id="oscilloscope">3.2 Oscilloscope</h2>
 
@@ -272,13 +270,13 @@ Soldering is a fundamental skill in embedded systems. You'll use it to:
 - Replace faulty components
 - Make connections between wires and components
 
-The quintessential soldering tool is the <span tt="soldering_iron">soldering iron</span>, basically a metal rod where the pointy end is heated by passing electric current through it. A soldering iron is mostly used with THT components, 
+The quintessential soldering tool is the <span tt="soldering_iron">soldering iron</span>, basically a metal rod where the pointy end is heated by passing electric current through it. A soldering iron is mostly used with THT components.
 
-SMD components instead, are soldered with <strong>solder paste</strong> (a mixture of tiny solder balls and flux) and a reflow process. The paste is applied to <span tt="PCB">PCB</span> pads, components are placed on top, and then heat is applied to melt the solder all at once.
+SMD components instead, are conventionally soldered with  <strong>solder paste</strong>, a mixture of tiny solder balls and flux that gets applied to the PCB pads, exactly between the unsoldered parts and the PCB. The whole PCBA is then put throught the so called reflow process, basically a process where the assembly is heated up as a whole to make the solder balls melt and solder the individual parts to the PCB. This process is quite mesmerizing to witness in person.
 
-This can be achieved with:
-- <strong>Hot air station</strong>: Directs a controlled stream of heated air to reflow solder without direct contact, making it ideal for reworking or removing components. The heat melts the solder paste applied to the pads, allowing precise component placement and removal.
+Reflow can be done with different tools:
 - <strong>Reflow oven</strong>: A specialized oven that heats the entire PCB assembly following a precise temperature profile. This is the standard soldering method for high-density, SMD-based designs. 
+- <strong>Hot air station</strong>: Hand-held device that directs a controlled stream of heated air to the specific area of the PCB where solder needs to melt, making it ideal for reworking individual components. This tool is what most engineers use in their lab.
 - <strong>Reflow plate</strong>: A heated plate that heats the PCB from below, melting the solder paste. More affordable than a reflow oven and suitable for hobbyists and small-scale production.
 
 Conventional soldering works best with THT components and reflowing works best for SMD components, nevertheless, a soldering iron can be used for SMD components too. Needless to say this requires <span tt="">skills and the right tools</span>.
@@ -295,8 +293,8 @@ Unlike wall adapters or USB power bricks, a bench power supply allows you to:
 - limit the maximum current to protect your circuit from damage in case of a short circuit
 - monitor real-time power consumption
 
-<h2 id="the-debugger">3.5 The programmer/debugger</h2>
-In embedded systems, the <span tt="debugger">debugger</span> a device that sits between the <span tt="ES">ES</span> and the desktop machine, used for:
+<h2 id="the-debugger">3.5 Debugger</h2>
+In embedded systems, the <span tt="debugger">debugger</span> is a device that sits between the <span tt="ES">ES</span> and the development machine, and it's used for:
 
 - <strong>Programming</strong>: <span tt="flash_program">Flashing</span> the compiled code onto the microcontroller's memory
 - <strong>Debugging</strong>: Setting breakpoints, stepping through code, and inspecting variables while the program runs on the embedded system
@@ -330,8 +328,7 @@ Don't do random projects "just to learn", try to do projects that will teach you
 Try to make projects that will yield meaningful results.
 
 You need to create in order to learn: might as well create something that someone needs, right?
-That way you will get the user-engineer feedback loop that is crucial to make products enjoyable to use. Without it, as soon as you see your project work you will think "It's done" and move onto something else.
-Whereas putting it into the hands of a user will highlight several things that still need to be done
+That way you will get the user-engineer feedback loop that is crucial to make products actually functional. Without it, as soon as you see your project work you will think "It's done"m shelve it and move onto something else. Whereas putting it into the hands of a user will most-likely highlight several things that still need to be done.
 
 <h2 id="learning-resources">4.2 Learning resources</h2>
 

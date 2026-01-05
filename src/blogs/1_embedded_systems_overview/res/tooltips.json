@@ -1,6 +1,6 @@
 {
     "cpu_types": {
-        "text": "<strong>CPU (Central Processing Unit)</strong>: The general term for a general-purpose computer IC. Typically run at high clock speeds (GHz range). Used for complex devices devices like TVs.<br>For example, the ARM Cortex-A53 .<br><br><strong>MCU (Microcontroller Unit)</strong>: The same base architecture as a CPU, but with integrated RAM, EEPROM and run at lower clock speeds (MHz range). Used for simple devices like a mouse and keyboard.<br>For example, the STM32F4.<br><br><strong>DSP (Digital Signal Processor)</strong>: A specialized processor optimized for digital signal processing operations like filtering, FFT, and audio/video processing.<br>For example, the Texas Instruments TMS320C6000.",
+        "text": "<strong>CPU (Central Processing Unit)</strong>: The general term for a general-purpose computer IC. Typically run at high clock speeds (GHz range). Used for complex devices devices like TVs.<br>For example, the ARM Cortex-A53 .<br><br><strong>MCU (Microcontroller Unit)</strong>: The same base architecture as a CPU, but with integrated RAM, EEPROM and run at lower clock speeds (MHz range). Used for simple devices like a mouse and keyboard.<br>For example, the STM32F4.<br><br><strong>DSP (Digital Signal Processor)</strong>: A CPU designed with special instructions for mathematical operations. These chips excel at repetitive math-intensive tasks required in signal processing applications.<br>For example, the Texas Instruments TMS320C6000.",
         "media": "",
         "alt": ""
     },
@@ -129,7 +129,7 @@
         "alt": ""
     },
     "IC": {
-        "text": "<strong>Integrated Circuit</strong><br><br>A set of transistors, resistors, and capacitors implemented on a semiconductor material, working together to perform complex functions. Modern integrated circuits contain billions of transistors.<br><br><em>Shown below, a die shot of the <a href=\"https://en.wikipedia.org/wiki/Electronics_industry_in_the_Socialist_Republic_of_Romania#History\" target=\"_blank\">CII 72</a>, which comprises two voltage comparators with separate differential inputs</em>",
+        "text": "<strong>Integrated Circuit</strong><br><br>A set of transistors, resistors, and capacitors implemented on a semiconductor material, working together to perform complex functions. Modern integrated circuits contain billions of transistors.<br><br><em>Shown below, a die shot of the <a href=\"https://en.wikipedia.org/wiki/Electronics_industry_in_the_Socialist_Republic_of_Romania#History\" target=\"_blank\">CII 72</a>, which comprises two voltage comparators with separate differential inputs.<br>For more, google 'IC die shot'.</em>",
         "media": "CII_72_silicon_die.jpg"
     },
     "electronic": {
@@ -236,10 +236,12 @@
     },
     "system_logic": {
         "text": "Think of a system that is handling multiple input/output data streams over many different communication protocols.",
-        "media": ""    },
+        "media": ""
+    },
     "bench_power_supply_example": {
         "text": "An example is a modern bench power supply: the firmware controls the voltage and current settings based on the front panel buttons and dials, while the software exposes a web interface for remote control and configuration. You might update the software to add new features, but the firmware remains stable (unless a bug is found) as the front panel is always the same.",
-        "media": ""    },
+        "media": ""
+    },
     "ESD_protection": {
         "text": "<strong>ESD Protection</strong><br><br>Electrostatic Discharge protection circuits prevent damage from static electricity. Clamping voltage spikes to safe levels, protects sensitive electronics from the thousands of volts that can build up from simple actions like touching a doorknob.",
         "media": ""
@@ -259,7 +261,9 @@
     "PCB_manufacturing": {
         "text": "etched/milled",
         "media": ""
+    },
+    "full_os_requirements": {
+        "text": "Not all embedded systems can run full-fledged OSes like Linux or Android. These OSes require a <strong>Memory Management Unit (MMU)</strong>, a hardware component that translates virtual addresses to physical addresses.<br><br>The MMU enables each process to have its own isolated address space, which is fundamental to how Linux and Android manage multiple applications. Most microcontrollers lack an MMU, which is why they run bare-metal code or lightweight RTOSes instead.",
+        "media": ""
     }
-
-    
 }

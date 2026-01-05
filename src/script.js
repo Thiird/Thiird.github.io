@@ -1985,6 +1985,13 @@ class TooltipManager {
     const content = document.createElement('div');
     content.className = 'tooltip-content';
 
+    // Handle null or undefined data
+    if (!data) {
+      console.warn('Tooltip data is null or undefined');
+      tooltip.appendChild(content);
+      return tooltip;
+    }
+
     if (data.text) {
       const text = document.createElement('div');
       text.className = 'tooltip-text';
@@ -2250,11 +2257,19 @@ class TooltipManager {
     if (tooltipId) {
       tooltipData = this.tooltipData.get(tooltipId);
       if (!tooltipData) {
-
+        console.warn(`Missing tooltip data for: "${tooltipId}"`);
         return;
       }
     } else {
-      tooltipData = JSON.parse(element.getAttribute('data-tooltip'));
+      try {
+        tooltipData = JSON.parse(element.getAttribute('data-tooltip'));
+      } catch (e) {
+        console.warn('Failed to parse data-tooltip attribute:', e);
+        return;
+      }
+      if (!tooltipData) {
+        return;
+      }
     }
 
     const dataKey = JSON.stringify(tooltipData);
@@ -2408,7 +2423,7 @@ class TooltipManager {
     const topLineY = topLineRect.top + window.pageYOffset;
 
     // Position tooltip - same logic for mobile and desktop
-    const margin = 10;
+    const margin = 20;
     let left = topLineX + (topLineRect.width / 2) - (tooltipWidth / 2);
     let top = topLineY - tooltipHeight - this.verticalOffset;
 
