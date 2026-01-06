@@ -1157,6 +1157,9 @@ document.addEventListener("DOMContentLoaded", () => {
         setActiveListItem('poemListItems', parseInt(index, 10));
       });
     });
+
+    // Add overlays for truncated text after a short delay to ensure rendering is complete
+    setTimeout(() => addTruncatedTextOverlays(), 100);
   }
 
   // Mark the active item in a list and remove previous marking
@@ -1420,6 +1423,10 @@ document.addEventListener("DOMContentLoaded", () => {
         setActiveListItem('blogListItems', parseInt(index, 10));
       });
     });
+
+    // Add overlays for truncated text after a short delay to ensure rendering is complete
+    setTimeout(() => addTruncatedTextOverlays(), 100);
+
     // Apply active class based on loaded blog after list is built
     const blogParam = getUrlParameter('blog');
     if (blogParam !== null && blogsCache) {
@@ -2406,10 +2413,8 @@ class TooltipManager {
       tooltipHeight = tooltipRect.height || 100;
     }
 
-    // Get trigger element position relative to page
+    // Get trigger element position relative to viewport (for fixed positioning)
     const triggerRect = trigger.getBoundingClientRect();
-    const triggerX = triggerRect.left + window.pageXOffset;
-    const triggerY = triggerRect.top + window.pageYOffset;
 
     // For multi-line triggers, get the position of the topmost line
     const range = document.createRange();
@@ -2419,31 +2424,33 @@ class TooltipManager {
     if (rects.length > 0) {
       topLineRect = rects[0]; // First rect is the topmost line
     }
-    const topLineX = topLineRect.left + window.pageXOffset;
-    const topLineY = topLineRect.top + window.pageYOffset;
 
-    // Position tooltip - same logic for mobile and desktop
-    const margin = 20;
-    let left = topLineX + (topLineRect.width / 2) - (tooltipWidth / 2);
-    let top = topLineY - tooltipHeight - this.verticalOffset;
+    // Position tooltip using fixed positioning (relative to viewport)
+    const margin = 10;
+    let left = topLineRect.left + (topLineRect.width / 2) - (tooltipWidth / 2);
+    let top = topLineRect.top - tooltipHeight - this.verticalOffset;
 
     // Adjust if tooltip goes off screen horizontally
-    const scrollX = window.pageXOffset;
-    if (left < scrollX + margin) left = scrollX + margin;
-    if (left + tooltipWidth > scrollX + window.innerWidth - margin) {
-      left = scrollX + window.innerWidth - tooltipWidth - margin;
+    if (left < margin) left = margin;
+    if (left + tooltipWidth > window.innerWidth - margin) {
+      left = window.innerWidth - tooltipWidth - margin;
     }
 
     // If not enough space above trigger, show below
-    if (top < window.pageYOffset + margin) {
-      top = triggerY + triggerRect.height + this.verticalOffset;
+    if (top < margin) {
+      top = triggerRect.bottom + this.verticalOffset;
       tooltip.classList.add('bottom');
     } else {
       tooltip.classList.remove('bottom');
     }
 
-    // Use absolute positioning so tooltip follows page scroll
-    tooltip.style.position = 'absolute';
+    // Ensure tooltip doesn't go off bottom of screen
+    if (top + tooltipHeight > window.innerHeight - margin) {
+      top = window.innerHeight - tooltipHeight - margin;
+    }
+
+    // Use fixed positioning so tooltip stays in viewport
+    tooltip.style.position = 'fixed';
     tooltip.style.left = left + 'px';
     tooltip.style.top = top + 'px';
     tooltip.style.right = '';
@@ -2762,6 +2769,9 @@ function loadHistory() {
         li.appendChild(link);
         historyList.appendChild(li);
       });
+
+      // Add overlays for truncated text
+      setTimeout(() => addTruncatedTextOverlays(), 100);
     })
     .catch(error => {
       const historyList = document.getElementById("historyList");
@@ -2924,6 +2934,17 @@ function initBlogPage() {
     setInitialSidebarState();
     adjustSidebarHeight();
     lastWidth = window.innerWidth;
+    
+    // DEBUG: Show ECU tooltip on startup
+    setTimeout(() => {
+      const ecuElement = document.querySelector('[data-tooltip="ecu"]');
+      if (ecuElement && window.tooltipManager) {
+        const tooltipData = window.tooltipManager.tooltips.get('ecu');
+        if (tooltipData) {
+          window.tooltipManager.showTooltip(ecuElement, tooltipData);
+        }
+      }
+    }, 1000);
   });
   window.addEventListener("resize", () => {
     const currentWidth = window.innerWidth;
@@ -3582,3 +3603,118 @@ document.addEventListener('DOMContentLoaded', () => {
     console.warn('[Slideshow] initOverviewSlideshow failed to start on DOMContentLoaded', e);
   }
 });
+
+// Function to add hover overlays for truncated text
+function addTruncatedTextOverlays() {
+  let activeOverlay = null;
+
+  function showOverlay(element, overlayClass) {
+    // Remove any existing overlay
+    if (activeOverlay) {
+      activeOverlay.remove();
+      activeOverlay = null;
+    }
+
+    // Get parent link element to access date
+    const linkElement = element.closest('a');
+    const dateElement = linkElement ? linkElement.querySelector('.list-item-date, .history-item-date') : null;
+
+    // Create overlay container
+    const overlay = document.createElement('div');
+    overlay.className = overlayClass;
+    
+    // Create title span
+    const titleSpan = document.createElement('span');
+    titleSpan.textContent = element.textContent;
+    titleSpan.style.marginRight = dateElement ? '8px' : '0';
+    overlay.appendChild(titleSpan);
+
+    // Add date if it exists
+    if (dateElement) {
+      const dateSpan = document.createElement('span');
+      dateSpan.textContent = dateElement.textContent;
+      dateSpan.style.fontStyle = 'italic';
+      dateSpan.style.fontSize = '0.85em';
+      dateSpan.style.color = 'var(--text-secondary)';
+      dateSpan.style.marginLeft = 'auto';
+      dateSpan.style.flexShrink = '0';
+      overlay.appendChild(dateSpan);
+    }
+    
+    // Copy computed styles from original element and parent link
+    const computedStyle = window.getComputedStyle(element);
+    const linkStyle = linkElement ? window.getComputedStyle(linkElement) : null;
+    
+    overlay.style.fontSize = computedStyle.fontSize;
+    overlay.style.fontWeight = computedStyle.fontWeight;
+    overlay.style.fontFamily = computedStyle.fontFamily;
+    overlay.style.padding = computedStyle.padding;
+    overlay.style.display = linkStyle ? linkStyle.display : 'flex';
+    overlay.style.alignItems = 'center';
+    overlay.style.gap = '8px';
+    
+    // For history items, use grid layout like the original
+    if (overlayClass === 'history-item-name-overlay' && linkStyle) {
+      overlay.style.display = 'grid';
+      overlay.style.gridTemplateColumns = '1fr auto';
+      overlay.style.gap = '12px';
+    }
+    
+    // Add to body
+    document.body.appendChild(overlay);
+    activeOverlay = overlay;
+
+    // Position overlay to match the element's position and height, but allow width to expand
+    const rect = element.getBoundingClientRect();
+    overlay.style.left = (rect.left + window.pageXOffset) + 'px';
+    overlay.style.top = (rect.top + window.pageYOffset) + 'px';
+    overlay.style.height = rect.height + 'px';
+    overlay.style.lineHeight = rect.height + 'px';
+    
+    // Allow width to expand naturally, but don't exceed viewport
+    overlay.style.maxWidth = 'max-content';
+    const overlayRect = overlay.getBoundingClientRect();
+    const maxRight = window.innerWidth - 20; // 20px margin
+    if (overlayRect.right > maxRight) {
+      overlay.style.maxWidth = (maxRight - rect.left) + 'px';
+    }
+
+    // Show overlay only after width is calculated to prevent reflow
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        overlay.classList.add('show');
+      });
+    });
+  }
+
+  function hideOverlay() {
+    if (activeOverlay) {
+      activeOverlay.classList.remove('show');
+      const overlayToRemove = activeOverlay;
+      setTimeout(() => overlayToRemove.remove(), 200);
+      activeOverlay = null;
+    }
+  }
+
+  // Handle list item titles - attach to parent link to include date hover area
+  document.querySelectorAll('.list-item-title').forEach(el => {
+    if (el.scrollWidth > el.clientWidth) {
+      const linkElement = el.closest('a');
+      if (linkElement) {
+        linkElement.addEventListener('mouseenter', () => showOverlay(el, 'list-item-title-overlay'));
+        linkElement.addEventListener('mouseleave', hideOverlay);
+      }
+    }
+  });
+
+  // Handle history item names - attach to parent link to include date hover area
+  document.querySelectorAll('.history-item-name').forEach(el => {
+    if (el.scrollWidth > el.clientWidth) {
+      const linkElement = el.closest('a');
+      if (linkElement) {
+        linkElement.addEventListener('mouseenter', () => showOverlay(el, 'history-item-name-overlay'));
+        linkElement.addEventListener('mouseleave', hideOverlay);
+      }
+    }
+  });
+}

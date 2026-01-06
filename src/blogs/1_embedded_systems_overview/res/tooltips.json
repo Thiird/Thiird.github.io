@@ -129,8 +129,9 @@
         "alt": ""
     },
     "IC": {
-        "text": "<strong>Integrated Circuit</strong><br><br>A set of transistors, resistors, and capacitors implemented on a semiconductor material, working together to perform complex functions. Modern integrated circuits contain billions of transistors.<br><br><em>Shown below, a die shot of the <a href=\"https://en.wikipedia.org/wiki/Electronics_industry_in_the_Socialist_Republic_of_Romania#History\" target=\"_blank\">CII 72</a>, which comprises two voltage comparators with separate differential inputs.<br>For more, google 'IC die shot'.</em>",
-        "media": "CII_72_silicon_die.jpg"
+        "text": "<strong>Integrated Circuit</strong><br><br>A set of transistors, resistors, and capacitors implemented on a semiconductor material, working together to perform complex functions. Modern integrated circuits contain billions of transistors.",
+        "media": "CII_72_silicon_die.jpg",
+        "alt": "Die shot of the <a href=\"https://en.wikipedia.org/wiki/Electronics_industry_in_the_Socialist_Republic_of_Romania#History\" target=\"_blank\">CII 72</a>, which comprises two voltage comparators with separate differential inputs."
     },
     "electronic": {
         "text": "It's important to define the distinction between <em>electrical</em> and <em>electronic</em>.<br><br>- <strong>Electrical</strong>: means \"current flowing through wires\", for example motors, simple wirings and lighting.<br>- <strong>Electronic</strong>: means \"current flowing through active components that perform computation\", like diodes, transistor and ultimately computers.",
