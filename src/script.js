@@ -2769,9 +2769,6 @@ function loadHistory() {
         li.appendChild(link);
         historyList.appendChild(li);
       });
-
-      // Add overlays for truncated text
-      setTimeout(() => addTruncatedTextOverlays(), 100);
     })
     .catch(error => {
       const historyList = document.getElementById("historyList");
@@ -3606,6 +3603,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Function to add hover overlays for truncated text
 function addTruncatedTextOverlays() {
+  // Only add overlays on desktop (screen width > 800px)
+  if (window.innerWidth <= 800) {
+    return;
+  }
+
   let activeOverlay = null;
 
   function showOverlay(element, overlayClass) {
@@ -3617,7 +3619,7 @@ function addTruncatedTextOverlays() {
 
     // Get parent link element to access date
     const linkElement = element.closest('a');
-    const dateElement = linkElement ? linkElement.querySelector('.list-item-date, .history-item-date') : null;
+    const dateElement = linkElement ? linkElement.querySelector('.list-item-date') : null;
 
     // Create overlay container
     const overlay = document.createElement('div');
@@ -3652,13 +3654,6 @@ function addTruncatedTextOverlays() {
     overlay.style.display = linkStyle ? linkStyle.display : 'flex';
     overlay.style.alignItems = 'center';
     overlay.style.gap = '8px';
-    
-    // For history items, use grid layout like the original
-    if (overlayClass === 'history-item-name-overlay' && linkStyle) {
-      overlay.style.display = 'grid';
-      overlay.style.gridTemplateColumns = '1fr auto';
-      overlay.style.gap = '12px';
-    }
     
     // Add to body
     document.body.appendChild(overlay);
@@ -3696,23 +3691,12 @@ function addTruncatedTextOverlays() {
     }
   }
 
-  // Handle list item titles - attach to parent link to include date hover area
+  // Handle list item titles (blogs/poems sidebar only) - attach to parent link to include date hover area
   document.querySelectorAll('.list-item-title').forEach(el => {
     if (el.scrollWidth > el.clientWidth) {
       const linkElement = el.closest('a');
       if (linkElement) {
         linkElement.addEventListener('mouseenter', () => showOverlay(el, 'list-item-title-overlay'));
-        linkElement.addEventListener('mouseleave', hideOverlay);
-      }
-    }
-  });
-
-  // Handle history item names - attach to parent link to include date hover area
-  document.querySelectorAll('.history-item-name').forEach(el => {
-    if (el.scrollWidth > el.clientWidth) {
-      const linkElement = el.closest('a');
-      if (linkElement) {
-        linkElement.addEventListener('mouseenter', () => showOverlay(el, 'history-item-name-overlay'));
         linkElement.addEventListener('mouseleave', hideOverlay);
       }
     }

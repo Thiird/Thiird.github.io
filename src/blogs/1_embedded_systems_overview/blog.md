@@ -139,7 +139,7 @@ Architecture wise, there are three main kinds computational units. Let's analyze
 The <strong>Central Processing Unit</strong> (<span tt="CPU">CPU</span>) is an integrated circuit that implements a computer capable of performing a fixed number of operations. These operations are called <strong>machine instructions</strong>. Once turned on, the <span tt="CPU">CPU</span> starts executing the machine instructions specified in a program, which is a finite list of machine instructions. The set of all valid machine instructions that a program can use, is defined in the <strong>Instruction Set Architecture</strong> (<span tt="isa">ISA</span>) of the <span tt="CPU">CPU</span>. Changing the program changes what the <span tt="CPU">CPU</span> does, which <span tt="cpu_non_triviality">makes the CPU a general-purpose computer</span>.
 </div>
 
-In embedded systems, <span tt="cpu_types">many different types of <span tt="CPU">CPU</span>s</span> are used as the computational unit. The difference in name tries to capture the difference in clock speed, core count, presence of integrated RAM and capabilities.
+In embedded systems, <span tt="cpu_types">many different types of CPUs</span> are used as the computational unit. The difference in name tries to capture the difference in clock speed, core count, presence of integrated RAM and capabilities.
 
 The flexibility that <span tt="CPU">CPU</span>s have, comes at the cost of speed. Following a list of instructions takes time, as the <span tt="CPU">CPU</span> needs to read the next instruction, activate the part of the chip that does that, and then actually execute it. This is called the [<em>Fetch-Decode-Execute</em>](https://en.wikipedia.org/wiki/Instruction_cycle) cycle.
 
@@ -272,7 +272,7 @@ Soldering is a fundamental skill in embedded systems. You'll use it to:
 
 The quintessential soldering tool is the <span tt="soldering_iron">soldering iron</span>, basically a metal rod where the pointy end is heated by passing electric current through it. A soldering iron is mostly used with THT components.
 
-SMD components instead, are conventionally soldered with <span tt="solder_paste">solder paste</span>, a mixture of tiny solder balls and flux that gets applied to the <span tt="pcb_pads">PCB pads</span>, exactly between the unsoldered parts and the PCB. The whole PCBA is then put throught the so called reflow process, basically a process where the assembly is heated up as a whole to make the solder balls melt and solder the individual parts to the PCB. This process is quite <span tt="mesmerizing_reflow">mesmerizing</span>.
+SMD components instead, are conventionally soldered with <span tt="solder_paste">solder paste</span>, a mixture of tiny solder balls and flux that gets applied to the <span tt="pcb_pads">PCB pads</span>, exactly between the unsoldered parts and the PCB. The whole PCBA is then put through the so called reflow process, basically a process where the assembly is heated up as a whole to make the solder balls melt and solder the individual parts to the PCB. This process is quite <span tt="mesmerizing_reflow">mesmerizing</span>.
 
 Reflow can be done with different tools:
 - <strong>Reflow oven</strong>: A specialized oven that heats the entire PCB assembly following a precise temperature profile. This is the standard soldering method for high-density, SMD-based designs. 
