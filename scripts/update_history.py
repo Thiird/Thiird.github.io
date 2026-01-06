@@ -5,8 +5,13 @@ a chronological history.json file with the 5 most recent updates.
 
 import json
 import os
+import re
 from pathlib import Path
 from datetime import datetime
+
+def strip_number_prefix(name):
+    """Remove leading 'X - ' prefix from name (e.g., '1 - Title' -> 'Title')."""
+    return re.sub(r'^\d+\s*-\s*', '', name)
 
 def get_repo_root():
     """Get the repository root directory."""
@@ -86,18 +91,17 @@ def get_blog_entries(blogs_dir):
             continue
         
         # Extract folder number from folder name (e.g., "1_embedded_systems_intro" -> "1")
-        import re
         folder_match = re.match(r'^(\d+)', folder)
         folder_num = folder_match.group(1) if folder_match else str(idx)
         
         entry = {
             'type': 'blog',
-            'name': title,
+            'name': strip_number_prefix(title),
             'date': date,
             'link': f'src/blogs.html?blog={folder_num}'
         }
         entries.append(entry)
-        print(f"    • [{idx}] {title}")
+        print(f"    • [{idx}] {strip_number_prefix(title)}")
         print(f"      Date: {date}")
         print(f"      Link: {entry['link']}")
     
@@ -132,18 +136,17 @@ def get_poem_entries(poems_dir):
             continue
         
         # Extract folder number from folder name (e.g., "5_letter_to_a_faded_friend" -> "5")
-        import re
         folder_match = re.match(r'^(\d+)', folder)
         folder_num = folder_match.group(1) if folder_match else str(idx)
         
         entry = {
             'type': 'poem',
-            'name': name,
+            'name': strip_number_prefix(name),
             'date': date,
             'link': f'src/poems.html?poem={folder_num}'
         }
         entries.append(entry)
-        print(f"    • [{idx}] {name}")
+        print(f"    • [{idx}] {strip_number_prefix(name)}")
         print(f"      Date: {date}")
         print(f"      Link: {entry['link']}")
     
