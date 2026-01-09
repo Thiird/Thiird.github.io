@@ -1959,6 +1959,8 @@ class TooltipManager {
       tooltip.style.cursor = 'pointer';
       tooltip.addEventListener('click', (e) => {
         e.stopPropagation();
+        // Hide the hover tooltip when clicking to zoom
+        this.hideActiveTooltip();
         this.showImageFullscreen(data.media, data.alt || data.text, data);
       });
     }
@@ -2518,6 +2520,11 @@ class TooltipManager {
     // Create fullscreen overlay
     const overlay = document.createElement('div');
     overlay.className = 'tooltip-fullscreen-overlay';
+    
+    // Add loading spinner
+    const loadingSpinner = document.createElement('div');
+    loadingSpinner.className = 'tooltip-loading-spinner';
+    overlay.appendChild(loadingSpinner);
 
     // Create zoomed tooltip container
     const zoomedTooltip = document.createElement('div');
@@ -2548,6 +2555,15 @@ class TooltipManager {
       // Use alt text if provided, otherwise use empty string (not the full text)
       img.alt = altText || '';
       img.className = 'tooltip-zoomed-image';
+      
+      // Hide loading spinner when image loads
+      img.onload = () => {
+        loadingSpinner.style.display = 'none';
+      };
+      
+      img.onerror = () => {
+        loadingSpinner.style.display = 'none';
+      };
 
       imageContainer.appendChild(img);
       zoomedTooltip.appendChild(imageContainer);

@@ -307,4 +307,10 @@
         "media": "SMD_diagram.jpg",
         "alt": "pcbpower.us"
     }
+    ,
+    "soldering_smd": {
+        "text": "",
+        "media": "soldering_smd.gif",
+        "alt": "pcbpower.us"
+    }
 }
