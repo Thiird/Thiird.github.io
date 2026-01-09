@@ -336,7 +336,7 @@ But at the end of the day we need to build real products, so how about we practi
 It's preferable to have one well-done, fully finished project instead of eight half finished learning projects.
 It's better for you, as you will get "the whole picture" of building embedded systems, and it's better for your career, as now you will have something to show in job interviews.
 
-You are a beginner, any project will teach you a lot, so my suggestion is to focus your efforts to build something that you or someone else actually needs. Putting your device in someone's hand, will give you the precious user-engineer feedback that is crucial to make products actually functional. 
+You are a beginner, any project will teach you a lot, so my suggestion is to focus your efforts to build something that you or someone else actually needs. Putting your device in someone's hand, will give you the precious user-engineer feedback that is crucial to actually learn how to make products functional. 
 
 <h2 id="learning-resources">4.2 Learning resources</h2>
 
