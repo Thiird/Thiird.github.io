@@ -2351,6 +2351,7 @@ class TooltipManager {
 
     element.removeEventListener('mouseenter', element._tooltipMouseEnter);
     element.removeEventListener('mouseleave', element._tooltipMouseLeave);
+    element.removeEventListener('click', element._tooltipClick);
 
     element._tooltipMouseEnter = (e) => {
       if (this.hideTimeout) {
@@ -2386,6 +2387,11 @@ class TooltipManager {
         element._tooltipTimeout = null;
       }
 
+      // Don't set hide timeout if tooltip was just clicked
+      if (element._justClicked) {
+        return;
+      }
+
       this.hideTimeout = setTimeout(() => {
         if (!this.audioPlaying) {
           this.hideActiveTooltip();
@@ -2393,8 +2399,40 @@ class TooltipManager {
       }, this.hideDelay);
     };
 
+    // Handle click to keep tooltip open on mobile/touch devices
+    element._tooltipClick = (e) => {
+      // Mark as just clicked to prevent mouseleave from closing
+      element._justClicked = true;
+      
+      // Clear the flag after a short delay
+      setTimeout(() => {
+        element._justClicked = false;
+      }, 500);
+      
+      // If tooltip is already showing for this trigger, don't do anything
+      if (this.tooltip && this.currentTrigger === element) {
+        return;
+      }
+      
+      // Clear any existing timeout
+      if (element._tooltipTimeout) {
+        clearTimeout(element._tooltipTimeout);
+        element._tooltipTimeout = null;
+      }
+      
+      // Clear hide timeout
+      if (this.hideTimeout) {
+        clearTimeout(this.hideTimeout);
+        this.hideTimeout = null;
+      }
+      
+      // Show tooltip immediately on click
+      this.showTooltip(element, tooltipData, e.clientX);
+    };
+
     element.addEventListener('mouseenter', element._tooltipMouseEnter);
     element.addEventListener('mouseleave', element._tooltipMouseLeave);
+    element.addEventListener('click', element._tooltipClick);
   }
 
 
