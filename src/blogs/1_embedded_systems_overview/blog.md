@@ -31,8 +31,8 @@ Let's dive in!
         <li><a href="#hardware">2.1 Hardware</a>
           <ul class="index-subsection">
             <li><a href="#input-elements">2.1.1 Input Components</a></li>
-            <li><a href="#computational-unit">2.1.2 Computational Units</a></li>
-            <li><a href="#output-elements">2.1.3 Output Components</a></li>
+            <li><a href="#output-elements">2.1.2 Output Components</a></li>
+            <li><a href="#computational-unit">2.1.3 Computational Units</a></li>
             <li><a href="#support-components">2.1.4 Support Components</a></li>
           </ul>
         </li>
@@ -72,7 +72,7 @@ Some <span tt="ES">ES</span> examples are:
 - <span tt="awareness_keyboard">computer keyboard</span>
 - <span tt="casio_watch">digital wrist clock</span>
 - <span tt="ecu">the computer inside cars</span>
-- <span tt="soviet_seeker">the infrared seeker of an air-to-air missile</span>
+- <span tt="soviet_seeker">the brain of a missile</span>
 
 <h2 id="why-embedded">1.1 Why <em>'embedded'</em>?</h2>
 Embedded Systems is basically applied electronics. Such electronics can't be handed to the customer as it is, it first needs to be integrated, e.g. embedded, <span tt="embedded">in some kind of enclosure</span>, hence the term embedded system.
@@ -90,17 +90,17 @@ The hardware provides the physical platform, the firmware controls it directly, 
 
 The core of an <span tt="ES">ES</span> is the electronic hardware.
 
-The electronics is consolidated in an assembly called Printed Circuit Board Assembly (PCBA), which consists of a number of components that have been electrically joined to a base board. This base board is called <span tt="PCB_image">Printed Circuit Board</span> (<span tt="PCB">PCB</span>) and it's made of alternating layers of insulating material and copper, where the copper layers have been precisely <span tt="PCB_manufacturing">manufactured</span> to leave behind only individual traces. Traces are used to route signals from one component to the other. PCBs can have one layer, two layers, four layers, etc. Traces on different layers are connected together with <span tt="vias">vias</span>, and the ones on the external layers are what connects the electronic components together to the PCB itself by [soldering](#soldering-tools) them on specific spots on the traces.
+The electronics is consolidated in an assembly called Printed Circuit Board Assembly (PCBA), which consists of a number of components that have been electrically joined to a base board. This base board is called <span tt="PCB_image">Printed Circuit Board</span> (PCB) and it's made of alternating layers of insulating material and copper, where the copper layers have been precisely <span tt="PCB_manufacturing">manufactured</span> to leave behind only individual traces. Traces are used to route signals from one component to the other. PCBs can have one layer, <span tt="multilayer_PCB">two layers, four layers, etc</span>. Traces on different layers are connected together with <span tt="vias">vias</span>, and the ones on the external layers are what connects the electronic components together to the PCB itself by [soldering](#soldering-tools) them on specific spots on the traces.
 
-Modern electronics needs to be as small as possible in order to fit inside our pockets. This need for smaller and smaller electronics has made components significantly decrease in size over the past decades. Nowadays, some components are in the millimeter or even sub-millimeter scale.
+Modern electronics needs to be as small as possible in order to fit inside our pockets. This need for smaller and smaller electronics has made components significantly decrease in size over the past decades. Nowadays, some components are in the <span tt="smd_scale">millimeter or even sub-millimeter scale</span>.
 
 In the beginning, electronic components were connected to the PCB through metal leads, which are inserted from one side of the pcb and soldered from the other.
 
-This kind of mounting is called Through Hole Technology (THT).
+<span tt="THT_diagram">This kind of mounting is called Through Hole Technology (THT)</span>.
 
-As components became smaller, leads were discarded in favour of integrated contact points. This new kind of packaging doesn't require holes in the PCB, so components get soldered directly on the traces of the two external layers of the PCB.
+As components became smaller, leads were discarded in favour of integrated contact points. This new kind of packaging doesn't require holes in the PCB, so components get sol dered directly on the traces of the two external layers of the PCB.
 
-This kind of mounting is called Surface Mounted Device (SMD).
+<span tt="SMD_diagram">This kind of mounting is called Surface Mounted Device (SMD)</span>.
 
 Modern, high-end electronics, uses SMD components for the most part, but THT still finds its way in many applications. This is because of physics constraints: millimeter-size SMD components do exist, but they don't have the same electrical characteristics of the bigger, THT version.
 
@@ -111,11 +111,11 @@ Building electronics without <span tt="PCB">PCB</span>s would require a mess of 
 Functionally speaking, the components on a <span tt="PCB">PCB</span> fall into one of four categories:
 
 - <strong>input components</strong>
-- <strong>computational units</strong>
 - <strong>output components</strong>
+- <strong>computational units</strong>
 - <strong>support components</strong>
 
-Let's analyze these four categories.
+Let's analyze these four categories while using a desktop mouse as a practical example.
 
 <h3 id="input-elements">2.1.1 Input Components</h3>
 
@@ -123,9 +123,19 @@ Think of a button, dial, touch screen, receiving antenna, magnetic sensor, light
 
 All of these devices are connected, either directly or [through intermediate circuitry](#support-components), to the computational unit.
 
-In the case of a desktop mouse, the input components are the buttons, scroll wheel and motion sensor.
+In the case of the desktop mouse, the input components are the buttons, scroll wheel and motion sensor. These components capture the intention of the users and pass them to the computational unit as electrical signals.
 
-<h3 id="computational-unit">2.1.2 Computational Units</h3>
+<h3 id="output-elements">2.1.2 Output Components</h3>
+
+Output components are how the <span tt="ES">ES</span> talks back to you or to other systems.
+
+Think of LEDs, displays (LCD, OLED, seven-segment, e-paper), buzzers, speakers, motors (DC, stepper, servo), relays, heating elements, and RF protocols like Bluetooth.
+
+All of these components are controlled, either directly or [through intermediate circuitry](#support-components), by the <span tt="CU">CU</span>.
+
+In the case of a desktop mouse, the output of the system is the USB or Bluetooth packets that encode the buttons state and motion data.
+
+<h3 id="computational-unit">2.1.3 Computational Units</h3>
 
 This is the core of the system, this is where the actual computation is performed.
 
@@ -159,6 +169,8 @@ What if we wanted the performance of <span tt="ASIC">ASIC</span>s with some comp
 <div class="highlight-box">
 A <strong>Field-Programmable Gate Array</strong> (FPGA) is an integrated circuit containing an array of <a href="https://en.wikipedia.org/wiki/Logic_block" target="_blank">configurable logic blocks</a> (CLBs). Each block can be configured in both the <span tt="logic_block_details">logical function</span> it performs and how it connects with the other blocks. At startup, the FPGA loads a <a href="#fpga-software">bitstream</a> that precisely defines the function of each block and its routing, enabling virtually any digital circuit to be realized directly in hardware.
 </div>
+
+In the case of the desktop mouse, the computational unit is an MCU programmed to read the signals from the the buttons, scroll wheel and motion sensor, package them into, for example, USB or Bluetooth data packets, and send those off to the connected PC.
 
 <span tt="softcore">Any digital circuit can be implemented on an FPGA</span>, from a simple binary counter to a complex Fourier transform.
 
@@ -264,22 +276,16 @@ An embedded system is made of many different components, which need to be joined
 This is done with [solder](https://en.wikipedia.org/wiki/Solder), a metal alloy that melts between 180-300°C (depending on the lead content).
 The melting temperature is low enough that soldering can be safely done at home.
 
-Soldering is a fundamental skill in embedded systems. You'll use it to:
+The quintessential soldering tool is the <span tt="soldering_iron">soldering iron</span>, basically a metal rod where the pointy end is heated by passing electric current through it. A soldering iron is <span tt="THT_soldering">mostly used with THT components</span>.
 
-- Assemble prototype circuits on <span tt="perfboard">perfboard</span> or <span tt="PCB">PCB</span>s
-- Replace faulty components
-- Make connections between wires and components
-
-The quintessential soldering tool is the <span tt="soldering_iron">soldering iron</span>, basically a metal rod where the pointy end is heated by passing electric current through it. A soldering iron is mostly used with THT components.
-
-SMD components instead, are conventionally soldered with <span tt="solder_paste">solder paste</span>, a mixture of tiny solder balls and flux that gets applied to the <span tt="pcb_pads">PCB pads</span>, exactly between the unsoldered parts and the PCB. The whole PCBA is then put through the so called reflow process, basically a process where the assembly is heated up as a whole to make the solder balls melt and solder the individual parts to the PCB. This process is quite <span tt="mesmerizing_reflow">mesmerizing</span>.
+SMD components instead, are conventionally soldered with <span tt="solder_paste">solder paste</span>, a mixture of tiny solder balls and flux that gets applied to the <span tt="pcb_pads">PCB pads</span>, exactly between the unsoldered parts and the PCB. The whole PCBA is then put through the so called reflow process, basically a process where the assembly is heated up as a whole to make the solder balls melt and solder the individual parts to the PCB. This process is quite <span tt="reflow">mesmerizing</span>.
 
 Reflow can be done with different tools:
 - <strong>Reflow oven</strong>: A specialized oven that heats the entire PCB assembly following a precise temperature profile. This is the standard soldering method for high-density, SMD-based designs. 
 - <strong>Hot air station</strong>: Hand-held device that directs a controlled stream of heated air to the specific area of the PCB where solder needs to melt, making it ideal for reworking individual components. This tool is what most engineers use in their lab.
 - <strong>Reflow plate</strong>: A heated plate that heats the PCB from below, melting the solder paste. More affordable than a reflow oven and suitable for hobbyists and small-scale production.
 
-Conventional soldering works best with THT components and reflowing works best for SMD components, nevertheless, a soldering iron can be used for SMD components too. Needless to say this requires <span tt="">skills and the right tools</span>.
+Conventional soldering works best with THT components and reflowing works best for SMD components, nevertheless, a soldering iron can be used for SMD components too. Needless to say this requires <span tt="soldering_smd">skills and the right tools</span>.
 
 In industrial settings, the soldering process is automated by a <span tt="soldering_robot">soldering-iron-wielding robot</span> or by using <span tt="reflow_oven">reflow-ovens</span>.
 
@@ -323,23 +329,23 @@ It's important to just start, don't worry about where.
 
 <h2 id="how-to-grow-meaningful-knowledge">4.1 How to grow meaningful knowledge</h2>
 
-Now that it is clear that any project will teach you a lot, we should try to focus our efforts.
-Don't do random projects "just to learn", try to do projects that will teach you something that you actually intend to use.
-Try to make projects that will yield meaningful results.
+What I see new people often do, is to work on one small project after another and shelving them quickly, for the sake of learning.
+In my humble opinion, this is a rabbit hole that anyone should be careful about falling into. Don't get me wrong, it's ok to play with ideas, not only that, it's necessary.
+But at the end of the day we need to build real products, so how about we practice that instead?  
 
-You need to create in order to learn: might as well create something that someone needs, right?
-That way you will get the user-engineer feedback loop that is crucial to make products actually functional. Without it, as soon as you see your project work you will think "It's done"m shelve it and move onto something else. Whereas putting it into the hands of a user will most-likely highlight several things that still need to be done.
+It's preferable to have one well-done, fully finished project instead of eight half finished learning projects.
+It's better for you, as you will get "the whole picture" of building embedded systems, and it's better for your career, as now you will have something to show in job interviews.
+
+You are a beginner, any project will teach you a lot, so my suggestion is to focus your efforts to build something that you or someone else actually needs. Putting your device in someone's hand, will give you the precious user-engineer feedback that is crucial to make products actually functional. 
 
 <h2 id="learning-resources">4.2 Learning resources</h2>
 
-Here are some excellent resources organized by topic to help you dive deeper into embedded systems:
-
 <strong>YouTube Channels & Video Content:</strong>
-- [<strong>Philip Salmony</strong>](https://www.youtube.com/@PhilSalmony)'s <span tt="PCB">PCB</span> design and DSP theory videos: excellent for understanding signal processing and board design fundamentals
+- [<strong>Philip Salmony</strong>](https://www.youtube.com/@PhilSalmony)'s PCB design and DSP theory videos: excellent for understanding signal processing and board design fundamentals
 - [<strong>Dave Jones</strong>](https://www.youtube.com/@EEVblog)'s [<em>EEVblog</em>](https://www.eevblog.com/): comprehensive electronics theory videos covering everything from basic circuits to advanced measurement techniques
 - [<strong>Shahriar Shahramian</strong>](https://www.youtube.com/@TheSignalPathBlog)'s [<em>The Signal Path</em>](https://thesignalpath.com/): metrology theory and teardowns of high-end test equipment
 - [<strong>Ben Eater</strong>](https://www.youtube.com/@BenEater)'s channel: incredible step-by-step build videos showing how computers work from the ground up
-- [<strong>Adam Taylor</strong>](https://www.linkedin.com/in/adam-taylor-fpga/)'s [<em>MicroZed Chronicles</em>](https://www.hackster.io/adam-taylor) blog: in-depth FPGA tutorials and design patterns
+- [<strong>Adam Taylor</strong>](https://www.linkedin.com/in/adam-taylor-fpga/)'s [<em>MicroZed Chronicles</em>](https://www.hackster.io/adam-taylor) blog: FPGA articles directly from an industry expert
 
 <strong>Online Communities:</strong>
 - [r/embedded](https://www.reddit.com/r/embedded/) on Reddit: active community for questions and discussions 

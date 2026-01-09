@@ -92,7 +92,8 @@
     "es_nuances": {
         "text": "This is true for both the software and the hardware side.",
         "media": ""
-    },    "signal_integrity_issues": {
+    },
+    "signal_integrity_issues": {
         "text": "<strong>Noise</strong>: Unwanted electrical interference that appears on top of the signal.<br><br><strong>Ringing</strong>: Oscillations that occur when a signal changes value fast.",
         "media": ""
     },
@@ -260,7 +261,11 @@
         "media": "debugger.jpg"
     },
     "PCB_manufacturing": {
-        "text": "etched/milled",
+        "text": "Either chemical etching or CNC milling.",
+        "media": ""
+    },
+    "multilayer_PCB": {
+        "text": "Multiple layers are created separately and then laminated together under heat and pressure to form a multi-layer PCB.",
         "media": ""
     },
     "full_os_requirements": {
@@ -270,16 +275,36 @@
     "pcb_pads": {
         "text": "<strong>PCB Pads</strong><br><br>Exposed metal areas on a PCB where components are soldered. Pads provide both mechanical support and electrical connection between components and the PCB traces.",
         "media": "pcb_pads.jpg",
-        "alt": ""
+        "alt": "https://www.mokotechnology.com/ - A capacitor being placed on PCB pads."
     },
     "solder_paste": {
-        "text": "<strong>Solder Paste</strong><br><br>A sticky mixture of tiny solder balls suspended in flux. Applied to PCB pads before component placement, it melts during the reflow process to create permanent electrical connections.",
+        "text": "<strong>Solder Paste</strong><br><br>A sticky mixture of tiny solder balls suspended in flux.<br>Applied to PCB pads before component placement, it melts during the reflow process to create permanent electrical connections.",
         "media": "solder_paste.jpg",
+        "alt": "By Lady Ada AKA Limor Fried - https://learn.adafruit.com/assets/168, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=32066966"
+    },
+    "reflow": {
+        "text": "Watching solder paste melt and components seemingly snap into perfect alignment as surface tension pulls them into place is genuinely fascinating.",
+        "media": "reflow.gif",
         "alt": ""
     },
-    "mesmerizing_reflow": {
-        "text": "Watching solder paste melt and components seemingly snap into perfect alignment as surface tension pulls them into place is genuinely fascinating.",
-        "media": "reflow_mesmerizing.gif",
-        "alt": ""
+    "THT_soldering": {
+        "text": "",
+        "media": "THT_soldering.gif",
+        "alt": "youtube.com/@RobertFeranec"
+    },
+    "smd_scale": {
+        "text": "",
+        "media": "smd_component_scale.jpg",
+        "alt": "edn.com"
+    },
+    "THT_diagram": {
+        "text": "",
+        "media": "THT_diagram.jpg",
+        "alt": "pcbpower.us"
+    },
+    "SMD_diagram": {
+        "text": "",
+        "media": "SMD_diagram.jpg",
+        "alt": "pcbpower.us"
     }
 }
