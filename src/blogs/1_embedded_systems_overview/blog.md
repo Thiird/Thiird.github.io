@@ -98,7 +98,7 @@ In the beginning, electronic components were connected to the PCB through metal 
 
 <span tt="THT_diagram">This kind of mounting is called Through Hole Technology (THT)</span>.
 
-As components became smaller, leads were discarded in favour of integrated contact points. This new kind of packaging doesn't require holes in the PCB, so components get sol dered directly on the traces of the two external layers of the PCB.
+As components became smaller, leads were discarded in favour of integrated contact points. This new kind of packaging doesn't require holes in the PCB, so components get soldered directly on the traces of the two external layers of the PCB.
 
 <span tt="SMD_diagram">This kind of mounting is called Surface Mounted Device (SMD)</span>.
 
@@ -188,16 +188,6 @@ When discussing <span tt="CPU">CPU</span>s, we use terms like "software" and "pr
   <li id="cpu-software"><strong>CPU software:</strong> The software of <span tt="CPU">CPU</span>s is the list of machine instructions that the <span tt="CPU">CPU</span> executes. This list is what makes up the program the CPU executes, and it's either written directly in machine code or obtained through <strong>compilation</strong>, a process that translates higher-level code written by a programmer in a programming language like C or C++ to the equivalent machine code of the target CPU.
   <li id="fpga-software"><strong>FPGA software:</strong> The software of <span tt="FPGA">FPGA</span>s is code written in an <a href="https://en.wikipedia.org/wiki/Hardware_description_language" target="_blank">Hardware Description Language</a> (HDL), like Verilog or VHDL, that gets <strong>synthesized</strong> to a bitstream and then used to configure the CLBs in the <span tt="FPGA">FPGA</span> to implement a certain function. The resulting bitstream depends on the input HDL code, <span tt="target_fpga_model">the target  model</span>, and <span tt="synthesis_toolchain">the synthesis toolchain used</span>.</li>
 </ul>
-
-<h3 id="output-elements">2.1.3 Output Components</h3>
-
-Output components are how the <span tt="ES">ES</span> talks back to you or to other systems.
-
-Think of LEDs, displays (LCD, OLED, seven-segment, e-paper), buzzers, speakers, motors (DC, stepper, servo), relays, heating elements, and RF protocols like Bluetooth.
-
-All of these components are controlled, either directly or [through intermediate circuitry](#support-components), by the <span tt="CU">CU</span>.
-
-In the case of a desktop mouse, the output of the system is the USB or Bluetooth packets that encode the buttons state and motion data.
 
 <h3 id="support-components">2.1.4 Support Components</h3>
 
