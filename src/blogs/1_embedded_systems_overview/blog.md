@@ -94,7 +94,7 @@ The electronics is consolidated in an assembly called Printed Circuit Board Asse
 
 Modern electronics needs to be as small as possible in order to fit inside our pockets. This need for smaller and smaller electronics has made components significantly decrease in size over the past decades. Nowadays, some components are in the <span tt="smd_scale">millimeter or even sub-millimeter scale</span>.
 
-In the beginning, electronic components were connected to the PCB through metal leads, which are inserted from one side of the pcb and soldered from the other.
+In the beginning, electronic components were connected to the PCB through metal leads, which are inserted from one side of the <span tt="PCB">PCB</span> and soldered from the other.
 
 <span tt="THT_diagram">This kind of mounting is called Through Hole Technology (THT)</span>.
 
