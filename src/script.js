@@ -1838,8 +1838,14 @@ class TooltipManager {
       }
     });
 
-    // Update tooltip position on scroll to keep it aligned with trigger
+    // Update tooltip position on scroll to keep it aligned with trigger (desktop only)
     window.addEventListener('scroll', () => {
+      // On mobile (≤800px), don't reposition on scroll - let tooltip scroll away naturally
+      const isMobile = window.innerWidth <= 800;
+      if (isMobile) {
+        return;
+      }
+      
       if (this.tooltip && this.currentTrigger) {
         // Don't reposition if audio is playing
         if (this.activeTooltipAudio && !this.activeTooltipAudio.paused) {
@@ -1936,7 +1942,10 @@ class TooltipManager {
       mediaImg.src = originalSrc + '?t=' + Date.now();
     }
 
-    document.body.appendChild(tooltip);
+    // Append to blog-container if it exists, otherwise fall back to body
+    const blogContainer = document.getElementById('blog-container');
+    const container = blogContainer || document.body;
+    container.appendChild(tooltip);
 
     // Always position tooltip relative to trigger element at fixed distance
     this.positionTooltipAtTrigger(tooltip, trigger, data, mouseX);
@@ -1951,6 +1960,9 @@ class TooltipManager {
 
     // Add show class for animation
     tooltip.classList.add('show');
+    
+    // Add active class to trigger for highlighting
+    trigger.classList.add('active');
 
     // Make entire tooltip clickable if it has an image
     if (data.media && (data.media.endsWith('.jpg') || data.media.endsWith('.jpeg') ||
@@ -2233,6 +2245,7 @@ class TooltipManager {
           altText.style.fontStyle = 'italic';
           altText.style.marginTop = '8px';
           altText.style.fontSize = '0.9em';
+          altText.style.textAlign = 'center';
           altText.innerHTML = data.alt;
           content.appendChild(altText);
         }
@@ -2456,45 +2469,125 @@ class TooltipManager {
     // Get trigger element position relative to viewport (for fixed positioning)
     const triggerRect = trigger.getBoundingClientRect();
 
-    // For multi-line triggers, get the position of the topmost line
+    // For multi-line triggers, get the position of the topmost and lowermost lines
     const range = document.createRange();
     range.selectNodeContents(trigger);
     const rects = range.getClientRects();
     let topLineRect = triggerRect;
+    let bottomLineRect = triggerRect;
     if (rects.length > 0) {
       topLineRect = rects[0]; // First rect is the topmost line
+      bottomLineRect = rects[rects.length - 1]; // Last rect is the lowermost line
+    }
+
+    // Get sidebar width to avoid overlapping it (only on desktop where sidebar is side-by-side)
+    let sidebarWidth = 0;
+    const isMobile = window.innerWidth <= 800;
+    
+    if (!isMobile) {
+      const blogList = document.querySelector('.blog-list');
+      const poemList = document.querySelector('.poem-list');
+      const sidebar = blogList || poemList;
+      if (sidebar && !sidebar.classList.contains('show')) {
+        const sidebarRect = sidebar.getBoundingClientRect();
+        // Only use sidebar width if it's visible and positioned on the left
+        if (sidebarRect.left === 0 && sidebarRect.width > 0) {
+          sidebarWidth = sidebarRect.width;
+        }
+      }
     }
 
     // Position tooltip using fixed positioning (relative to viewport)
-    const margin = 10;
-    let left = topLineRect.left + (topLineRect.width / 2) - (tooltipWidth / 2);
-    let top = topLineRect.top - tooltipHeight - this.verticalOffset;
-
-    // Adjust if tooltip goes off screen horizontally
-    if (left < margin) left = margin;
-    if (left + tooltipWidth > window.innerWidth - margin) {
-      left = window.innerWidth - tooltipWidth - margin;
-    }
-
-    // If not enough space above trigger, show below
-    if (top < margin) {
-      top = triggerRect.bottom + this.verticalOffset;
-      tooltip.classList.add('bottom');
+    const margin = isMobile ? 8 : 10;
+    const leftBoundary = sidebarWidth + margin;
+    const rightBoundary = window.innerWidth - margin;
+    
+    // Horizontal position: align with cursor if available, otherwise center on topmost line
+    let left;
+    if (mouseX !== null && mouseX !== undefined) {
+      // Center tooltip on cursor position
+      left = mouseX - (tooltipWidth / 2);
     } else {
-      tooltip.classList.remove('bottom');
+      // Fallback to centering on topmost line
+      left = topLineRect.left + (topLineRect.width / 2) - (tooltipWidth / 2);
+    }
+    
+    // Vertical position: decide between above topmost line or below lowermost line based on space
+    let top;
+    const spaceAbove = topLineRect.top;
+    const spaceBelow = window.innerHeight - bottomLineRect.bottom;
+    const requiredSpace = tooltipHeight + this.verticalOffset + margin;
+    
+    // On mobile, use absolute positioning (scrolls with page), on desktop use fixed (stays in viewport)
+    const useAbsolutePosition = isMobile;
+    
+    if (useAbsolutePosition) {
+      // Absolute positioning: calculate position relative to page (including scroll offset)
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+      
+      // Prefer positioning above, but use below if not enough space above and there's more space below
+      if (spaceAbove >= requiredSpace || spaceAbove > spaceBelow) {
+        // Position above the topmost line
+        top = topLineRect.top + scrollTop - tooltipHeight - this.verticalOffset;
+        tooltip.classList.remove('bottom');
+      } else {
+        // Position below the lowermost line
+        top = bottomLineRect.bottom + scrollTop + this.verticalOffset;
+        tooltip.classList.add('bottom');
+      }
+      
+      left = left + scrollLeft;
+    } else {
+      // Fixed positioning: stays in viewport (current desktop behavior)
+      // Prefer positioning above, but use below if not enough space above and there's more space below
+      if (spaceAbove >= requiredSpace || spaceAbove > spaceBelow) {
+        // Position above the topmost line
+        top = topLineRect.top - tooltipHeight - this.verticalOffset;
+        tooltip.classList.remove('bottom');
+      } else {
+        // Position below the lowermost line
+        top = bottomLineRect.bottom + this.verticalOffset;
+        tooltip.classList.add('bottom');
+      }
     }
 
-    // Ensure tooltip doesn't go off bottom of screen
-    if (top + tooltipHeight > window.innerHeight - margin) {
-      top = window.innerHeight - tooltipHeight - margin;
+    // Adjust if tooltip goes off screen horizontally, accounting for sidebar
+    if (left < leftBoundary) left = leftBoundary;
+    if (left + tooltipWidth > rightBoundary) {
+      left = rightBoundary - tooltipWidth;
+    }
+    
+    // On mobile, ensure tooltip doesn't exceed max-width
+    if (isMobile) {
+      const maxTooltipWidth = window.innerWidth - (margin * 2);
+      if (tooltipWidth > maxTooltipWidth) {
+        tooltip.style.maxWidth = maxTooltipWidth + 'px';
+        const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+        left = margin + scrollLeft;
+      }
     }
 
-    // Use fixed positioning so tooltip stays in viewport
-    tooltip.style.position = 'fixed';
+    // Ensure tooltip doesn't go off bottom of screen (only for fixed positioning)
+    if (!useAbsolutePosition) {
+      if (top + tooltipHeight > window.innerHeight - margin) {
+        top = window.innerHeight - tooltipHeight - margin;
+      }
+      
+      // Ensure tooltip doesn't go off top of screen
+      if (top < margin) {
+        top = margin;
+      }
+    }
+
+    // Use absolute positioning on mobile (scrolls with page), fixed on desktop (stays in viewport)
+    tooltip.style.position = useAbsolutePosition ? 'absolute' : 'fixed';
     tooltip.style.left = left + 'px';
     tooltip.style.top = top + 'px';
     tooltip.style.right = '';
-    tooltip.style.width = '';
+    if (!isMobile) {
+      tooltip.style.width = '';
+    }
   }
 
 
@@ -2502,6 +2595,11 @@ class TooltipManager {
   // Hide the active tooltip
   hideActiveTooltip() {
     if (this.tooltip) {
+      // Remove active class from current trigger
+      if (this.currentTrigger) {
+        this.currentTrigger.classList.remove('active');
+      }
+      
       // Stop any playing audio in the tooltip
       if (this.activeTooltipAudio && !this.activeTooltipAudio.paused) {
         this.activeTooltipAudio.pause();
@@ -2606,16 +2704,30 @@ class TooltipManager {
       imageContainer.appendChild(img);
       zoomedTooltip.appendChild(imageContainer);
       
-      // Add alt text below image in italics if it exists
+      // Add alt text below image in italics if it exists (centered)
       if (tooltipData && tooltipData.alt) {
         const altTextEl = document.createElement('div');
         altTextEl.className = 'tooltip-zoomed-alt';
         altTextEl.style.fontStyle = 'italic';
         altTextEl.style.marginTop = '12px';
         altTextEl.style.fontSize = '0.95em';
+        altTextEl.style.textAlign = 'center';
         altTextEl.innerHTML = tooltipData.alt;
         zoomedTooltip.appendChild(altTextEl);
       }
+    }
+    
+    // Add credit at the bottom left if it exists
+    if (tooltipData && tooltipData.credit) {
+      const creditEl = document.createElement('div');
+      creditEl.className = 'tooltip-zoomed-credit';
+      creditEl.style.fontStyle = 'italic';
+      creditEl.style.fontSize = '0.85em';
+      creditEl.style.marginTop = 'auto';
+      creditEl.style.textAlign = 'left';
+      creditEl.style.opacity = '0.7';
+      creditEl.innerHTML = tooltipData.credit;
+      zoomedTooltip.appendChild(creditEl);
     }
 
     // Close handlers

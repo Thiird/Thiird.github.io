@@ -2,112 +2,158 @@
     "cpu_types": {
         "text": "<strong>CPU (Central Processing Unit)</strong>: The general term for a general-purpose computer IC. Typically run at high clock speeds (GHz range). Used for complex devices devices like TVs.<br>For example, the ARM Cortex-A53 .<br><br><strong>MCU (Microcontroller Unit)</strong>: The same base architecture as a CPU, but with integrated RAM, EEPROM and run at lower clock speeds (MHz range). Used for simple devices like a mouse and keyboard.<br>For example, the STM32F4.<br><br><strong>DSP (Digital Signal Processor)</strong>: A CPU designed with special instructions for mathematical operations. These chips excel at repetitive math-intensive tasks required in signal processing applications.<br>For example, the Texas Instruments TMS320C6000.",
         "media": "",
-        "alt": ""
+        "alt": "",
+        "credit": ""
     },
     "awareness_keyboard": {
         "text": "",
         "media": "awareness_keyboard.gif",
-        "alt": ""
+        "alt": "Custom mechanical keyboard with programmable RGB lighting",
+        "credit": ""
     },
     "casio_watch": {
         "text": "",
         "media": "casio_watch.png",
-        "alt": ""
+        "alt": "Classic Casio digital watch",
+        "credit": ""
     },
     "ecu": {
         "text": "",
         "media": "ecu.jpg",
-        "alt": ""
+        "alt": "Automotive Engine Control Unit (ECU)",
+        "credit": ""
     },
     "soviet_seeker": {
         "text": "",
         "media": "soviet_seeker.gif",
-        "alt": ""
+        "alt": "Soviet heat-seeking missile guidance system",
+        "credit": ""
     },
     "paw3395": {
         "text": "High-performance gaming optical sensor with 30,000 DPI capability",
-        "media": "tooltip.gif"
+        "media": "tooltip.gif",
+        "alt": "PAW3395 optical sensor chip",
+        "credit": ""
     },
     "isa": {
         "text": "The ISA defines, along <em>many</em> other things, both the text and the binary representation of the machine instructions.<br><br>The text-form is used to write programs directly in machine language, which takes the name of <strong>assembly language</strong>. To execute it on the CPU, it then needs to be translated via an <em>assembler</em>, to the binary representation.<br><br>Some of the most common CPU instructions are:<br><em>(R = CPU register)</em><br>- <strong>ADD R1, R2, R3</strong>: (R1 = R2 + R3)<br>- <strong>MUL R1, R2, R3</strong>: (R1 = R2 × R3)<br>- <strong>CMP R1, R2</strong>: Compare two values<br>- <strong>JMP 0x1000</strong>: Jump to the given memory address",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "ES": {
         "text": "Embedded System",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "CU": {
         "text": "Computational Unit",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "CPU": {
         "text": "Central Processing Unit",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "ASIC": {
         "text": "Application Specific Integrated Circuit",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "FPGA": {
         "text": "Field-Programmable Gate Array",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "dmm": {
         "text": "Digital Multimeter",
-        "media": "dmm.jpg"
+        "media": "dmm.jpg",
+        "alt": "Digital multimeter displaying voltage reading",
+        "credit": ""
     },
     "oscilloscope": {
         "text": "Two channel oscilloscope measuring the output of a circuit.",
         "media": "oscilloscope.jpg",
-        "alt": "https://learn.sparkfun.com/"
+        "alt": "Two-channel oscilloscope showing waveform",
+        "credit": "learn.sparkfun.com"
     },
     "oscilloscope_data_rate": {
         "text": "<strong>Example:<br></strong> To correctly sample a <strong>1 MHz signal</strong>, a minimum of <strong>2 million samples per second</strong> are required (Nyquist theorem). To display all of this data, a digit screen would need to update every <strong>0.5 microseconds</strong>, far beyond what a simple digit display can handle, let alone a human reading it.",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "digit_screen": {
         "text": "",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "oscilloscope_channels": {
         "text": "<strong>Input Channels</strong><br><br>The maximum number of signals an oscilloscope can measure and display simultaneously. Entry-level oscilloscopes typically have 2 to 4 channels, while professional models have more. Multiple channels let you compare signals side-by-side, essential for debugging communication protocols.",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "signal_analysis_capabilities": {
         "text": "<strong>Advanced Signal Analysis</strong><br><br>Higher-end oscilloscopes include built-in analysis functions beyond basic waveform display:<br><br>- <strong>FFT (Fast Fourier Transform)</strong>: Converts time-domain signals to frequency domain, revealing harmonic content and noise characteristics<br>- <strong>Protocol Decoding</strong>: Automatically decodes digital protocols like I2C, SPI, UART, CAN<br>- <strong>Math Functions</strong>: Perform operations like addition, subtraction, integration, differentiation on signals<br>- <strong>Automated Measurements</strong>: Calculate rise time, fall time, jitter, phase differences automatically",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "oscilloscope_signal_visualization": {
         "text": "The graphical representation makes it easy to understand signal behavior at a glance. While signals can also be analyzed by computers using math, the oscilloscope is designed to be an hands-on debugging.",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "amm": {
         "text": "Analog Multimeter",
-        "media": ""
+        "media": "ann.jpg",
+        "alt": "",
+        "credit": "KZang - Own work, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=32873569"
     },
     "waves": {
         "text": "From top to bottom, a sine wave, a square wave, and a triangular wave.<br>Note how, if the period of the multimeter sampling would correspond with the middle point of the on part of the square wave, the multimeter would always read the maximum voltage, completely hiding the switching behavior of all three signals",
-        "media": "waves.jpg"
+        "media": "waves.jpg",
+        "alt": "",
+        "credit": ""
     },
     "es_nuances": {
         "text": "This is true for both the software and the hardware side.",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "signal_integrity_issues": {
         "text": "<strong>Noise</strong>: Unwanted electrical interference that appears on top of the signal.<br><br><strong>Ringing</strong>: Oscillations that occur when a signal changes value fast.",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "signal_characteristics": {
         "text": "<strong>Frequency</strong>: How many times per second the signal repeats (measured in Hz).<br><br><strong>Rise/Fall Time</strong>: How quickly a signal transitions between low and high states, important for high-speed digital circuits.<br><br><strong>Timing Relationships</strong>: Phase differences and synchronization between multiple signals.",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "flash_program": {
         "text": "Writing the program binary file on the MCU EEPROM",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "jtag_advanced_functionalities": {
         "text": "<strong>Boundary Scan</strong>: Test connections between chips on a PCB without physical probes<br> <strong>Chain Debugging</strong>: Debug multiple devices connected in a daisy-chain topology",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "heat_seeking_missile": {
         "text": "",
@@ -117,7 +163,8 @@
     "PCB_image": {
         "text": "",
         "media": "awareness_macropad_pcb.jpg",
-        "alt": ""
+        "alt": "",
+        "credit": ""
     },
     "PCB": {
         "text": "Printed Circuit Board",
@@ -127,36 +174,50 @@
     "embedded": {
         "text": "",
         "media": "embedded.gif",
-        "alt": ""
+        "alt": "",
+        "credit": ""
     },
     "IC": {
         "text": "<strong>Integrated Circuit</strong><br><br>A set of transistors, resistors, and capacitors implemented on a semiconductor material, working together to perform complex functions. Modern integrated circuits contain billions of transistors.",
         "media": "CII_72_silicon_die.jpg",
-        "alt": "Die shot of the <a href=\"https://en.wikipedia.org/wiki/Electronics_industry_in_the_Socialist_Republic_of_Romania#History\" target=\"_blank\">CII 72</a>, which comprises two voltage comparators with separate differential inputs."
+        "alt": "Die shot of the <a href=\"https://en.wikipedia.org/wiki/Electronics_industry_in_the_Socialist_Republic_of_Romania#History\" target=\"_blank\">CII 72</a>, which comprises two voltage comparators with separate differential inputs.",
+        "credit": ""
     },
     "electronic": {
         "text": "It's important to define the distinction between <em>electrical</em> and <em>electronic</em>.<br><br>- <strong>Electrical</strong>: means \"current flowing through wires\", for example motors, simple wirings and lighting.<br>- <strong>Electronic</strong>: means \"current flowing through active components that perform computation\", like diodes, transistor and ultimately computers.",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "cpu_non_triviality": {
         "text": "CPUs allow everyone to have a computer for their own needs at low cost: just make as many CPUs as needed and program them differently. It's hard to overstate how much this changed the world.",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "softcore": {
         "text": "<italics>This assumes the FPGA has sufficient resources (logic blocks, RAM, etc.).</italics><br><br>For example, you can configure an FPGA to be a CPU, which takes the name of <a href=\"https://en.wikipedia.org/wiki/Field-programmable_gate_array#Soft_core\" target=\"_blank\"><strong>softcore</strong></a>. A softcore is a CPU implemented using the programmable logic of an FPGA, rather than as a fixed silicon design.",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "logic_block_details": {
         "text": "Logic blocks can implement <a href=\"https://en.wikipedia.org/wiki/Combinational_logic\" target=\"_blank\">combinational logic</a> (via lookup tables) and typically include flip-flops for <a href=\"https://en.wikipedia.org/wiki/Sequential_logic\" target=\"_blank\">sequential logic</a> and state storage.",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "target_fpga_model": {
         "text": "Different FPGAs have different architectures and resources available (number of CLBs, RAM blocks, etc.), so they need different configurations to yield the same result.",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "synthesis_toolchain": {
         "text": "This is akin to how different CPU compilers generate different assembly for the same input code.",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "vias": {
         "text": "<strong><a href=\"https://en.wikipedia.org/wiki/Via_(electronics)\" target=\"_blank\">Vias</a></strong><br><br>Small plated holes that connect copper traces on different layers of a PCB, allowing electrical signals to pass between layers.",
@@ -185,7 +246,9 @@
     },
     "connectors": {
         "text": "<strong>Connectors</strong><br><br>Physical interfaces that allow electrical connections to be made and broken between different parts of a system, such as USB ports, pin headers, and terminal blocks.",
-        "media": "connectors.gif"
+        "media": "connectors.gif",
+        "alt": "",
+        "credit": ""
     },
     "soldering_iron": {
         "text": "",
@@ -214,63 +277,93 @@
     },
     "intermediate_circuitry_input": {
         "text": "<strong>Intermediate Circuitry for Inputs</strong><br><br>Sometimes sensors can't connect directly to the computational unit and need interface circuitry in between.<br><br>For example, to measure a 12V battery voltage with a microcontroller that only tolerates 3.3V on its pins, you'd use a <em>voltage divider</em> - two resistors in series that scale down the voltage to a safe range (e.g., 12V → 3V) before connecting to the MCU's analog input pin.",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "intermediate_circuitry_output": {
         "text": "<strong>Intermediate Circuitry for Outputs</strong><br><br>Sometimes output devices can't be driven directly by the computational unit and need interface circuitry in between.<br><br>For example, high-power LEDs require much more current than a microcontroller pin can provide (typically 20-40mA max). An <em>LED driver</em> circuit takes the low-power control signal from the MCU and uses it to switch higher currents (hundreds of mA or more) through the LED safely.",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "dsp_example": {
         "text": "Think of the electronics that controls a RADAR, for example.",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "firmware_unchanged": {
         "text": "This is because:<br>- Firmware directly controls the hardware, and the hardware doesn't change: once it's done it's done<br>- Specialized tools are needed to program embedded devices, end users don't have them",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "bare_metal_example": {
         "text": "A single line of code can change the voltage level of a single pin of a microcontroller, allowing it, for example, to toggle an LED.",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "hardware_capabilities": {
         "text": "Think of systems with many cores, many peripherals.",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "system_logic": {
         "text": "Think of a system that is handling multiple input/output data streams over many different communication protocols.",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "bench_power_supply_example": {
         "text": "An example is a modern bench power supply: the firmware controls the voltage and current settings based on the front panel buttons and dials, while the software exposes a web interface for remote control and configuration. You might update the software to add new features, but the firmware remains stable (unless a bug is found) as the front panel is always the same.",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "ESD_protection": {
         "text": "<strong>ESD Protection</strong><br><br>Electrostatic Discharge protection circuits prevent damage from static electricity. Clamping voltage spikes to safe levels, protects sensitive electronics from the thousands of volts that can build up from simple actions like touching a doorknob.",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "reverse_polarity_protection": {
         "text": "<strong>Reverse Polarity Protection</strong><br><br>Prevents damage when power is connected backwards. Reversing power can instantly destroy components.",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "overcurrent_protection": {
         "text": "<strong>Overcurrent Protection</strong><br><br>Limits or cuts off current flow when it exceeds safe levels, preventing component damage and fire hazards.",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "debugger": {
         "text": "A JLink debugger.<br>On the top side, the debugger is connected via USB to the PC, on the bottom side instead, it's connected to a PCB for programming and debugging.<br> The PC side is always either USB or Ethernet, the device side is device dependant, both in the protocol used and the cable/connectors required.",
-        "media": "debugger.jpg"
+        "media": "debugger.jpg",
+        "alt": "",
+        "credit": ""
     },
     "PCB_manufacturing": {
         "text": "Either chemical etching or CNC milling.",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "multilayer_PCB": {
         "text": "Multiple layers are created separately and then laminated together under heat and pressure to form a multi-layer PCB.",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "full_os_requirements": {
         "text": "Not all embedded systems can run full-fledged OSes like Linux or Android. These OSes require a <strong>Memory Management Unit (MMU)</strong>, a hardware component that translates virtual addresses to physical addresses.<br><br>The MMU enables each process to have its own isolated address space, which is fundamental to how Linux and Android manage multiple applications. Most microcontrollers lack an MMU, which is why they run bare-metal code or lightweight RTOSes instead.",
-        "media": ""
+        "media": "",
+        "alt": "",
+        "credit": ""
     },
     "pcb_pads": {
         "text": "<strong>PCB Pads</strong><br><br>Exposed metal areas on a PCB where components are soldered. Pads provide both mechanical support and electrical connection between components and the PCB traces.",
@@ -311,6 +404,7 @@
     "soldering_smd": {
         "text": "",
         "media": "soldering_smd.gif",
-        "alt": "pcbpower.us"
+        "alt": "pcbpower.us",
+        "credit": ""
     }
 }
