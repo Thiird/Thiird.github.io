@@ -132,7 +132,7 @@
         "credit": ""
     },
     "signal_integrity_issues": {
-        "text": "<strong>Noise</strong>: Unwanted electrical interference that appears on top of the signal.<br><br><strong>Ringing</strong>: Oscillations that occur when a signal changes value fast.",
+        "text": "<strong>Noise</strong>: General unwanted electrical interference that appears on top of the signal.<br><br><strong>Ringing</strong>: Oscillations that occur when a signal changes value fast.",
         "media": "",
         "alt": "",
         "credit": ""
@@ -158,7 +158,8 @@
     "heat_seeking_missile": {
         "text": "",
         "media": "",
-        "alt": ""
+        "alt": "",
+        "credit": ""
     },
     "PCB_image": {
         "text": "",
@@ -169,7 +170,8 @@
     "PCB": {
         "text": "Printed Circuit Board",
         "media": "",
-        "alt": ""
+        "alt": "",
+        "credit": ""
     },
     "embedded": {
         "text": "",
@@ -222,27 +224,32 @@
     "vias": {
         "text": "<strong><a href=\"https://en.wikipedia.org/wiki/Via_(electronics)\" target=\"_blank\">Vias</a></strong><br><br>Small plated holes that connect copper traces on different layers of a PCB, allowing electrical signals to pass between layers.",
         "media": "vias.png",
-        "alt": "Taken from https://www.vse.com/blog/how-are-pcb-vias-plated/"
+        "alt": "Taken from https://www.vse.com/blog/how-are-pcb-vias-plated/",
+        "credit": ""
     },
     "chip": {
         "text": "Chips are integrated circuits embedded in a package that provides physical protection and electrical connections.<br><br>Shown below, is the commonly used Quad Flat No-lead (QFN) package.",
         "media": "qfn_hand_shot.jpg",
-        "alt": "https://www.top-electronics.com/"
+        "alt": "https://www.top-electronics.com/",
+        "credit": ""
     },
     "resistors": {
         "text": "<strong>Resistors</strong><br><br>Electrical components that resist the flow of electrical current, used to control voltage and current levels in a circuit.",
         "media": "resistors.jpg",
-        "alt": "https://icdigest.com/"
+        "alt": "https://icdigest.com/",
+        "credit": ""
     },
     "capacitors": {
         "text": "<strong>Capacitors</strong><br><br>Electrical components that store electrical energy in an electric field, used for filtering, timing, and energy storage applications.",
         "media": "capacitors.jpg",
-        "alt": "https://icdigest.com/"
+        "alt": "https://icdigest.com/",
+        "credit": ""
     },
     "inductors": {
         "text": "<strong>Inductors</strong><br><br>Electrical components that store energy in a magnetic field when electrical current flows through them, used for filtering and energy storage.",
         "media": "inductors.jpg",
-        "alt": "https://icdigest.com/"
+        "alt": "https://icdigest.com/",
+        "credit": ""
     },
     "connectors": {
         "text": "<strong>Connectors</strong><br><br>Physical interfaces that allow electrical connections to be made and broken between different parts of a system, such as USB ports, pin headers, and terminal blocks.",
@@ -253,27 +260,32 @@
     "soldering_iron": {
         "text": "",
         "media": "soldering_iron.jpg",
-        "alt": "https://www.aixuntech.com/"
+        "alt": "https://www.aixuntech.com/",
+        "credit": ""
     },
     "bench_power_supply": {
         "text": "High-end bench power supply with three channels.",
         "media": "bench_power_supply.png",
-        "alt": "https://www.keysight.com/"
+        "alt": "https://www.keysight.com/",
+        "credit": ""
     },
     "soldering_robot": {
         "text": "",
         "media": "soldering_robot.gif",
-        "alt": "Weller youtube channel"
+        "alt": "Weller youtube channel",
+        "credit": ""
     },
     "reflow_oven": {
         "text": "<strong>Reflow Oven</strong><br><br>Industrial ovens that heat PCBs with pre-applied solder paste to precisely controlled temperatures, melting the solder and creating permanent connections between components and the board. Commonly used in mass production of electronics.",
         "media": "reflow_oven.jpg",
-        "alt": "https://en.wikipedia.org/wiki/Reflow_oven"
+        "alt": "https://en.wikipedia.org/wiki/Reflow_oven",
+        "credit": ""
     },
     "perfboard": {
         "text": "<strong>Perfboard</strong><br><br>A prototyping board with pre-drilled holes arranged in a grid pattern. Components are inserted from one side and soldered on the other, with connections made by soldering component leads together or using wire jumpers.",
         "media": "perfboard.gif",
-        "alt": "https://www.bestpcbs.com/, https://electronics.stackexchange.com/"
+        "alt": "https://www.bestpcbs.com/, https://electronics.stackexchange.com/",
+        "credit": ""
     },
     "intermediate_circuitry_input": {
         "text": "<strong>Intermediate Circuitry for Inputs</strong><br><br>Sometimes sensors can't connect directly to the computational unit and need interface circuitry in between.<br><br>For example, to measure a 12V battery voltage with a microcontroller that only tolerates 3.3V on its pins, you'd use a <em>voltage divider</em> - two resistors in series that scale down the voltage to a safe range (e.g., 12V → 3V) before connecting to the MCU's analog input pin.",
@@ -354,7 +366,7 @@
         "credit": ""
     },
     "multilayer_PCB": {
-        "text": "Multiple layers are created separately and then laminated together under heat and pressure to form a multi-layer PCB.",
+        "text": "Multiple layers are created separately and then laminated together under heat and pressure to form a multi-layer PCB.<br>Layer count is almost always an even number, and most PCBs have either 2, 4, or 6 layers.",
         "media": "",
         "alt": "",
         "credit": ""
@@ -368,43 +380,97 @@
     "pcb_pads": {
         "text": "<strong>PCB Pads</strong><br><br>Exposed metal areas on a PCB where components are soldered. Pads provide both mechanical support and electrical connection between components and the PCB traces.",
         "media": "pcb_pads.jpg",
-        "alt": "https://www.mokotechnology.com/ - A capacitor being placed on PCB pads."
+        "alt": "https://www.mokotechnology.com/ - A capacitor being placed on PCB pads.",
+        "credit": ""
     },
     "solder_paste": {
         "text": "<strong>Solder Paste</strong><br><br>A sticky mixture of tiny solder balls suspended in flux.<br>Applied to PCB pads before component placement, it melts during the reflow process to create permanent electrical connections.",
         "media": "solder_paste.jpg",
-        "alt": "By Lady Ada AKA Limor Fried - https://learn.adafruit.com/assets/168, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=32066966"
+        "alt": "By Lady Ada AKA Limor Fried - https://learn.adafruit.com/assets/168, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=32066966",
+        "credit": ""
     },
     "reflow": {
         "text": "Watching solder paste melt and components seemingly snap into perfect alignment as surface tension pulls them into place is genuinely fascinating.",
         "media": "reflow.gif",
-        "alt": ""
+        "alt": "",
+        "credit": ""
     },
     "THT_soldering": {
         "text": "",
         "media": "THT_soldering.gif",
-        "alt": "youtube.com/@RobertFeranec"
+        "alt": "youtube.com/@RobertFeranec",
+        "credit": ""
     },
     "smd_scale": {
         "text": "",
         "media": "smd_component_scale.jpg",
-        "alt": "edn.com"
+        "alt": "",
+        "credit": "edn.com"
     },
     "THT_diagram": {
         "text": "",
         "media": "THT_diagram.jpg",
-        "alt": "pcbpower.us"
+        "alt": "",
+        "credit": "pcbpower.us"
     },
     "SMD_diagram": {
         "text": "",
         "media": "SMD_diagram.jpg",
-        "alt": "pcbpower.us"
-    }
-    ,
+        "alt": "",
+        "credit": "pcbpower.us"
+    },
     "soldering_smd": {
         "text": "",
         "media": "soldering_smd.gif",
-        "alt": "pcbpower.us",
+        "alt": "",
+        "credit": "pcbpower.us"
+    },
+    "oscilloscope_sampling": {
+        "text": "Sampling frequency (sample rate) is how many voltage measurements the oscilloscope takes per second (e.g., MSa/s or GSa/s). Higher sampling rates improve waveform reconstruction and measurement detail.",
+        "media": "",
+        "alt": "",
         "credit": ""
+    },
+    "oscilloscope_bandwidth": {
+        "text": "Bandwidth is the maximum frequency at which the oscilloscope can accurately measure signal amplitude.<br><br>This is different from sampling rate, which determines how many voltage measurements are taken per second.<br><br>Both matter: bandwidth limits what frequencies you can see, while sampling rate affects reconstruction quality.",
+        "media": "",
+        "alt": "",
+        "credit": ""
+    },
+    "ECAD": {
+        "text": "Electronic Computer-Aided Design",
+        "media": "",
+        "alt": "",
+        "credit": ""
+    },
+    "CAD": {
+        "text": "Computer-Aided Design",
+        "media": "",
+        "alt": "",
+        "credit": ""
+    },
+    "IDE": {
+        "text": "Integrated Development Environment",
+        "media": "",
+        "alt": "",
+        "credit": ""
+    },
+    "HDL": {
+        "text": "Hardware Description Language",
+        "media": "",
+        "alt": "",
+        "credit": ""
+    },
+    "OS": {
+        "text": "Operating System",
+        "media": "",
+        "alt": "",
+        "credit": ""
+    },
+    "tooltip": {
+        "text": "This is a tooltip example!<br><br><em>(Click to make the image bigger)</em>",
+        "media": "starship-superheavy.gif",
+        "alt": "The Starship rocket powering to orbit!!!",
+        "credit": "tenor.com"
     }
 }
