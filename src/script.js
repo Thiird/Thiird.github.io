@@ -987,6 +987,11 @@ document.addEventListener("DOMContentLoaded", () => {
       // Blur immediately for desktop
       e.currentTarget.blur();
 
+      // Reset the URL hash (removes the #anchor)
+      if (window.location.hash) {
+        history.replaceState(null, "", window.location.pathname + window.location.search);
+      }
+
       // Instant scroll (no smooth animation)
       window.scrollTo({
         top: 0,
@@ -1470,8 +1475,8 @@ document.addEventListener("DOMContentLoaded", () => {
           return ''; // Remove the date line from markdown
         });
 
-        // Remove any <hr> tags (---) that appear after date removal
-        md = md.replace(/^\s*---\s*$/gm, '');
+        // Remove only the first <hr> tag (---) that appears after date removal
+        md = md.replace(/^\s*---\s*$/m, '');
 
         // Format the date nicely (handles both partial and full dates)
         let dateHtml = '';
@@ -1845,7 +1850,7 @@ class TooltipManager {
       if (isMobile) {
         return;
       }
-      
+
       if (this.tooltip && this.currentTrigger) {
         // Don't reposition if audio is playing
         if (this.activeTooltipAudio && !this.activeTooltipAudio.paused) {
@@ -1960,7 +1965,7 @@ class TooltipManager {
 
     // Add show class for animation
     tooltip.classList.add('show');
-    
+
     // Add active class to trigger for highlighting
     trigger.classList.add('active');
 
@@ -2237,7 +2242,7 @@ class TooltipManager {
         mediaEl.alt = data.text || 'Tooltip media';
         mediaEl.onerror = () => { };
         content.appendChild(mediaEl);
-        
+
         // Add alt text below image in italics if it exists
         if (data.alt) {
           const altText = document.createElement('div');
@@ -2416,29 +2421,29 @@ class TooltipManager {
     element._tooltipClick = (e) => {
       // Mark as just clicked to prevent mouseleave from closing
       element._justClicked = true;
-      
+
       // Clear the flag after a short delay
       setTimeout(() => {
         element._justClicked = false;
       }, 500);
-      
+
       // If tooltip is already showing for this trigger, don't do anything
       if (this.tooltip && this.currentTrigger === element) {
         return;
       }
-      
+
       // Clear any existing timeout
       if (element._tooltipTimeout) {
         clearTimeout(element._tooltipTimeout);
         element._tooltipTimeout = null;
       }
-      
+
       // Clear hide timeout
       if (this.hideTimeout) {
         clearTimeout(this.hideTimeout);
         this.hideTimeout = null;
       }
-      
+
       // Show tooltip immediately on click
       this.showTooltip(element, tooltipData, e.clientX);
     };
@@ -2483,7 +2488,7 @@ class TooltipManager {
     // Get sidebar width to avoid overlapping it (only on desktop where sidebar is side-by-side)
     let sidebarWidth = 0;
     const isMobile = window.innerWidth <= 800;
-    
+
     if (!isMobile) {
       const blogList = document.querySelector('.blog-list');
       const poemList = document.querySelector('.poem-list');
@@ -2501,7 +2506,7 @@ class TooltipManager {
     const margin = isMobile ? 8 : 10;
     const leftBoundary = sidebarWidth + margin;
     const rightBoundary = window.innerWidth - margin;
-    
+
     // Horizontal position: align with cursor if available, otherwise center on topmost line
     let left;
     if (mouseX !== null && mouseX !== undefined) {
@@ -2511,21 +2516,21 @@ class TooltipManager {
       // Fallback to centering on topmost line
       left = topLineRect.left + (topLineRect.width / 2) - (tooltipWidth / 2);
     }
-    
+
     // Vertical position: decide between above topmost line or below lowermost line based on space
     let top;
     const spaceAbove = topLineRect.top;
     const spaceBelow = window.innerHeight - bottomLineRect.bottom;
     const requiredSpace = tooltipHeight + this.verticalOffset + margin;
-    
+
     // On mobile, use absolute positioning (scrolls with page), on desktop use fixed (stays in viewport)
     const useAbsolutePosition = isMobile;
-    
+
     if (useAbsolutePosition) {
       // Absolute positioning: calculate position relative to page (including scroll offset)
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-      
+
       // Prefer positioning above, but use below if not enough space above and there's more space below
       if (spaceAbove >= requiredSpace || spaceAbove > spaceBelow) {
         // Position above the topmost line
@@ -2536,7 +2541,7 @@ class TooltipManager {
         top = bottomLineRect.bottom + scrollTop + this.verticalOffset;
         tooltip.classList.add('bottom');
       }
-      
+
       left = left + scrollLeft;
     } else {
       // Fixed positioning: stays in viewport (current desktop behavior)
@@ -2557,7 +2562,7 @@ class TooltipManager {
     if (left + tooltipWidth > rightBoundary) {
       left = rightBoundary - tooltipWidth;
     }
-    
+
     // On mobile, ensure tooltip doesn't exceed max-width
     if (isMobile) {
       const maxTooltipWidth = window.innerWidth - (margin * 2);
@@ -2573,7 +2578,7 @@ class TooltipManager {
       if (top + tooltipHeight > window.innerHeight - margin) {
         top = window.innerHeight - tooltipHeight - margin;
       }
-      
+
       // Ensure tooltip doesn't go off top of screen
       if (top < margin) {
         top = margin;
@@ -2599,7 +2604,7 @@ class TooltipManager {
       if (this.currentTrigger) {
         this.currentTrigger.classList.remove('active');
       }
-      
+
       // Stop any playing audio in the tooltip
       if (this.activeTooltipAudio && !this.activeTooltipAudio.paused) {
         this.activeTooltipAudio.pause();
@@ -2656,7 +2661,7 @@ class TooltipManager {
     // Create fullscreen overlay
     const overlay = document.createElement('div');
     overlay.className = 'tooltip-fullscreen-overlay';
-    
+
     // Add loading spinner
     const loadingSpinner = document.createElement('div');
     loadingSpinner.className = 'tooltip-loading-spinner';
@@ -2691,19 +2696,19 @@ class TooltipManager {
       // Use alt text if provided, otherwise use empty string (not the full text)
       img.alt = altText || '';
       img.className = 'tooltip-zoomed-image';
-      
+
       // Hide loading spinner when image loads
       img.onload = () => {
         loadingSpinner.style.display = 'none';
       };
-      
+
       img.onerror = () => {
         loadingSpinner.style.display = 'none';
       };
 
       imageContainer.appendChild(img);
       zoomedTooltip.appendChild(imageContainer);
-      
+
       // Add alt text below image in italics if it exists (centered)
       if (tooltipData && tooltipData.alt) {
         const altTextEl = document.createElement('div');
@@ -2716,7 +2721,7 @@ class TooltipManager {
         zoomedTooltip.appendChild(altTextEl);
       }
     }
-    
+
     // Add credit at the bottom left if it exists
     if (tooltipData && tooltipData.credit) {
       const creditEl = document.createElement('div');
@@ -3097,7 +3102,7 @@ function initBlogPage() {
     setInitialSidebarState();
     adjustSidebarHeight();
     lastWidth = window.innerWidth;
-    
+
     // DEBUG: Show ECU tooltip on startup
     setTimeout(() => {
       const ecuElement = document.querySelector('[data-tooltip="ecu"]');
@@ -3354,7 +3359,7 @@ function initShowcaseSlideshow() {
   function render() {
     if (!images || images.length === 0) return;
     const isMobile = window.innerWidth <= 799;
-    
+
     const window1 = container.querySelector('.showcase-window-1');
     const window2 = container.querySelector('.showcase-window-2');
     if (!window1) return;
@@ -3389,11 +3394,11 @@ function initShowcaseSlideshow() {
   function next() {
     if (animating) return;
     animating = true;
-    
+
     const isMobile = window.innerWidth <= 799;
     const window1 = container.querySelector('.showcase-window-1');
     const window2 = container.querySelector('.showcase-window-2');
-    
+
     if (isMobile || !window2) {
       // Mobile: simple swap
       current = (current + 1) % images.length;
@@ -3425,7 +3430,7 @@ function initShowcaseSlideshow() {
       img1.style.opacity = '1';
       img1.style.transition = 'none';
       img1.style.borderRadius = '12px';
-      
+
       // Update second window to next image and reset position
       const nextIdx = (current + 2) % images.length;
       img2.style.opacity = '0'; // Hide during load
@@ -3435,7 +3440,7 @@ function initShowcaseSlideshow() {
       img2.onload = () => { img2.style.opacity = '1'; };
       window2.style.transform = 'translateX(0)';
       window2.style.transition = 'none';
-      
+
       current = (current + 1) % images.length;
       animating = false;
     }, 470);
@@ -3448,11 +3453,11 @@ function initShowcaseSlideshow() {
     autoTimer = setInterval(next, interval);
   }
 
-  function stopAuto() { 
-    if (autoTimer) { 
-      clearInterval(autoTimer); 
-      autoTimer = null; 
-    } 
+  function stopAuto() {
+    if (autoTimer) {
+      clearInterval(autoTimer);
+      autoTimer = null;
+    }
   }
 
   // Load manifest and start
@@ -3690,6 +3695,9 @@ function handleAnchorHighlight() {
       if (targetElement.matches('h1, h2, h3, h4, h5, h6')) {
         const block = targetElement.closest('.anchor-block') || (id ? document.querySelector(`.anchor-block[data-anchor-id='${CSS.escape(id)}']`) : null);
         highlightEl = block || targetElement;
+      } else if (targetElement.matches('div, section, article, aside') && targetElement.id) {
+        // If it's a div/section/article/aside with its own ID, highlight just that element
+        highlightEl = targetElement;
       } else {
         // Otherwise, highlight the nearest block element (prefer li over ul/ol)
         const nearestLi = targetElement.closest('li');
@@ -3790,7 +3798,7 @@ function addTruncatedTextOverlays() {
     // Create overlay container
     const overlay = document.createElement('div');
     overlay.className = overlayClass;
-    
+
     // Create title span
     const titleSpan = document.createElement('span');
     titleSpan.textContent = element.textContent;
@@ -3808,11 +3816,11 @@ function addTruncatedTextOverlays() {
       dateSpan.style.flexShrink = '0';
       overlay.appendChild(dateSpan);
     }
-    
+
     // Copy computed styles from original element and parent link
     const computedStyle = window.getComputedStyle(element);
     const linkStyle = linkElement ? window.getComputedStyle(linkElement) : null;
-    
+
     overlay.style.fontSize = computedStyle.fontSize;
     overlay.style.fontWeight = computedStyle.fontWeight;
     overlay.style.fontFamily = computedStyle.fontFamily;
@@ -3820,7 +3828,7 @@ function addTruncatedTextOverlays() {
     overlay.style.display = linkStyle ? linkStyle.display : 'flex';
     overlay.style.alignItems = 'center';
     overlay.style.gap = '8px';
-    
+
     // Add to body
     document.body.appendChild(overlay);
     activeOverlay = overlay;
@@ -3831,7 +3839,7 @@ function addTruncatedTextOverlays() {
     overlay.style.top = (rect.top + window.pageYOffset) + 'px';
     overlay.style.height = rect.height + 'px';
     overlay.style.lineHeight = rect.height + 'px';
-    
+
     // Allow width to expand naturally, but don't exceed viewport
     overlay.style.maxWidth = 'max-content';
     const overlayRect = overlay.getBoundingClientRect();

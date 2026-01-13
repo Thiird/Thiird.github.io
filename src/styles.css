@@ -14,6 +14,7 @@
     width: min(95vw, var(--slideshow-mobile-vertical-width));
     height: var(--slideshow-mobile-vertical-height);
   }
+
   .slideshow-images.horizontal {
     width: min(95vw, var(--slideshow-mobile-horizontal-width));
     height: var(--slideshow-mobile-horizontal-height);
@@ -32,6 +33,7 @@
     max-width: 800px;
     padding: 0;
   }
+
   .showcase-window {
     width: 100%;
     max-width: 100%;
@@ -40,6 +42,7 @@
     padding: 0 50px;
     box-sizing: border-box;
   }
+
   .showcase-window-2 {
     display: none !important;
     width: 0;
@@ -53,6 +56,7 @@
     text-align: center !important;
   }
 }
+
 /* Section divider */
 .section-divider {
   max-width: 800px;
@@ -75,6 +79,7 @@
   padding: 0;
   box-sizing: border-box;
 }
+
 .showcase-window {
   flex: 1 1 50%;
   height: 400px;
@@ -100,6 +105,7 @@
   from {
     opacity: 1;
   }
+
   to {
     opacity: 0;
   }
@@ -170,14 +176,20 @@
   max-width: var(--slideshow-vertical-width);
   height: var(--slideshow-vertical-height);
 }
+
 .slideshow-images.horizontal {
   max-width: var(--slideshow-horizontal-width);
   height: var(--slideshow-horizontal-height);
 }
 
 /* Image fitting helper classes */
-.slideshow-img.contain { object-fit: contain; }
-.slideshow-img.cover { object-fit: cover; }
+.slideshow-img.contain {
+  object-fit: contain;
+}
+
+.slideshow-img.cover {
+  object-fit: cover;
+}
 
 .slideshow-image1,
 .slideshow-image2 {
@@ -349,15 +361,58 @@
   padding: 1em 1.5em;
   border-radius: 6px;
   font-size: 1em;
+  position: relative;
+}
+
+.highlight-box.definition::before {
+  content: "Definition";
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--text-primary, #333);
+  color: var(--bg-primary, #fff);
+  padding: 0.25em 0.75em;
+  font-family: var(--font-family-base);
+  font-size: 0.75em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: 6px 0 6px 0;
+}
+
+.highlight-box.note::before {
+  content: "Note";
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--text-primary, #333);
+  color: var(--bg-primary, #fff);
+  padding: 0.25em 0.75em;
+  font-family: var(--font-family-base);
+  font-size: 0.75em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: 6px 0 6px 0;
+}
+
+.highlight-box.definition,
+.highlight-box.note {
+  padding-top: 2.5em;
 }
 
 :root {
   /* Slideshow sizing parameters (modify these to change the vertical window size) */
-  --slideshow-width: 360px; /* desktop slideshow width */
-  --slideshow-height: 480px; /* desktop slideshow height */
-  --slideshow-mobile-width: 300px; /* mobile slideshow width */
-  --slideshow-mobile-height: 400px; /* mobile slideshow height */
-  --slideshow-max-height: 520px; /* common maximum height for slideshow window */
+  --slideshow-width: 360px;
+  /* desktop slideshow width */
+  --slideshow-height: 480px;
+  /* desktop slideshow height */
+  --slideshow-mobile-width: 300px;
+  /* mobile slideshow width */
+  --slideshow-mobile-height: 400px;
+  /* mobile slideshow height */
+  --slideshow-max-height: 520px;
+  /* common maximum height for slideshow window */
 
   /* Orientation-specific sizes */
   --slideshow-vertical-width: 320px;
@@ -1054,6 +1109,15 @@ body.no-scroll {
   text-align: left;
   line-height: 1.6;
   box-sizing: border-box;
+}
+
+.poem-text hr,
+.blog-text hr {
+  max-width: 800px;
+  margin: 20px auto;
+  border: none;
+  border-top: 1px solid var(--text-primary, #333);
+  opacity: 0.3;
 }
 
 .toggle-btn {
@@ -1976,8 +2040,8 @@ pre code {
   }
 
   .tooltip-gif {
-    max-width: min(260px, calc(100vw - 30px)) ;
-    max-height: min(200px, calc(50vh - 40px)) ;
+    max-width: min(260px, calc(100vw - 30px));
+    max-height: min(200px, calc(50vh - 40px));
   }
 
   .tooltip-text {
@@ -2689,10 +2753,23 @@ pre code {
   border-radius: 4px;
 }
 
+/* Prevent highlighting from applying to parent anchor-blocks */
+.anchor-block:target {
+  animation: none;
+  background-color: transparent;
+}
+
+/* Only highlight the direct target element inside anchor-blocks */
+.anchor-block :target {
+  animation: highlight-fade 2s ease-out;
+  border-radius: 4px;
+}
+
 @keyframes highlight-fade {
   0% {
     background-color: var(--anchor-highlight-bg);
   }
+
   100% {
     background-color: transparent;
   }

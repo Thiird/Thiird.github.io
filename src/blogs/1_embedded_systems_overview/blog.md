@@ -3,11 +3,11 @@ date: 2026-01-18
 
 <h1 id="intro-to-embedded-systems">Embedded Systems Overview</h1>
 
-This article is a conceptual overview of embedded systems, where I lay out all the different things in embedded systems, organize them in hierarchies and explain why they exist and what they are used for.
+This article is a conceptual overview of embedded systems.
 
-Whether you're a student, a hobbyist, or a software developer curious about this field, here you will find high-level explanations to help you understand the fundamental concepts and terminology.
+Whether you're a student, a hobbyist, or a software developer curious about this field, this article will help you get started in the field by understanding the fundamental concepts and terminology.
 
-Technical details are omitted <strong>on purpose</strong> to make this accessible for people who are <strong>absolutely new</strong> to embedded systems. More information is often available in <span tt="tooltip">tooltips</span> (hover the highlighted text on desktop, click it on mobile).
+Technical details are omitted <strong>on purpose</strong> to make this accessible to people who are <strong>absolutely new</strong> to embedded systems. More information is often available in <span tt="tooltip">tooltips</span> (hover the highlighted text on desktop, click it on mobile).
 
 **What you'll learn:**
 - What embedded systems are and where the term 'embedded' comes from
@@ -64,17 +64,21 @@ Let's dive in!
 </div>
 
 <h1 id="what-is-it">1. What's an Embedded System?</h1>
-<div class="highlight-box">
+<div class="highlight-box definition" id="es-definition">
 Embedded Systems (<span tt="ES">ES</span>), is an application field that merges computer science, electrical engineering and mechanical engineering to create <span tt="electronic">electronic</span> systems for <strong>specific</strong> use cases.
 </div>
 
-While all embedded systems are computers, not all computers are embedded systems: general-purpose computers like desktop PCs, laptops, and smartphones are usually not considered embedded systems.
+While all embedded systems are computers, not all computers are embedded systems: general-purpose computing devices like desktop PCs, laptops, and smartphones are usually not considered embedded systems. 
 
 Some <span tt="ES">ES</span> examples are:
 - <span tt="awareness_keyboard">computer keyboard</span>
 - <span tt="casio_watch">digital wrist clock</span>
 - <span tt="ecu">the computer inside cars</span>
 - <span tt="soviet_seeker">the brain of a missile</span>
+
+<div class="highlight-box note">
+Whether a device is an <a href="#es-definition">embedded system</a> or not, is decided at <strong><em>system level</em></strong>, not <strong><em>component level</em></strong>. The electronic components that comprise it may be general-purpose, but they can be arranged and programmed in such a way that the device as a whole is a fixed-purpose computer. This is the case, for example, of the computer keyboard.
+</div>
 
 <h2 id="why-embedded">1.1 Why <em>'embedded'</em>?</h2>
 Embedded Systems is basically applied electronics. Such electronics can't be handed to the customer as it is, it first needs to be integrated, e.g. embedded, <span tt="embedded">in some kind of enclosure</span>, hence the term embedded system.
@@ -92,9 +96,7 @@ The hardware provides the physical platform, the firmware controls it directly, 
 
 The core of an <span tt="ES">ES</span> is the electronic hardware.
 
-The electronics is consolidated in an assembly called Printed Circuit Board Assembly (PCBA), which consists of a number of components that have been electrically joined to a base board. This base board is called <span tt="PCB_image">Printed Circuit Board</span> (PCB) and it's made of alternating layers of insulating material and copper, where the copper layers have been precisely <span tt="PCB_manufacturing">manufactured</span> to leave behind only individual traces. Traces are used to route signals from one component to the other. PCBs can have one layer, <span tt="i
-i
-">two layers, four layers, etc</span>. Traces on different layers are connected together with <span tt="vias">vias</span>, and the ones on the external layers are what connects the electronic components together to the PCB itself by [soldering](#soldering-tools) them on specific spots on the traces.
+The electronics is consolidated in an assembly called Printed Circuit Board Assembly (PCBA), which consists of a number of components that have been electrically joined to a base board. This base board is called <span tt="PCB_image">Printed Circuit Board</span> (PCB) and it's made of alternating layers of insulating material and copper, where the copper layers have been precisely <span tt="PCB_manufacturing">manufactured</span> to leave behind only individual traces. Traces are used to route signals from one component to the other. PCBs can have one layer, <span tt="multilayer_PCB">two layers, four layers, etc</span>. Traces on different layers are connected together with <span tt="vias">vias</span>, and the ones on the external layers are what connects the electronic components together to the PCB itself by [soldering](#soldering-tools) them on specific spots on the traces.
 
 Modern electronics can pack an incredible amount of computational power. To make this happen, components size has shrunk significantly over the past decades. Nowadays, some components are in the <span tt="smd_scale">millimeter or even sub-millimeter size</span>.
 
@@ -149,11 +151,11 @@ Most embedded systems have only one <span tt="CU">CU</span>, but it's common for
 
 Architecture wise, there are three main kinds computational units. Let's analyze all of them starting from the one found in desktop PCs: the <span tt="CPU">CPU</span>.
 
-<div class="highlight-box">
+<div class="highlight-box definition">
 The <strong>Central Processing Unit</strong> (<span tt="CPU">CPU</span>) is an integrated circuit that implements a computer capable of performing a fixed number of operations. These operations are called <strong>machine instructions</strong>. Once turned on, the <span tt="CPU">CPU</span> starts executing the machine instructions specified in a program, which is a finite list of machine instructions stored in memory. The set of all valid machine instructions that a program can use, is defined in the <strong>Instruction Set Architecture</strong> (<span tt="isa">ISA</span>) of the <span tt="CPU">CPU</span>. Changing the program changes what the <span tt="CPU">CPU</span> does, which <span tt="cpu_non_triviality">makes the CPU a general-purpose computer</span>.
 </div>
 
-In embedded systems, >many different types of CPUs are used as the computational unit. The <span tt="cpu_types">usual taxonomy</span> tries to capture the difference in clock speed, core count, presence of integrated RAM and capabilities.
+In embedded systems, many different types of CPUs are used as the computational unit. The <span tt="cpu_types">usual taxonomy</span> tries to capture the difference in clock speed, core count, presence of integrated RAM and capabilities.
 
 The flexibility that <span tt="CPU">CPU</span>s have, comes at the cost of speed. To run a list of instructions takes time, as the <span tt="CPU">CPU</span> needs to read the next instruction, activate the part of the chip that does that, and then actually execute it. This is called the [<em>Fetch-Decode-Execute</em>](https://en.wikipedia.org/wiki/Instruction_cycle) cycle.
 
@@ -161,7 +163,7 @@ The F-D-E cycle is less than ideal for applications where the computation to be 
 
 We can achieve this with an <strong>ASIC</strong>.
 
-<div class="highlight-box">
+<div class="highlight-box definition">
 The <strong>Application Specific Integrated Circuit</strong> (ASIC), is an integrated circuit that implements a fixed-purpose computer. When turned on, it will always execute the same computation, as it's not configurable in anyway.
 </div>
 
@@ -170,7 +172,7 @@ The <strong>Application Specific Integrated Circuit</strong> (ASIC), is an integ
 Talking about <span tt="CPU">CPU</span>s and <span tt="ASIC">ASIC</span>s, we have gone from extreme flexibility and low speed, to zero flexibility and high-speed.  
 What if we wanted the performance of <span tt="ASIC">ASIC</span>s with some computational flexibility? That's what <span tt="FPGA">FPGA</span>s are for.
 
-<div class="highlight-box">
+<div class="highlight-box definition">
 A <strong>Field-Programmable Gate Array</strong> (FPGA) is an integrated circuit containing an array of <a href="https://en.wikipedia.org/wiki/Logic_block" target="_blank">programmable logic elements and interconnects</a>. Each block can be configured in both the <span tt="logic_block_details">logical function</span> it performs and how it connects with the other blocks. At startup, the FPGA loads a <a href="#fpga-software">bitstream</a> that precisely defines the function of each block and its routing, enabling virtually any digital circuit to be realized directly in hardware.
 </div>
 
@@ -241,7 +243,7 @@ Having the right tools and knowing how to use them is just as important as knowi
 
 Let's go through the essential tools that you will need.
 
-<div class="highlight-box">
+<div class="highlight-box note">
 <strong>Caution:</strong>  
 If you have never handled electronics before, stick to low-energy components like cell batteries and LEDs. You can burn your house down or hurt yourself pretty badly with electronics.  
 The best way to get started is having someone showing you the basics in persons. Nevertheless, don't be afraid to try on your own.
@@ -335,7 +337,7 @@ It's better for you and for your career, as you will get "the whole picture" of 
 You are a beginner, any project will teach you a lot, so my suggestion is to focus your efforts to build something that someone actually needs. Putting your device in someone's hand will give you the precious user-engineer feedback that is crucial to actually learn how to make functional products.  
 
 Enough chatting, now go and build something!  
-And don't forget to show it off online!!!
+And don't forget to show it off online!!!  
 
 <h2 id="learning-resources">4.2 Learning resources</h2>
 
@@ -351,3 +353,9 @@ And don't forget to show it off online!!!
 - [r/FPGA](https://www.reddit.com/r/FPGA/)
 - [Stack Overflow embedded tags](https://stackoverflow.com/questions/tagged/embedded)
 
+---
+<em>
+Written by Stefano Nicolis.
+
+Thanks to [Kamil Rudnicki](https://www.linkedin.com/in/rudnickikamil/) for a quick check.
+</em>
