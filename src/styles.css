@@ -1254,12 +1254,7 @@ body.no-scroll {
   box-sizing: border-box;
 }
 
-@media (max-width: 600px) {
-  .audio-player {
-    max-width: 100%;
-    min-width: 200px;
-  }
-}
+/* Consolidated in media queries section at end of file */
 
 .audio-title {
   display: none;
@@ -1618,13 +1613,7 @@ body.no-scroll {
   display: none;
 }
 
-@media (max-width: 600px) {
-
-  #lightbox-prev,
-  #lightbox-next {
-    display: none !important;
-  }
-}
+/* Consolidated in media queries section at end of file */
 
 #backToTop,
 #themeToggle {
@@ -2011,43 +2000,9 @@ pre code {
   overflow-x: hidden;
 }
 
-@media (max-width: 600px) {
-  .tooltip {
-    max-width: calc(100vw - 20px);
-    padding: 8px;
-    font-size: 0.9em;
-    width: max-content;
-  }
+/* Consolidated in media queries section at end of file */
 
-  .tooltip-gif {
-    max-width: min(200px, calc(100vw - 40px)) !important;
-    max-height: min(250px, calc(50vh - 40px)) !important;
-  }
-
-  .tooltip-text {
-    font-size: 14px !important;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-  }
-}
-
-@media (max-width: 400px) {
-  .tooltip {
-    max-width: calc(100vw - 16px);
-    padding: 6px;
-    font-size: 0.85em;
-    width: max-content;
-  }
-
-  .tooltip-gif {
-    max-width: min(260px, calc(100vw - 30px));
-    max-height: min(200px, calc(50vh - 40px));
-  }
-
-  .tooltip-text {
-    font-size: 12px !important;
-  }
-}
+/* Consolidated in media queries section at end of file */
 
 .tooltip.show {
   opacity: 1;
@@ -2224,8 +2179,8 @@ pre code {
 }
 
 .tooltip-zoomed-image {
-  max-width: min(600px, calc(90vw - 30px));
-  max-height: min(500px, calc(90vh - 150px));
+  max-width: min(800px, calc(90vw - 30px));
+  max-height: min(700px, calc(90vh - 150px));
   width: auto;
   height: auto;
   border-radius: 4px;
@@ -2426,22 +2381,7 @@ pre code {
   }
 }
 
-@media (max-width: 600px) {
-  .history-section {
-    margin-left: 50px;
-    margin-right: 50px;
-    margin-top: 30px;
-    margin-bottom: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-
-  .history-item a {
-    gap: 8px;
-  }
-}
+/* Consolidated in media queries section at end of file */
 
 .poem-date,
 .blog-date {
@@ -2687,40 +2627,7 @@ pre code {
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
-  .career-compact-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  .skill-row {
-    grid-template-columns: 1fr;
-    gap: 5px;
-  }
-
-  .skill-label {
-    font-weight: 700;
-  }
-
-  .skills-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 600px) {
-  .career-header h1 {
-    font-size: 2em;
-  }
-
-  .projects-section h2 {
-    font-size: 1.6em;
-  }
-
-  .project-list {
-    grid-template-columns: 1fr;
-  }
-}
+/* Consolidated in media queries section at end of file */
 
 .blog-text img,
 .poem-text img,
@@ -2772,5 +2679,108 @@ pre code {
 
   100% {
     background-color: transparent;
+  }
+}
+
+/* ============================================
+   CONSOLIDATED MEDIA QUERIES
+   ============================================ */
+
+/* 400px and below */
+@media (max-width: 400px) {
+  .tooltip {
+    max-width: calc(100vw - 16px);
+    padding: 6px;
+    font-size: 0.85em;
+    width: max-content;
+  }
+
+  .tooltip-gif {
+    max-width: min(260px, calc(100vw - 30px));
+    max-height: min(200px, calc(50vh - 40px));
+  }
+
+  .tooltip-text {
+    font-size: 12px !important;
+  }
+}
+
+/* 600px and below */
+@media (max-width: 600px) {
+  .audio-player {
+    max-width: 100%;
+    min-width: 200px;
+  }
+
+  #lightbox-prev,
+  #lightbox-next {
+    display: none !important;
+  }
+
+  .tooltip {
+    max-width: calc(100vw - 20px);
+    padding: 8px;
+    font-size: 0.9em;
+    width: max-content;
+  }
+
+  .tooltip-gif {
+    max-width: min(300px, calc(100vw - 40px)) !important;
+    max-height: min(350px, calc(50vh - 40px)) !important;
+  }
+
+  .tooltip-text {
+    font-size: 14px !important;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .history-section {
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-top: 30px;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .history-item a {
+    gap: 8px;
+  }
+
+  .career-header h1 {
+    font-size: 2em;
+  }
+
+  .projects-section h2 {
+    font-size: 1.6em;
+  }
+
+  .project-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 768px and below */
+@media (max-width: 768px) {
+  .career-compact-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .skill-row {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  .skill-label {
+    font-weight: 700;
+  }
+
+  .skills-grid {
+    grid-template-columns: 1fr;
   }
 }

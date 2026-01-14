@@ -29,12 +29,6 @@
         "alt": "Soviet heat-seeking missile guidance system",
         "credit": ""
     },
-    "paw3395": {
-        "text": "High-performance gaming optical sensor with 30,000 DPI capability",
-        "media": "tooltip.gif",
-        "alt": "PAW3395 optical sensor chip",
-        "credit": ""
-    },
     "isa": {
         "text": "The ISA defines, along <em>many</em> other things, both the text and the binary representation of the machine instructions.<br><br>The text-form is used to write programs directly in machine language, which takes the name of <strong>assembly language</strong>. To execute it on the CPU, it then needs to be translated via an <em>assembler</em>, to the binary representation.<br><br>Some of the most common CPU instructions are:<br><em>(R = CPU register)</em><br>- <strong>ADD R1, R2, R3</strong>: (R1 = R2 + R3)<br>- <strong>MUL R1, R2, R3</strong>: (R1 = R2 × R3)<br>- <strong>CMP R1, R2</strong>: Compare two values<br>- <strong>JMP 0x1000</strong>: Jump to the given memory address",
         "media": "",
@@ -43,6 +37,12 @@
     },
     "ES": {
         "text": "Embedded System",
+        "media": "",
+        "alt": "",
+        "credit": ""
+    },
+    "computers": {
+        "text": "Computers in the sense of machines that perform computation, not personal computers",
         "media": "",
         "alt": "",
         "credit": ""
@@ -78,19 +78,13 @@
         "credit": ""
     },
     "oscilloscope": {
-        "text": "Two channel oscilloscope measuring the output of a circuit.",
+        "text": "Two channel oscilloscope measuring the output of a circuit",
         "media": "oscilloscope.jpg",
         "alt": "Two-channel oscilloscope showing waveform",
         "credit": "learn.sparkfun.com"
     },
     "oscilloscope_data_rate": {
         "text": "<strong>Example:<br></strong> To correctly sample a <strong>1 MHz signal</strong>, a minimum of <strong>2 million samples per second</strong> are required (Nyquist theorem). To display all of this data, a digit screen would need to update every <strong>0.5 microseconds</strong>, far beyond what a simple digit display can handle, let alone a human reading it.",
-        "media": "",
-        "alt": "",
-        "credit": ""
-    },
-    "digit_screen": {
-        "text": "",
         "media": "",
         "alt": "",
         "credit": ""
@@ -102,7 +96,7 @@
         "credit": ""
     },
     "signal_analysis_capabilities": {
-        "text": "<strong>Advanced Signal Analysis</strong><br><br>Higher-end oscilloscopes include built-in analysis functions beyond basic waveform display:<br><br>- <strong>FFT (Fast Fourier Transform)</strong>: Converts time-domain signals to frequency domain, revealing harmonic content and noise characteristics<br>- <strong>Protocol Decoding</strong>: Automatically decodes digital protocols like I2C, SPI, UART, CAN<br>- <strong>Math Functions</strong>: Perform operations like addition, subtraction, integration, differentiation on signals<br>- <strong>Automated Measurements</strong>: Calculate rise time, fall time, jitter, phase differences automatically",
+        "text": "<strong>Advanced Signal Analysis</strong><br><br>Depending on the model, different math functions are available:<br><br>- <strong>FFT (Fast Fourier Transform)</strong>: Converts time-domain signals to frequency domain, revealing harmonic content and noise characteristics<br>- <strong>Math Functions</strong>: Perform operations like addition, subtraction, integration, differentiation on signals<br>- <strong>Automated Measurements</strong>: Calculate rise time, fall time, jitter, phase differences automatically",
         "media": "",
         "alt": "",
         "credit": ""
@@ -112,12 +106,6 @@
         "media": "",
         "alt": "",
         "credit": ""
-    },
-    "amm": {
-        "text": "Analog Multimeter",
-        "media": "ann.jpg",
-        "alt": "",
-        "credit": "KZang - Own work, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=32873569"
     },
     "waves": {
         "text": "From top to bottom, a sine wave, a square wave, and a triangular wave.<br>Note how, if the period of the multimeter sampling would correspond with the middle point of the on part of the square wave, the multimeter would always read the maximum voltage, completely hiding the switching behavior of all three signals",
@@ -151,12 +139,6 @@
     },
     "jtag_advanced_functionalities": {
         "text": "<strong>Boundary Scan</strong>: Test connections between chips on a PCB without physical probes<br> <strong>Chain Debugging</strong>: Debug multiple devices connected in a daisy-chain topology",
-        "media": "",
-        "alt": "",
-        "credit": ""
-    },
-    "heat_seeking_missile": {
-        "text": "",
         "media": "",
         "alt": "",
         "credit": ""
@@ -198,7 +180,7 @@
         "credit": ""
     },
     "softcore": {
-        "text": "<italics>This assumes the FPGA has sufficient resources (logic blocks, RAM, etc.).</italics><br><br>For example, you can configure an FPGA to be a CPU, which takes the name of <a href=\"https://en.wikipedia.org/wiki/Field-programmable_gate_array#Soft_core\" target=\"_blank\"><strong>softcore</strong></a>. A softcore is a CPU implemented using the programmable logic of an FPGA, rather than as a fixed silicon design.",
+        "text": "This assumes the FPGA has sufficient resources (logic blocks, RAM, etc.).<br><br>For example, you can configure an FPGA to be a CPU, which takes the name of <a href=\"https://en.wikipedia.org/wiki/Field-programmable_gate_array#Soft_core\" target=\"_blank\"><strong>softcore</strong></a>. A softcore is a CPU implemented using the programmable logic of an FPGA, rather than as a fixed silicon design.",
         "media": "",
         "alt": "",
         "credit": ""
@@ -224,32 +206,26 @@
     "vias": {
         "text": "<strong><a href=\"https://en.wikipedia.org/wiki/Via_(electronics)\" target=\"_blank\">Vias</a></strong><br><br>Small plated holes that connect copper traces on different layers of a PCB, allowing electrical signals to pass between layers.",
         "media": "vias.png",
-        "alt": "Taken from https://www.vse.com/blog/how-are-pcb-vias-plated/",
-        "credit": ""
-    },
-    "chip": {
-        "text": "Chips are integrated circuits embedded in a package that provides physical protection and electrical connections.<br><br>Shown below, is the commonly used Quad Flat No-lead (QFN) package.",
-        "media": "qfn_hand_shot.jpg",
-        "alt": "https://www.top-electronics.com/",
-        "credit": ""
+        "alt": "",
+        "credit": "vse.com/blog/how-are-pcb-vias-plated"
     },
     "resistors": {
         "text": "<strong>Resistors</strong><br><br>Electrical components that resist the flow of electrical current, used to control voltage and current levels in a circuit.",
         "media": "resistors.jpg",
-        "alt": "https://icdigest.com/",
-        "credit": ""
+        "alt": "",
+        "credit": "icdigest.com"
     },
     "capacitors": {
         "text": "<strong>Capacitors</strong><br><br>Electrical components that store electrical energy in an electric field, used for filtering, timing, and energy storage applications.",
         "media": "capacitors.jpg",
-        "alt": "https://icdigest.com/",
-        "credit": ""
+        "alt": "",
+        "credit": "icdigest.com"
     },
     "inductors": {
         "text": "<strong>Inductors</strong><br><br>Electrical components that store energy in a magnetic field when electrical current flows through them, used for filtering and energy storage.",
         "media": "inductors.jpg",
-        "alt": "https://icdigest.com/",
-        "credit": ""
+        "alt": "",
+        "credit": "icdigest.com"
     },
     "connectors": {
         "text": "<strong>Connectors</strong><br><br>Physical interfaces that allow electrical connections to be made and broken between different parts of a system, such as USB ports, pin headers, and terminal blocks.",
@@ -260,44 +236,25 @@
     "soldering_iron": {
         "text": "",
         "media": "soldering_iron.jpg",
-        "alt": "https://www.aixuntech.com/",
-        "credit": ""
+        "alt": "",
+        "credit": "aixuntech.com"
     },
     "bench_power_supply": {
         "text": "High-end bench power supply with three channels.",
         "media": "bench_power_supply.png",
-        "alt": "https://www.keysight.com/",
-        "credit": ""
+        "alt": "",
+        "credit": "keysight.com"
     },
     "soldering_robot": {
-        "text": "",
         "media": "soldering_robot.gif",
-        "alt": "Weller youtube channel",
-        "credit": ""
+        "alt": "",
+        "credit": "youtube.com/@WellerTools"
     },
     "reflow_oven": {
         "text": "<strong>Reflow Oven</strong><br><br>Industrial ovens that heat PCBs with pre-applied solder paste to precisely controlled temperatures, melting the solder and creating permanent connections between components and the board. Commonly used in mass production of electronics.",
         "media": "reflow_oven.jpg",
-        "alt": "https://en.wikipedia.org/wiki/Reflow_oven",
-        "credit": ""
-    },
-    "perfboard": {
-        "text": "<strong>Perfboard</strong><br><br>A prototyping board with pre-drilled holes arranged in a grid pattern. Components are inserted from one side and soldered on the other, with connections made by soldering component leads together or using wire jumpers.",
-        "media": "perfboard.gif",
-        "alt": "https://www.bestpcbs.com/, https://electronics.stackexchange.com/",
-        "credit": ""
-    },
-    "intermediate_circuitry_input": {
-        "text": "<strong>Intermediate Circuitry for Inputs</strong><br><br>Sometimes sensors can't connect directly to the computational unit and need interface circuitry in between.<br><br>For example, to measure a 12V battery voltage with a microcontroller that only tolerates 3.3V on its pins, you'd use a <em>voltage divider</em> - two resistors in series that scale down the voltage to a safe range (e.g., 12V → 3V) before connecting to the MCU's analog input pin.",
-        "media": "",
         "alt": "",
-        "credit": ""
-    },
-    "intermediate_circuitry_output": {
-        "text": "<strong>Intermediate Circuitry for Outputs</strong><br><br>Sometimes output devices can't be driven directly by the computational unit and need interface circuitry in between.<br><br>For example, high-power LEDs require much more current than a microcontroller pin can provide (typically 20-40mA max). An <em>LED driver</em> circuit takes the low-power control signal from the MCU and uses it to switch higher currents (hundreds of mA or more) through the LED safely.",
-        "media": "",
-        "alt": "",
-        "credit": ""
+        "credit": "en.wikipedia.org/wiki/Reflow_oven"
     },
     "dsp_example": {
         "text": "Think of the electronics that controls a RADAR, for example.",
@@ -380,8 +337,8 @@
     "pcb_pads": {
         "text": "<strong>PCB Pads</strong><br><br>Exposed metal areas on a PCB where components are soldered. Pads provide both mechanical support and electrical connection between components and the PCB traces.",
         "media": "pcb_pads.jpg",
-        "alt": "https://www.mokotechnology.com/ - A capacitor being placed on PCB pads.",
-        "credit": ""
+        "alt": "A capacitor being placed on PCB pads",
+        "credit": "mokotechnology.com/ "
     },
     "solder_paste": {
         "text": "<strong>Solder Paste</strong><br><br>A sticky mixture of tiny solder balls suspended in flux.<br>Applied to PCB pads before component placement, it melts during the reflow process to create permanent electrical connections.",
@@ -408,13 +365,13 @@
         "credit": "edn.com"
     },
     "THT_diagram": {
-        "text": "",
+        "text": "Note how the component goes through the PCB and it soldered on the opposite side",
         "media": "THT_diagram.jpg",
         "alt": "",
         "credit": "pcbpower.us"
     },
     "SMD_diagram": {
-        "text": "",
+        "text": "Note how the component is soldered on the surface of the PCB",
         "media": "SMD_diagram.jpg",
         "alt": "",
         "credit": "pcbpower.us"
@@ -425,8 +382,8 @@
         "alt": "",
         "credit": "pcbpower.us"
     },
-    "oscilloscope_sampling": {
-        "text": "Sampling frequency (sample rate) is how many voltage measurements the oscilloscope takes per second (e.g., MSa/s or GSa/s). Higher sampling rates improve waveform reconstruction and measurement detail.",
+    "oscilloscope_sampling_frequency": {
+        "text": "Sampling frequency (sample rate) determines how many voltage measurements are taken per second (e.g., MSa/s or GSa/s).",
         "media": "",
         "alt": "",
         "credit": ""

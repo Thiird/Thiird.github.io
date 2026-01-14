@@ -3,9 +3,9 @@ date: 2026-01-18
 
 <h1 id="intro-to-embedded-systems">Embedded Systems Overview</h1>
 
-This article is a conceptual overview of embedded systems.
+This article is a conceptual overview of embedded systems for new comers to the field.
 
-Whether you're a student, a hobbyist, or a software developer curious about this field, this article will help you get started in the field by understanding the fundamental concepts and terminology.
+Whether you're a student, a hobbyist, or a software developer, this article will help you get started by understanding the fundamental concepts and terminology.
 
 Technical details are omitted <strong>on purpose</strong> to make this accessible to people who are <strong>absolutely new</strong> to embedded systems. More information is often available in <span tt="tooltip">tooltips</span> (hover the highlighted text on desktop, click it on mobile).
 
@@ -49,8 +49,7 @@ Let's dive in!
         <li><a href="#soldering-tools">3.2 Soldering Tools</a></li>
         <li><a href="#power-supply">3.3 Power Supply</a></li>
         <li><a href="#oscilloscope">3.4 Oscilloscope</a></li>
-        <li><a href="#logic-analyzer">3.5 Logic Analyzer</a></li>
-        <li><a href="#the-debugger">3.6 Debugger</a></li>
+        <li><a href="#the-debugger">3.5 Debugger</a></li>
       </ul>
     </li>
     <li class="index-section">
@@ -65,23 +64,25 @@ Let's dive in!
 
 <h1 id="what-is-it">1. What's an Embedded System?</h1>
 <div class="highlight-box definition" id="es-definition">
-Embedded Systems (<span tt="ES">ES</span>), is an application field that merges computer science, electrical engineering and mechanical engineering to create <span tt="electronic">electronic</span> systems for <strong>specific</strong> use cases.
+Embedded Systems (<span tt="ES">ES</span>), is an application field that merges computer science, electrical engineering and mechanical engineering to create <span tt="electronic">electronic</span> systems for <strong>specific</strong> use cases.  
 </div>
 
-While all embedded systems are computers, not all computers are embedded systems: general-purpose computing devices like desktop PCs, laptops, and smartphones are usually not considered embedded systems. 
+While all embedded systems are <span tt="computers">computers</span>, not all computers are embedded systems: general-purpose computing devices like desktop PCs, laptops, and smartphones are not considered embedded systems. 
 
 Some <span tt="ES">ES</span> examples are:
 - <span tt="awareness_keyboard">computer keyboard</span>
 - <span tt="casio_watch">digital wrist clock</span>
 - <span tt="ecu">the computer inside cars</span>
-- <span tt="soviet_seeker">the brain of a missile</span>
+- <span tt="soviet_seeker">the computer of a missile</span>
 
-<div class="highlight-box note">
-Whether a device is an <a href="#es-definition">embedded system</a> or not, is decided at <strong><em>system level</em></strong>, not <strong><em>component level</em></strong>. The electronic components that comprise it may be general-purpose, but they can be arranged and programmed in such a way that the device as a whole is a fixed-purpose computer. This is the case, for example, of the computer keyboard.
-</div>
+Whether a device is an <span tt="ES">ES</span> or not, is decided at <strong><em>system level</em></strong>, not <strong><em>component level</strong></em>.  
+
+This is because the electronic components that comprise it can be capable of general-purpose computing, but if arranged and programmed in a specific way, the device as a whole becomes a fixed-purpose computer.  
+This is the case for most ES as it reduces cost, but for specific applications, fixed-purpose-computing components are used from the start. We will later learn why one might choose one or the other.
 
 <h2 id="why-embedded">1.1 Why <em>'embedded'</em>?</h2>
-Embedded Systems is basically applied electronics. Such electronics can't be handed to the customer as it is, it first needs to be integrated, e.g. embedded, <span tt="embedded">in some kind of enclosure</span>, hence the term embedded system.
+
+Embedded Systems is basically applied electronics. Such electronics is often a component of a bigger system, and as such it needs to be embedded into the bigger system to be usable. When it's a product of its own instead, the electronics can't be handed to the customer as it is, it first needs to be embedded <span tt="embedded">in some kind of enclosure</span>, hence the term embedded system.
 
 <h1 id="how-is-it-made">2. How is it made</h1>
 An embedded system is made of three main elements:
@@ -214,25 +215,25 @@ Some examples of such minimal, so called <em>embedded operating systems</em>, ar
 
 <h2 id="software">2.3 Software</h2>
 
-Software is a term used both in the <span tt="CPU">CPU</span> and <span tt="FPGA">FPGA</span> world.  
+<em>Software</em> is a term used both in the <span tt="CPU">CPU</span> and <span tt="FPGA">FPGA</span> world.  
 
-In the <span tt="CPU">CPU</span> world, it refers to both the high-level code running <em>on-device</em>, on top of a <span tt="full_os_requirements">canonical operating system like Linux or Android</span>, and the code running <em>off-device</em> that interacts with the embedded device.
+In the <span tt="CPU">CPU</span> world, it refers to both the high-level code running <strong><em>on-device</em></strong>, on top of a <span tt="full_os_requirements">canonical operating system like Linux or Android</span>, and the code running <strong><em>off-device</em></strong> that interacts with the embedded device.
 
 In particular, we refer to the former as <strong><em>embedded software</em></strong> and the latter as just <strong><em>software</em></strong>.
 
-<strong><em>Embedded software</em></strong> is about <em>on-device</em>, user-space application development and the system programming required to support those.
+<strong><em>Embedded software</em></strong> is about <strong><em>on-device</strong></em>, user-space application development and the system programming required to support those.
 
-<strong><em>Software</em></strong> is about <em>off-device</em> code that adds extra functionality to the device, and it's often about making it easier to interact with the device.
+<strong><em>Software</em></strong> is about <strong><em>off-device</strong></em> code that adds extra functionalities, and it's often about making it easier to interact with the device.
 
- Being applications running on top of an <span tt="OS">OS</span>, software is much easier to update than firmware, as the former often requires only a change of the executable file and the latter often requires engineering tools like a [debugger](#the-debugger).
+Software (either kind) is usually much easier to develop than firmware, as it doesn't require extensive hardware knowledge. Moreover, a software update often only requires a change of the executable file in the file system of the device, whereas firmware requires engineering tools like a [debugger](#the-debugger).
 
 <span tt="bench_power_supply_example">Complex embedded products require both firmware and software</span>: firmware handles low level hardware functionalities (like reading sensors or controlling motors), while software handles the user-level applications, like graphical interfaces and networking.
 
 Note that code running embedded operating systems like [FreeRTOS](https://en.wikipedia.org/wiki/FreeRTOS) and [Zephyr](https://en.wikipedia.org/wiki/Zephyr_(operating_system)) is still considered firmware, as those <span tt="OS">OS</span>s provide very minimal abstraction and the code is still directly programming the hardware.
 
-In the <span tt="FPGA">FPGA</span> world instead, software refers to all the <span tt="ECAD">ECAD</span>/<span tt="CAD">CAD</span> tooling, like <span tt="IDE">IDE</span>s, that run off-device on the development machine, used for development, simulation, testing and synthesis of the <strong>gateware</strong>.
+In the <span tt="FPGA">FPGA</span> world instead, <em>software</em> refers to all the <span tt="ECAD">ECAD</span>/<span tt="CAD">CAD</span> tooling, like <span tt="IDE">IDE</span>s, that run off-device on the development machine, used for development, simulation, testing and synthesis of the <em>gateware</em>.
 
-The gateware is the code written in a <a href="https://en.wikipedia.org/wiki/Hardware_description_language" target="_blank">Hardware Description Language</a> (HDL), like Verilog or VHDL, that gets <strong>synthesized</strong> to a bitstream and then used to configure the configurable logic of the <span tt="FPGA">FPGA</span> to implement a certain function. The resulting bitstream depends on the input <span tt="HDL">HDL</span> code, <span tt="target_fpga_model">the target  device</span>, and <span tt="synthesis_toolchain">the synthesis toolchain used</span>.
+The <strong>gateware</strong> is the code written in a <a href="https://en.wikipedia.org/wiki/Hardware_description_language" target="_blank">Hardware Description Language</a> (HDL), like Verilog or VHDL, that gets <strong>synthesized</strong> to a bitstream and then used to configure the configurable logic of the <span tt="FPGA">FPGA</span> to implement a certain function. The resulting bitstream depends on the input <span tt="HDL">HDL</span> code, <span tt="target_fpga_model">the target  device</span>, and <span tt="synthesis_toolchain">the synthesis toolchain used</span>.
 
 <h1 id="tools-of-the-trade">3. Tools of the trade</h1>
 
@@ -266,7 +267,7 @@ It's used to verify [<strong>signal integrity</strong>](https://en.wikipedia.org
 
 For example, what a multimeter might show as a steady 3.3V signal, an oscilloscope will reveal is actually a <span tt="waves">more complex signal</span> switching between 0V and 3.3V at 10MHz.
 
-Oscilloscopes differ in number of <span tt="oscilloscope_channels">input channels</span>, sampling frequency, <span tt="oscilloscope_bandwidth">bandwidth</span> and <span tt="signal_analysis_capabilities">signal analysis capabilities</span>. Modern, top-of-the-line oscilloscopes have bandwidths in the range of tens of GHz.
+Oscilloscopes differ in number of <span tt="oscilloscope_channels">input channels</span>, <span tt="oscilloscope_sampling_frequency">sampling frequency</span>, <span tt="oscilloscope_bandwidth">bandwidth</span> and <span tt="signal_analysis_capabilities">signal analysis capabilities</span>. Modern, top-of-the-line oscilloscopes have bandwidths in the range of tens of GHz.
 
 <h2 id="soldering-tools">3.3 Soldering Tools</h2>
 
@@ -297,7 +298,7 @@ Unlike wall adapters or USB power bricks, a bench power supply allows you to:
 - limit the maximum current to protect your circuit from damage in case of a short circuit
 - monitor real-time power consumption
 
-<h2 id="the-debugger">3.6 Debugger</h2>
+<h2 id="the-debugger">3.5 Debugger</h2>
 In embedded systems, the <span tt="debugger">debugger</span> is a device that sits between the <span tt="ES">ES</span> and the development machine, and it's used for:
 
 - <strong>Programming</strong>: <span tt="flash_program">Flashing</span> the compiled code onto the microcontroller's memory
