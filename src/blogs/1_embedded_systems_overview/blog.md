@@ -75,10 +75,11 @@ Some <span tt="ES">ES</span> examples are:
 - <span tt="ecu">the computer inside cars</span>
 - <span tt="soviet_seeker">the computer of a missile</span>
 
-Whether a device is an <span tt="ES">ES</span> or not, is decided at <strong><em>system level</em></strong>, not <strong><em>component level</strong></em>.  
+Whether a device is an <span tt="ES">ES</span> or not, is determined at <strong><em>system level</em></strong>, not <strong><em>component level</strong></em>.  
 
-This is because the electronic components that comprise it can be capable of general-purpose computing, but if arranged and programmed in a specific way, the device as a whole becomes a fixed-purpose computer.  
-This is the case for most ES as it reduces cost, but for specific applications, fixed-purpose-computing components are used from the start. We will later learn why one might choose one or the other.
+This is because the electronic components that comprise it, can be capable of general-purpose computing, but if arranged and programmed in a specific way the device, as a whole, becomes a fixed-purpose computer, hence an embedded system.  
+
+This is the case for most <span tt="ES">ES</span>, as it reduces cost, but for specific applications, fixed-purpose-computing components are used from the start. We will later learn why one might choose one or the other.
 
 <h2 id="why-embedded">1.1 Why <em>'embedded'</em>?</h2>
 

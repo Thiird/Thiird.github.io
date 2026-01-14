@@ -453,6 +453,7 @@
   --button-text: #e6edf3;
   --border-primary: #30363d;
   --border-secondary: #484f58;
+  --year-separator-color: #7d8590;
   --accent-primary: #58a6ff;
   --accent-hover: #79c0ff;
   --accent-secondary: #1f6feb;
@@ -498,6 +499,7 @@
   --button-text: #e8edf2;
   --border-primary: #4a6076;
   --border-secondary: #6888a8;
+  --year-separator-color: #8ba3c0;
   --accent-primary: #3498db;
   --accent-hover: #2980b9;
   --accent-secondary: #1e6f9f;
@@ -543,6 +545,7 @@
   --button-text: #2c3e50;
   --border-primary: #1a1a1a;
   --border-secondary: #2d2d2d;
+  --year-separator-color: #4a4a4a;
   --accent-primary: #2980b9;
   --accent-hover: #3498db;
   --accent-secondary: #1a5f8f;
@@ -657,7 +660,7 @@ body.no-scroll {
 #banner-placeholder,
 .banner {
   background-color: var(--bg-secondary);
-  border: 1px solid var(--border-primary);
+  border: 1px solid var(--year-separator-color);
   margin: 0 auto;
   display: block;
 }
@@ -748,7 +751,7 @@ body.no-scroll {
   border-radius: 5%;
   object-fit: cover;
   margin-right: 20px;
-  border: 1px solid var(--border-primary);
+  border: 1px solid var(--year-separator-color);
 }
 
 .description {
@@ -910,7 +913,7 @@ body.no-scroll {
   top: 60px;
   background-color: var(--sidebar-bg);
   padding: 0;
-  border-right: 1px solid var(--border-primary);
+  border-right: 1px solid var(--year-separator-color);
   overflow-y: auto;
   box-sizing: border-box;
   transform: none !important;
@@ -945,7 +948,7 @@ body.no-scroll {
   top: 60px;
   background-color: var(--sidebar-bg);
   padding: 0;
-  border-right: 1px solid var(--border-primary);
+  border-right: 1px solid var(--year-separator-color);
   overflow-y: auto;
   box-sizing: border-box;
   transform: none !important;
@@ -1025,7 +1028,7 @@ body.no-scroll {
   background: transparent;
   margin: 0;
   padding: 12px 0;
-  border-bottom: 1px solid var(--border-primary);
+  border-bottom: 1px solid var(--year-separator-color);
 }
 
 .history-item-name-overlay.show {
@@ -1052,9 +1055,9 @@ body.no-scroll {
 
 .year-separator {
   border: none;
-  border-top: 1px solid var(--border-primary);
+  border-top: 1px solid var(--year-separator-color);
   margin: 12px 0;
-  opacity: 0.2;
+  opacity: 1;
 }
 
 .blog-list-header {
@@ -1728,7 +1731,7 @@ pre code {
   box-sizing: border-box;
   padding: 12px;
   background-color: var(--sidebar-bg);
-  border-right: 1px solid var(--border-primary);
+  border-right: 1px solid var(--year-separator-color);
   overflow-y: auto;
   z-index: 100;
 }
@@ -2024,8 +2027,8 @@ pre code {
 }
 
 .tooltip-gif {
-  max-width: 180px;
-  max-height: min(220px, calc(50vh - 60px));
+  max-width: 250px;
+  max-height: min(420px, calc(50vh - 60px));
   width: auto;
   height: auto;
   border-radius: 4px;
@@ -2255,7 +2258,7 @@ pre code {
 .history-item {
   padding: 12px 0;
   margin-bottom: 8px;
-  border-bottom: 1px solid var(--border-primary);
+  border-bottom: 1px solid var(--button-text);
 }
 
 .history-item:hover {
