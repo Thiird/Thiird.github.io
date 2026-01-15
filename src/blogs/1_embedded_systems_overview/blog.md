@@ -204,9 +204,9 @@ Firmware is a term mostly used in the CPU world, and it refers to the low-level 
 
 It's called <strong><em>firm</em></strong> (ware) because <span tt="firmware_unchanged">it's typically written once and remains mostly unchanged for the lifetime of the product</span>.
 
-Firmware programming is mostly characterized by the absence of an operating system. The absence of an abstraction layer between the code and its effect is called <strong><em>bare metal programming</em></strong>, <span tt="bare_metal_example">as single lines of code result in measurable changes in reality</span>.  
+Firmware programming is mostly characterized by the absence of an operating system. The absence of an abstraction layer between the code and the hardware is called <strong><em>bare metal programming</em></strong>, <span tt="bare_metal_example">as single lines of code result in measurable changes in reality</span>.  
 
-This is not always the case though. Modern embedded systems can be quite complicated, both in the <span tt="hardware_capabilities">hardware capabilities</span> and the <span tt="system_logic">logic of the system</span>, so a minimal operating system can be used to aid the programmer in managing the system. Being at firmware level, these operating systems provide minimal abstraction over the hardware, only providing simple constructs like tasks and work queues.
+This is not always the case though. Modern embedded systems can be quite complicated, both in the <span tt="hardware_capabilities">hardware capabilities</span> and the <span tt="system_logic">logic of the system</span>, so a minimal operating system can be used to aid the programmer in managing the system. Being at firmware level, these operating systems provide minimal abstraction over the hardware with simple constructs like <em>tasks</em> and <em>work queues</em>.
 
 Some examples of such minimal, so called <strong><em>embedded operating systems</em></strong>, are <a href="https://www.freertos.org/" target="_blank">FreeRTOS</a> and <a href="https://www.zephyrproject.org/" target="_blank">Zephyr</a>.
 
