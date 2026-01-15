@@ -1,6 +1,6 @@
 {
     "cpu_types": {
-        "text": "<strong>CPU (Central Processing Unit)</strong>: The general term for a general-purpose computer IC. Typically run at high clock speeds (GHz range). Used for complex devices devices like TVs.<br>For example, the ARM Cortex-A53 .<br><br><strong>MCU (Microcontroller Unit)</strong>: The same base architecture as a CPU, but with integrated RAM, EEPROM and run at lower clock speeds (MHz range). Used for simple devices like a mouse and keyboard.<br>For example, the STM32F4.<br><br><strong>DSP (Digital Signal Processor)</strong>: A CPU designed with special instructions for mathematical operations. These chips excel at repetitive math-intensive tasks required in signal processing applications.<br>For example, the Texas Instruments TMS320C6000.",
+        "text": "<em>This is not a comprehensive list</em><br><br><strong>CPU (Central Processing Unit)</strong>: The generic term for ICs that implement a general-purpose computer, typically refers to those used in high-end applications like PCs and TVs which run at high clock speeds (GHz range) and don't have integrated RAM. <br>For example, the AMD FX-6300 (PC CPU) or ARM Cortex-A53 (embedded CPU) .<br><br><strong>MCU (Microcontroller Unit)</strong>: The same base architecture as a CPU, but with integrated RAM, EEPROM and run at lower clock speeds (MHz range). Used for simple devices like a mouse and keyboard.<br>For example, the STM32F4.<br><br><strong>DSP (Digital Signal Processor)</strong>: A CPU with special instructions for mathematical operations. These chips excel at repetitive math-intensive tasks required in signal processing applications.<br>For example, the Texas Instruments TMS320C6000.",
         "media": "",
         "alt": "",
         "credit": ""
@@ -65,14 +65,44 @@
         "alt": "",
         "credit": ""
     },
+    "hardware_bug": {
+        "text": "These are called <strong>hardware bugs</strong> or <strong>silicon bugs</strong>. Manufacturers document known hardware bugs in a document called <strong>IC Errata</strong> (or Silicon Errata), which lists all identified design flaws, their impact, and any workarounds. Engineers must consult the errata when designing systems to avoid triggering known bugs.",
+        "media": "",
+        "alt": "",
+        "credit": ""
+    },
     "FPGA": {
         "text": "Field-Programmable Gate Array",
         "media": "",
         "alt": "",
         "credit": ""
     },
+    "fpga_partial_reconfiguration": {
+        "text": "Some FPGAs support <strong>partial reconfiguration</strong>, allowing parts of the FPGA fabric to be reconfigured while other parts continue to operate. This enables dynamic hardware adaptation during runtime.",
+        "media": "",
+        "alt": "",
+        "credit": ""
+    },
+    "off_device_app": {
+        "text": "",
+        "media": "perixx_mx_1000_app.jpg",
+        "alt": "Perixx MX-1000 mouse configuration software",
+        "credit": ""
+    },
+    "embedded_software_onboard": {
+        "text": "Devices with sufficient processing power typically run a full operating system (Linux, Android, which provide rich graphical user interfaces, making the device intuitive to use without requiring any off-device software.",
+        "media": "",
+        "alt": "",
+        "credit": ""
+    },
+    "ann": {
+        "text": "",
+        "media": "ann.jpg",
+        "alt": "Analog multimeter",
+        "credit": ""
+    },
     "dmm": {
-        "text": "Digital Multimeter",
+        "text": "",
         "media": "dmm.jpg",
         "alt": "Digital multimeter displaying voltage reading",
         "credit": ""
@@ -162,7 +192,7 @@
         "credit": ""
     },
     "IC": {
-        "text": "<strong>Integrated Circuit</strong><br><br>A set of transistors, resistors, and capacitors implemented on a semiconductor material, working together to perform complex functions. Modern integrated circuits contain billions of transistors.",
+        "text": "<strong>Integrated Circuit</strong><br><br>A set of transistors, resistors, and capacitors implemented on a semiconductor material, working together to perform complex functions.<br>Modern integrated circuits contain billions of transistors.",
         "media": "CII_72_silicon_die.jpg",
         "alt": "Die shot of the <a href=\"https://en.wikipedia.org/wiki/Electronics_industry_in_the_Socialist_Republic_of_Romania#History\" target=\"_blank\">CII 72</a>, which comprises two voltage comparators with separate differential inputs.",
         "credit": ""
@@ -186,7 +216,7 @@
         "credit": ""
     },
     "logic_block_details": {
-        "text": "Logic blocks can implement <a href=\"https://en.wikipedia.org/wiki/Combinational_logic\" target=\"_blank\">combinational logic</a> (via lookup tables) and typically include flip-flops for <a href=\"https://en.wikipedia.org/wiki/Sequential_logic\" target=\"_blank\">sequential logic</a> and state storage.",
+        "text": "Both <a href=\"https://en.wikipedia.org/wiki/Combinational_logic\" target=\"_blank\">combinational logic</a> and <a href=\"https://en.wikipedia.org/wiki/Sequential_logic\" target=\"_blank\">sequential logic</a> is possible.",
         "media": "",
         "alt": "",
         "credit": ""
@@ -263,7 +293,7 @@
         "credit": ""
     },
     "firmware_unchanged": {
-        "text": "This is because:<br>- Firmware directly controls the hardware, and the hardware doesn't change: once it's done it's done<br>- Specialized tools are needed to program embedded devices, end users don't have them",
+        "text": "This is because:<br>- Firmware directly controls the hardware, and the hardware doesn't change: once it's done it's done<br>- Specialized tools are needed to change the firmware on the device, end users don't have them",
         "media": "",
         "alt": "",
         "credit": ""
