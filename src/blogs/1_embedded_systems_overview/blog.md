@@ -206,9 +206,9 @@ It's called <strong><em>firm</em></strong> (ware) because <span tt="firmware_unc
 
 Firmware programming is mostly characterized by the absence of an operating system. The absence of an abstraction layer between the code and the hardware is called <strong><em>bare metal programming</em></strong>, <span tt="bare_metal_example">as single lines of code result in measurable changes in reality</span>.  
 
-This is not always the case though. Modern embedded systems can be quite complicated, both in the <span tt="hardware_capabilities">hardware capabilities</span> and the <span tt="system_logic">logic of the system</span>, so a minimal operating system can be used to aid the programmer in managing the system. Being at firmware level, these operating systems provide minimal abstraction over the hardware with simple constructs like <em>tasks</em> and <em>work queues</em>.
+This is not always the case though, as modern embedded systems can be quite complicated, both in the <span tt="hardware_capabilities">hardware capabilities</span> and the <span tt="system_logic">logic of the system</span>. Minimal-abstraction, firmware-level operating systems can be used to aid the programmer in managing the system with constructs like <em>tasks</em> and <em>work queues</em>.
 
-Some examples of such minimal, so called <strong><em>embedded operating systems</em></strong>, are <a href="https://www.freertos.org/" target="_blank">FreeRTOS</a> and <a href="https://www.zephyrproject.org/" target="_blank">Zephyr</a>.
+Some examples of such so-called <strong><em>embedded operating systems</em></strong> are <a href="https://www.freertos.org/" target="_blank">FreeRTOS</a> and <a href="https://www.zephyrproject.org/" target="_blank">Zephyr</a>.
 
 <h2 id="software">2.3 Software <a href="#software" class="header-link">🔗</a></h2>
 
