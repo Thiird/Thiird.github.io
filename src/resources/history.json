@@ -6,6 +6,12 @@
     "link": "src/blogs.html?blog=1"
   },
   {
+    "type": "poem",
+    "name": "Tbd",
+    "date": "2026-01",
+    "link": "src/poems.html?poem=7"
+  },
+  {
     "type": "blog",
     "name": "Optical Mouse",
     "date": "2025-11-30",
@@ -22,11 +28,5 @@
     "name": "Letter To A Faded Friend",
     "date": "2025-07",
     "link": "src/poems.html?poem=5"
-  },
-  {
-    "type": "poem",
-    "name": "Intro",
-    "date": "2025-07",
-    "link": "src/poems.html?poem=0"
   }
 ]
