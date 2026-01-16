@@ -168,7 +168,7 @@
         "credit": ""
     },
     "jtag_advanced_functionalities": {
-        "text": "<strong>Boundary Scan</strong>: Test connections between chips on a PCB without physical probes<br> <strong>Chain Debugging</strong>: Debug multiple devices connected in a daisy-chain topology",
+        "text": "<strong>Boundary Scan</strong>: Test pin states and shorts between pins on a chip without physical probes<br> <strong>Chain Debugging</strong>: Debug multiple devices connected in a daisy-chain topology",
         "media": "",
         "alt": "",
         "credit": ""

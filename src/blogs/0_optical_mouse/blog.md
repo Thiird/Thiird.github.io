@@ -94,7 +94,8 @@ I personally didn't like this solution, I wanted something more "hotswappable", 
 
 <h1 id="firmware">Firmware</h1>
 
-The firmware was custom made in C with the NRF Connect SDK, version `2.4.2`.
+The firmware was custom made in C with the Zephyr-based NRF Connect SDK, version `2.4.2`.  
+
 Nordic Semiconductor forums are awesome and the support for both learning and technical reviews is incredible!
 Even for single users like me.
 

@@ -28,11 +28,11 @@ import tempfile
 import json
 
 # ----------------------------- CONFIG -----------------------------
-TARGET_QUALITY_JPG = 5       # FFmpeg quality: 2 = best, 31 = worst
+TARGET_QUALITY_JPG = 10       # FFmpeg quality: 2 = best, 31 = worst
 TARGET_QUALITY_PNG = 9       # PNG compression level: 0-9 (higher = more compression)
 MIN_SAVINGS_PERCENT = 3      # Only overwrite if new file is at least this % smaller
-MIN_FILE_SIZE_KB = 50        # Skip very small files
-SKIP_TOLERANCE_PERCENT = 5   # Skip if already within 5% of target size
+MIN_FILE_SIZE_KB = 500        # Skip very small files
+SKIP_TOLERANCE_PERCENT = 2   # Skip if already within 2% of target size
 # ------------------------------------------------------------------
 
 def get_image_info(img_path):

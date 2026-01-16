@@ -32,10 +32,15 @@ Let's dive in!
       <ul class="index-subsection">
         <li><a href="#hardware">2.1 Hardware</a>
           <ul class="index-subsection">
-            <li><a href="#input-elements">2.1.1 Input Components</a></li>
-            <li><a href="#output-elements">2.1.2 Output Components</a></li>
-            <li><a href="#computational-unit">2.1.3 Computational Units</a></li>
-            <li><a href="#support-components">2.1.4 Support Components</a></li>
+            <li><a href="#electrical">2.1.1 Electrical</a>
+              <ul class="index-subsection">
+                <li><a href="#input-elements">2.1.1.1 Input Components</a></li>
+                <li><a href="#output-elements">2.1.1.2 Output Components</a></li>
+                <li><a href="#computational-unit">2.1.1.3 Computational Units</a></li>
+                <li><a href="#support-components">2.1.1.4 Support Components</a></li>
+              </ul>
+            </li>
+            <li><a href="#mechanical">2.1.2 Mechanical</a></li>
           </ul>
         </li>
         <li><a href="#firmware">2.2 Firmware</a></li>
@@ -53,10 +58,16 @@ Let's dive in!
       </ul>
     </li>
     <li class="index-section">
-      <a href="#how-to-get-started">4. How to get started</a>
+      <a href="#examples">4. Examples</a>
       <ul class="index-subsection">
-        <li><a href="#how-to-grow-meaningful-knowledge">4.1 How to grow meaningful knowledge</a></li>
-        <li><a href="#learning-resources">4.2 Learning resources</a></li>
+        <li><a href="#optical-mouse">4.1 Optical Mouse</a></li>
+      </ul>
+    </li>
+    <li class="index-section">
+      <a href="#how-to-get-started">5. How to get started</a>
+      <ul class="index-subsection">
+        <li><a href="#how-to-grow-meaningful-knowledge">5.1 How to grow meaningful knowledge</a></li>
+        <li><a href="#learning-resources">5.2 Learning resources</a></li>
       </ul>
     </li>
   </ul>
@@ -95,6 +106,8 @@ The hardware provides the physical platform, the firmware controls it directly, 
 
 <h2 id="hardware">2.1 Hardware <a href="#hardware" class="header-link">🔗</a></h2>
 
+<h3 id="electrical">2.1.1 Electrical <a href="#electrical" class="header-link">🔗</a></h3>
+
 The core of an <span tt="ES">ES</span> is the electronic hardware.
 
 The electronics is consolidated in an assembly called Printed Circuit Board Assembly (PCBA), which consists of a number of components that have been electrically joined to a base board. This base board is called <span tt="PCB_image">Printed Circuit Board</span> (PCB) and it's made of alternating layers of insulating material and copper, where the copper layers have been precisely <span tt="PCB_manufacturing">manufactured</span> to leave behind only individual traces. Traces are used to route signals from one component to the other. PCBs can have one layer, <span tt="multilayer_PCB">two layers, four layers, etc</span>. Traces on different layers are connected together with <span tt="vias">vias</span>. Components are [soldered](#soldering-tools) to the traces on the external layers at specific connection points.
@@ -122,17 +135,13 @@ Functionally speaking, the components on a <span tt="PCB">PCB</span> fall into o
 - <strong>computational units</strong>
 - <strong>support components</strong>
 
-Let's analyze these four categories while using a desktop mouse as a practical example.
-
-<h3 id="input-elements">2.1.1 Input Components <a href="#input-elements" class="header-link">🔗</a></h3>
+<h4 id="input-elements">2.1.1.1 Input Components <a href="#input-elements" class="header-link">🔗</a></h4>
 
 Think of a button, dial, touch screen, receiving antenna, magnetic sensor, light sensor, humidity sensor: anything that can produce electrical signals that describe the surrounding environment.
 
 All of these devices are connected, either directly or [through intermediate circuitry](#support-components), to the computational unit.
 
-In the case of the desktop mouse, the input components are the buttons, scroll wheel and motion sensor. These components capture the intention of the user as electrical signals and pass them to the computational unit for processing.
-
-<h3 id="output-elements">2.1.2 Output Components <a href="#output-elements" class="header-link">🔗</a></h3>
+<h4 id="output-elements">2.1.1.2 Output Components <a href="#output-elements" class="header-link">🔗</a></h4>
 
 Output components are how the <span tt="ES">ES</span> talks back to you or to other systems.
 
@@ -140,9 +149,7 @@ Think of LEDs, displays (LCD, OLED, seven-segment, e-paper), buzzers, speakers, 
 
 All of these components are controlled, either directly or [through intermediate circuitry](#support-components), by the <span tt="CU">CU</span>.
 
-In the case of a desktop mouse, the output component is usually a single chips that encodes the buttons state and motion data into USB or Bluetooth packets to be sent off the device.
-
-<h3 id="computational-unit">2.1.3 Computational Units <a href="#computational-unit" class="header-link">🔗</a></h3>
+<h4 id="computational-unit">2.1.1.3 Computational Units <a href="#computational-unit" class="header-link">🔗</a></h4>
 
 This is the core of the system, this is where the actual computation is performed.
 
@@ -184,9 +191,7 @@ It is also common to integrate a <span tt="CPU">CPU</span> and an <span tt="FPGA
 
 Both <span tt="CPU">CPU</span>s and <span tt="FPGA">FPGA</span>s are general-purpose computational devices, but the key difference lies in how they can be reprogrammed: <span tt="CPU">CPU</span>s dynamically select the next instruction at runtime, while <span tt="FPGA">FPGA</span>s are <span tt="fpga_partial_reconfiguration">reconfigured at startup</span> via a new bitstream.
 
-Now that we have seen al major computational unit architectures, we can go back to the desktop mouse example, for which the computational unit is usually an CPU programmed to read the signals from the the buttons, scroll wheel and motion sensor, package them into, for example, USB or Bluetooth data packets, and send those off to the connected host.
-
-<h3 id="support-components">2.1.4 Support Components <a href="#support-components" class="header-link">🔗</a></h3>
+<h4 id="support-components">2.1.1.4 Support Components <a href="#support-components" class="header-link">🔗</a></h4>
 
 Support components don't directly participate in sensing, computing, or actuating, but provide the necessary electrical environment for the system to [power on](#voltage-regulators), [function properly](#passive-components) and [maintain reliability](#protection-circuits) across all intended operating conditions.
 
@@ -196,7 +201,18 @@ These include:
 - <strong id="passive-components">Passive components:</strong> <span tt="resistors">resistors</span>, <span tt="capacitors">capacitors</span>, <span tt="inductors">inductors</span> to filter noise and , and <span tt="connectors">connectors</span> to interface different parts of the system.
 - <strong id="protection-circuits">Protection circuits:</strong> <span tt="ESD_protection">ESD protection</span>, <span tt="reverse_polarity_protection">reverse polarity protection</span>, <span tt="overcurrent_protection">overcurrent protection</span>.  
 
-Now that we've covered the hardware components, let's look at the code that controls them.
+<h3 id="mechanical">2.1.2 Mechanical <a href="#mechanical" class="header-link">🔗</a></h3>
+
+While the electronics provides the functionality, mechanical engineering is needed to create the physical environment where the electronics can reside.
+
+The enclosure protects the electronics from the environment (dust, moisture, impact, temperature) while giving the product its physical form. Common materials include injection-molded plastic for consumer products, sheet metal for industrial gear, 3D-printed parts for prototypes, and machined aluminum for premium products.
+
+Multi-PCB systems require mechanical structures to hold them together. Think of standoffs, screws, brackets, and sometimes connectors that provide both electrical connection and mechanical support between boards.
+
+Electronics generate heat, so you need ways to get it out. This means heatsinks and thermal pastepads to improve, ventilation holes or fans, and sometimes using the enclosure itself as a heatsink.
+
+The mechanical design isn't done before or after the electrical deisng. A change in one affects the other. From day one, you're dealing with size constraints, connectors/buttons placement, wire routing slots, etc. Ease of assemble is another big factor in the mechanical.
+
 
 <h2 id="firmware">2.2 Firmware <a href="#firmware" class="header-link">🔗</a></h2>
 
@@ -222,7 +238,7 @@ In particular, we refer to the former as <strong><em>embedded software</em></str
 
 <strong><em>Software</em></strong> is about <strong><em>off-device</strong></em> code that adds extra functionalities, and it's often about making it easier to interact with the device.
 
-It's very unusual for an <span tt="ES">ES</span> to require both. For example, a powerful <span tt="ES">ES</span> like a smart TV, <span tt="embedded_software_onboard">has more than enough <em>embedded software</em> on board</span> to make the device easily usable as it is by the end-user, whereas a simpler device like desktop mouse, might need an <span tt="off_device_app"><em>off-device</em> application</span> to make it easily configurable.
+It's very unusual for an <span tt="ES">ES</span> to require both. For example, a powerful <span tt="ES">ES</span> like a smart TV, <span tt="embedded_software_onboard">has more than enough <em>embedded software</em> on board</span> to make the device easily usable as it is by the end-user, whereas a simpler device like a keyboard or mouse, might need an <span tt="off_device_app"><em>off-device</em> application</span> to make it easily configurable.
 
 Software (either kind) is usually much easier to develop than firmware, as it doesn't require extensive hardware knowledge. Moreover, a software update often only requires a change of the executable file in the file system of the device, whereas firmware requires engineering tools like a [debugger](#the-debugger).
 
@@ -305,7 +321,98 @@ In embedded systems, the <span tt="debugger">debugger</span> is a device that si
 Embedded systems use two debugging protocols, Serial Wire Debug (SWD) and Joint Test Action Group (JTAG).
 The two serve the same code-debugging purpose, but JTAG also offers <span tt="jtag_advanced_functionalities">other advanced functionalities</span>.
 
-<h1 id="how-to-get-started">4. How to get started <a href="#how-to-get-started" class="header-link">🔗</a></h1>
+<h1 id="examples">4. Examples <a href="#examples" class="header-link">🔗</a></h1>
+
+Now that we've covered the fundamental concepts, components, and tools of embedded systems, let's put it all together by examining real-world examples.
+
+<h2 id="optical-mouse">4.1 Custom Optical Gaming Mouse <a href="#optical-mouse" class="header-link">🔗</a></h2>
+
+This is a custom-built wireless gaming mouse featuring Bluetooth/USB connectivity, a high-performance optical sensor, and rechargeable battery. It's an excellent real-world example that demonstrates all the hardware and software elements of an embedded system working together.
+
+<img src="../0_optical_mouse/mouse_exploded.png" style="width:80%; display:block; margin:20px auto;">
+
+<img src="mouse_pcb_annotated.png" style="width:80%; display:block; margin:20px auto;">
+<p style="text-align: center; font-style: italic; color: #666;">PCB with color-coded component categories</p>
+
+### Electrical Hardware
+
+<strong>Input Components:</strong>
+- **5× D2F-01F mechanical switches** - Japanese Omron switches for main buttons
+- **TTC 24-tooth rotary encoder** - For scroll wheel with tactile feedback
+- **PAW3395 optical sensor** - High-performance gaming sensor communicating via SPI, continuously capturing surface images to detect motion
+
+<strong>Output Components:</strong>
+- **BLE radio** - Wireless communication to host PC or dedicated receiver
+- **USB interface** - Wired communication and charging
+- **Status LEDs** - Visual power rail presence feedback 
+
+<strong>Computational Unit:</strong>
+- **nRF52 MCU** - ARM Cortex-M4 MCU
+
+<strong>Support Components:</strong>
+- **Three voltage regulators** to generate multiple voltage rails:
+  - 5V rail for mechanical switches
+  - 3.3V rail for MCU 
+  - 1.9V rail for optical sensor
+- **BQ24232RGTR** charging IC for the Li-ion battery
+- **16340 Li-ion battery (850mAh)** with clips for easy hot-swapping
+- **Passive components** (resistors, capacitors, inductors) for power filtering, signal conditioning, etc
+- **ESD protection** on USB interface
+- **Crystal oscillator** for accurate timing
+
+### Mechanical Hardware
+
+The shell is made up of two halves that sandwich the main PCB together, held by a single screw. The main PCB sits in slots that lock into pillars molded into the bottom shell half, keeping everything aligned.
+
+The external ergonomic shape was designed in Blender, based on the Perixx MX-1000 mouse. The internal, PCB-mating surfaces (slots, pillars, mounting points) were designed in Fusion 360 for precision, then the two parts were joined together in Blender for the final model.
+
+### Firmware
+
+The MCU firmware is written in C, and it uses the **nRF Connect SDK** (based on Zephyr RTOS).
+
+- **SPI communication** with the PAW3395 optical sensor
+- **GPIO polling** for button states
+- **Quadrature decoding** for rotary encoder wheel movement
+- **HID report generation** combining button states and motion data
+- **Dual-mode connectivity** BLE/USB connectivity based on USB cable presence
+- **Battery level monitoring** via the internal MCU ADC
+
+The firmware is flashed via SWD using a J-Link debugger and Tag-Connect TC2030 connector.
+
+**Development approach:** Each functionality (BLE, USB, SPI, buttons, battery reading) was first implemented and tested individually using Nordic SDK samples, then gradually merged into a single code base to form the complete mouse firmware.
+
+### Embedded Software
+
+There is **no embedded software** running on this device. The firmware alone is sufficient to handle all device functionality. The Zephyr RTOS provides enough abstraction to manage the device and keep the system responsive.
+
+This is typical for narrow-scope devices: the firmware handles the low-level hardware control, and that's all that's needed.
+
+Besides all of this, the selected MCU could not handle a full-fledged OS anyway, as it doesn't have an MMU.
+
+### Software
+
+A custom **desktop application** (off-device software) was developed to provide additional functionality:
+- **USB COM port communication** - Reads telemetry data when mouse is connected for charging
+- **Low battery notifications** - Connects to mouse receiver via Bluetooth to alert user
+- **CSV data logging** - Records usage statistics over time
+
+<img src="../0_optical_mouse/mouse_client.png" style="width:60%; display:block; margin:20px auto;">
+
+### Result
+
+The final mouse weighs ~87 grams and provides 4-5 days of battery life on a single charge (2-hour charge time).
+
+<div class="image-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin: 20px 0;">
+  <img src="../0_optical_mouse/mouse_final_1.jpg" style="width:100%;">
+  <img src="../0_optical_mouse/mouse_final_2.jpg" style="width:100%;">
+  <img src="../0_optical_mouse/mouse_final_3.jpg" style="width:100%;">
+</div>
+
+This project demonstrates how all elements of embedded systems—hardware design, firmware development, mechanical engineering, and application software—come together to create a complete, functional product.
+
+<em>For the full technical details, schematics, and development process, see the [complete blog post](#).</em>
+
+<h1 id="how-to-get-started">5. How to get started <a href="#how-to-get-started" class="header-link">🔗</a></h1>
 
 You are incredibly lucky: getting started with embedded systems has never been easier.
 Knowledge is basically free thanks to the internet, writing software is free, and making hardware has never been cheaper, both mechanical and electrical.
@@ -323,7 +430,7 @@ Again, embedded system is a vast field, it's easy to waste time thinking about w
 Just start: you don't know what you are doing anyway.  
 It's important to just start, don't worry about where.
 
-<h2 id="how-to-grow-meaningful-knowledge">4.1 How to grow meaningful knowledge <a href="#how-to-grow-meaningful-knowledge" class="header-link">🔗</a></h2>
+<h2 id="how-to-grow-meaningful-knowledge">5.1 How to grow meaningful knowledge <a href="#how-to-grow-meaningful-knowledge" class="header-link">🔗</a></h2>
 
 What I see new people often do, is to work on one small project after another and shelving them quickly, all for the sake of learning.
 This is a rabbit hole that anyone should be careful about falling into. Don't get me wrong, it's ok to play with ideas, not only that, it's necessary.  
@@ -337,7 +444,7 @@ You are a beginner, any project will teach you a lot, so my suggestion is to foc
 Enough chatting, now go and build something!  
 And don't forget to show it off online!!!  
 
-<h2 id="learning-resources">4.2 Learning resources <a href="#learning-resources" class="header-link">🔗</a></h2>
+<h2 id="learning-resources">5.2 Learning resources <a href="#learning-resources" class="header-link">🔗</a></h2>
 
 <strong>YouTube Channels & Video Content:</strong>
 - [<strong>Philip Salmony</strong>](https://www.youtube.com/@PhilSalmony)'s PCB design and DSP theory videos: excellent for understanding signal processing and board design fundamentals
