@@ -26,7 +26,7 @@ def extract_date_from_markdown(md_path):
             return date_match.group(1)
             
     except Exception as e:
-        print(f"  ⚠️  Error reading date from {md_path}: {e}")
+        print(f"  Warning: Error reading date from {md_path}: {e}")
     
     # Return empty string if no date found
     return ""
@@ -59,18 +59,17 @@ def parse_date_for_sorting(date_string):
 
 def make_blog_manifest():
     """Generate blogs_manifest.json from blog folders."""
-    print("\n" + "="*70)
-    print("📝 GENERATING BLOGS MANIFEST")
-    print("="*70)
+    print("\nGenerating Blogs Manifest")
+    print("-" * 40)
     
     repo_root = get_repo_root()
     blogs_dir = repo_root / 'src' / 'blogs'
     
     if not blogs_dir.exists():
-        print(f"❌ Blogs directory not found: {blogs_dir}")
+        print(f"Error: Blogs directory not found: {blogs_dir}")
         return False
     
-    print(f"\n📂 Scanning: {blogs_dir}")
+    print(f"Scanning: {blogs_dir}")
     
     blogs = []
     
@@ -81,13 +80,13 @@ def make_blog_manifest():
         blog_file = folder / 'blog.md'
         
         if not blog_file.exists():
-            print(f"  ⚠️  Skipping {folder.name}: blog.md not found")
+            print(f"  Skipping {folder.name}: blog.md not found")
             continue
         
         # Extract date from markdown
         date = extract_date_from_markdown(blog_file)
         if not date:
-            print(f"  ⚠️  No date found in {folder.name}/blog.md, using empty date")
+            print(f"  No date found in {folder.name}/blog.md, using empty date")
             date = ""
         
         # Do NOT add formatted date to markdown file anymore
@@ -114,7 +113,7 @@ def make_blog_manifest():
         }
         
         blogs.append(blog_entry)
-        print(f"  ✅ {folder.name} - {title} ({date})")
+        print(f"  {folder.name} - {title} ({date})")
     
     # Sort by folder number (highest first, so lowest gets index 0 at bottom)
     blogs.sort(key=lambda x: int(re.match(r'^(\d+)', x['folder']).group(1)) if re.match(r'^(\d+)', x['folder']) else 9999, reverse=True)
@@ -123,25 +122,24 @@ def make_blog_manifest():
     with open(manifest_path, 'w', encoding='utf-8') as f:
         json.dump(blogs, f, indent=2, ensure_ascii=False)
     
-    print(f"\n💾 Saved manifest with {len(blogs)} blog(s)")
-    print(f"📍 Location: {manifest_path}")
+    print(f"\nSaved manifest with {len(blogs)} blog(s)")
+    print(f"Location: {manifest_path}")
     
     return True
 
 def make_poem_manifest():
     """Generate poems_manifest.json from poem folders."""
-    print("\n" + "="*70)
-    print("📝 GENERATING POEMS MANIFEST")
-    print("="*70)
+    print("\nGenerating Poems Manifest")
+    print("-" * 40)
     
     repo_root = get_repo_root()
     poems_dir = repo_root / 'src' / 'poems'
     
     if not poems_dir.exists():
-        print(f"❌ Poems directory not found: {poems_dir}")
+        print(f"Error: Poems directory not found: {poems_dir}")
         return False
     
-    print(f"\n📂 Scanning: {poems_dir}")
+    print(f"Scanning: {poems_dir}")
     
     poems = []
     
@@ -152,13 +150,13 @@ def make_poem_manifest():
         poem_file = folder / 'poem.md'
         
         if not poem_file.exists():
-            print(f"  ⚠️  Skipping {folder.name}: poem.md not found")
+            print(f"  Skipping {folder.name}: poem.md not found")
             continue
         
         # Extract date from markdown
         date = extract_date_from_markdown(poem_file)
         if not date:
-            print(f"  ⚠️  No date found in {folder.name}/poem.md, using empty date")
+            print(f"  No date found in {folder.name}/poem.md, using empty date")
             date = ""
         
         # Do NOT add formatted date to markdown file anymore
@@ -193,8 +191,8 @@ def make_poem_manifest():
         }
         
         poems.append(poem_entry)
-        audio_str = f" (♪ {audio_file})" if audio_file else ""
-        print(f"  ✅ {folder.name} - {name}{audio_str} ({date})")
+        audio_str = f" ({audio_file})" if audio_file else ""
+        print(f"  {folder.name} - {name}{audio_str} ({date})")
     
     # Sort by folder number (highest first, so lowest gets index 0 at bottom)
     poems.sort(key=lambda x: int(re.match(r'^(\d+)', x['folder']).group(1)) if re.match(r'^(\d+)', x['folder']) else 9999, reverse=True)
@@ -203,22 +201,20 @@ def make_poem_manifest():
     with open(manifest_path, 'w', encoding='utf-8') as f:
         json.dump(poems, f, indent=2, ensure_ascii=False)
     
-    print(f"\n💾 Saved manifest with {len(poems)} poem(s)")
-    print(f"📍 Location: {manifest_path}")
+    print(f"\nSaved manifest with {len(poems)} poem(s)")
+    print(f"Location: {manifest_path}")
     
     return True
 
 if __name__ == '__main__':
-    print("\n" + "="*70)
-    print("🚀 MANIFEST GENERATION SCRIPT")
-    print("="*70)
+    print("\nManifest Generation")
+    print("-" * 40)
     
     blog_success = make_blog_manifest()
     poem_success = make_poem_manifest()
     
-    print("\n" + "="*70)
     if blog_success and poem_success:
-        print("✅ ALL MANIFESTS GENERATED SUCCESSFULLY!")
+        print("\nAll manifests generated successfully")
     else:
-        print("❌ SOME MANIFESTS FAILED TO GENERATE")
-    print("="*70 + "\n")
+        print("\nSome manifests failed to generate")
+    print()

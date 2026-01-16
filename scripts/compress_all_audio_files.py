@@ -1,23 +1,84 @@
 """
-Comprehensive audio compression script for the entire website.
-Compresses all audio files (MP3, WAV, OGG, FLAC) to target bitrate using FFmpeg.
+================================================================================
+COMPRESS ALL AUDIO FILES
+================================================================================
 
-Key features:
-- Scans all website directories for audio files
-- Skips already-optimized audio at target bitrate
-- Applies fade in/out effects (3 seconds)
-- Clamps duration to maximum length (60 seconds default)
-- Only replaces originals if compression provides meaningful savings
-- Idempotent - safe to run multiple times
+PURPOSE:
+    Automatically compress all audio files across the entire website to a
+    target bitrate using FFmpeg. Applies fade effects and duration limits
+    for consistent audio quality throughout the site.
 
-Target locations:
-- src/poems/** (audio tracks for poems)
-- src/bio/res/ (background music)
-- src/resources/audio/ (general audio files)
-- src/blogs/**/res/ (blog-related audio)
+WHAT IT DOES:
+    1. Scans all website directories for audio files (MP3, WAV, OGG, FLAC, M4A, AAC)
+    2. Analyzes each audio file's current bitrate and duration
+    3. Compresses to target bitrate (64kbps by default - good for voice/music)
+    4. Applies fade-in and fade-out effects (3 seconds each)
+    5. Clamps duration to maximum length (60 seconds by default)
+    6. Only replaces originals if compression provides meaningful savings
+    7. Converts all formats to MP3 for consistency
 
-Usage:
-    python scripts/compress_audio.py
+TARGET LOCATIONS:
+    - src/poems/** (audio tracks for poems)
+    - src/bio/res/ (background music)
+    - src/resources/audio/ (general audio files)
+    - src/blogs/**/res/ (blog-related audio)
+
+CONFIGURATION:
+    TARGET_BITRATE = '64k'          # Target audio bitrate (64k for voice/music)
+    MAX_DURATION = 60                # Maximum duration in seconds (0=no limit)
+    FADE_IN_DURATION = 3             # Fade in duration in seconds
+    FADE_OUT_DURATION = 3            # Fade out duration in seconds
+    MIN_SAVINGS_PERCENT = 5          # Only overwrite if >=5% smaller
+    BITRATE_TOLERANCE_PERCENT = 10   # Skip if within 10% of target bitrate
+
+BEHAVIOR:
+    - IDEMPOTENT: Safe to run multiple times
+    - FORMAT CONVERSION: Converts all audio to MP3
+    - SMART SKIPPING: Avoids recompressing already-optimized audio
+    - FADE EFFECTS: Adds smooth fade-in/fade-out
+    - DURATION LIMITING: Clamps to maximum length
+
+DEPENDENCIES:
+    - ffmpeg (must be installed and in PATH)
+    - ffprobe (must be installed and in PATH)
+    - Python 3.6+
+
+USAGE:
+    python scripts/compress_all_audio_files.py
+
+OUTPUT:
+    Prints detailed progress for each directory and audio file:
+    - [Current] - Shows current bitrate, duration, codec
+    - [Skipped - already optimized] - Already at target bitrate/duration
+    - [Compressed] - Successfully compressed with savings percentage
+    - [Converted] - Format converted (even if file size increased)
+    - [Skipped - no improvement] - Compression didn't meet minimum savings
+    - [FFmpeg error] - Error during compression
+
+EXAMPLE OUTPUT:
+    Audio Compression
+    ----------------------------------------
+    Repository: /path/to/Thiird.github.io
+    Target bitrate: 64k
+    Max duration: 60 seconds
+    Fade effects: 3s in, 3s out
+    
+    src/poems/5_letter_to_a_faded_friend/
+    ----------------------------------------
+       [Current] track.mp3 | 128kbps, 47.3s, mp3
+       [Compressed] track.mp3 | 1536 KB → 372 KB (-75.8%)
+    
+    Compressed: 8, Skipped: 3, Total: 11
+
+NOTES:
+    - All audio is converted to MP3 format
+    - Original non-MP3 files are deleted after conversion
+    - Fade-out starts at (max_duration - fade_out_duration)
+    - Bitrate tolerance allows files within 10% of target to skip
+
+AUTHOR: Website maintenance scripts
+LAST MODIFIED: 2026-01-16
+================================================================================
 """
 
 import os
@@ -237,14 +298,13 @@ def check_dependencies():
         subprocess.run(['ffprobe', '-version'], capture_output=True, timeout=5)
         return True
     except (subprocess.TimeoutExpired, FileNotFoundError):
-        print("\n❌ Error: ffmpeg and ffprobe must be installed and in PATH")
-        print("   Install from: https://ffmpeg.org/download.html")
+        print("\nError: ffmpeg and ffprobe must be installed and in PATH")
+        print("Install from: https://ffmpeg.org/download.html")
         return False
 
 def main():
-    print("\n" + "=" * 80)
-    print("🎵 COMPREHENSIVE AUDIO COMPRESSION")
-    print("=" * 80)
+    print("\nAudio Compression")
+    print("-" * 40)
     
     # Check dependencies
     if not check_dependencies():
@@ -263,7 +323,7 @@ def main():
     print()
     
     # Find all audio files
-    print("🔍 Scanning for audio files...")
+    print("Scanning for audio files...")
     audio_files = find_all_audio(repo_root)
     
     if not audio_files:
@@ -286,8 +346,8 @@ def main():
     
     for dir_path in sorted(audio_by_dir.keys()):
         rel_path = dir_path.relative_to(repo_root)
-        print(f"\n📂 {rel_path}/")
-        print("-" * 80)
+        print(f"\n{rel_path}/")
+        print("-" * 40)
         
         for audio_path in sorted(audio_by_dir[dir_path]):
             if process_audio(audio_path):
@@ -296,12 +356,7 @@ def main():
                 total_skipped += 1
     
     # Summary
-    print("\n" + "=" * 80)
-    print(f"✅ COMPRESSION COMPLETE")
-    print(f"   Compressed: {total_compressed}")
-    print(f"   Skipped: {total_skipped}")
-    print(f"   Total: {len(audio_files)}")
-    print("=" * 80 + "\n")
+    print(f"\nCompressed: {total_compressed}, Skipped: {total_skipped}, Total: {len(audio_files)}\n")
 
 if __name__ == "__main__":
     main()

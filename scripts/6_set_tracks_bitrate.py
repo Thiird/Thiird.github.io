@@ -7,13 +7,13 @@ import os
 import subprocess
 import shutil
 
-# 🔧 Change this to adjust the working folder
+# Change this to adjust the working folder
 WORKING_SUBFOLDER = "../poems"
 
 def check_ffmpeg():
     """Check if ffmpeg is available on the system."""
     if shutil.which("ffmpeg") is None:
-        print("❌ Error: ffmpeg is not installed or not in PATH.")
+        print("Error: ffmpeg is not installed or not in PATH.")
         input("Press Enter to exit...")
         exit(1)
 
@@ -23,7 +23,7 @@ def process_mp3_files():
     target_dir = os.path.join(current_dir, WORKING_SUBFOLDER)
 
     if not os.path.exists(target_dir):
-        print(f"❌ Error: Directory '{target_dir}' does not exist.")
+        print(f"Error: Directory '{target_dir}' does not exist.")
         input("Press Enter to exit...")
         exit(1)
 
@@ -54,7 +54,7 @@ def process_mp3_files():
             # Rename processed file back to original name
             os.rename(output_path, input_path)
 
-    print("\n✅ All files processed successfully!")
+    print("\nAll files processed successfully!")
     input("Press Enter to exit...")
 
 if __name__ == "__main__":

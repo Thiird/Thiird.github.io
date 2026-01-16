@@ -24,13 +24,13 @@ def load_json(filepath):
         with open(filepath, 'r', encoding='utf-8') as f:
             return json.load(f)
     except FileNotFoundError:
-        print(f"  ❌ File not found: {filepath}")
+        print(f"  File not found: {filepath}")
         return None
     except json.JSONDecodeError as e:
-        print(f"  ❌ JSON decode error in {filepath}: {e}")
+        print(f"  JSON decode error in {filepath}: {e}")
         return None
     except Exception as e:
-        print(f"  ❌ Error loading {filepath}: {e}")
+        print(f"  Error loading {filepath}: {e}")
         return None
 
 def save_json(filepath, data):
@@ -38,10 +38,10 @@ def save_json(filepath, data):
     try:
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
-        print(f"  ✅ Successfully saved {filepath}")
+        print(f"  Successfully saved {filepath}")
         return True
     except Exception as e:
-        print(f"  ❌ Error saving {filepath}: {e}")
+        print(f"  Error saving {filepath}: {e}")
         return False
 
 def parse_date(date_string):
@@ -66,18 +66,18 @@ def get_blog_entries(blogs_dir):
     """Extract blog entries from blogs_manifest.json."""
     manifest_path = blogs_dir / 'blogs_manifest.json'
     
-    print(f"\n📂 Reading blogs manifest...")
+    print("\nReading blogs manifest...")
     print(f"  Path: {manifest_path}")
     
     if not manifest_path.exists():
-        print(f"  ❌ Blogs manifest not found")
+        print("  Blogs manifest not found")
         return []
     
     manifest = load_json(manifest_path)
     if not manifest:
         return []
     
-    print(f"  ✅ Found {len(manifest)} blog(s) in manifest")
+    print(f"  Found {len(manifest)} blog(s) in manifest")
     
     entries = []
     for idx, blog in enumerate(manifest):
@@ -87,7 +87,7 @@ def get_blog_entries(blogs_dir):
         
         # Skip entries without dates (empty string)
         if not date:
-            print(f"    ⚠️  Skipping [{idx}] {title} - no date")
+            print(f"    Skipping [{idx}] {title} - no date")
             continue
         
         # Extract folder number from folder name (e.g., "1_embedded_systems_intro" -> "1")
@@ -111,18 +111,18 @@ def get_poem_entries(poems_dir):
     """Extract poem entries from poems_manifest.json."""
     manifest_path = poems_dir / 'poems_manifest.json'
     
-    print(f"\n📂 Reading poems manifest...")
+    print("\nReading poems manifest...")
     print(f"  Path: {manifest_path}")
     
     if not manifest_path.exists():
-        print(f"  ❌ Poems manifest not found")
+        print("  Poems manifest not found")
         return []
     
     manifest = load_json(manifest_path)
     if not manifest:
         return []
     
-    print(f"  ✅ Found {len(manifest)} poem(s) in manifest")
+    print(f"  Found {len(manifest)} poem(s) in manifest")
     
     entries = []
     for idx, poem in enumerate(manifest):
@@ -132,7 +132,7 @@ def get_poem_entries(poems_dir):
         
         # Skip entries without dates (empty string)
         if not date:
-            print(f"    ⚠️  Skipping [{idx}] {name} - no date")
+            print(f"    Skipping [{idx}] {name} - no date")
             continue
         
         # Extract folder number from folder name (e.g., "5_letter_to_a_faded_friend" -> "5")
@@ -154,9 +154,8 @@ def get_poem_entries(poems_dir):
 
 def update_history():
     """Main function to update history.json."""
-    print("\n" + "="*70)
-    print("🔄 UPDATING HISTORY.JSON FROM MANIFESTS")
-    print("="*70)
+    print("\nUpdating History")
+    print("-" * 40)
     
     repo_root = get_repo_root()
     
@@ -165,10 +164,10 @@ def update_history():
     poems_dir = repo_root / 'src' / 'poems'
     history_path = repo_root / 'src' / 'resources' / 'history.json'
     
-    print(f"\n📍 Repository root: {repo_root}")
-    print(f"📍 Blogs directory: {blogs_dir}")
-    print(f"📍 Poems directory: {poems_dir}")
-    print(f"📍 History file: {history_path}")
+    print(f"\nRepository root: {repo_root}")
+    print(f"Blogs directory: {blogs_dir}")
+    print(f"Poems directory: {poems_dir}")
+    print(f"History file: {history_path}")
     
     # Gather all entries
     all_entries = []
@@ -177,62 +176,60 @@ def update_history():
     if blogs_dir.exists():
         blog_entries = get_blog_entries(blogs_dir)
         all_entries.extend(blog_entries)
-        print(f"\n✅ Added {len(blog_entries)} blog entries")
+        print(f"\nAdded {len(blog_entries)} blog entries")
     else:
-        print(f"\n⚠️  Blogs directory not found: {blogs_dir}")
+        print(f"\nBlogs directory not found: {blogs_dir}")
     
     # Get poem entries
     if poems_dir.exists():
         poem_entries = get_poem_entries(poems_dir)
         all_entries.extend(poem_entries)
-        print(f"✅ Added {len(poem_entries)} poem entries")
+        print(f"Added {len(poem_entries)} poem entries")
     else:
-        print(f"⚠️  Poems directory not found: {poems_dir}")
+        print(f"Poems directory not found: {poems_dir}")
     
     if not all_entries:
-        print("\n❌ No entries found!")
+        print("\nNo entries found!")
         return False
     
-    print(f"\n📊 Total entries collected: {len(all_entries)}")
+    print(f"\nTotal entries collected: {len(all_entries)}")
     
     # Sort by date (most recent first) using the new parse_date function
-    print("\n🔄 Sorting entries by date (most recent first)...")
+    print("\nSorting entries by date (most recent first)...")
     all_entries.sort(key=lambda x: parse_date(x['date']), reverse=True)
     
     # Keep only the last 5 entries
     all_entries = all_entries[:5]
-    print(f"\n✂️  Trimmed to last 5 entries")
+    print(f"Trimmed to last 5 entries")
     
     # Display sorted list
-    print("\n📋 Final history entries (last 5):")
+    print("\nFinal history entries (last 5):")
     for idx, entry in enumerate(all_entries, 1):
         print(f"  {idx}. [{entry['type'].upper()}] {entry['name']}")
         print(f"     Date: {entry['date']} | Link: {entry['link']}")
     
     # Create resources directory if it doesn't exist
     history_path.parent.mkdir(parents=True, exist_ok=True)
-    print(f"\n📁 Ensured resources directory exists: {history_path.parent}")
+    print(f"\nEnsured resources directory exists: {history_path.parent}")
     
     # Save to history.json
-    print(f"\n💾 Saving to history.json...")
+    print("\nSaving to history.json...")
     if save_json(history_path, all_entries):
-        print(f"\n✅ Successfully updated history.json with {len(all_entries)} entries")
-        print(f"📌 Most recent entry: {all_entries[0]['name']} ({all_entries[0]['date']})")
-        print(f"📌 Oldest entry: {all_entries[-1]['name']} ({all_entries[-1]['date']})")
+        print(f"\nSuccessfully updated history.json with {len(all_entries)} entries")
+        print(f"Most recent entry: {all_entries[0]['name']} ({all_entries[0]['date']})")
+        print(f"Oldest entry: {all_entries[-1]['name']} ({all_entries[-1]['date']})")
         return True
     
     return False
 
 if __name__ == '__main__':
-    print("\n" + "="*70)
-    print("🚀 HISTORY.JSON UPDATE SCRIPT")
-    print("="*70)
+    print("\nHistory Update Script")
+    print("-" * 40)
     
     success = update_history()
     
-    print("\n" + "="*70)
     if success:
-        print("✅ UPDATE COMPLETED SUCCESSFULLY!")
+        print("\nUpdate completed successfully")
     else:
-        print("❌ UPDATE FAILED!")
-    print("="*70 + "\n")
+        print("\nUpdate failed")
+    print()

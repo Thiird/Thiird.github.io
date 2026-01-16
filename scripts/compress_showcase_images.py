@@ -1,22 +1,64 @@
 """
-This script automatically compresses all JPG/JPEG images in a specific folder
-to a consistent quality level using FFmpeg, while ensuring 8-bit per channel depth
-(the standard for JPEG files).
+================================================================================
+COMPRESS SHOWCASE IMAGES (OVERVIEW DIRECTORY)
+================================================================================
 
-Key features:
-- Fixed target folder: ../src/resources/images/overview/ (relative to where this script is placed)
-- Fixed compression level (-q:v 12 by default – adjustable in the CONFIG section)
-- Forces 8-bit per channel output (standard JPEG format)
-- Only overwrites an original file if the compressed version is meaningfully smaller (safe)
-- Skips very small files or files that wouldn't benefit from recompression
-- Prints the working folder, lists all found images, and shows compression results
-    
-Usage:
-1. Run: python compress_showcase_images.py
-   (No arguments needed)
+PURPOSE:
+    Compress all JPG/JPEG images in the showcase/overview folder to a
+    consistent quality level using FFmpeg with 8-bit per channel depth.
+
+WHAT IT DOES:
+    1. Targets a single specific directory: src/resources/images/overview/
+    2. Finds all JPG/JPEG images in that directory
+    3. Compresses each image to a fixed quality level (configurable)
+    4. Forces 8-bit per channel output (standard JPEG format)
+    5. Only overwrites originals if compression provides meaningful savings
+
+TARGET LOCATION:
+    - src/resources/images/overview/ (FIXED - relative to script location)
+
+CONFIGURATION:
+    TARGET_QV = 5                # FFmpeg quality: 2=best, 31=worst
+    MIN_SAVINGS_PERCENT = 3      # Only overwrite if >=3% smaller
+    TARGET_FOLDER_REL = "../src/resources/images/overview"
+
+KEY FEATURES:
+    - Fixed target folder (no directory scanning)
+    - Consistent quality across all showcase images
+    - 8-bit per channel enforced (standard JPEG)
+    - Safe overwriting (only if smaller)
+    - Skips very small files automatically
+
+BEHAVIOR:
+    - NON-DESTRUCTIVE: Only replaces with improved versions
+    - NO BACKUPS: Original files are overwritten
+    - SMART SKIPPING: Avoids processing files that won't benefit
+
+DEPENDENCIES:
+    - ffmpeg (must be installed and in PATH)
+    - Python 3.6+
+
+USAGE:
+    python scripts/compress_showcase_images.py
+
+OUTPUT:
+    Prints working folder, lists all images found, and shows results:
+    - [Compressed] - File successfully compressed
+    - [Skipped] - File not improved or too small
+    - [Error] - FFmpeg processing error
 
 WARNING:
-No backups are created – only improved (smaller) files replace originals.
+    No backups are created. Only improved (smaller) files replace originals.
+    Make sure you have backups elsewhere if needed.
+
+USE CASE:
+    This script is specifically for the overview/showcase image gallery
+    that appears on the main page. Use compress_all_website_images.py
+    for comprehensive site-wide image compression.
+
+AUTHOR: Website maintenance scripts
+LAST MODIFIED: 2026-01-16
+================================================================================
 """
 
 import os

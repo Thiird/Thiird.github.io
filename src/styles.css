@@ -660,7 +660,10 @@ body.no-scroll {
 #banner-placeholder,
 .banner {
   background-color: var(--bg-secondary);
-  border: 1px solid var(--year-separator-color);
+  border-top: 1px solid var(--year-separator-color);
+  border-bottom: 1px solid var(--year-separator-color);
+  border-left: none;
+  border-right: none;
   margin: 0 auto;
   display: block;
 }

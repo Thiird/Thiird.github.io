@@ -2028,6 +2028,12 @@ class TooltipManager {
         .replace(/<italics>/g, '<em>')
         .replace(/<\/italics>/g, '</em>')
         .replace(/\n/g, '<br>');
+      
+      // Remove trailing period if text is single-line (no newlines in original)
+      if (!data.text.includes('\n') && data.text.endsWith('.')) {
+        formattedText = formattedText.slice(0, -1);
+      }
+      
       text.innerHTML = formattedText;
       content.appendChild(text);
     }

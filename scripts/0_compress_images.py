@@ -193,14 +193,13 @@ def check_dependencies():
         subprocess.run(['ffprobe', '-version'], capture_output=True, timeout=5)
         return True
     except (subprocess.TimeoutExpired, FileNotFoundError):
-        print("\n❌ Error: ffmpeg and ffprobe must be installed and in PATH")
-        print("   Install from: https://ffmpeg.org/download.html")
+        print("\nError: ffmpeg and ffprobe must be installed and in PATH")
+        print("Install from: https://ffmpeg.org/download.html")
         return False
 
 def main():
-    print("\n" + "=" * 80)
-    print("🖼️  COMPREHENSIVE IMAGE COMPRESSION")
-    print("=" * 80)
+    print("\nImage Compression")
+    print("-" * 40)
     
     # Check dependencies
     if not check_dependencies():
@@ -217,7 +216,7 @@ def main():
     print()
     
     # Find all images
-    print("🔍 Scanning for images...")
+    print("Scanning for images...")
     images = find_all_images(repo_root)
     
     if not images:
@@ -240,8 +239,8 @@ def main():
     
     for dir_path in sorted(images_by_dir.keys()):
         rel_path = dir_path.relative_to(repo_root)
-        print(f"\n📂 {rel_path}/")
-        print("-" * 80)
+        print(f"\n{rel_path}/")
+        print("-" * 40)
         
         for img_path in sorted(images_by_dir[dir_path]):
             if process_image(img_path):
@@ -250,12 +249,7 @@ def main():
                 total_skipped += 1
     
     # Summary
-    print("\n" + "=" * 80)
-    print(f"✅ COMPRESSION COMPLETE")
-    print(f"   Compressed: {total_compressed}")
-    print(f"   Skipped: {total_skipped}")
-    print(f"   Total: {len(images)}")
-    print("=" * 80 + "\n")
+    print(f"\nCompressed: {total_compressed}, Skipped: {total_skipped}, Total: {len(images)}\n")
 
 if __name__ == "__main__":
     main()

@@ -1,11 +1,89 @@
 #!/usr/bin/env python3
 """
-Generate `overview_manifest.json` from files in `src/resources/images/overview`.
+================================================================================
+GENERATE OVERVIEW IMAGE MANIFEST
+================================================================================
 
-Usage:
-  python scripts/generate_overview_manifest.py [SRC_DIR] [OUT_FILE]
+PURPOSE:
+    Generate a manifest JSON file listing all images in the overview/showcase
+    directory. This manifest is used by the website to display the image
+    gallery on the main page.
 
-If no arguments are given, it writes to `src/resources/images/overview/overview_manifest.json`.
+WHAT IT DOES:
+    1. Scans src/resources/images/overview/ directory
+    2. Finds all image files (JPG, JPEG, PNG, GIF, WEBP, SVG, BMP)
+    3. Creates a JSON array with all image filenames
+    4. Writes to src/resources/images/overview/overview_manifest.json
+
+MANIFEST STRUCTURE:
+    [
+      "image1.jpg",
+      "image2.png",
+      "image3.gif",
+      ...
+    ]
+
+SUPPORTED IMAGE FORMATS:
+    - JPG/JPEG (most common)
+    - PNG (transparency support)
+    - GIF (animated images)
+    - WEBP (modern format)
+    - SVG (vector graphics)
+    - BMP (bitmap images)
+
+DEFAULT PATHS:
+    Source directory: src/resources/images/overview
+    Output file: src/resources/images/overview/overview_manifest.json
+
+COMMAND LINE ARGUMENTS (OPTIONAL):
+    python scripts/generate_overview_manifest.py [SRC_DIR] [OUT_FILE]
+    
+    If no arguments provided, uses defaults above.
+    
+    Examples:
+      python scripts/generate_overview_manifest.py
+      python scripts/generate_overview_manifest.py custom/path
+      python scripts/generate_overview_manifest.py custom/path output.json
+
+BEHAVIOR:
+    - OVERWRITES: Existing manifest file is replaced
+    - ALPHABETICAL: Images are sorted alphabetically by filename
+    - CASE-INSENSITIVE: File extensions checked with .lower()
+    - FILES ONLY: Subdirectories are ignored
+
+DEPENDENCIES:
+    - Python 3.6+
+    - No external dependencies
+
+USAGE:
+    python scripts/generate_overview_manifest.py
+
+OUTPUT:
+    Prints the output manifest file path and exits.
+    Returns exit code 0 on success, 2 if source directory not found.
+
+EXAMPLE OUTPUT:
+    src/resources/images/overview/overview_manifest.json
+
+ERROR HANDLING:
+    If source directory doesn't exist:
+      - Prints error message to stderr
+      - Exits with code 2
+
+NOTES:
+    - Manifest includes only filenames, not full paths
+    - JavaScript on the website constructs full paths from manifest
+    - Files are included in the order they appear in the directory
+    - Hidden files (starting with .) are included if they match extensions
+
+USE CASE:
+    This manifest is specifically for the overview/showcase image gallery.
+    The website uses it to dynamically load and display images without
+    hardcoding filenames.
+
+AUTHOR: Website maintenance scripts
+LAST MODIFIED: 2026-01-16
+================================================================================
 """
 from pathlib import Path
 import sys
