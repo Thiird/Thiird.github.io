@@ -1087,7 +1087,7 @@ document.addEventListener("DOMContentLoaded", () => {
         dateSpan.className = "list-item-date";
         const date = new Date(poem.date);
         const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        dateSpan.textContent = `${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+        dateSpan.textContent = `${monthNames[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()}`;
         a.appendChild(dateSpan);
       }
 
@@ -1353,7 +1353,7 @@ document.addEventListener("DOMContentLoaded", () => {
         dateSpan.className = "list-item-date";
         const date = new Date(blog.date);
         const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        dateSpan.textContent = `${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+        dateSpan.textContent = `${monthNames[date.getUTCMonth()]} ${date.getUTCDate()}, ${date.getUTCFullYear()}`;
         a.appendChild(dateSpan);
       }
 
