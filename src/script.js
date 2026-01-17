@@ -1969,17 +1969,27 @@ class TooltipManager {
     // Add active class to trigger for highlighting
     trigger.classList.add('active');
 
-    // Make entire tooltip clickable if it has an image
+    // Make only the image clickable for zoom (not the entire tooltip)
     if (data.media && (data.media.endsWith('.jpg') || data.media.endsWith('.jpeg') ||
       data.media.endsWith('.png') || data.media.endsWith('.gif') ||
       data.media.endsWith('.webp'))) {
-      tooltip.style.cursor = 'pointer';
-      tooltip.addEventListener('click', (e) => {
-        e.stopPropagation();
-        // Hide the hover tooltip when clicking to zoom
-        this.hideActiveTooltip();
-        this.showImageFullscreen(data.media, data.alt || data.text, data);
-      });
+      
+      // Add visual hint classes to image and wrapper
+      const imageWrapper = tooltip.querySelector('.tooltip-image-wrapper');
+      const image = tooltip.querySelector('.tooltip-gif');
+      if (imageWrapper) imageWrapper.classList.add('clickable');
+      if (image) {
+        image.classList.add('clickable');
+        image.style.cursor = 'pointer';
+        
+        // Attach click handler only to the image
+        image.addEventListener('click', (e) => {
+          e.stopPropagation();
+          // Hide the hover tooltip when clicking to zoom
+          this.hideActiveTooltip();
+          this.showImageFullscreen(data.media, data.alt || data.text, data);
+        });
+      }
     }
 
     // Add hover listeners to tooltip - CRITICAL for keeping it visible
@@ -2028,11 +2038,6 @@ class TooltipManager {
         .replace(/<italics>/g, '<em>')
         .replace(/<\/italics>/g, '</em>')
         .replace(/\n/g, '<br>');
-      
-      // Remove trailing period if text is single-line (no newlines in original)
-      if (!data.text.includes('\n') && data.text.endsWith('.')) {
-        formattedText = formattedText.slice(0, -1);
-      }
       
       text.innerHTML = formattedText;
       content.appendChild(text);
@@ -2241,13 +2246,18 @@ class TooltipManager {
 
         this.currentAudio = audioElement;
       } else {
-        // Handle images
+        // Handle images - wrap in container for overlay effects
+        const imageWrapper = document.createElement('div');
+        imageWrapper.className = 'tooltip-image-wrapper';
+        
         const mediaEl = document.createElement('img');
         mediaEl.className = 'tooltip-gif';
         mediaEl.src = data.media;
         mediaEl.alt = data.text || 'Tooltip media';
         mediaEl.onerror = () => { };
-        content.appendChild(mediaEl);
+        
+        imageWrapper.appendChild(mediaEl);
+        content.appendChild(imageWrapper);
 
         // Add alt text below image in italics if it exists
         if (data.alt) {
@@ -3841,8 +3851,8 @@ function addTruncatedTextOverlays() {
 
     // Position overlay to match the element's position and height, but allow width to expand
     const rect = element.getBoundingClientRect();
-    overlay.style.left = (rect.left + window.pageXOffset) + 'px';
-    overlay.style.top = (rect.top + window.pageYOffset) + 'px';
+    overlay.style.left = rect.left + 'px';
+    overlay.style.top = rect.top + 'px';
     overlay.style.height = rect.height + 'px';
     overlay.style.lineHeight = rect.height + 'px';
 

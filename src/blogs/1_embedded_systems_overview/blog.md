@@ -242,9 +242,16 @@ It's very unusual for an <span tt="ES">ES</span> to require both. For example, a
 
 Software (either kind) is usually much easier to develop than firmware, as it doesn't require extensive hardware knowledge. Moreover, a software update often only requires a change of the executable file in the file system of the device, whereas firmware requires engineering tools like a [debugger](#the-debugger).
 
-<span tt="bench_power_supply_example">Complex embedded products require both firmware and software</span>: firmware handles low level hardware functionalities (like reading sensors or controlling motors), while software handles the user-level applications, like graphical interfaces and the remote access capabilities to the device.
+<span tt="bench_power_supply_example">Complex embedded products require both firmware and software</span>: firmware handles low level hardware functionalities (reading sensors, controlling motors), while software handles the user-level applications, like graphical interfaces, remote access capabilities, etc.
 
-In the <span tt="FPGA">FPGA</span> world instead, <em>software</em> refers to all the <span tt="ECAD">ECAD</span>/<span tt="CAD">CAD</span> tooling, like <span tt="IDE">IDE</span>s, that run off-device on the development machine, used for development, simulation, testing and synthesis of the <em>gateware</em>.
+| Term | Description |
+|------|-------------|
+| **Firmware** | Low-level <span tt="CPU">CPU</span> code that directly controls hardware, referred to as <em>bare-metal programming</em> when no OS is used. Complex systems may use a minimal embedded OS like FreeRTOS or Zephyr. |
+| **Embedded Software** | High-level <span tt="CPU">CPU</span> code that runs on top of an embedded version of a canonical OS (Linux, Android), which requires the presence of an <span tt="MMU">MMU</span>. Provides system services and user-facing applications. |
+| **Software** | High-level CPU code, running on a canonical OS, off-device on a desktop machine. Usually aids in device interaction and makes the <span tt="ES">ES</span> user friendly. |
+
+
+In the <span tt="FPGA">FPGA</span> world instead, <em>software</em> refers to all the <span tt="ECAD">ECAD</span>/<span tt="CAD">CAD</span> tooling, like <span tt="IDE">IDE</span>s, that run <strong><em>off-device</em></strong> on the development machine and it's used for development, simulation, testing and synthesis of the <em>gateware</em>.
 
 <strong>Gateware</strong> is the code written in a <a href="https://en.wikipedia.org/wiki/Hardware_description_language" target="_blank">Hardware Description Language</a> (HDL), like Verilog or VHDL, that gets <strong>synthesized</strong> to a bitstream and then used to configure the configurable logic of the <span tt="FPGA">FPGA</span> to implement a certain function. The resulting bitstream depends on the input <span tt="HDL">HDL</span> code, <span tt="target_fpga_model">the target  device</span>, and <span tt="synthesis_toolchain">the synthesis toolchain used</span>.
 
@@ -290,7 +297,7 @@ The melting temperature is low enough that soldering can be safely done at home.
 
 The quintessential soldering tool is the <span tt="soldering_iron">soldering iron</span>, basically a metal rod where the pointy end is heated by passing electric current through it. A soldering iron is <span tt="THT_soldering">mostly used with THT components</span>.
 
-SMD components instead, are conventionally soldered with <span tt="solder_paste">solder paste</span>, a mixture of tiny solder balls and flux that gets applied to the <span tt="pcb_pads">PCB pads</span>, exactly between the unsoldered parts and the PCB. The whole PCBA is then put through the so called reflow process, basically a process where the assembly is heated up as a whole to make the solder balls melt and solder the individual parts to the PCB. This process is quite <span tt="reflow">mesmerizing</span>.
+SMD components instead, are conventionally soldered with <span tt="solder_paste">solder paste</span>, a <span tt="solder_paste_applied">mixture of tiny solder balls and flux that gets applied</span> to the <span tt="pcb_pads">PCB pads</span>, exactly between the unsoldered parts and the PCB. The whole PCBA is then put through the so called reflow process, basically a process where the assembly is heated up as a whole to make the solder balls melt and solder the individual parts to the PCB. This process is quite <span tt="reflow">mesmerizing</span>.
 
 Reflow can be done with different tools:
 - <strong>Reflow oven</strong>: A specialized oven that heats the entire PCB assembly following a precise temperature profile. This is the standard soldering method for high-density, SMD-based designs. 
@@ -329,10 +336,7 @@ Now that we've covered the fundamental concepts, components, and tools of embedd
 
 This is a custom-built wireless gaming mouse featuring Bluetooth/USB connectivity, a high-performance optical sensor, and rechargeable battery. It's an excellent real-world example that demonstrates all the hardware and software elements of an embedded system working together.
 
-<img src="../0_optical_mouse/mouse_exploded.png" style="width:80%; display:block; margin:20px auto;">
-
-<img src="mouse_pcb_annotated.png" style="width:80%; display:block; margin:20px auto;">
-<p style="text-align: center; font-style: italic; color: #666;">PCB with color-coded component categories</p>
+<img class="click-zoom" src="mouse_exploded.png" style="width:80%; display:block; margin:20px auto;">
 
 ### Electrical Hardware
 
@@ -360,7 +364,13 @@ This is a custom-built wireless gaming mouse featuring Bluetooth/USB connectivit
 - **ESD protection** on USB interface
 - **Crystal oscillator** for accurate timing
 
+Below you can see the components color coded: in orange the input components, in green the output components, in blue the computational unit and in red the support components.
+
+<img class="click-zoom" src="mouse_components.gif" style="width:30%; display:block; margin:20px auto;">
+
 ### Mechanical Hardware
+
+<img class="click-zoom" src="mouse_cad_section.gif" style="width:90%; display:block; margin:20px auto;">
 
 The shell is made up of two halves that sandwich the main PCB together, held by a single screw. The main PCB sits in slots that lock into pillars molded into the bottom shell half, keeping everything aligned.
 
@@ -396,16 +406,17 @@ A custom **desktop application** (off-device software) was developed to provide 
 - **Low battery notifications** - Connects to mouse receiver via Bluetooth to alert user
 - **CSV data logging** - Records usage statistics over time
 
-<img src="../0_optical_mouse/mouse_client.png" style="width:60%; display:block; margin:20px auto;">
+<img class="click-zoom" src="mouse_client.png" style="width:60%; display:block; margin:20px auto;">
 
 ### Result
 
 The final mouse weighs ~87 grams and provides 4-5 days of battery life on a single charge (2-hour charge time).
 
-<div class="image-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin: 20px 0;">
-  <img src="../0_optical_mouse/mouse_final_1.jpg" style="width:100%;">
-  <img src="../0_optical_mouse/mouse_final_2.jpg" style="width:100%;">
-  <img src="../0_optical_mouse/mouse_final_3.jpg" style="width:100%;">
+<div class="image-grid">
+  <img class="click-zoom" src="mouse_final_1.jpg" alt="" />
+  <img class="click-zoom" src="mouse_final_2.jpg" alt="" />
+  <img class="click-zoom" src="mouse_final_3.jpg" alt="" />
+  <img class="click-zoom" src="mouse_final_4.jpg" alt="" />
 </div>
 
 This project demonstrates how all elements of embedded systems—hardware design, firmware development, mechanical engineering, and application software—come together to create a complete, functional product.

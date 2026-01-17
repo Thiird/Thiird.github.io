@@ -401,6 +401,47 @@
   padding-top: 2.5em;
 }
 
+/* Blog table styling */
+.blog-text table,
+.content-text table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+}
+
+.blog-text table th,
+.blog-text table td,
+.content-text table th,
+.content-text table td {
+  border: 1px solid var(--text-secondary, #666);
+  padding: 10px;
+  text-align: left;
+}
+
+.blog-text table th,
+.content-text table th {
+  background: var(--highlight-box-bg);
+  font-weight: 600;
+  text-align: center;
+}
+
+.blog-text table td:first-child,
+.content-text table td:first-child {
+  text-align: center;
+}
+
+/* Image grid styling */
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.image-grid img {
+  width: 100%;
+}
+
 :root {
   /* Slideshow sizing parameters (modify these to change the vertical window size) */
   --slideshow-width: 360px;
@@ -1004,7 +1045,7 @@ body.no-scroll {
 
 .list-item-title-overlay,
 .history-item-name-overlay {
-  position: absolute;
+  position: fixed;
   background: var(--sidebar-item-bg);
   color: var(--text-primary);
   font-size: 1em;
@@ -2037,6 +2078,47 @@ pre code {
   border-radius: 4px;
   object-fit: contain;
   display: block;
+  transition: filter 0.2s ease;
+}
+
+/* Clickable tooltip images (with zoom capability) */
+.tooltip-gif.clickable {
+  cursor: zoom-in;
+}
+
+.tooltip-gif.clickable:hover {
+  filter: brightness(0.6);
+}
+
+/* Magnifying glass icon overlay for clickable images */
+.tooltip-image-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip-image-wrapper.clickable::after {
+  content: '🔍';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.tooltip-image-wrapper.clickable:hover::after {
+  opacity: 1;
 }
 
 .tooltip-text {

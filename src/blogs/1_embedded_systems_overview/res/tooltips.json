@@ -317,7 +317,7 @@
         "credit": ""
     },
     "bench_power_supply_example": {
-        "text": "An example is a modern bench power supply: the firmware controls the voltage and current settings based on the front panel buttons and dials, while the software exposes a web interface for remote control and configuration. You might update the software to add new features, but the firmware remains stable (unless a bug is found) as the front panel is always the same.",
+        "text": "An example is a modern bench power supply: the firmware controls the voltage and current settings based on the front panel buttons and dials, while the software exposes a web interface for remote control and configuration.<br>You might update the software to add new features, but the firmware remains stable (unless a bug is found) as the front panel is always the same.",
         "media": "",
         "alt": "",
         "credit": ""
@@ -454,10 +454,23 @@
         "alt": "",
         "credit": ""
     },
+    "MMU": {
+        "text": "Memory Management Unit",
+        "media": "",
+        "alt": "",
+        "credit": ""
+    },
     "tooltip": {
-        "text": "This is a tooltip example!<br><br><em>(Click to make the image bigger)</em>",
+        "text": "This is a tooltip example!<br><br><em></em>",
         "media": "starship-superheavy.gif",
         "alt": "The Starship rocket powering to orbit!!!",
         "credit": "tenor.com"
+    }
+    ,
+    "solder_paste_applied": {
+        "text": "Close up of a ceramic capacitor applied on top of fresh solder paste<br>Reflow will melt the solder paste and create a solid electrical and mechanical connection between the capacitor and the PCB pad below it.",
+        "media": "solder_paste_applied.jpg",
+        "alt": "",
+        "credit": ""
     }
 }
