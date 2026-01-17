@@ -7,7 +7,7 @@ This article is a conceptual overview of embedded systems for new comers to the 
 
 Whether you're a student, a hobbyist, or a software developer, this article will help you get started by understanding the fundamental concepts and terminology.
 
-Technical details are omitted <strong>on purpose</strong> to make this accessible to people who are <strong>absolutely new</strong> to embedded systems. More information is often available in <span tt="tooltip">tooltips</span> (hover the highlighted text on desktop, click it on mobile).
+Technical details are omitted <strong>on purpose</strong> to make this accessible to people who are <strong>absolutely new</strong> to embedded systems. More information is often available in tooltips like <span tt="tooltip">this one</span> (hover the highlighted text on desktop, click it on mobile).
 
 **What you'll learn:**
 - What embedded systems are and where the term 'embedded' comes from
