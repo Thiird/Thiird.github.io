@@ -205,13 +205,13 @@ These include:
 
 While the electronics provides the functionality, mechanical engineering is needed to create the physical environment where the electronics can reside.
 
-The enclosure protects the electronics from the environment (dust, moisture, impact, temperature) while giving the product its physical form. Common materials include injection-molded plastic for consumer products, sheet metal for industrial gear, 3D-printed parts for prototypes, and machined aluminum for premium products.
+The enclosure protects the electronics from the environment (dust, moisture, impact, temperature gradients) while giving the system its physical form. Common enclosure materials include injection-molded plastic for consumer products, sheet metal for industrial gear, 3D-printed parts for prototypes, and machined aluminum for premium products.
 
 Multi-PCB systems require mechanical structures to hold them together. Think of standoffs, screws, brackets, and sometimes connectors that provide both electrical connection and mechanical support between boards.
 
-Electronics generate heat, so you need ways to get it out. This means heatsinks and thermal pastepads to improve, ventilation holes or fans, and sometimes using the enclosure itself as a heatsink.
+Electronics generate heat, so you need ways to get it out. This means heatsinks and thermal paste/pads to improve, ventilation holes or fans, and sometimes using the enclosure itself as a heatsink.
 
-The mechanical design isn't done before or after the electrical deisng. A change in one affects the other. From day one, you're dealing with size constraints, connectors/buttons placement, wire routing slots, etc. Ease of assemble is another big factor in the mechanical.
+The mechanical design isn't done before or after the electrical design. A change in one affects the other. From day one, you're dealing with size constraints, connectors/buttons placement, wire routing slots, etc. Ease of assemble is another big factor in the mechanical.
 
 
 <h2 id="firmware">2.2 Firmware <a href="#firmware" class="header-link">🔗</a></h2>
@@ -266,7 +266,7 @@ Let's go through the essential tools that you will need.
 
 <div class="highlight-box note">
 <strong>Caution:</strong>  
-If you have never handled electronics before, stick to low-energy components like cell batteries and LEDs. You can burn your house down or hurt yourself pretty badly with electronics.  
+If you have never handled electronics before, stick to low-energy components like coin-batteries and LEDs. You can burn your house down or hurt yourself pretty badly with electronics.  
 The best way to get started is having someone showing you the basics in persons. Nevertheless, don't be afraid to try on your own.
 </div>
 
