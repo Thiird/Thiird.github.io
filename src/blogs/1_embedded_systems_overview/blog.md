@@ -3,7 +3,7 @@ date: 2026-01-18
 
 <h1 id="intro-to-embedded-systems">Embedded Systems Overview</h1>
 
-This article is a conceptual overview of embedded systems for new comers to the field.
+This article is a conceptual overview of embedded systems for newcomers to the field.
 
 Whether you're a student, a hobbyist, or a software developer, this article will help you get started by understanding the fundamental concepts and terminology.
 
@@ -32,7 +32,7 @@ Let's dive in!
       <ul class="index-subsection">
         <li><a href="#hardware">2.1 Hardware</a>
           <ul class="index-subsection">
-            <li><a href="#electrical">2.1.1 Electrical</a>
+            <li><a href="#electrical">2.1.1 Electronic</a>
               <ul class="index-subsection">
                 <li><a href="#input-elements">2.1.1.1 Input Components</a></li>
                 <li><a href="#output-elements">2.1.1.2 Output Components</a></li>
@@ -86,7 +86,7 @@ Some <span tt="ES">ES</span> examples are:
 - <span tt="ecu">the computer inside cars</span>
 - <span tt="soviet_seeker">the computer of a missile</span>
 
-Whether a device is an <span tt="ES">ES</span> or not, is decided at <strong><em>system level</em></strong>, not <strong><em>component level</strong></em>.  
+Whether a device is an <span tt="ES">ES</span> or not, is decided at <strong><em>system level</em></strong>, not <strong><em>component level</em></strong>.  
 
 This is because the electronic components that comprise it can be capable of general-purpose computing, but if arranged and programmed in a specific way, the device as a whole becomes a fixed-purpose computer.  
 This is the case for most ES as it reduces cost, but for specific applications, fixed-purpose-computing components are used from the start.
@@ -106,7 +106,11 @@ The hardware provides the physical platform, the firmware controls it directly, 
 
 <h2 id="hardware">2.1 Hardware <a href="#hardware" class="header-link">🔗</a></h2>
 
-<h3 id="electrical">2.1.1 Electrical <a href="#electrical" class="header-link">🔗</a></h3>
+Hardware design requires both electrical and mechanical engineering. For both, engineers use specialized Computer-Aided Design (<span tt="CAD">CAD</span>) tools to model, simulate, and prepare designs for manufacturing.
+
+Electrical engineers use Electronic CAD (<span tt="ECAD">ECAD</span>) tools like KiCad, Altium Designer, or Eagle to design the electronics. Mechanical engineers use Mechanical CAD (<span tt="MCAD">MCAD</span>) tools like Fusion 360, SolidWorks, or CATIA to design enclosures and physical structures.
+
+<h3 id="electrical">2.1.1 Electronic <a href="#electrical" class="header-link">🔗</a></h3>
 
 The core of an <span tt="ES">ES</span> is the electronic hardware.
 
@@ -198,12 +202,12 @@ Support components don't directly participate in sensing, computing, or actuatin
 These include:
 
 - <strong id="voltage-regulators">Voltage regulators:</strong> they convert the input voltage of the system to the specific voltages required by different parts of the circuit.
-- <strong id="passive-components">Passive components:</strong> <span tt="resistors">resistors</span>, <span tt="capacitors">capacitors</span>, <span tt="inductors">inductors</span> to filter noise and , and <span tt="connectors">connectors</span> to interface different parts of the system.
+- <strong id="passive-components">Passive components:</strong> <span tt="resistors">resistors</span>, <span tt="capacitors">capacitors</span>, <span tt="inductors">inductors</span> to filter noise, and <span tt="connectors">connectors</span> to interface different parts of the system.
 - <strong id="protection-circuits">Protection circuits:</strong> <span tt="ESD_protection">ESD protection</span>, <span tt="reverse_polarity_protection">reverse polarity protection</span>, <span tt="overcurrent_protection">overcurrent protection</span>.  
 
 <h3 id="mechanical">2.1.2 Mechanical <a href="#mechanical" class="header-link">🔗</a></h3>
 
-While the electronics provides the functionality, mechanical engineering is needed to create the physical environment where the electronics can reside.
+While the electronics provides the functionality, mechanical engineering provides the physical environment where the electronics will reside.
 
 The enclosure protects the electronics from the environment (dust, moisture, impact, temperature gradients) while giving the system its physical form. Common enclosure materials include injection-molded plastic for consumer products, sheet metal for industrial gear, 3D-printed parts for prototypes, and machined aluminum for premium products.
 
@@ -211,7 +215,7 @@ Multi-PCB systems require mechanical structures to hold them together. Think of 
 
 Electronics generate heat, so you need ways to get it out. This means heatsinks and thermal paste/pads to improve, ventilation holes or fans, and sometimes using the enclosure itself as a heatsink.
 
-The mechanical design isn't done before or after the electrical design. A change in one affects the other. From day one, you're dealing with size constraints, connectors/buttons placement, wire routing slots, etc. Ease of assemble is another big factor in the mechanical.
+The mechanical design isn't done before or after the electrical design. A change in one affects the other. From day one, you're dealing with size constraints, connectors/buttons placement, wire routing slots, etc. Ease of assembly is another big factor in the mechanical design.
 
 
 <h2 id="firmware">2.2 Firmware <a href="#firmware" class="header-link">🔗</a></h2>
@@ -244,11 +248,13 @@ Software (either kind) is usually much easier to develop than firmware, as it do
 
 <span tt="bench_power_supply_example">Complex embedded products require both firmware and software</span>: firmware handles low level hardware functionalities (reading sensors, controlling motors), while software handles the user-level applications, like graphical interfaces, remote access capabilities, etc.
 
-| Term | Description |
-|------|-------------|
-| **Firmware** | Low-level <span tt="CPU">CPU</span> code that directly controls hardware, referred to as <em>bare-metal programming</em> when no OS is used. Complex systems may use a minimal embedded OS like FreeRTOS or Zephyr. |
-| **Embedded Software** | High-level <span tt="CPU">CPU</span> code that runs on top of an embedded version of a canonical OS (Linux, Android), which requires the presence of an <span tt="MMU">MMU</span>. Provides system services and user-facing applications. |
-| **Software** | High-level CPU code, running on a canonical OS, off-device on a desktop machine. Usually aids in device interaction and makes the <span tt="ES">ES</span> user friendly. |
+Let's recap all of this briefly:
+
+| Term | Description | Skillset |
+|------|-------------|----------|
+| **Firmware** | Low-level <span tt="CPU">CPU</span> code that runs on the <span tt="ES">ES</span> and directly controls hardware, referred to as <em>bare-metal programming</em> when no <span tt="OS">OS</span> is used. Complex systems may use a minimal embedded <span tt="OS">OS</span> like FreeRTOS or Zephyr. | - Electronics knowledge<br>- Bit-level programming/debugging |
+| **Embedded Software** | High-level <span tt="CPU">CPU</span> code that runs on the <span tt="ES">ES</span> on top of a canonical <span tt="OS">OS</span> like Linux or Android. Provides system services and user-facing applications. | - <span tt="OS">OS</span> system programming<br>- Linux/Android knowledge |
+| **Software** | High-level <span tt="CPU">CPU</span> code that runs off the <span tt="ES">ES</span> on a desktop-machine, on top of a canonical <span tt="OS">OS</span>. Usually aids in device interaction and makes the <span tt="ES">ES</span> user friendly. |- Desktop programming<br>- Network programming |
 
 
 In the <span tt="FPGA">FPGA</span> world instead, <em>software</em> refers to all the <span tt="ECAD">ECAD</span>/<span tt="CAD">CAD</span> tooling, like <span tt="IDE">IDE</span>s, that run <strong><em>off-device</em></strong> on the development machine and it's used for development, simulation, testing and synthesis of the <em>gateware</em>.

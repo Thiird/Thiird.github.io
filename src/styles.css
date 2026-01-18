@@ -2871,4 +2871,103 @@ pre code {
   .skills-grid {
     grid-template-columns: 1fr;
   }
+
+  /* Responsive table: combine into single card with navigation */
+  .blog-text table,
+  .content-text table {
+    border: 0;
+    position: relative;
+  }
+
+  .blog-text table thead,
+  .content-text table thead {
+    display: none;
+  }
+
+  /* Hide all rows by default */
+  .blog-text table tbody tr,
+  .content-text table tbody tr {
+    display: none;
+    margin-bottom: 1.5em;
+    border: 1px solid var(--text-secondary, #666);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  /* Show only the active row */
+  .blog-text table tbody tr.active,
+  .content-text table tbody tr.active {
+    display: block;
+  }
+
+  .blog-text table td,
+  .content-text table td {
+    display: block;
+    text-align: left !important;
+    border: none;
+    border-bottom: 1px solid var(--text-secondary, #666);
+    padding: 12px;
+  }
+
+  .blog-text table td:last-child,
+  .content-text table td:last-child {
+    border-bottom: 0;
+  }
+
+  /* First column: add navigation arrows */
+  .blog-text table td:first-child,
+  .content-text table td:first-child {
+    text-align: center !important;
+    font-size: 1.1em;
+    background: var(--highlight-box-bg);
+    position: relative;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    padding: 12px 50px;
+  }
+
+  /* Navigation arrows */
+  .table-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    color: var(--text-primary);
+    cursor: pointer;
+    padding: 10px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    user-select: none;
+  }
+
+  .table-arrow:hover {
+    opacity: 1;
+  }
+
+  .table-arrow.disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
+  }
+
+  .table-arrow-left {
+    left: 10px;
+  }
+
+  .table-arrow-right {
+    right: 10px;
+  }
+
+  /* Other columns: show label above content */
+  .blog-text table td:not(:first-child)::before,
+  .content-text table td:not(:first-child)::before {
+    content: attr(data-label);
+    display: block;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--text-secondary, #666);
+  }
 }

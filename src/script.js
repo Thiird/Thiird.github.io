@@ -349,6 +349,128 @@ function applyImageScaling(container) {
   if (!container) return;
 }
 
+function addTableDataLabels(container) {
+  if (!container) return;
+  
+  const tables = container.querySelectorAll('.blog-text table, .content-text table');
+  tables.forEach(table => {
+    const headers = table.querySelectorAll('thead th');
+    const headerTexts = Array.from(headers).map(th => th.textContent.trim());
+    
+    const rows = table.querySelectorAll('tbody tr');
+    rows.forEach((row, rowIndex) => {
+      const cells = row.querySelectorAll('td');
+      cells.forEach((cell, index) => {
+        if (headerTexts[index]) {
+          cell.setAttribute('data-label', headerTexts[index]);
+        }
+      });
+      
+      // For mobile: mark first row as active
+      if (rowIndex === 0) {
+        row.classList.add('active');
+      }
+    });
+    
+    // Add navigation arrows for mobile on tables with multiple rows
+    if (rows.length > 1 && window.innerWidth <= 768) {
+      addTableArrows(table, rows);
+    }
+  });
+  
+  // Re-create navigation on resize
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      tables.forEach(table => {
+        const rows = table.querySelectorAll('tbody tr');
+        // Remove existing arrows
+        rows.forEach(row => {
+          const arrows = row.querySelectorAll('.table-arrow');
+          arrows.forEach(arrow => arrow.remove());
+        });
+        
+        if (rows.length > 1 && window.innerWidth <= 768) {
+          addTableArrows(table, rows);
+        }
+      });
+    }, 250);
+  });
+}
+
+function addTableArrows(table, rows) {
+  let currentIndex = 0;
+  
+  const updateArrows = () => {
+    rows.forEach((row, index) => {
+      const leftArrow = row.querySelector('.table-arrow-left');
+      const rightArrow = row.querySelector('.table-arrow-right');
+      
+      if (leftArrow && rightArrow) {
+        // Update disabled state
+        if (currentIndex === 0) {
+          leftArrow.classList.add('disabled');
+        } else {
+          leftArrow.classList.remove('disabled');
+        }
+        
+        if (currentIndex === rows.length - 1) {
+          rightArrow.classList.add('disabled');
+        } else {
+          rightArrow.classList.remove('disabled');
+        }
+      }
+    });
+  };
+  
+  rows.forEach((row, rowIndex) => {
+    const firstCell = row.querySelector('td:first-child');
+    if (!firstCell) return;
+    
+    // Create left arrow
+    const leftArrow = document.createElement('button');
+    leftArrow.className = 'table-arrow table-arrow-left';
+    leftArrow.innerHTML = '◀';
+    leftArrow.setAttribute('aria-label', 'Previous item');
+    
+    // Create right arrow
+    const rightArrow = document.createElement('button');
+    rightArrow.className = 'table-arrow table-arrow-right';
+    rightArrow.innerHTML = '▶';
+    rightArrow.setAttribute('aria-label', 'Next item');
+    
+    // Arrow click handlers
+    leftArrow.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (currentIndex > 0) {
+        rows[currentIndex].classList.remove('active');
+        currentIndex--;
+        rows[currentIndex].classList.add('active');
+        updateArrows();
+      }
+    });
+    
+    rightArrow.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (currentIndex < rows.length - 1) {
+        rows[currentIndex].classList.remove('active');
+        currentIndex++;
+        rows[currentIndex].classList.add('active');
+        updateArrows();
+      }
+    });
+    
+    // Insert arrows into the first cell
+    firstCell.insertBefore(leftArrow, firstCell.firstChild);
+    firstCell.appendChild(rightArrow);
+  });
+  
+  updateArrows();
+}
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
   window.tooltipManager = new TooltipManager();
   initDropdownToggle();
@@ -1251,6 +1373,9 @@ document.addEventListener("DOMContentLoaded", () => {
         // Apply image scaling
         applyImageScaling(poemText);
 
+        // Add data-label attributes to table cells for responsive layout
+        addTableDataLabels(poemText);
+
         attachLightboxEvents();
       })
       .catch((err) => {
@@ -1568,6 +1693,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Apply scale to images with scale attribute in style
         applyImageScaling(target);
+
+        // Add data-label attributes to table cells for responsive layout
+        addTableDataLabels(target);
 
         // Initialize tooltips after content is loaded - pass blog folder directly
         setTimeout(() => {
@@ -2973,12 +3101,12 @@ function formatDate(dateString) {
     // Partial date: YYYY-MM -> "Month Year"
     const year = parseInt(parts[0]);
     const month = parseInt(parts[1]) - 1; // 0-indexed
-    const date = new Date(year, month, 1);
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+    const date = new Date(Date.UTC(year, month, 1));
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', timeZone: 'UTC' });
   } else if (parts.length === 3) {
     // Full date: YYYY-MM-DD -> "Month DD, YYYY"
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
   }
 
   // Fallback for invalid format

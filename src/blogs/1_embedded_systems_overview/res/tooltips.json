@@ -90,7 +90,7 @@
         "credit": ""
     },
     "embedded_software_onboard": {
-        "text": "Devices with sufficient processing power typically run a full operating system (Linux, Android, which provide rich graphical user interfaces, making the device intuitive to use without requiring any off-device software.",
+        "text": "Devices with sufficient processing power typically run a full operating system (Linux, Android) which provide rich graphical user interfaces, making the device intuitive to use without requiring any off-device software.",
         "media": "",
         "alt": "",
         "credit": ""
@@ -368,7 +368,7 @@
         "text": "<strong>PCB Pads</strong><br><br>Exposed metal areas on a PCB where components are soldered. Pads provide both mechanical support and electrical connection between components and the PCB traces.",
         "media": "pcb_pads.jpg",
         "alt": "A capacitor being placed on PCB pads",
-        "credit": "mokotechnology.com/ "
+        "credit": "mokotechnology.com/"
     },
     "solder_paste": {
         "text": "<strong>Solder Paste</strong><br><br>A sticky mixture of tiny solder balls suspended in flux.<br>Applied to PCB pads before component placement, it melts during the reflow process to create permanent electrical connections.",
@@ -426,6 +426,12 @@
     },
     "ECAD": {
         "text": "Electronic Computer-Aided Design",
+        "media": "",
+        "alt": "",
+        "credit": ""
+    },
+    "MCAD": {
+        "text": "Mechanical Computer-Aided Design",
         "media": "",
         "alt": "",
         "credit": ""
