@@ -167,12 +167,6 @@
         "alt": "",
         "credit": ""
     },
-    "jtag_advanced_functionalities": {
-        "text": "<strong>Boundary Scan</strong>: Test pin states and shorts between pins on a chip without physical probes<br> <strong>Chain Debugging</strong>: Debug multiple devices connected in a daisy-chain topology",
-        "media": "",
-        "alt": "",
-        "credit": ""
-    },
     "PCB_image": {
         "text": "",
         "media": "awareness_macropad_pcb.jpg",
@@ -471,8 +465,7 @@
         "media": "starship-superheavy.gif",
         "alt": "The Starship rocket powering to orbit!!!",
         "credit": "tenor.com"
-    }
-    ,
+    },
     "solder_paste_applied": {
         "text": "Close up of a ceramic capacitor applied on top of fresh solder paste<br>Reflow will melt the solder paste and create a solid electrical and mechanical connection between the capacitor and the PCB pad below it.",
         "media": "solder_paste_applied.jpg",

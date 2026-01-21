@@ -73,7 +73,7 @@ Let's dive in!
   </ul>
 </div>
 
-<h1 id="what-is-it">1. What's an Embedded System? <a href="#what-is-it" class="header-link">🔗</a></h1>
+<h1 id="what-is-it">1. What's an Embedded System? <a href="#what-is-it" class="header-link">#</a></h1>
 <div class="highlight-box definition" id="es-definition">
 Embedded Systems (<span tt="ES">ES</span>), is an application field that merges computer science, electrical engineering and mechanical engineering to create <span tt="electronic">electronic</span> systems for <strong>specific</strong> use cases.  
 </div>
@@ -91,11 +91,11 @@ Whether a device is an <span tt="ES">ES</span> or not, is decided at <strong><em
 This is because the electronic components that comprise it can be capable of general-purpose computing, but if arranged and programmed in a specific way, the device as a whole becomes a fixed-purpose computer.  
 This is the case for most ES as it reduces cost, but for specific applications, fixed-purpose-computing components are used from the start.
 
-<h2 id="why-embedded">1.1 Why <em>'embedded'</em>? <a href="#why-embedded" class="header-link">🔗</a></h2>
+<h2 id="why-embedded">1.1 Why <em>'embedded'</em>? <a href="#why-embedded" class="header-link">#</a></h2>
 
 Embedded Systems is basically applied electronics. Such electronics is often a component of a bigger system, and as such it needs to be embedded into the bigger system to be usable. When it's a product of its own instead, the electronics can't be handed to the customer as it is, it first needs to be embedded <span tt="embedded">in some kind of enclosure</span>, hence the term embedded system.
 
-<h1 id="how-is-it-made">2. How is it made <a href="#how-is-it-made" class="header-link">🔗</a></h1>
+<h1 id="how-is-it-made">2. How is it made <a href="#how-is-it-made" class="header-link">#</a></h1>
 An embedded system is made of three main elements:
 
 - <strong>Hardware</strong>: The electronics and the mechanical components 
@@ -104,13 +104,13 @@ An embedded system is made of three main elements:
 
 The hardware provides the physical platform, the firmware controls it directly, and the software (when present) adds higher-level functionality.
 
-<h2 id="hardware">2.1 Hardware <a href="#hardware" class="header-link">🔗</a></h2>
+<h2 id="hardware">2.1 Hardware <a href="#hardware" class="header-link">#</a></h2>
 
 Hardware design requires both electrical and mechanical engineering. For both, engineers use specialized Computer-Aided Design (<span tt="CAD">CAD</span>) tools to model, simulate, and prepare designs for manufacturing.
 
 Electrical engineers use Electronic CAD (<span tt="ECAD">ECAD</span>) tools like KiCad, Altium Designer, or Eagle to design the electronics. Mechanical engineers use Mechanical CAD (<span tt="MCAD">MCAD</span>) tools like Fusion 360, SolidWorks, or CATIA to design enclosures and physical structures.
 
-<h3 id="electrical">2.1.1 Electronic <a href="#electrical" class="header-link">🔗</a></h3>
+<h3 id="electrical">2.1.1 Electronic <a href="#electrical" class="header-link">#</a></h3>
 
 The core of an <span tt="ES">ES</span> is the electronic hardware.
 
@@ -139,13 +139,13 @@ Functionally speaking, the components on a <span tt="PCB">PCB</span> fall into o
 - <strong>computational units</strong>
 - <strong>support components</strong>
 
-<h4 id="input-elements">2.1.1.1 Input Components <a href="#input-elements" class="header-link">🔗</a></h4>
+<h4 id="input-elements">2.1.1.1 Input Components <a href="#input-elements" class="header-link">#</a></h4>
 
 Think of a button, dial, touch screen, receiving antenna, magnetic sensor, light sensor, humidity sensor: anything that can produce electrical signals that describe the surrounding environment.
 
 All of these devices are connected, either directly or [through intermediate circuitry](#support-components), to the computational unit.
 
-<h4 id="output-elements">2.1.1.2 Output Components <a href="#output-elements" class="header-link">🔗</a></h4>
+<h4 id="output-elements">2.1.1.2 Output Components <a href="#output-elements" class="header-link">#</a></h4>
 
 Output components are how the <span tt="ES">ES</span> talks back to you or to other systems.
 
@@ -153,7 +153,7 @@ Think of LEDs, displays (LCD, OLED, seven-segment, e-paper), buzzers, speakers, 
 
 All of these components are controlled, either directly or [through intermediate circuitry](#support-components), by the <span tt="CU">CU</span>.
 
-<h4 id="computational-unit">2.1.1.3 Computational Units <a href="#computational-unit" class="header-link">🔗</a></h4>
+<h4 id="computational-unit">2.1.1.3 Computational Units <a href="#computational-unit" class="header-link">#</a></h4>
 
 This is the core of the system, this is where the actual computation is performed.
 
@@ -195,7 +195,7 @@ It is also common to integrate a <span tt="CPU">CPU</span> and an <span tt="FPGA
 
 Both <span tt="CPU">CPU</span>s and <span tt="FPGA">FPGA</span>s are general-purpose computational devices, but the key difference lies in how they can be reprogrammed: <span tt="CPU">CPU</span>s dynamically select the next instruction at runtime, while <span tt="FPGA">FPGA</span>s are <span tt="fpga_partial_reconfiguration">reconfigured at startup</span> via a new bitstream.
 
-<h4 id="support-components">2.1.1.4 Support Components <a href="#support-components" class="header-link">🔗</a></h4>
+<h4 id="support-components">2.1.1.4 Support Components <a href="#support-components" class="header-link">#</a></h4>
 
 Support components don't directly participate in sensing, computing, or actuating, but provide the necessary electrical environment for the system to [power on](#voltage-regulators), [function properly](#passive-components) and [maintain reliability](#protection-circuits) across all intended operating conditions.
 
@@ -205,7 +205,7 @@ These include:
 - <strong id="passive-components">Passive components:</strong> <span tt="resistors">resistors</span>, <span tt="capacitors">capacitors</span>, <span tt="inductors">inductors</span> to filter noise, and <span tt="connectors">connectors</span> to interface different parts of the system.
 - <strong id="protection-circuits">Protection circuits:</strong> <span tt="ESD_protection">ESD protection</span>, <span tt="reverse_polarity_protection">reverse polarity protection</span>, <span tt="overcurrent_protection">overcurrent protection</span>.  
 
-<h3 id="mechanical">2.1.2 Mechanical <a href="#mechanical" class="header-link">🔗</a></h3>
+<h3 id="mechanical">2.1.2 Mechanical <a href="#mechanical" class="header-link">#</a></h3>
 
 While the electronics provides the functionality, mechanical engineering provides the physical environment where the electronics will reside.
 
@@ -218,7 +218,7 @@ Electronics generate heat, so you need ways to get it out. This means heatsinks 
 The mechanical design isn't done before or after the electrical design. A change in one affects the other. From day one, you're dealing with size constraints, connectors/buttons placement, wire routing slots, etc. Ease of assembly is another big factor in the mechanical design.
 
 
-<h2 id="firmware">2.2 Firmware <a href="#firmware" class="header-link">🔗</a></h2>
+<h2 id="firmware">2.2 Firmware <a href="#firmware" class="header-link">#</a></h2>
 
 Firmware is a term mostly used in the CPU world, and it refers to the low-level programming that directly controls <span tt="ES">ES</span> hardware components: it configures registers, handles interrupts, manages timers, and interfaces with peripherals.
 
@@ -230,7 +230,7 @@ This is not always the case though, as modern embedded systems can be quite comp
 
 Some examples of such so-called <strong><em>embedded operating systems</em></strong> are <a href="https://www.freertos.org/" target="_blank">FreeRTOS</a> and <a href="https://www.zephyrproject.org/" target="_blank">Zephyr</a>.
 
-<h2 id="software">2.3 Software <a href="#software" class="header-link">🔗</a></h2>
+<h2 id="software">2.3 Software <a href="#software" class="header-link">#</a></h2>
 
 <em>Software</em> is a term used both in the <span tt="CPU">CPU</span> and <span tt="FPGA">FPGA</span> world.  
 
@@ -250,18 +250,18 @@ Software (either kind) is usually much easier to develop than firmware, as it do
 
 Let's recap all of this briefly:
 
-| Term | Description | Skillset |
-|------|-------------|----------|
-| **Firmware** | Low-level <span tt="CPU">CPU</span> code that runs on the <span tt="ES">ES</span> and directly controls hardware, referred to as <em>bare-metal programming</em> when no <span tt="OS">OS</span> is used. Complex systems may use a minimal embedded <span tt="OS">OS</span> like FreeRTOS or Zephyr. | - Electronics knowledge<br>- Bit-level programming/debugging |
-| **Embedded Software** | High-level <span tt="CPU">CPU</span> code that runs on the <span tt="ES">ES</span> on top of a canonical <span tt="OS">OS</span> like Linux or Android. Provides system services and user-facing applications. | - <span tt="OS">OS</span> system programming<br>- Linux/Android knowledge |
-| **Software** | High-level <span tt="CPU">CPU</span> code that runs off the <span tt="ES">ES</span> on a desktop-machine, on top of a canonical <span tt="OS">OS</span>. Usually aids in device interaction and makes the <span tt="ES">ES</span> user friendly. |- Desktop programming<br>- Network programming |
+| Term                  | Description                                                                                                                                                                                                                                                                                           | Skillset                                                                  |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| **Firmware**          | Low-level <span tt="CPU">CPU</span> code that runs on the <span tt="ES">ES</span> and directly controls hardware, referred to as <em>bare-metal programming</em> when no <span tt="OS">OS</span> is used. Complex systems may use a minimal embedded <span tt="OS">OS</span> like FreeRTOS or Zephyr. | - Electronics knowledge<br>- Bit-level programming/debugging              |
+| **Embedded Software** | High-level <span tt="CPU">CPU</span> code that runs on the <span tt="ES">ES</span> on top of a canonical <span tt="OS">OS</span> like Linux or Android. Provides system services and user-facing applications.                                                                                        | - <span tt="OS">OS</span> system programming<br>- Linux/Android knowledge |
+| **Software**          | High-level <span tt="CPU">CPU</span> code that runs off the <span tt="ES">ES</span> on a desktop-machine, on top of a canonical <span tt="OS">OS</span>. Usually aids in device interaction and makes the <span tt="ES">ES</span> user friendly.                                                      | - Desktop programming<br>- Network programming                            |
 
 
 In the <span tt="FPGA">FPGA</span> world instead, <em>software</em> refers to all the <span tt="ECAD">ECAD</span>/<span tt="CAD">CAD</span> tooling, like <span tt="IDE">IDE</span>s, that run <strong><em>off-device</em></strong> on the development machine and it's used for development, simulation, testing and synthesis of the <em>gateware</em>.
 
 <strong>Gateware</strong> is the code written in a <a href="https://en.wikipedia.org/wiki/Hardware_description_language" target="_blank">Hardware Description Language</a> (HDL), like Verilog or VHDL, that gets <strong>synthesized</strong> to a bitstream and then used to configure the configurable logic of the <span tt="FPGA">FPGA</span> to implement a certain function. The resulting bitstream depends on the input <span tt="HDL">HDL</span> code, <span tt="target_fpga_model">the target  device</span>, and <span tt="synthesis_toolchain">the synthesis toolchain used</span>.
 
-<h1 id="tools-of-the-trade">3. Tools of the trade <a href="#tools-of-the-trade" class="header-link">🔗</a></h1>
+<h1 id="tools-of-the-trade">3. Tools of the trade <a href="#tools-of-the-trade" class="header-link">#</a></h1>
 
 If you work in embedded systems, you must love electronics.  
 You'll be working directly with circuits, components, and electrical signals on a daily basis. Understanding how to safely handle, test, and debug electronic systems is fundamental to the job.
@@ -276,14 +276,14 @@ If you have never handled electronics before, stick to low-energy components lik
 The best way to get started is having someone showing you the basics in persons. Nevertheless, don't be afraid to try on your own.
 </div>
 
-<h2 id="multimeter">3.1 Multimeter <a href="#multimeter" class="header-link">🔗</a></h2>
+<h2 id="multimeter">3.1 Multimeter <a href="#multimeter" class="header-link">#</a></h2>
 
 This is the first tool you should get acquainted with and is also the most basic lab tool.  
 A multimeter is, for the most part, a diagnostic tool. It takes instantaneous voltage, current, resistance, inductance and capacitance readings and displays it to the user. Multimeters can both be analog and digital. <span tt="ann">Analog multimeters</span> take a continuous reading and display it with a needle meter, whereas <span tt="dmm">digital multimeters</span> take discrete readings with a frequency of a few Hertz and display the reading on a digital screen.
 
 A multimeter is used to characterize simple signals, as it only answers to wether it is there and how much it measures in that instant, while saying nothing about its behavior.
 
-<h2 id="oscilloscope">3.2 Oscilloscope <a href="#oscilloscope" class="header-link">🔗</a></h2>
+<h2 id="oscilloscope">3.2 Oscilloscope <a href="#oscilloscope" class="header-link">#</a></h2>
 
 When dealing with complex signals, we want to know more than just whether the signal is present or not. To understand a signal behavior, we need to record many different samples of it and display them over time. To do this, we need a high-frequency sampling rate and a way to <span tt="oscilloscope_data_rate">display such an immense amount of data</span> in a way that is <span tt="oscilloscope_signal_visualization">easy for the human brain to understand</span>.
 
@@ -295,7 +295,7 @@ For example, what a multimeter might show as a steady 3.3V signal, an oscillosco
 
 Oscilloscopes differ in number of <span tt="oscilloscope_channels">input channels</span>, <span tt="oscilloscope_sampling_frequency">sampling frequency</span>, <span tt="oscilloscope_bandwidth">bandwidth</span> and <span tt="signal_analysis_capabilities">signal analysis capabilities</span>. Modern, top-of-the-line oscilloscopes have bandwidths in the range of tens of GHz.
 
-<h2 id="soldering-tools">3.3 Soldering Tools <a href="#soldering-tools" class="header-link">🔗</a></h2>
+<h2 id="soldering-tools">3.3 Soldering Tools <a href="#soldering-tools" class="header-link">#</a></h2>
 
 An embedded system is made of many different components, which need to be joined electrically.  
 This is done with [solder](https://en.wikipedia.org/wiki/Solder), a metal alloy that melts between 180-300°C (depending on the lead content).
@@ -314,7 +314,7 @@ Conventional soldering works best with THT components and reflowing works best f
 
 In industrial settings, the soldering process is automated by a <span tt="soldering_robot">soldering-iron-wielding robot</span> or by using <span tt="reflow_oven">reflow-ovens</span>.
 
-<h2 id="power-supply">3.4 Power Supply <a href="#power-supply" class="header-link">🔗</a></h2>
+<h2 id="power-supply">3.4 Power Supply <a href="#power-supply" class="header-link">#</a></h2>
 
 Electronics need power to function. Some boards need 24 Volts, some need 5V, some need 3.3V. A <span tt="bench_power_supply">bench power supply</span> is a voltage and current source that can be set to specific values, allowing you to power your embedded system during development and testing.
 
@@ -324,21 +324,20 @@ Unlike wall adapters or USB power bricks, a bench power supply allows you to:
 - limit the maximum current to protect your circuit from damage in case of a short circuit
 - monitor real-time power consumption
 
-<h2 id="the-debugger">3.5 Debugger <a href="#the-debugger" class="header-link">🔗</a></h2>
+<h2 id="the-debugger">3.5 Debugger <a href="#the-debugger" class="header-link">#</a></h2>
 In embedded systems, the <span tt="debugger">debugger</span> is a device that sits between the <span tt="ES">ES</span> and the development machine, and it's used for:
 
 - <strong>Programming</strong>: <span tt="flash_program">Flashing</span> the compiled code onto the microcontroller's memory
 - <strong>Debugging</strong>: Setting breakpoints, stepping through code, and inspecting variables while the program runs on the embedded system
 - <strong>Real-time monitoring</strong>: Observing program execution and hardware state without halting the processor
 
-Embedded systems use two debugging protocols, Serial Wire Debug (SWD) and Joint Test Action Group (JTAG).
-The two serve the same code-debugging purpose, but JTAG also offers <span tt="jtag_advanced_functionalities">other advanced functionalities</span>.
+Embedded systems use several different debugging protocols, such as SWD (Serial Wire Debug), JTAG (Joint Test Action Group), and Nexus. While all are designed for code debugging, they differ in the level of scrutiny and advanced features they offer.
 
-<h1 id="examples">4. Examples <a href="#examples" class="header-link">🔗</a></h1>
+<h1 id="examples">4. Examples <a href="#examples" class="header-link">#</a></h1>
 
 Now that we've covered the fundamental concepts, components, and tools of embedded systems, let's put it all together by examining real-world examples.
 
-<h2 id="optical-mouse">4.1 Custom Optical Gaming Mouse <a href="#optical-mouse" class="header-link">🔗</a></h2>
+<h2 id="optical-mouse">4.1 Custom Optical Gaming Mouse <a href="#optical-mouse" class="header-link">#</a></h2>
 
 This is a custom-built wireless gaming mouse featuring Bluetooth/USB connectivity, a high-performance optical sensor, and rechargeable battery. It's an excellent real-world example that demonstrates all the hardware and software elements of an embedded system working together.
 
@@ -429,7 +428,7 @@ This project demonstrates how all elements of embedded systems—hardware design
 
 <em>For the full technical details, schematics, and development process, see the [complete blog post](#).</em>
 
-<h1 id="how-to-get-started">5. How to get started <a href="#how-to-get-started" class="header-link">🔗</a></h1>
+<h1 id="how-to-get-started">5. How to get started <a href="#how-to-get-started" class="header-link">#</a></h1>
 
 You are incredibly lucky: getting started with embedded systems has never been easier.
 Knowledge is basically free thanks to the internet, writing software is free, and making hardware has never been cheaper, both mechanical and electrical.
@@ -467,7 +466,8 @@ And don't forget to show it off online!!!
 - [<strong>Philip Salmony</strong>](https://www.youtube.com/@PhilSalmony)'s PCB design and DSP theory videos: excellent for understanding signal processing and board design fundamentals
 - [<strong>Dave Jones</strong>](https://www.youtube.com/@EEVblog)'s [<em>EEVblog</em>](https://www.eevblog.com/): comprehensive electronics theory videos covering everything from basic circuits to advanced measurement techniques
 - [<strong>Shahriar Shahramian</strong>](https://www.youtube.com/@TheSignalPathBlog)'s [<em>The Signal Path</em>](https://thesignalpath.com/): metrology theory and teardowns of high-end test equipment
-- [<strong>Ben Eater</strong>](https://www.youtube.com/@BenEater)'s channel: incredible step-by-step build videos showing how computers work from the ground up
+- [<strong>Ben Eater</strong>](https://www.youtube.com/@BenEater)'s channel: low-level programming and electronics videos
+- [<strong>Afro tech mods</strong>](https://www.youtube.com/@Afrotechmods)'s channel: basic electronics tutorials
 - [<strong>Adam Taylor</strong>](https://www.linkedin.com/in/adam-taylor-fpga/)'s [<em>MicroZed Chronicles</em>](https://www.hackster.io/adam-taylor) blog: FPGA articles directly from an industry expert
 
 <strong>Online Communities:</strong>

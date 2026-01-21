@@ -30,7 +30,8 @@ date: 2025-11-30
   </ul>
 </div>
 
-<h1 id="intro">Intro</h1>
+
+<h1 id="intro">Intro <a href="#intro" class="header-link">#</a></h1>
 
 This blog post is about a desktop mouse that I built for myself.
 
@@ -42,16 +43,16 @@ It features:
 - BQ24232RGTR charging circuit
 - D2F-01F mechanical switches
 
-<a id="specifications"></a>
 
-<h1 id="specifications">Specifications</h1>
+<h1 id="specifications">Specifications <a href="#specifications" class="header-link">#</a></h1>
 
 The general characteristic of the mouse I wanted were:
 
 - 2 front buttons, 2 side buttons, 1 wheel button
 - Bluetooth and USB communication
 
-<h1 id="hardware">Hardware</h1>
+
+<h1 id="hardware">Hardware <a href="#hardware" class="header-link">#</a></h1>
 
 The PCB design was done is KiCAD.
 <embed src="mouse_sch.pdf" type="application/pdf" width="100%" height="600px" />
@@ -64,7 +65,8 @@ Instead of having the mouse directly connect to the PC via Bluetooth, I decided 
 
 <img class="click-zoom" src="receiver_layout.png" style="width:80%;">
 
-<h2 id="voltage-rails">Voltage rails</h2>
+
+<h2 id="voltage-rails">Voltage rails <a href="#voltage-rails" class="header-link">#</a></h2>
 
 Let's address the elephant in the room: why three voltage rails for a freaking desktop mouse?
 
@@ -76,25 +78,29 @@ Let's address the elephant in the room: why three voltage rails for a freaking d
 
 I agree three voltage rails is a bit ridiculous, but I believe I have vaid technical reasons and this is my mouse nonetheless :).
 
-<h2 id="rotary-encoder">Rotary encoder</h2>
+
+<h2 id="rotary-encoder">Rotary encoder <a href="#rotary-encoder" class="header-link">#</a></h2>
 
 The rotary encoder is a TTC 24-teeth tactile mechanical encoder bought on AliExpress.
 
 <img class="click-zoom" src="q_dec.png" style="width:80%;">
 
-<h2 id="switches">Switches</h2>
+
+<h2 id="switches">Switches <a href="#switches" class="header-link">#</a></h2>
 
 The switches are D2F-01F mechanical switches, the so called Japanese Omron. They are the best quality mouse switch one can get (over €1 per switch!). I bought a few just in case they become hard to find.
 I initially experimented with MillMax sockets to make the switches hand-swappable for when they will wear out, but in the end I just soldered them in place, as they are easy enough to de-solder.
 
-<h2 id="battery">Battery</h2>
+
+<h2 id="battery">Battery <a href="#battery" class="header-link">#</a></h2>
 
 As a battery, a wireless mouse usually uses a lithium pouch connected via an
 I personally didn't like this solution, I wanted something more "hotswappable", so I opted for a 16340 battery and the most lightweight battery clips I could find. In particular I'm using a Vapcell 16340 T8 850mah 3A, bought directly from the manufacturer.
 
-<h1 id="firmware">Firmware</h1>
 
-The firmware was custom made in C with the Zephyr-based NRF Connect SDK, version `2.4.2`.  
+<h1 id="firmware">Firmware <a href="#firmware" class="header-link">#</a></h1>
+
+The firmware was custom made in C with the Zephyr-based NRF Connect SDK.  
 
 Nordic Semiconductor forums are awesome and the support for both learning and technical reviews is incredible!
 Even for single users like me.
@@ -117,7 +123,8 @@ One by one, I took a look at the sample for the functionality I needed to learn,
 
 The programming of the mouse is done via SWD through a J-Link and a Tag-Connect TC2030 connector.
 
-<h1 id="mechanical">Mechanical</h1>
+
+<h1 id="mechanical">Mechanical <a href="#mechanical" class="header-link">#</a></h1>
 
 The case is 3D printed in Nylon, externally modeled in Blender to honor my previous mouse, a Perixx MX-1000, and internally in Fusion360 to snap/press fit the PCB.
 Everything is held together by just one, easily accessible screw.
@@ -136,7 +143,8 @@ The mouse wheel was modeled in Fusion360 to look like the one in the Perixx MX-1
 
 <a id="result"></a>
 
-<h1 id="result">Result</h1>
+
+<h1 id="result">Result <a href="#result" class="header-link">#</a></h1>
 
 The mouse weights ~87 grams, which is an improvement over the ~130 grams of the Perixx MX-1000.
 
@@ -213,9 +221,10 @@ if (y_combined != 0)
 
 Overall, I have been using it for a number of months, and I'm very happy with it.
 
-<h1 id="app">Mouse client</h1>
 
-I also made a small desktop app that connects to the COM port exposed by the mouse and it shows statistics about button presses.
+<h1 id="app">Mouse client <a href="#app" class="header-link">#</a></h1>
+
+I also vibe coded a small desktop app that connects to the COM port exposed by the mouse and it shows statistics about button presses.
 This stats gathering was made mostly as a "could I do it if I wanted" kind of thing, but it can actually be useful for maintenance (after N clicks replace the switch).
 
 I have a ich for keeping track of things, and doing statistical analysis over everything in my life, and this app certainly helps me scratch it.
@@ -226,7 +235,8 @@ The app starts at system startup and sits on the system tray-bar. Whenever the m
 
 _The battery level bug was later fixed._
 
-<h1 id="conclusions">Conclusions</h1>
+
+<h1 id="conclusions">Conclusions <a href="#conclusions" class="header-link">#</a></h1>
 
 This project brought me down several rabbit holes, one of them was studying [how make mechanical switches last a long time](https://www.youtube.com/watch?v=v5BhECVlKJA). It turns out there is a reason if modern gaming mouse switches last so long and older ones didn't have longevity problems.
 
@@ -241,7 +251,8 @@ Here is a clip of me playing Battlefield 4 with my mouse!
   <source src="bf4.mp4" type="video/mp4">
 </video>
 
-<h1 id="pic_dump">Picture dump</h1>
+
+<h1 id="pic_dump">Picture dump <a href="#pic_dump" class="header-link">#</a></h1>
 
 <div class="image-grid">
   <img class="click-zoom" src="antenna_assembly.jpg" alt="MCU and antenna assembly" />
