@@ -2047,6 +2047,11 @@ pre code {
   overflow-x: hidden;
 }
 
+/* Audio tooltips scroll with page content */
+.tooltip.has-audio {
+  position: absolute !important;
+}
+
 /* Consolidated in media queries section at end of file */
 
 /* Consolidated in media queries section at end of file */

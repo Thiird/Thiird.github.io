@@ -1974,8 +1974,11 @@ class TooltipManager {
     // Update tooltip position on scroll to keep it aligned with trigger (desktop only)
     window.addEventListener('scroll', () => {
       // On mobile (≤800px), don't reposition on scroll - let tooltip scroll away naturally
+      // Audio tooltips also don't reposition - they scroll with the page
       const isMobile = window.innerWidth <= 800;
-      if (isMobile) {
+      const hasAudio = this.tooltip && this.tooltip.classList.contains('has-audio');
+      
+      if (isMobile || hasAudio) {
         return;
       }
 
@@ -2063,7 +2066,14 @@ class TooltipManager {
   }
 
   showTooltip(trigger, data, mouseX = null) {
-    this.hideActiveTooltip();
+      // Hide any currently visible tooltips
+      document.querySelectorAll('.tooltip.show').forEach(tip => {
+        tip.classList.remove('show');
+        setTimeout(() => {
+          if (tip.parentNode) tip.parentNode.removeChild(tip);
+        }, 300);
+      });
+      this.hideActiveTooltip();
 
     const tooltip = this.createTooltip(data);
 
@@ -2174,6 +2184,8 @@ class TooltipManager {
     // Use 'media' field for images or audio
     if (data.media) {
       if (data.media.endsWith('.mp3') || data.media.endsWith('.wav') || data.media.endsWith('.ogg')) {
+        // Add has-audio class for CSS styling
+        tooltip.classList.add('has-audio');
         // Create audio player matching poems page - using CSS variables for dynamic theming
         const audioPlayer = document.createElement('div');
         audioPlayer.className = 'tooltip-audio-player';
@@ -2370,6 +2382,7 @@ class TooltipManager {
         playerControls.appendChild(progressContainer);
         playerControls.appendChild(duration);
         audioPlayer.appendChild(playerControls);
+        audioPlayer.appendChild(audioElement);
         content.appendChild(audioPlayer);
 
         this.currentAudio = audioElement;
@@ -2667,8 +2680,11 @@ class TooltipManager {
     const spaceBelow = window.innerHeight - bottomLineRect.bottom;
     const requiredSpace = tooltipHeight + this.verticalOffset + margin;
 
+    // Check if tooltip has audio - audio tooltips always use absolute positioning (scroll with page)
+    const hasAudio = tooltip.classList.contains('has-audio');
     // On mobile, use absolute positioning (scrolls with page), on desktop use fixed (stays in viewport)
-    const useAbsolutePosition = isMobile;
+    // Exception: audio tooltips always use absolute positioning to scroll with the page
+    const useAbsolutePosition = isMobile || hasAudio;
 
     if (useAbsolutePosition) {
       // Absolute positioning: calculate position relative to page (including scroll offset)

@@ -21,13 +21,13 @@ I like to be in order, on time, and know how things work down to the single atom
 
 I rode a <span tt="drz400">Suzuki DRZ-400 SM</span> that I passionately maintained for six years.
 I dabble in tennis, calisthenics, running, powerlifting and weightlifting.
-I write poems and publish them on this website. I like to think that in doing so, I'm _"contributing to Humanity's collective enlightenment"_.
+I write poems as a way to put into writings what I believe to be true and important. They are published on this website <em>(Writings -> Personal)</em>.
 
 I can enjoy a surprisingly varied amount of music, from <span tt="sad-music">emotional 1 beat-per-century track</span> to stupid <span tt="crazy-music">230 beats-per-minute hardcore</span>.
 
 Some of my favorite movies are _Tron Legacy_, _Sunshine_, _Interstellar_, _Iron Man_.
 
-I'm a very curious person, I love to ask questions.
+I'm a <em>very</em> curious person, I love to ask questions.
 
 I'm a huge fan of technology and I take great pride for being in a position where I get to study and develop it.
 
