@@ -2322,6 +2322,33 @@ pre code {
   color: var(--accent-primary);
 }
 
+/* Header anchor links - hide by default, show on heading hover */
+.header-link {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  text-decoration: none;
+  color: var(--text-secondary);
+  margin-left: 0.3em;
+  font-size: 0;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.header-link::before {
+  content: "🔗";
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+h1:hover .header-link,
+h2:hover .header-link,
+h3:hover .header-link,
+h4:hover .header-link,
+h5:hover .header-link,
+h6:hover .header-link {
+  opacity: 1;
+}
+
 .history-section {
   max-width: 800px;
   margin-left: auto;
