@@ -17,6 +17,25 @@
     </script>
     <link rel="stylesheet" href="styles.css" />
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        const renderer = new marked.Renderer();
+        renderer.link = function (href, title, text) {
+            let linkHref = href;
+            let linkText = text;
+            let linkTitle = title;
+            if (typeof href === "object" && href !== null) {
+                linkHref = href.href || "";
+                linkText = href.text || text || "";
+                linkTitle = href.title || title || "";
+            }
+            linkHref = linkHref.replace(/"/g, "&quot;");
+            linkText = linkText || "Link";
+            return `<a href="${linkHref}" target="_blank" rel="noopener noreferrer" ${linkTitle ? `title="${linkTitle}"` : ""}>${linkText}</a>`;
+        };
+        marked.setOptions({
+            renderer: renderer
+        });
+    </script>
   </head>
   <body>
     <button id="backToTop" title="Go to top">⬆</button>
@@ -60,7 +79,19 @@
       fetch("career/career.md")
         .then(response => response.text())
         .then(markdown => {
-          const html = marked.parse(markdown);
+          // Process relative links to point to career folder (similar to blog processing)
+          let md = markdown.replace(
+            /\[([^\]]+)\]\(([^)]+)\)/g,
+            (match, text, href) => {
+              // If it's a relative path (not http and no slashes), prepend career/
+              if (!href.startsWith('http') && !href.includes('/')) {
+                return `[${text}](career/${href})`;
+              }
+              return match;
+            }
+          );
+          
+          const html = marked.parse(md);
           document.getElementById("contentText").innerHTML = html;
         })
         .catch(err => {

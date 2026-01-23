@@ -1,7 +1,7 @@
 # Present
 I'm currently working as an Embedded Systems Engineer in Bologna, Italy.
 
-When I'm not working, you will find me chatting with people online, working out doing calisthenics, planning stuff.
+When I'm not working, you will find me chatting with people online, working out with calisthenics and planning stuff.
 I used to be an avid PC gamer, but nowadays I mostly play just to meet people or for the nostalgia.
 
 # Background
@@ -27,7 +27,7 @@ I can enjoy a surprisingly varied amount of music, from <span tt="sad-music">emo
 
 Some of my favorite movies are _Tron Legacy_, _Sunshine_, _Interstellar_, _Iron Man_.
 
-I'm a <em>very</em> curious person, I love to ask questions.
+I'm a <em>very</em> curious person, I love to ask questions. Some people might say I ask too many.
 
 I'm a huge fan of technology and I take great pride for being in a position where I get to study and develop it.
 
