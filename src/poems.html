@@ -40,6 +40,16 @@
         </div>
 
         <div class="poem-container">
+            <!-- Reading Mode Controls -->
+            <div class="reading-mode-controls" id="readingModeControls">
+                <button class="mode-icon" id="dynamicModeBtn" title="Dynamic Performance Mode">
+                    <span>✒️</span>
+                </button>
+                <button class="tooltip-toggle-icon" id="tooltipToggleIcon" title="Toggle Tooltips" style="display: none;">
+                    <span id="tooltipIconSymbol">💬</span>
+                </button>
+            </div>
+
             <div class="poem-content" id="poemContent">
                 <div class="audio-player" style="display: none" id="audioPlayer">
                     <div class="player-controls">
@@ -79,6 +89,10 @@
         document.addEventListener("DOMContentLoaded", () => {
             if (typeof initPoemPage === "function") {
                 initPoemPage();
+            }
+            // Initialize reading mode manager
+            if (typeof initReadingModeManager === "function") {
+                initReadingModeManager();
             }
         });
     </script>

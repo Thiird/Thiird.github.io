@@ -9,7 +9,7 @@
     overflow: hidden;
   }
 
-  /* mobile overrides for orientation-specific classes */
+  
   .slideshow-images.vertical {
     width: min(95vw, var(--slideshow-mobile-vertical-width));
     height: var(--slideshow-mobile-vertical-height);
@@ -26,7 +26,7 @@
     height: 100%;
   }
 
-  /* Mobile: single showcase window */
+  
   #image-showcase-container {
     margin: 32px 50px 40px 50px;
     justify-content: center;
@@ -57,7 +57,6 @@
   }
 }
 
-/* Section divider */
 .section-divider {
   max-width: 800px;
   margin: 20px auto;
@@ -66,7 +65,6 @@
   opacity: 0.3;
 }
 
-/* Default: horizontal showcase windows side-by-side (desktop/tablet) */
 #image-showcase-container {
   display: flex;
   flex-direction: row;
@@ -147,14 +145,13 @@
   left: 52%;
 }
 
-/* Slideshow styles */
 .slideshow-container {
   width: 100%;
   max-width: 900px;
   margin: 2em auto 2em auto;
   position: relative;
   background: transparent;
-  /* made transparent as requested */
+  
   border-radius: 12px;
   overflow: hidden;
   display: flex;
@@ -162,7 +159,6 @@
   align-items: center;
 }
 
-/* Responsive slideshow images */
 .slideshow-images {
   position: relative;
   width: 100%;
@@ -171,7 +167,6 @@
   overflow: hidden;
 }
 
-/* Desktop orientation-specific container classes */
 .slideshow-images.vertical {
   max-width: var(--slideshow-vertical-width);
   height: var(--slideshow-vertical-height);
@@ -182,7 +177,6 @@
   height: var(--slideshow-horizontal-height);
 }
 
-/* Image fitting helper classes */
 .slideshow-img.contain {
   object-fit: contain;
 }
@@ -254,7 +248,6 @@
   }
 }
 
-/* zooming removed: slide-only animation requested */
 .slideshow-img.slide-in {
   animation: slideInRight 0.48s cubic-bezier(.4, 0, .2, 1);
 }
@@ -321,7 +314,6 @@
   }
 }
 
-
 .slideshow-img.slide-in-right {
   animation: slideInRight 0.48s cubic-bezier(.4, 0, .2, 1);
 }
@@ -329,7 +321,7 @@
 .slideshow-prev,
 .slideshow-next {
   display: none !important;
-  /* hide side buttons for auto slideshow */
+  
 }
 
 .slideshow-dots {
@@ -401,7 +393,6 @@
   padding-top: 2.5em;
 }
 
-/* Blog table styling */
 .blog-text table,
 .content-text table {
   border-collapse: collapse;
@@ -430,7 +421,6 @@
   text-align: center;
 }
 
-/* Image grid styling */
 .image-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -443,19 +433,19 @@
 }
 
 :root {
-  /* Slideshow sizing parameters (modify these to change the vertical window size) */
+  
   --slideshow-width: 360px;
-  /* desktop slideshow width */
+  
   --slideshow-height: 480px;
-  /* desktop slideshow height */
+  
   --slideshow-mobile-width: 300px;
-  /* mobile slideshow width */
+  
   --slideshow-mobile-height: 400px;
-  /* mobile slideshow height */
+  
   --slideshow-max-height: 520px;
-  /* common maximum height for slideshow window */
+  
 
-  /* Orientation-specific sizes */
+  
   --slideshow-vertical-width: 320px;
   --slideshow-vertical-height: 480px;
   --slideshow-horizontal-width: 420px;
@@ -477,7 +467,7 @@
   --tooltip-show-delay: 300;
   --tooltip-hide-delay: 300;
   --tooltip-vertical-offset: 10;
-  /* Anchor highlight default (overridden per theme) */
+  
   --anchor-highlight-bg: rgba(255, 220, 100, 0.6);
 }
 
@@ -523,7 +513,7 @@
   --font-family-base: Arial, sans-serif;
   --font-weight-normal: 400;
   --font-weight-body: 400;
-  /* Light overlay on dark backgrounds */
+  
   --anchor-highlight-bg: rgba(255, 255, 255, 0.10);
 }
 
@@ -569,7 +559,7 @@
   --font-family-base: Arial, sans-serif;
   --font-weight-normal: 400;
   --font-weight-body: 400;
-  /* Light overlay on blue-ish background */
+  
   --anchor-highlight-bg: rgba(255, 255, 255, 0.12);
 }
 
@@ -615,7 +605,7 @@
   --font-family-base: Arial, sans-serif;
   --font-weight-normal: 600;
   --font-weight-body: 500;
-  /* Blue-tinted highlight for light theme */
+  
   --anchor-highlight-bg: rgba(41, 128, 185, 0.18);
 }
 
@@ -948,7 +938,8 @@ body.no-scroll {
 .poem-container,
 .blog-container {
   flex: 1;
-  background-color: #1a2520070 box-sizing: border-box;
+  background-color: #1a252007;
+  box-sizing: border-box;
 }
 
 .poem-list {
@@ -1115,7 +1106,6 @@ body.no-scroll {
   position: relative;
 }
 
-/* No results list item */
 #blogListItems .no-results,
 #poemListItems .no-results {
   color: var(--text-secondary);
@@ -1125,7 +1115,6 @@ body.no-scroll {
   opacity: 0.6;
 }
 
-/* Search match highlighting */
 #blogListItems mark,
 #poemListItems mark {
   background-color: var(--accent-primary);
@@ -1278,7 +1267,6 @@ body.no-scroll {
   color: var(--accent-primary);
 }
 
-/* Current/active item styling in sidebars */
 .poem-link.current,
 .blog-link.current {
   color: var(--accent-primary);
@@ -1291,7 +1279,6 @@ body.no-scroll {
   padding: 8px 12px;
   border-radius: 8px;
   border: 1px solid var(--audio-player-border);
-  max-width: 600px;
   min-width: 280px;
   width: 100%;
   position: relative;
@@ -1300,8 +1287,6 @@ body.no-scroll {
   margin-right: auto;
   box-sizing: border-box;
 }
-
-/* Consolidated in media queries section at end of file */
 
 .audio-title {
   display: none;
@@ -1660,8 +1645,6 @@ body.no-scroll {
   display: none;
 }
 
-/* Consolidated in media queries section at end of file */
-
 #backToTop,
 #themeToggle {
   position: fixed;
@@ -2004,8 +1987,22 @@ pre code {
   z-index: 2960;
 }
 
+body:not(.tooltips-disabled) .tooltip-trigger {
+  cursor: pointer;
+}
+
 .tooltip-trigger.active {
   background: var(--tooltip-trigger-hover);
+}
+
+.tooltip-trigger.flash {
+  animation: tooltipFlash 1.5s ease;
+}
+
+@keyframes tooltipFlash {
+  0% { background: var(--tooltip-trigger-bg); }
+  20% { background: rgba(255, 215, 0, 0.5); } 
+  100% { background: var(--tooltip-trigger-bg); } 
 }
 
 .tooltip-overlay {
@@ -2047,14 +2044,9 @@ pre code {
   overflow-x: hidden;
 }
 
-/* Audio tooltips scroll with page content */
 .tooltip.has-audio {
   position: absolute !important;
 }
-
-/* Consolidated in media queries section at end of file */
-
-/* Consolidated in media queries section at end of file */
 
 .tooltip.show {
   opacity: 1;
@@ -2086,7 +2078,6 @@ pre code {
   transition: filter 0.2s ease;
 }
 
-/* Clickable tooltip images (with zoom capability) */
 .tooltip-gif.clickable {
   cursor: zoom-in;
 }
@@ -2095,7 +2086,6 @@ pre code {
   filter: brightness(0.6);
 }
 
-/* Magnifying glass icon overlay for clickable images */
 .tooltip-image-wrapper {
   position: relative;
   display: inline-block;
@@ -2322,7 +2312,6 @@ pre code {
   color: var(--accent-primary);
 }
 
-/* Header anchor links - hide by default, show on heading hover */
 .header-link {
   opacity: 0;
   transition: opacity 0.2s ease;
@@ -2468,7 +2457,6 @@ h6:hover .header-link {
   grid-column: 2;
 }
 
-/* Use CSS to hide date when there's not enough space - fallback to viewport */
 @supports not (container-type: inline-size) {
   @media (max-width: 450px) {
     .history-item a {
@@ -2481,7 +2469,6 @@ h6:hover .header-link {
   }
 }
 
-/* Container-based: hide date at narrower threshold - date stays visible longer */
 @container (max-width: 480px) {
   .history-item a {
     grid-template-columns: 1fr;
@@ -2492,7 +2479,6 @@ h6:hover .header-link {
   }
 }
 
-/* Fallback for browsers without container query support - hide date on very narrow viewports */
 @supports not (container-type: inline-size) {
   @media (max-width: 500px) {
     .history-item-date {
@@ -2500,8 +2486,6 @@ h6:hover .header-link {
     }
   }
 }
-
-/* Consolidated in media queries section at end of file */
 
 .poem-date,
 .blog-date {
@@ -2519,9 +2503,6 @@ h6:hover .header-link {
 
 .blog-text img,
 
-/* Career Page Styles */
-
-/* Career Intro Section */
 .career-intro {
   margin-bottom: 40px;
 }
@@ -2555,7 +2536,6 @@ h6:hover .header-link {
   text-decoration: underline;
 }
 
-/* Career 2 - Card Grid Layout */
 .career-header {
   text-align: center;
   margin-bottom: 40px;
@@ -2658,7 +2638,6 @@ h6:hover .header-link {
   line-height: 1.5;
 }
 
-/* Career 3 - Compact List Layout */
 .career-compact-header {
   display: flex;
   justify-content: space-between;
@@ -2746,9 +2725,6 @@ h6:hover .header-link {
   color: var(--text-primary);
 }
 
-/* Responsive Design */
-/* Consolidated in media queries section at end of file */
-
 .blog-text img,
 .poem-text img,
 .content-text img {
@@ -2773,20 +2749,17 @@ pre code {
   word-wrap: normal;
 }
 
-/* Highlight target when navigating to anchor links */
 :target,
 .anchor-highlight {
   animation: highlight-fade 2s ease-out;
   border-radius: 4px;
 }
 
-/* Prevent highlighting from applying to parent anchor-blocks */
 .anchor-block:target {
   animation: none;
   background-color: transparent;
 }
 
-/* Only highlight the direct target element inside anchor-blocks */
 .anchor-block :target {
   animation: highlight-fade 2s ease-out;
   border-radius: 4px;
@@ -2802,11 +2775,6 @@ pre code {
   }
 }
 
-/* ============================================
-   CONSOLIDATED MEDIA QUERIES
-   ============================================ */
-
-/* 400px and below */
 @media (max-width: 400px) {
   .tooltip {
     max-width: calc(100vw - 16px);
@@ -2825,7 +2793,6 @@ pre code {
   }
 }
 
-/* 600px and below */
 @media (max-width: 600px) {
   .audio-player {
     max-width: 100%;
@@ -2883,7 +2850,6 @@ pre code {
   }
 }
 
-/* 768px and below */
 @media (max-width: 768px) {
   .career-compact-header {
     flex-direction: column;
@@ -2904,7 +2870,7 @@ pre code {
     grid-template-columns: 1fr;
   }
 
-  /* Responsive table: combine into single card with navigation */
+  
   .blog-text table,
   .content-text table {
     border: 0;
@@ -2916,7 +2882,7 @@ pre code {
     display: none;
   }
 
-  /* Hide all rows by default */
+  
   .blog-text table tbody tr,
   .content-text table tbody tr {
     display: none;
@@ -2926,7 +2892,7 @@ pre code {
     overflow: hidden;
   }
 
-  /* Show only the active row */
+  
   .blog-text table tbody tr.active,
   .content-text table tbody tr.active {
     display: block;
@@ -2946,7 +2912,7 @@ pre code {
     border-bottom: 0;
   }
 
-  /* First column: add navigation arrows */
+  
   .blog-text table td:first-child,
   .content-text table td:first-child {
     text-align: center !important;
@@ -2960,7 +2926,7 @@ pre code {
     padding: 12px 50px;
   }
 
-  /* Navigation arrows */
+  
   .table-arrow {
     position: absolute;
     top: 50%;
@@ -2993,7 +2959,7 @@ pre code {
     right: 10px;
   }
 
-  /* Other columns: show label above content */
+  
   .blog-text table td:not(:first-child)::before,
   .content-text table td:not(:first-child)::before {
     content: attr(data-label);
@@ -3001,5 +2967,112 @@ pre code {
     font-weight: 700;
     margin-bottom: 6px;
     color: var(--text-secondary, #666);
+  }
+}
+
+.reading-mode-controls {
+  position: fixed;
+  top: 100px;
+  right: 10px;
+  z-index: 3500;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.mode-icon,
+.tooltip-toggle-icon {
+  font-size: 18px;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: 1px solid var(--border-secondary);
+  border-radius: 5px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.tooltip-toggle-icon {
+  opacity: 0.4; 
+}
+
+.mode-icon.positioned,
+.tooltip-toggle-icon.positioned {
+  
+}
+
+.mode-icon:hover,
+.tooltip-toggle-icon:hover {
+  background-color: var(--accent-hover);
+}
+
+.mode-icon:focus,
+.tooltip-toggle-icon:focus {
+  outline: none;
+  background-color: var(--button-bg);
+}
+
+.mode-icon:active,
+.tooltip-toggle-icon:active {
+  opacity: 0.8;
+}
+
+.mode-icon.active {
+  
+}
+
+.tooltip-toggle-icon.disabled {
+  opacity: 0.4;
+  background-color: var(--button-bg);
+}
+
+.poem-title {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.5s ease;
+  margin-bottom: 2em;
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.poem-title.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+body.dynamic-mode .reading-mode-controls {
+  position: fixed;
+  z-index: 1002;
+}
+
+body.tooltips-disabled .tooltip-trigger {
+  background: transparent !important;
+  cursor: text !important;
+  text-decoration: none !important;
+  pointer-events: none !important;
+  border-radius: 0 !important;
+}
+
+body.dynamic-mode .tooltip-trigger {
+  background: transparent !important;
+  cursor: text !important;
+  text-decoration: none !important;
+  pointer-events: none !important;
+  border-radius: 0 !important;
+}
+
+body.dynamic-mode .tooltip-box {
+  display: none !important;
+}
+
+@media (max-width: 800px) {
+  body.dynamic-mode .poem-text {
+    font-size: 18px;
+    line-height: 1.8;
   }
 }

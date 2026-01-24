@@ -1,9 +1,8 @@
 let zoomLevel = 0;
-const zoomScales = [1, 1.5, 2]; // 1x, 1.5x, 2x zoom levels
+const zoomScales = [1, 1.5, 2];
 let currentImageIndex = 0;
 let imageList = [];
 
-// Global function to close all dropdown menus
 function closeAllDropdowns() {
   const dropdowns = document.querySelectorAll(".top-menu .dropdown");
   dropdowns.forEach((dropdown) => {
@@ -15,7 +14,6 @@ function closeAllDropdowns() {
 
 function calculateFitScale(img) {
   const isMobile = window.innerWidth <= 600;
-  // On mobile: no buttons, use 90% width. Desktop: 40px button + 40px padding on each side
   const buttonWidth = 40;
   const sidePadding = 40;
   const horizontalSpace = isMobile ? (window.innerWidth * 0.1) : (buttonWidth * 2 + sidePadding * 2);
@@ -63,7 +61,7 @@ function fitAndCenterImage(img) {
 }
 
 function fadeApply(img, lightbox, scale, cursorX, cursorY) {
-  img.style.opacity = 0; // Fade out
+  img.style.opacity = 0;
   setTimeout(() => {
     const oldRect = img.getBoundingClientRect();
     const oldWidth = oldRect.width;
@@ -71,31 +69,26 @@ function fadeApply(img, lightbox, scale, cursorX, cursorY) {
     const oldLeft = parseFloat(img.style.left) || 0;
     const oldTop = parseFloat(img.style.top) || 0;
 
-    // Apply new scale
     applyScale(img, scale);
     const newRect = img.getBoundingClientRect();
     const newWidth = newRect.width;
     const newHeight = newRect.height;
 
     if (cursorX !== undefined && cursorY !== undefined && zoomLevel > 0) {
-      // Calculate cursor position relative to old image
       const relX = (cursorX - oldRect.left) / oldWidth;
       const relY = (cursorY - oldRect.top) / oldHeight;
 
-      // Calculate new position to keep cursor point fixed
       const newLeft = cursorX - relX * newWidth;
       const newTop = cursorY - relY * newHeight;
 
       img.style.left = newLeft + "px";
       img.style.top = newTop + "px";
     } else {
-      // Center image if no cursor position or at base zoom
       centerImageIfSmall(img, lightbox);
     }
 
-    // Fade in
     img.style.opacity = 1;
-  }, 20); // Reduced from 50ms to 20ms for quicker transition
+  }, 20);
 }
 
 function resetZoom(img, lightbox) {
@@ -104,7 +97,6 @@ function resetZoom(img, lightbox) {
   const scale = calculateFitScale(img);
   fadeApply(img, lightbox, scale);
 
-  // Show caption at basic zoom level
   const caption = document.getElementById("lightbox-caption");
   if (caption && caption.textContent.trim()) {
     caption.style.display = "block";
@@ -113,12 +105,10 @@ function resetZoom(img, lightbox) {
 
 function updateZoom(img, lightbox, cursorX, cursorY) {
   const fitScale = calculateFitScale(img);
-  // Always use fitScale as the base, then multiply by the zoom multiplier
   const scale = fitScale * zoomScales[zoomLevel];
   img.classList.toggle("zoomed", zoomLevel > 0);
   fadeApply(img, lightbox, scale, cursorX, cursorY);
 
-  // Hide caption when zoomed beyond basic level
   const caption = document.getElementById("lightbox-caption");
   if (caption) {
     caption.style.display = zoomLevel > 0 ? "none" : "block";
@@ -129,7 +119,6 @@ function initDropdownToggle() {
   const dropdowns = document.querySelectorAll(".top-menu .dropdown");
   const isMobile = window.innerWidth <= 800;
 
-  // Remove existing event listeners to prevent duplicates
   dropdowns.forEach((dropdown) => {
     const button = dropdown.querySelector(".menu-button");
     const menu = dropdown.querySelector(".dropdown-menu");
@@ -138,13 +127,11 @@ function initDropdownToggle() {
     dropdown.classList.remove("active");
     if (menu) {
       menu.style.display = "none";
-      // reset any inline positioning from previous runs
       menu.style.position = "";
       menu.style.top = "";
       menu.style.left = "";
       menu.style.transform = "";
       menu.style.zIndex = "";
-      // cleanup any previous handlers
       menu._reposition && window.removeEventListener("scroll", menu._reposition);
       menu._reposition && window.removeEventListener("resize", menu._reposition);
       if (menu._mouseenterHandler) menu.removeEventListener("mouseenter", menu._mouseenterHandler);
@@ -158,28 +145,21 @@ function initDropdownToggle() {
     if (button._clickHandler) button.removeEventListener("click", button._clickHandler);
   });
 
-  // Helper to position dropdown as fixed under the trigger
   function positionFixedMenu(button, menu) {
     if (!button || !menu) return;
-    // ensure menu is in document flow and rendered to measure
     menu.style.display = "block";
     menu.style.position = "fixed";
     menu.style.zIndex = "99999";
     menu.style.transform = "none";
-    // measure button and menu
     const btnRect = button.getBoundingClientRect();
     const menuRect = menu.getBoundingClientRect();
-    // overlap 0 so submenu starts exactly where top menu finishes
-    const overlap = 0; // px overlap into the trigger area
-    const gap = 0; // no gap
+    const overlap = 0;
+    const gap = 0;
 
-    // center the menu horizontally over the button, but clamp to viewport
     let left = btnRect.left + btnRect.width / 2 - menuRect.width / 2;
     left = Math.max(8, Math.min(left, window.innerWidth - menuRect.width - 8));
-    // top is button bottom + gap but we subtract overlap so menu can overlap if needed
     let top = btnRect.bottom + gap - overlap;
     if (top + menuRect.height > window.innerHeight - 8) {
-      // place above the button with small overlap
       top = btnRect.top - menuRect.height - gap + overlap;
       if (top < 8) top = 8;
     }
@@ -195,11 +175,9 @@ function initDropdownToggle() {
     if (!button || !menu) return;
 
     if (isMobile) {
-      // Mobile: click toggles inline menu (original behaviour)
       button._clickHandler = (e) => {
         e.preventDefault();
         const isActive = dropdown.classList.contains("active");
-        // close others
         document.querySelectorAll(".top-menu .dropdown").forEach((d) => {
           if (d !== dropdown) {
             d.classList.remove("active");
@@ -212,7 +190,6 @@ function initDropdownToggle() {
       };
       button.addEventListener("click", button._clickHandler);
 
-      // Close menu when any link inside is clicked
       const menuLinks = menu.querySelectorAll("a");
       menuLinks.forEach(link => {
         link.addEventListener("click", () => {
@@ -220,30 +197,23 @@ function initDropdownToggle() {
         });
       });
     } else {
-      // Desktop: show on hover, position as fixed so it floats above content
       dropdown._mouseenterHandler = (e) => {
-        // show immediately
         positionFixedMenu(button, menu);
         dropdown.classList.add("active");
         menu.style.display = "block";
 
-        // reposition while open
         const reposition = () => positionFixedMenu(button, menu);
         window.addEventListener("scroll", reposition, { passive: true });
         window.addEventListener("resize", reposition);
         menu._reposition = reposition;
 
-        // ensure menu's enter/leave are wired to preserve visibility when moving between
         menu._mouseenterHandler = (ev) => {
-          // if pointer enters menu, keep it open (no-op)
         };
         menu._mouseleaveHandler = (ev) => {
           const related = ev.relatedTarget;
-          // only hide if pointer is not moving back to the button or inside the dropdown element
           if (related && (button.contains(related) || menu.contains(related))) {
             return;
           }
-          // hide immediately (no delay)
           dropdown.classList.remove("active");
           menu.style.display = "none";
           if (menu._reposition) {
@@ -258,11 +228,9 @@ function initDropdownToggle() {
 
       dropdown._mouseleaveHandler = (e) => {
         const related = e.relatedTarget;
-        // if pointer moved into menu or button, do nothing (keeps visible)
         if (related && (button.contains(related) || menu.contains(related))) {
           return;
         }
-        // hide immediately (no delay)
         dropdown.classList.remove("active");
         menu.style.display = "none";
         if (menu._reposition) {
@@ -283,14 +251,11 @@ function initDropdownToggle() {
       dropdown.addEventListener("mouseenter", dropdown._mouseenterHandler);
       dropdown.addEventListener("mouseleave", dropdown._mouseleaveHandler);
 
-      // ensure moving from menu back to button keeps it visible: add button mouseenter to re-show
       button.addEventListener("mouseenter", () => {
-        // if menu was hidden due to quick movement, re-show immediately
         if (menu.style.display !== "block") {
           positionFixedMenu(button, menu);
           dropdown.classList.add("active");
           menu.style.display = "block";
-          // reattach reposition handlers
           const reposition = () => positionFixedMenu(button, menu);
           window.addEventListener("scroll", reposition, { passive: true });
           window.addEventListener("resize", reposition);
@@ -300,7 +265,6 @@ function initDropdownToggle() {
     }
   });
 
-  // Click-away handler only on mobile (keeps original mobile behavior)
   document.removeEventListener("click", handleOutsideClick);
   if (isMobile) {
     document.addEventListener("click", handleOutsideClick);
@@ -321,12 +285,10 @@ function updateSidebarTop() {
   const sidebars = document.querySelectorAll(".blog-list, .poem-list");
 
   if (banner && sidebars.length > 0) {
-    // On desktop (width > 800px), calculate position based on banner visibility
     if (window.innerWidth > 800) {
       const bannerRect = banner.getBoundingClientRect();
       const scrollY = window.pageYOffset || document.documentElement.scrollTop;
 
-      // Calculate how much of banner is still visible
       const bannerBottom = bannerRect.bottom;
       const topOffset = Math.max(0, bannerBottom);
 
@@ -344,8 +306,6 @@ function getUrlParameter(name) {
 }
 
 function applyImageScaling(container) {
-  // This function is no longer needed - width handles sizing natively
-  // Keep it as a no-op for backward compatibility
   if (!container) return;
 }
 
@@ -366,26 +326,22 @@ function addTableDataLabels(container) {
         }
       });
       
-      // For mobile: mark first row as active
       if (rowIndex === 0) {
         row.classList.add('active');
       }
     });
     
-    // Add navigation arrows for mobile on tables with multiple rows
     if (rows.length > 1 && window.innerWidth <= 768) {
       addTableArrows(table, rows);
     }
   });
   
-  // Re-create navigation on resize
   let resizeTimer;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
       tables.forEach(table => {
         const rows = table.querySelectorAll('tbody tr');
-        // Remove existing arrows
         rows.forEach(row => {
           const arrows = row.querySelectorAll('.table-arrow');
           arrows.forEach(arrow => arrow.remove());
@@ -408,7 +364,6 @@ function addTableArrows(table, rows) {
       const rightArrow = row.querySelector('.table-arrow-right');
       
       if (leftArrow && rightArrow) {
-        // Update disabled state
         if (currentIndex === 0) {
           leftArrow.classList.add('disabled');
         } else {
@@ -428,19 +383,16 @@ function addTableArrows(table, rows) {
     const firstCell = row.querySelector('td:first-child');
     if (!firstCell) return;
     
-    // Create left arrow
     const leftArrow = document.createElement('button');
     leftArrow.className = 'table-arrow table-arrow-left';
     leftArrow.innerHTML = '◀';
     leftArrow.setAttribute('aria-label', 'Previous item');
     
-    // Create right arrow
     const rightArrow = document.createElement('button');
     rightArrow.className = 'table-arrow table-arrow-right';
     rightArrow.innerHTML = '▶';
     rightArrow.setAttribute('aria-label', 'Next item');
     
-    // Arrow click handlers
     leftArrow.addEventListener('click', (e) => {
       e.stopPropagation();
       if (currentIndex > 0) {
@@ -461,15 +413,12 @@ function addTableArrows(table, rows) {
       }
     });
     
-    // Insert arrows into the first cell
     firstCell.insertBefore(leftArrow, firstCell.firstChild);
     firstCell.appendChild(rightArrow);
   });
   
   updateArrows();
 }
-
-
 
 document.addEventListener("DOMContentLoaded", () => {
   window.tooltipManager = new TooltipManager();
@@ -490,7 +439,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const img = document.createElement("img");
   img.id = "lightbox-img";
 
-  // Create navigation buttons
   const prevBtn = document.createElement("button");
   prevBtn.id = "lightbox-prev";
   prevBtn.innerHTML = "‹";
@@ -501,7 +449,6 @@ document.addEventListener("DOMContentLoaded", () => {
   nextBtn.innerHTML = "›";
   nextBtn.setAttribute("aria-label", "Next image");
 
-  // Create caption for alt text
   const caption = document.createElement("div");
   caption.id = "lightbox-caption";
 
@@ -511,7 +458,6 @@ document.addEventListener("DOMContentLoaded", () => {
   lightbox.appendChild(caption);
   document.body.appendChild(lightbox);
 
-  // Navigation button handlers
   prevBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     navigateImage(-1);
@@ -524,7 +470,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   img.addEventListener("click", (e) => {
     e.stopPropagation();
-    // Disable zoom functionality on mobile devices
     const isMobile = window.innerWidth <= 600;
     if (isMobile) return;
 
@@ -571,13 +516,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }, { passive: true });
 
   function isPageZoomed() {
-    // Check if viewport is zoomed by comparing visual viewport to layout viewport
     const visualViewport = window.visualViewport;
     if (visualViewport) {
       const scale = visualViewport.scale;
-      return scale > 1.01; // Allow small tolerance
+      return scale > 1.01;
     }
-    // Fallback: check if window.innerWidth differs from document width
     const scale = window.outerWidth / window.innerWidth;
     return scale > 1.01;
   }
@@ -586,25 +529,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const swipeDistance = touchEndX - touchStartX;
     if (Math.abs(swipeDistance) < minSwipeDistance) return;
 
-    // Check if page/viewport is zoomed or if click-zoom is active
     const pageZoomed = isPageZoomed();
     const clickZoomed = zoomLevel > 0;
     const isZoomed = pageZoomed || clickZoomed;
 
-    // Only navigate if not zoomed
     if (!isZoomed) {
       if (swipeDistance > 0) {
-        // Swipe right - previous image
         navigateImage(-1);
       } else {
-        // Swipe left - next image
         navigateImage(1);
       }
     }
   }
 
   function attachLightboxEvents() {
-    // Build image list for navigation - only include images inside .image-grid
     const gridImages = document.querySelectorAll(".image-grid img.click-zoom");
     imageList = Array.from(gridImages);
 
@@ -612,11 +550,9 @@ document.addEventListener("DOMContentLoaded", () => {
       thumbnail.style.cursor = "pointer";
       thumbnail.removeEventListener("click", thumbnail._lightboxHandler);
       thumbnail._lightboxHandler = () => {
-        // Find index in the grid images list (or -1 if not in grid)
         currentImageIndex = imageList.indexOf(thumbnail);
         img.src = thumbnail.src;
 
-        // Update caption with alt text
         const caption = document.getElementById("lightbox-caption");
         if (thumbnail.alt && thumbnail.alt.trim()) {
           caption.textContent = thumbnail.alt;
@@ -639,16 +575,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Navigate between images
   function navigateImage(direction) {
-    // Only navigate if current image is in the grid (currentImageIndex >= 0)
     if (imageList.length === 0 || currentImageIndex < 0) return;
     zoomLevel = 0;
     currentImageIndex = (currentImageIndex + direction + imageList.length) % imageList.length;
     const currentImg = imageList[currentImageIndex];
     img.src = currentImg.src;
 
-    // Update caption with current image's alt text
     const caption = document.getElementById("lightbox-caption");
     if (currentImg.alt && currentImg.alt.trim()) {
       caption.textContent = currentImg.alt;
@@ -665,12 +598,10 @@ document.addEventListener("DOMContentLoaded", () => {
     else img.onload = reloadImage;
   }
 
-  // Update navigation button visibility
   function updateNavigationVisibility() {
     const prevBtn = document.getElementById("lightbox-prev");
     const nextBtn = document.getElementById("lightbox-next");
 
-    // Only show navigation if image is in grid and there are multiple grid images
     if (lightbox.style.display === "block" && currentImageIndex >= 0 && imageList.length > 1) {
       prevBtn.style.display = "flex";
       nextBtn.style.display = "flex";
@@ -682,7 +613,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   attachLightboxEvents();
 
-  // Initialize overview slideshow by loading a manifest file from the overview images folder
   function initOverviewSlideshow() {
     const container = document.querySelector('#overview-slideshow .slideshow-images');
     if (!container) return;
@@ -697,7 +627,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!Array.isArray(list) || list.length === 0) return;
 
         let current = 0;
-        // Create two slots for sliding animation (CSS already expects these classes)
         const slot1 = document.createElement('div');
         slot1.className = 'slideshow-image1';
         const img1 = document.createElement('img');
@@ -727,8 +656,6 @@ document.addEventListener("DOMContentLoaded", () => {
         setSrc(img1, current);
         setSrc(img2, (current + 1) % list.length);
 
-        // Apply orientation (vertical/horizontal) sizing: choose container class based on the
-        // currently-displayed image so vertical images show fully scaled inside vertical window
         function applyOrientation(imgEl) {
           try {
             const isVertical = imgEl.naturalHeight >= imgEl.naturalWidth;
@@ -740,20 +667,17 @@ document.addEventListener("DOMContentLoaded", () => {
               container.classList.remove('vertical');
             }
 
-            // Ensure images are shown fully (no cropping) by using contain fit
             container.querySelectorAll('.slideshow-img').forEach((ie) => {
               ie.classList.add('contain');
               ie.classList.remove('cover');
             });
           } catch (e) {
-            // ignore
           }
         }
 
         img1.addEventListener('load', () => applyOrientation(img1));
         img2.addEventListener('load', () => applyOrientation(img1));
 
-        // if already cached/loaded, apply immediately
         if (img1.complete && img1.naturalWidth) applyOrientation(img1);
 
         const prevBtn = document.querySelector('.slideshow-prev');
@@ -766,12 +690,10 @@ document.addEventListener("DOMContentLoaded", () => {
           const nextIndex = (current + (direction > 0 ? 1 : -1) + list.length) % list.length;
 
           if (direction > 0) {
-            // forward: prepare slot2 with next, animate slot1 out and slot2 in
             setSrc(img2, nextIndex);
             slot1.classList.add('fade-out-in-place');
             slot2.classList.add('slide-left-overlap');
             setTimeout(() => {
-              // swap: make slot1 show the new current, reset classes
               setSrc(img1, nextIndex);
               slot1.classList.remove('fade-out-in-place');
               slot2.classList.remove('slide-left-overlap');
@@ -781,7 +703,6 @@ document.addEventListener("DOMContentLoaded", () => {
               attachLightboxEvents();
             }, 520);
           } else {
-            // backward: show previous in slot2 and animate fade-in-from-right
             setSrc(img2, nextIndex);
             slot2.classList.add('fade-in-on-right');
             slot1.classList.add('fade-out-in-place');
@@ -800,16 +721,13 @@ document.addEventListener("DOMContentLoaded", () => {
         if (prevBtn) prevBtn.addEventListener('click', (e) => { e.preventDefault(); show(-1); });
         if (nextBtn) nextBtn.addEventListener('click', (e) => { e.preventDefault(); show(1); });
 
-        // auto advance
         let interval = setInterval(() => show(1), 6000);
         container.addEventListener('mouseenter', () => clearInterval(interval));
         container.addEventListener('mouseleave', () => { clearInterval(interval); interval = setInterval(() => show(1), 6000); });
 
-        // ensure lightbox handlers are attached for initial images
         attachLightboxEvents();
       })
       .catch(() => {
-        // no manifest or error - leave slideshow empty
       });
   }
 
@@ -833,7 +751,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const search = e.target.value.toLowerCase();
       const itemsListId = searchInput.id === "blogSearch" ? "blogListItems" : "poemListItems";
       document.querySelectorAll(`#${itemsListId} li`).forEach((item) => {
-        // Skip the no-results item itself
         if (item.classList.contains('no-results')) return;
         const link = item.querySelector('a');
         if (!link) return;
@@ -846,7 +763,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const matches = search && lowerText.includes(search);
 
         if (matches) {
-          // Highlight matching parts
           const regex = new RegExp(`(${search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
           titleSpan.innerHTML = originalText.replace(regex, '<mark>$1</mark>');
           item.style.display = "block";
@@ -858,12 +774,10 @@ document.addEventListener("DOMContentLoaded", () => {
           item.style.display = "block";
         }
       });
-      // update no-results UI
       updateNoResultsMessage(itemsListId);
     });
   }
 
-  // Prevent sidebar scroll from propagating to page
   function setupSidebarScrollIsolation() {
     const sidebars = [
       document.getElementById("blogList"),
@@ -903,20 +817,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const loopBtn = document.getElementById("loopBtn");
   let isLooping = false;
 
-  // Define formatTime function at the top level so it's accessible everywhere
   function formatTime(seconds) {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   }
 
-  // helper: update progress UI (bar width + handle position)
   function updateProgressUI() {
     if (!audio || !progressBar || !progressHandle) return;
     const pct = (audio.duration && isFinite(audio.duration)) ? (audio.currentTime / audio.duration) * 100 : 0;
     progressBar.style.width = pct + "%";
     progressHandle.style.left = pct + "%";
-    // aria update
     progressHandle.setAttribute("aria-valuenow", Math.round(pct));
   }
 
@@ -951,7 +862,6 @@ document.addEventListener("DOMContentLoaded", () => {
         progressBar.style.width = `${progressPercent}%`;
         currentTimeEl.textContent = formatTime(audio.currentTime);
         durationEl.textContent = formatTime(audio.duration);
-        // update handle position
         if (progressHandle) progressHandle.style.left = `${progressPercent}%`;
         if (progressHandle) progressHandle.setAttribute("aria-valuenow", Math.round(progressPercent));
       }
@@ -971,7 +881,6 @@ document.addEventListener("DOMContentLoaded", () => {
       durationEl.textContent = "0:00";
     });
 
-    // Click on bar to jump
     progressContainer.addEventListener("click", (e) => {
       const rect = progressContainer.getBoundingClientRect();
       const clickX = (e.clientX !== undefined) ? e.clientX - rect.left : e.touches && e.touches[0] ? e.touches[0].clientX - rect.left : 0;
@@ -982,7 +891,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Draggable handle (pointer events for mouse/touch)
     if (progressHandle) {
       let dragging = false;
       const rectToPct = (clientX) => {
@@ -995,7 +903,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const pct = rectToPct(clientX);
         progressBar.style.width = (pct * 100) + "%";
         progressHandle.style.left = (pct * 100) + "%";
-        // update current time visually (but don't commit until pointerup)
         currentTimeEl.textContent = formatTime(pct * audio.duration);
       };
 
@@ -1013,7 +920,6 @@ document.addEventListener("DOMContentLoaded", () => {
       progressHandle.addEventListener("pointerup", (ev) => {
         if (!dragging) return;
         dragging = false;
-        // commit time
         const pct = rectToPct(ev.clientX);
         if (audio.duration && isFinite(audio.duration)) {
           audio.currentTime = pct * audio.duration;
@@ -1021,10 +927,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (progressHandle.releasePointerCapture) progressHandle.releasePointerCapture(ev.pointerId);
       });
 
-      // keyboard accessibility: left/right arrow to seek small steps
       progressHandle.addEventListener("keydown", (ev) => {
         if (!audio || !audio.duration || !isFinite(audio.duration)) return;
-        const step = Math.max(1, Math.floor(audio.duration * 0.02)); // ~2% or 1s min
+        const step = Math.max(1, Math.floor(audio.duration * 0.02));
         if (ev.key === "ArrowLeft") {
           audio.currentTime = Math.max(0, audio.currentTime - step);
           updateProgressUI();
@@ -1100,21 +1005,17 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Blur immediately on touch to prevent staying pressed
     backToTopBtn.addEventListener("touchstart", (e) => {
       e.currentTarget.blur();
     });
 
     backToTopBtn.addEventListener("click", (e) => {
-      // Blur immediately for desktop
       e.currentTarget.blur();
 
-      // Reset the URL hash (removes the #anchor)
       if (window.location.hash) {
         history.replaceState(null, "", window.location.pathname + window.location.search);
       }
 
-      // Instant scroll (no smooth animation)
       window.scrollTo({
         top: 0,
         behavior: "auto",
@@ -1136,17 +1037,14 @@ document.addEventListener("DOMContentLoaded", () => {
         if (poems.length > 0) {
           let selectedPoem;
           if (poemParam !== null) {
-            // Find poem by folder number
             const folderNum = parseInt(poemParam);
             selectedPoem = poems.find(p => {
               const match = p.folder.match(/^(\d+)/);
               return match && parseInt(match[1]) === folderNum;
             });
           }
-          // Default to first poem if not found or no param
           selectedPoem = selectedPoem || poems[0];
           loadPoem(selectedPoem);
-          // mark initial active poem based on loaded poem
           const loadedIndex = poems.indexOf(selectedPoem);
           setActiveListItem('poemListItems', loadedIndex);
         }
@@ -1156,13 +1054,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function formatPoemTitle(filename) {
     let title = filename;
-    // Don't remove the number prefix for poems
     if (filename.toLowerCase().endsWith(".mp3")) {
       title = title.replace(/\.mp3$/i, "");
     } else if (filename.toLowerCase().endsWith(".md")) {
       title = title.replace(/\.md$/i, "");
     }
-    // Replace underscores with spaces and add spacing around dash: "1-Title" → "1 - Title"
     title = title.replace(/_/g, " ").replace(/(\d+)-/, "$1 - ");
     title = title.replace(/\b\w/g, (char) => char.toUpperCase());
     return title.trim();
@@ -1177,10 +1073,8 @@ document.addEventListener("DOMContentLoaded", () => {
     poemListItems.innerHTML = "";
     let previousYear = null;
     poems.forEach((poem, index) => {
-      // Extract year from poem date
       const currentYear = poem.date ? new Date(poem.date).getFullYear() : null;
 
-      // Add year separator if year changed
       if (previousYear !== null && currentYear !== null && currentYear !== previousYear) {
         const separator = document.createElement("hr");
         separator.className = "year-separator";
@@ -1191,19 +1085,16 @@ document.addEventListener("DOMContentLoaded", () => {
       const li = document.createElement("li");
       const a = document.createElement("a");
       a.href = "#";
-      // Display poem with chronological index number (oldest = 0)
       let displayPoemTitle = formatPoemTitle(poem.name || poem.folder);
       displayPoemTitle = displayPoemTitle.replace(/^\s*\d+\s*[-\.]?\s*/, '').trim();
       const chronologicalIndex = poems.length - 1 - index;
 
-      // Create title span
       const titleSpan = document.createElement("span");
       titleSpan.className = "list-item-title";
       titleSpan.textContent = `${chronologicalIndex} - ${displayPoemTitle}`;
 
       a.appendChild(titleSpan);
 
-      // Create date span only if date exists
       if (poem.date) {
         const dateSpan = document.createElement("span");
         dateSpan.className = "list-item-date";
@@ -1217,24 +1108,19 @@ document.addEventListener("DOMContentLoaded", () => {
       a.dataset.index = index;
       a.classList.add("poem-link");
 
-      // Mobile touch handling: track whether we're preventing navigation
       let preventNextClick = false;
 
       a.addEventListener('touchend', (e) => {
-        // Check if this is the first tap (date not showing yet)
         if (!a.classList.contains('show-date') && poem.date) {
           e.preventDefault();
           e.stopPropagation();
           preventNextClick = true;
 
-          // Hide all other dates and highlights
           document.querySelectorAll('.poem-link.show-date').forEach(link => {
             link.classList.remove('show-date');
           });
-          // Show this date and add highlight
           a.classList.add('show-date');
 
-          // Reset flag after a short delay
           setTimeout(() => { preventNextClick = false; }, 100);
         }
       });
@@ -1246,50 +1132,40 @@ document.addEventListener("DOMContentLoaded", () => {
       link.addEventListener("click", (e) => {
         e.preventDefault();
 
-        // Only apply two-tap logic on touch devices with narrow screens
+        
         const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
         if (isTouchDevice && window.innerWidth <= 800 && !link.classList.contains('show-date')) {
-          return; // Touch handler already handled showing the date
+          return; 
         }
 
         const index = link.dataset.index;
         const poem = JSON.parse(link.getAttribute("data-poem"));
         const currentPoemParam = getUrlParameter('poem');
 
-        // Extract folder number from the clicked poem
         const folderMatch = poem.folder.match(/^(\d+)/);
         const folderNum = folderMatch ? folderMatch[1] : null;
 
-        // If clicking on the currently active poem (compare folder numbers)
         if (folderNum !== null && folderNum === currentPoemParam) {
-          // On mobile, just close the sidebar
           if (window.innerWidth <= 800) {
             closeSidebarAfterSelect();
             clearSidebarSearchInputs();
           }
-          // On desktop, do nothing
           return;
         }
 
-        // Different poem selected, load it
         loadPoem(poem);
         history.pushState({ poemIndex: index }, "", `?poem=${folderNum}`);
-        // Clear search on new selection
         clearSidebarSearchInputs();
-        // only hide/collapse sidebar on mobile
         if (window.innerWidth <= 800) {
           closeSidebarAfterSelect();
         }
-        // Update active styling in the list
         setActiveListItem('poemListItems', parseInt(index, 10));
       });
     });
 
-    // Add overlays for truncated text after a short delay to ensure rendering is complete
     setTimeout(() => addTruncatedTextOverlays(), 100);
   }
 
-  // Mark the active item in a list and remove previous marking
   function setActiveListItem(listId, activeIndex) {
     const list = document.getElementById(listId);
     if (!list) return;
@@ -1326,6 +1202,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function loadPoem(poem) {
     resetAudioPlayer();
+    
+    window.currentPoem = poem;
+    
+    if (window.readingModeManager) {
+      window.readingModeManager.checkDynamicModeAvailable(poem);
+    }
+    
     const localMd = `poems/${poem.folder}/poem.md`;
     fetch(localMd)
       .then((res) => {
@@ -1337,46 +1220,45 @@ document.addEventListener("DOMContentLoaded", () => {
         const poemContent = document.getElementById("poemContent");
         const audioPlayer = document.getElementById("audioPlayer");
 
-        // Extract date from simple "date: YYYY-MM-DD" or "date: YYYY-MM" line
         let dateStr = null;
         md = md.replace(/^date:\s*(\d{4}-\d{2}(?:-\d{2})?)\s*$/m, (match, extractedDate) => {
           dateStr = extractedDate;
-          return ''; // Remove the date line from markdown
+          return ''; 
         });
 
-        // Remove only the first <hr> tag (---) that appears after date removal
+        
         md = md.replace(/^\s*---\s*$/m, '');
 
-        // Render markdown (without date and first hr tag)
         poemText.innerHTML = marked.parse(md);
 
-        // Create and insert date element BEFORE audio player and poem text
         if (dateStr && poemContent) {
-          // Remove any existing date element
           const existingDate = poemContent.querySelector('.poem-date');
           if (existingDate) {
             existingDate.remove();
           }
 
-          // Format the date (handles both partial and full dates)
           const formatted = formatDate(dateStr);
 
-          // Create date element
           const dateElement = document.createElement('p');
           dateElement.className = 'poem-date';
           dateElement.textContent = formatted;
 
-          // Insert at the top of poemContent (before audio player and poem text)
           poemContent.insertBefore(dateElement, poemContent.firstChild);
         }
 
-        // Apply image scaling
         applyImageScaling(poemText);
 
-        // Add data-label attributes to table cells for responsive layout
         addTableDataLabels(poemText);
 
         attachLightboxEvents();
+        
+        if (window.tooltipManager) {
+          window.tooltipManager.reinitialize(poem.folder, 'poems');
+        }
+        
+        if (window.readingModeManager) {
+          window.readingModeManager.checkTooltipsForPoem(poem.folder);
+        }
       })
       .catch((err) => {
         console.error("Error loading poem:", err);
@@ -1416,7 +1298,6 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .then((blogs) => {
         blogsCache = blogs;
-        // Store in global scope for tooltip manager access
         window.blogsCache = blogs;
         const target = document.getElementById("blogText");
         if (target) target.innerHTML = "Loading blog post...";
@@ -1425,14 +1306,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (blogs.length > 0) {
           let selectedBlog;
           if (blogParam !== null) {
-            // Find blog by folder number
             const folderNum = parseInt(blogParam);
             selectedBlog = blogs.find(b => {
               const match = b.folder.match(/^(\d+)/);
               return match && parseInt(match[1]) === folderNum;
             });
           }
-          // Default to first blog if not found or no param
           selectedBlog = selectedBlog || blogs[0];
           loadBlogPost(selectedBlog);
         }
@@ -1446,10 +1325,9 @@ document.addEventListener("DOMContentLoaded", () => {
     listEl.innerHTML = "";
     let previousYear = null;
     blogs.forEach((blog, index) => {
-      // Extract year from blog date
       const currentYear = blog.date ? new Date(blog.date).getFullYear() : null;
 
-      // Add year separator if year changed
+      
       if (previousYear !== null && currentYear !== null && currentYear !== previousYear) {
         const separator = document.createElement("hr");
         separator.className = "year-separator";
@@ -1460,19 +1338,18 @@ document.addEventListener("DOMContentLoaded", () => {
       const li = document.createElement("li");
       const a = document.createElement("a");
       a.href = "#";
-      // Prefer manifest title and add chronological index number (oldest = 0)
       let displayBlogTitle = (blog.title || formatBlogTitle(blog.folder)).toString();
       displayBlogTitle = displayBlogTitle.replace(/^\s*\d+\s*[-\.]?\s*/, '').trim();
       const chronologicalIndex = blogs.length - 1 - index;
 
-      // Create title span
+      
       const titleSpan = document.createElement("span");
       titleSpan.className = "list-item-title";
       titleSpan.textContent = `${chronologicalIndex} - ${displayBlogTitle}`;
 
       a.appendChild(titleSpan);
 
-      // Create date span only if date exists
+      
       if (blog.date) {
         const dateSpan = document.createElement("span");
         dateSpan.className = "list-item-date";
@@ -1486,24 +1363,24 @@ document.addEventListener("DOMContentLoaded", () => {
       a.dataset.index = index;
       a.classList.add("blog-link");
 
-      // Mobile touch handling: track whether we're preventing navigation
+      
       let preventNextClick = false;
 
       a.addEventListener('touchend', (e) => {
-        // Check if this is the first tap (date not showing yet)
+        
         if (!a.classList.contains('show-date') && blog.date) {
           e.preventDefault();
           e.stopPropagation();
           preventNextClick = true;
 
-          // Hide all other dates and highlights
+          
           document.querySelectorAll('.blog-link.show-date').forEach(link => {
             link.classList.remove('show-date');
           });
-          // Show this date and add highlight
+          
           a.classList.add('show-date');
 
-          // Reset flag after a short delay
+          
           setTimeout(() => { preventNextClick = false; }, 100);
         }
       });
@@ -1515,49 +1392,49 @@ document.addEventListener("DOMContentLoaded", () => {
       link.addEventListener("click", (e) => {
         e.preventDefault();
 
-        // Only apply two-tap logic on touch devices with narrow screens
+        
         const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
         if (isTouchDevice && window.innerWidth <= 800 && !link.classList.contains('show-date')) {
-          return; // Touch handler already handled showing the date
+          return; 
         }
 
         const index = link.dataset.index;
         const blog = JSON.parse(link.getAttribute("data-blog"));
         const currentBlogParam = getUrlParameter('blog');
 
-        // Extract folder number from the clicked blog
+        
         const folderMatch = blog.folder.match(/^(\d+)/);
         const folderNum = folderMatch ? folderMatch[1] : null;
 
-        // If clicking on the currently active blog (compare folder numbers)
+        
         if (folderNum !== null && folderNum === currentBlogParam) {
-          // On mobile, just close the sidebar
+          
           if (window.innerWidth <= 800) {
             closeSidebarAfterSelect();
             clearSidebarSearchInputs();
           }
-          // On desktop, do nothing
+          
           return;
         }
 
-        // Different blog selected, load it
+        
         loadBlogPost(blog);
         history.pushState({ blogIndex: index }, "", `?blog=${folderNum}`);
-        // Clear search on new selection
+        
         clearSidebarSearchInputs();
-        // only hide/collapse sidebar on mobile
+        
         if (window.innerWidth <= 800) {
           closeSidebarAfterSelect();
         }
-        // Update active styling in the list
+        
         setActiveListItem('blogListItems', parseInt(index, 10));
       });
     });
 
-    // Add overlays for truncated text after a short delay to ensure rendering is complete
+    
     setTimeout(() => addTruncatedTextOverlays(), 100);
 
-    // Apply active class based on loaded blog after list is built
+    
     const blogParam = getUrlParameter('blog');
     if (blogParam !== null && blogsCache) {
       const folderNum = parseInt(blogParam);
@@ -1575,7 +1452,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function formatBlogTitle(folder) {
     let title = folder.replace(/_/g, " ");
-    // Add spacing around dash: "1-Title" → "1 - Title"
+    
     title = title.replace(/(\d+)-/, "$1 - ");
     title = title.replace(/\b\w/g, (char) => char.toUpperCase());
     return title.trim();
@@ -1593,17 +1470,17 @@ document.addEventListener("DOMContentLoaded", () => {
         return res.text();
       })
       .then((md) => {
-        // Extract date from simple "date: YYYY-MM-DD" or "date: YYYY-MM" line
+        
         let dateStr = null;
         md = md.replace(/^date:\s*(\d{4}-\d{2}(?:-\d{2})?)\s*$/m, (match, extractedDate) => {
           dateStr = extractedDate;
-          return ''; // Remove the date line from markdown
+          return ''; 
         });
 
-        // Remove only the first <hr> tag (---) that appears after date removal
+        
         md = md.replace(/^\s*---\s*$/m, '');
 
-        // Format the date nicely (handles both partial and full dates)
+        
         let dateHtml = '';
         if (dateStr) {
           const formatted = formatDate(dateStr);
@@ -1655,7 +1532,7 @@ document.addEventListener("DOMContentLoaded", () => {
         md = md.replace(
           /<embed([^>]+)src=["']([^"']+)["']([^>]*)>/g,
           (match, before, src, after) => {
-            // Convert inline embed to a lightweight "Open schematic" link to avoid heavy PDF rendering.
+            
             let href = src;
             if (!src.startsWith("http") && !src.includes("/")) {
               href = `blogs/${blog.folder}/res/${src}`;
@@ -1679,30 +1556,23 @@ document.addEventListener("DOMContentLoaded", () => {
           }
           return `<video controls class="video-player"> <source src="${src}" type="video/mp4"> Your browser does not support the video tag. </video>`;
         });
-        // Render markdown and prepend styled date
         target.innerHTML = dateHtml + marked.parse(md);
-        // Group headings and their following content into blocks for full-section highlighting
         try {
           wrapBlogSections(target);
         } catch (e) {
-          // non-fatal
         }
         if (window.hljs) {
           hljs.highlightAll();
         }
 
-        // Apply scale to images with scale attribute in style
         applyImageScaling(target);
 
-        // Add data-label attributes to table cells for responsive layout
         addTableDataLabels(target);
 
-        // Initialize tooltips after content is loaded - pass blog folder directly
         setTimeout(() => {
           if (window.tooltipManager) {
             window.tooltipManager.reinitialize(blog.folder);
           }
-          // Trigger anchor highlight after content is loaded
           if (typeof handleAnchorHighlight === 'function') {
             handleAnchorHighlight();
           }
@@ -1711,7 +1581,6 @@ document.addEventListener("DOMContentLoaded", () => {
         attachLightboxEvents();
         enableInternalAnchorScrolling(target);
 
-        // NEW: if URL contains a hash when the post loads, scroll to it
         if (location.hash) {
           setTimeout(() => scrollToAnchor(location.hash), 50);
         }
@@ -1721,12 +1590,12 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  // Move anchor handling to the top so anchor popstates do not trigger expensive blog/poem reloads.
+  
   window.addEventListener("popstate", (event) => {
-    // Close all dropdown menus when navigating back/forward
+    
     closeAllDropdowns();
 
-    // If the popped history state is an anchor, handle it immediately and return
+    
     if (event.state && event.state.anchor) {
       scrollToAnchor("#" + event.state.anchor);
       return;
@@ -1740,7 +1609,6 @@ document.addEventListener("DOMContentLoaded", () => {
         let selectedPoem;
         let poemIndex = 0;
         if (poemParam !== null) {
-          // Find poem by folder number
           const folderNum = parseInt(poemParam);
           selectedPoem = poemsCache.find(p => {
             const match = p.folder.match(/^(\d+)/);
@@ -1752,7 +1620,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         selectedPoem = selectedPoem || poemsCache[0];
         loadPoem(selectedPoem);
-        // update active class in poem list
         setActiveListItem('poemListItems', poemIndex);
       }
     } else if (window.location.pathname.includes("blogs")) {
@@ -1763,7 +1630,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let selectedBlog;
         let blogIndex = 0;
         if (blogParam !== null) {
-          // Find blog by folder number
+          
           const folderNum = parseInt(blogParam);
           selectedBlog = blogsCache.find(b => {
             const match = b.folder.match(/^(\d+)/);
@@ -1775,7 +1642,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         selectedBlog = selectedBlog || blogsCache[0];
         loadBlogPost(selectedBlog);
-        // update active class in blog list
+        
         setActiveListItem('blogListItems', blogIndex);
       }
     }
@@ -1786,11 +1653,9 @@ document.addEventListener("DOMContentLoaded", () => {
     updateSidebarTop();
   });
 
-  // NEW: enforce floating sidebar toggle visibility across pages
   function updateFloatingToggleVisibility() {
     const ft = document.getElementById("sidebarFloatingToggle");
     if (!ft) return;
-    // if overlay logic explicitly hides it via .hidden, keep hidden
     if (ft.classList.contains("hidden")) {
       ft.style.display = "none";
       ft.setAttribute("aria-hidden", "true");
@@ -1801,11 +1666,10 @@ document.addEventListener("DOMContentLoaded", () => {
       ft.setAttribute("aria-hidden", "true");
     } else {
       ft.style.display = "";
-      ft.removeAttribute("aria-hidden"); // Remove aria-hidden when visible to avoid accessibility violation
+      ft.removeAttribute("aria-hidden");
     }
   }
 
-  // Call once and on relevant events so the floating toggle is only present on small screens
   updateFloatingToggleVisibility();
   window.addEventListener("resize", updateFloatingToggleVisibility);
   window.addEventListener("orientationchange", updateFloatingToggleVisibility);
@@ -1817,7 +1681,6 @@ function toggleEmail() {
     emailRow.style.display === "none" ? "block" : "none";
 }
 
-/* New helper: scroll to anchor id/hash accounting for sticky banner (instant) */
 function scrollToAnchor(hash) {
   if (!hash) return;
   const id = hash.startsWith("#") ? hash.slice(1) : hash;
@@ -1825,20 +1688,14 @@ function scrollToAnchor(hash) {
   if (!targetEl) return;
   const banner = document.getElementById("banner-placeholder");
   const bannerHeight = banner ? banner.getBoundingClientRect().height : 0;
-  // Use instant positioning (faster than smooth animation)
-  // scrollIntoView to bring element into view, then offset for sticky header
   targetEl.scrollIntoView({ block: "start", inline: "nearest", behavior: "auto" });
-  // Use rAF to ensure layout has settled before adjusting for header
   requestAnimationFrame(() => {
     window.scrollBy(0, -Math.ceil(bannerHeight) - 8);
   });
 }
 
-/* Modified helper: delegated in-page anchor handling (lighter than per-anchor listeners).
-   Pushes history state for anchors so Back/Forward navigates between anchors. */
 function enableInternalAnchorScrolling(container) {
   if (!container) return;
-  // Remove existing delegated listener if present
   if (container._delegatedAnchorHandler) {
     container.removeEventListener("click", container._delegatedAnchorHandler);
   }
@@ -1851,16 +1708,12 @@ function enableInternalAnchorScrolling(container) {
     const id = hash.slice(1);
     const targetEl = document.getElementById(id);
     if (targetEl) {
-      // Instant scroll and create history entry (so Back/Forward toggles anchors)
       scrollToAnchor(hash);
       try {
         history.pushState({ anchor: id }, "", hash);
       } catch (err) {
-        // ignore
       }
-      // Explicitly trigger highlight (pushState doesn't fire hashchange)
       if (typeof handleAnchorHighlight === 'function') {
-        // small delay to ensure layout/scroll is applied before highlighting
         setTimeout(handleAnchorHighlight, 30);
       }
     }
@@ -1868,53 +1721,43 @@ function enableInternalAnchorScrolling(container) {
   container.addEventListener("click", container._delegatedAnchorHandler);
 }
 
-/* Also handle hashchange (some navigation can change hash without state) */
 window.addEventListener("hashchange", () => {
   scrollToAnchor(location.hash);
 });
 
-// Collapse/hide sidebars AFTER selection (mobile only)
 function closeSidebarAfterSelect() {
   const poemList = document.getElementById("poemList");
   const blogList = document.getElementById("blogList");
   const floatingToggle = document.getElementById("sidebarFloatingToggle");
-  // mobile behavior: hide overlay and restore page scrolling
   if (window.innerWidth <= 800) {
     if (poemList) poemList.classList.remove("show");
     if (blogList) blogList.classList.remove("show");
     document.body.classList.remove("no-scroll");
     document.documentElement.classList.remove("no-scroll");
     if (floatingToggle) floatingToggle.classList.remove("hidden");
-    // Always clear search when closing sidebar
     clearSidebarSearchInputs();
   }
 }
 
-// Clear any search inputs in sidebars and reset filters
 function clearSidebarSearchInputs() {
   const blogSearch = document.getElementById('blogSearch');
   const poemSearch = document.getElementById('poemSearch');
   [blogSearch, poemSearch].forEach((input) => {
     if (input) {
       input.value = '';
-      // trigger input event so the list shows all items again
       input.dispatchEvent(new Event('input', { bubbles: true }));
     }
   });
 
-  // Clear all show-date classes when sidebar is toggled
   document.querySelectorAll('.poem-link.show-date, .blog-link.show-date').forEach(link => {
     link.classList.remove('show-date');
   });
 }
 
-// Show a "no results" message inside the given list if no visible items
 function updateNoResultsMessage(listId) {
   const list = document.getElementById(listId);
   if (!list) return;
-  // count visible list items excluding any existing no-results
   const items = Array.from(list.querySelectorAll('li')).filter(li => !li.classList.contains('no-results'));
-  // Use computed style to detect visibility (handles inline styles and CSS)
   const visible = items.filter(li => getComputedStyle(li).display !== 'none');
   const existing = list.querySelector('.no-results');
   if (visible.length === 0) {
@@ -1929,7 +1772,6 @@ function updateNoResultsMessage(listId) {
   }
 }
 
-// Tooltip Manager Class
 class TooltipManager {
   constructor() {
     this.tooltip = null;
@@ -1971,10 +1813,7 @@ class TooltipManager {
       }
     });
 
-    // Update tooltip position on scroll to keep it aligned with trigger (desktop only)
     window.addEventListener('scroll', () => {
-      // On mobile (≤800px), don't reposition on scroll - let tooltip scroll away naturally
-      // Audio tooltips also don't reposition - they scroll with the page
       const isMobile = window.innerWidth <= 800;
       const hasAudio = this.tooltip && this.tooltip.classList.contains('has-audio');
       
@@ -1983,7 +1822,6 @@ class TooltipManager {
       }
 
       if (this.tooltip && this.currentTrigger) {
-        // Don't reposition if audio is playing
         if (this.activeTooltipAudio && !this.activeTooltipAudio.paused) {
           return;
         }
@@ -2002,14 +1840,12 @@ class TooltipManager {
         }
 
         if (tooltipData) {
-          // Don't pass mouseX on scroll, let it center on trigger
           this.positionTooltipAtTrigger(this.tooltip, this.currentTrigger, tooltipData, null);
         }
       }
     });
   }
 
-  // Stop all audio tracks except the current one
   stopAllOtherAudio(currentAudio) {
     this.allAudioElements.forEach(audio => {
       if (audio !== currentAudio && !audio.paused) {
@@ -2017,13 +1853,11 @@ class TooltipManager {
         audio.currentTime = 0;
       }
     });
-    // Update audioPlaying state
     this.audioPlaying = currentAudio && !currentAudio.paused;
   }
 
-  // Load tooltip data from a JSON file
-  async loadTooltipData(blogFolder) {
-    const tooltipPath = `blogs/${blogFolder}/res/tooltips.json`;
+  async loadTooltipData(folder, contentType = 'blogs') {
+    const tooltipPath = `${contentType}/${folder}/res/tooltips.json`;
 
     try {
       const response = await fetch(tooltipPath);
@@ -2031,16 +1865,13 @@ class TooltipManager {
       if (response.ok) {
         const data = await response.json();
 
-        // Store all tooltip definitions for this blog with resolved media paths
         Object.entries(data).forEach(([id, tooltipData]) => {
-          // If media field exists and it's just a filename (not a full path), prepend blog res folder
-          if (tooltipData.media && !tooltipData.media.startsWith('blogs/') && !tooltipData.media.startsWith('http')) {
-            tooltipData.media = `blogs/${blogFolder}/res/${tooltipData.media}`;
+          if (tooltipData.media && !tooltipData.media.startsWith('blogs/') && !tooltipData.media.startsWith('poems/') && !tooltipData.media.startsWith('http')) {
+            tooltipData.media = `${contentType}/${folder}/res/${tooltipData.media}`;
           }
           this.tooltipData.set(id, tooltipData);
 
         });
-
 
       } else {
 
@@ -2050,12 +1881,10 @@ class TooltipManager {
     }
   }
 
-  // Detect blog folder from current URL
   detectBlogFolder() {
     const urlParams = new URLSearchParams(window.location.search);
     const blogIndex = urlParams.get('blog');
 
-    // Access blogsCache from the global scope
     if (blogIndex !== null && window.blogsCache && window.blogsCache[blogIndex]) {
       const folder = window.blogsCache[blogIndex].folder;
 
@@ -2066,7 +1895,6 @@ class TooltipManager {
   }
 
   showTooltip(trigger, data, mouseX = null) {
-      // Hide any currently visible tooltips
       document.querySelectorAll('.tooltip.show').forEach(tip => {
         tip.classList.remove('show');
         setTimeout(() => {
@@ -2077,42 +1905,32 @@ class TooltipManager {
 
     const tooltip = this.createTooltip(data);
 
-    // If there's media, restart it from frame 0 by resetting the src (for GIFs)
     const mediaImg = tooltip.querySelector('.tooltip-gif');
     if (mediaImg && data.media) {
-      // Force GIF to restart by adding a cache-busting timestamp
       const originalSrc = data.media;
       mediaImg.src = originalSrc + '?t=' + Date.now();
     }
 
-    // Append to blog-container if it exists, otherwise fall back to body
     const blogContainer = document.getElementById('blog-container');
     const container = blogContainer || document.body;
     container.appendChild(tooltip);
 
-    // Always position tooltip relative to trigger element at fixed distance
     this.positionTooltipAtTrigger(tooltip, trigger, data, mouseX);
 
-    // Force a reflow to ensure positioning is applied before adding show class
     tooltip.offsetHeight;
 
-    // Show overlay
     if (this.overlay) {
       this.overlay.classList.add('show');
     }
 
-    // Add show class for animation
     tooltip.classList.add('show');
 
-    // Add active class to trigger for highlighting
     trigger.classList.add('active');
 
-    // Make only the image clickable for zoom (not the entire tooltip)
     if (data.media && (data.media.endsWith('.jpg') || data.media.endsWith('.jpeg') ||
       data.media.endsWith('.png') || data.media.endsWith('.gif') ||
       data.media.endsWith('.webp'))) {
       
-      // Add visual hint classes to image and wrapper
       const imageWrapper = tooltip.querySelector('.tooltip-image-wrapper');
       const image = tooltip.querySelector('.tooltip-gif');
       if (imageWrapper) imageWrapper.classList.add('clickable');
@@ -2120,17 +1938,14 @@ class TooltipManager {
         image.classList.add('clickable');
         image.style.cursor = 'pointer';
         
-        // Attach click handler only to the image
         image.addEventListener('click', (e) => {
           e.stopPropagation();
-          // Hide the hover tooltip when clicking to zoom
           this.hideActiveTooltip();
           this.showImageFullscreen(data.media, data.alt || data.text, data);
         });
       }
     }
 
-    // Add hover listeners to tooltip - CRITICAL for keeping it visible
     tooltip.addEventListener('mouseenter', (e) => {
       clearTimeout(this.hideTimeout);
       this.hideTimeout = null;
@@ -2151,7 +1966,6 @@ class TooltipManager {
     this.tooltip = tooltip;
   }
 
-  // Create a tooltip element
   createTooltip(data) {
     const tooltip = document.createElement('div');
     tooltip.className = 'tooltip';
@@ -2159,7 +1973,6 @@ class TooltipManager {
     const content = document.createElement('div');
     content.className = 'tooltip-content';
 
-    // Handle null or undefined data
     if (!data) {
       console.warn('Tooltip data is null or undefined');
       tooltip.appendChild(content);
@@ -2169,7 +1982,6 @@ class TooltipManager {
     if (data.text) {
       const text = document.createElement('div');
       text.className = 'tooltip-text';
-      // Convert custom tags and newlines to HTML
       let formattedText = data.text
         .replace(/<bold>/g, '<strong>')
         .replace(/<\/bold>/g, '</strong>')
@@ -2181,12 +1993,9 @@ class TooltipManager {
       content.appendChild(text);
     }
 
-    // Use 'media' field for images or audio
     if (data.media) {
       if (data.media.endsWith('.mp3') || data.media.endsWith('.wav') || data.media.endsWith('.ogg')) {
-        // Add has-audio class for CSS styling
         tooltip.classList.add('has-audio');
-        // Create audio player matching poems page - using CSS variables for dynamic theming
         const audioPlayer = document.createElement('div');
         audioPlayer.className = 'tooltip-audio-player';
 
@@ -2222,18 +2031,15 @@ class TooltipManager {
         audioElement.loop = true;
         audioElement.preload = 'metadata';
 
-        // Track this audio element
         this.allAudioElements.add(audioElement);
         this.activeTooltipAudio = audioElement;
 
-        // Local formatTime function for this tooltip audio player
         const formatTime = (seconds) => {
           const mins = Math.floor(seconds / 60);
           const secs = Math.floor(seconds % 60);
           return `${mins}:${secs.toString().padStart(2, '0')}`;
         };
 
-        // Update progress
         const updateProgress = () => {
           if (audioElement.duration && isFinite(audioElement.duration)) {
             const percent = (audioElement.currentTime / audioElement.duration) * 100;
@@ -2247,7 +2053,6 @@ class TooltipManager {
           e.stopPropagation();
           e.preventDefault();
           if (audioElement.paused) {
-            // Stop all other audio first
             this.stopAllOtherAudio(null);
             audioElement.play().then(() => {
               playPauseBtn.innerHTML = '⏸';
@@ -2274,7 +2079,6 @@ class TooltipManager {
         playPauseBtn.style.pointerEvents = 'auto';
         playPauseBtn.setAttribute('type', 'button');
 
-        // Progress bar click to seek (same as poems page)
         progressContainer.addEventListener('click', (e) => {
           e.stopPropagation();
           const rect = progressContainer.getBoundingClientRect();
@@ -2286,7 +2090,6 @@ class TooltipManager {
           }
         });
 
-        // Draggable progress handle (exactly like poems page)
         let dragging = false;
         const rectToPct = (clientX) => {
           const rect = progressContainer.getBoundingClientRect();
@@ -2327,7 +2130,6 @@ class TooltipManager {
           if (progressHandle.releasePointerCapture) progressHandle.releasePointerCapture(ev.pointerId);
         });
 
-        // keyboard accessibility: left/right arrow to seek small steps
         progressHandle.addEventListener('keydown', (ev) => {
           if (!audioElement || !audioElement.duration || !isFinite(audioElement.duration)) return;
           const step = Math.max(1, Math.floor(audioElement.duration * 0.02));
@@ -2387,7 +2189,7 @@ class TooltipManager {
 
         this.currentAudio = audioElement;
       } else {
-        // Handle images - wrap in container for overlay effects
+        
         const imageWrapper = document.createElement('div');
         imageWrapper.className = 'tooltip-image-wrapper';
         
@@ -2400,7 +2202,7 @@ class TooltipManager {
         imageWrapper.appendChild(mediaEl);
         content.appendChild(imageWrapper);
 
-        // Add alt text below image in italics if it exists
+        
         if (data.alt) {
           const altText = document.createElement('div');
           altText.className = 'tooltip-alt';
@@ -2418,22 +2220,21 @@ class TooltipManager {
     return tooltip;
   }
 
-  // Initialize tooltips for elements with data-tooltip attributes
+  
   initializeTooltips() {
     const triggers = document.querySelectorAll('[data-tooltip], [tt]');
 
-
-    // Clear existing dimensions cache
+    
     this.tooltipDimensions.clear();
 
     triggers.forEach(trigger => {
       this.setupTooltip(trigger);
-      // Precalculate tooltip dimensions
+      
       this.precalculateTooltipDimensions(trigger);
     });
   }
 
-  // Precalculate tooltip dimensions for caching
+  
   precalculateTooltipDimensions(element) {
     const tooltipId = element.getAttribute('tt');
     let tooltipData;
@@ -2458,12 +2259,12 @@ class TooltipManager {
 
     const dataKey = JSON.stringify(tooltipData);
 
-    // Skip if already calculated
+    
     if (this.tooltipDimensions.has(dataKey)) {
       return;
     }
 
-    // Create temporary tooltip off-screen
+    
     const tempTooltip = this.createTooltip(tooltipData);
     tempTooltip.style.position = 'absolute';
     tempTooltip.style.left = '-9999px';
@@ -2471,33 +2272,32 @@ class TooltipManager {
     tempTooltip.style.visibility = 'hidden';
     document.body.appendChild(tempTooltip);
 
-    // If there's a GIF, wait for it to load before measuring
+    
     const gifImg = tempTooltip.querySelector('.tooltip-gif');
 
     const measureAndStore = () => {
-      // Force layout calculation
+      
       tempTooltip.offsetHeight;
 
-      // Store dimensions
+      
       const rect = tempTooltip.getBoundingClientRect();
       this.tooltipDimensions.set(dataKey, {
         width: rect.width,
         height: rect.height
       });
 
-      // Remove temporary tooltip
+      
       document.body.removeChild(tempTooltip);
-
 
     };
 
     if (gifImg) {
-      // Wait for GIF to load before measuring
+      
       if (gifImg.complete) {
         measureAndStore();
       } else {
         gifImg.onload = measureAndStore;
-        gifImg.onerror = measureAndStore; // Still measure even if GIF fails
+        gifImg.onerror = measureAndStore; 
       }
     } else {
       measureAndStore();
@@ -2538,7 +2338,7 @@ class TooltipManager {
         return;
       }
 
-      // Store mouse position for tooltip positioning
+      
       const mouseX = e.clientX;
       element._tooltipTimeout = setTimeout(() => {
         this.showTooltip(element, tooltipData, mouseX);
@@ -2548,7 +2348,7 @@ class TooltipManager {
     element._tooltipMouseLeave = (e) => {
       const relatedTarget = e.relatedTarget;
 
-      // Don't hide if moving to the tooltip itself
+      
       if (relatedTarget && this.tooltip && this.tooltip.contains(relatedTarget)) {
         if (element._tooltipTimeout) {
           clearTimeout(element._tooltipTimeout);
@@ -2562,7 +2362,7 @@ class TooltipManager {
         element._tooltipTimeout = null;
       }
 
-      // Don't set hide timeout if tooltip was just clicked
+      
       if (element._justClicked) {
         return;
       }
@@ -2574,34 +2374,34 @@ class TooltipManager {
       }, this.hideDelay);
     };
 
-    // Handle click to keep tooltip open on mobile/touch devices
+    
     element._tooltipClick = (e) => {
-      // Mark as just clicked to prevent mouseleave from closing
+      
       element._justClicked = true;
 
-      // Clear the flag after a short delay
+      
       setTimeout(() => {
         element._justClicked = false;
       }, 500);
 
-      // If tooltip is already showing for this trigger, don't do anything
+      
       if (this.tooltip && this.currentTrigger === element) {
         return;
       }
 
-      // Clear any existing timeout
+      
       if (element._tooltipTimeout) {
         clearTimeout(element._tooltipTimeout);
         element._tooltipTimeout = null;
       }
 
-      // Clear hide timeout
+      
       if (this.hideTimeout) {
         clearTimeout(this.hideTimeout);
         this.hideTimeout = null;
       }
 
-      // Show tooltip immediately on click
+      
       this.showTooltip(element, tooltipData, e.clientX);
     };
 
@@ -2610,13 +2410,11 @@ class TooltipManager {
     element.addEventListener('click', element._tooltipClick);
   }
 
-
-
-  // Position tooltip relative to trigger element at fixed distance
+  
   positionTooltipAtTrigger(tooltip, trigger, data, mouseX = null) {
     const dataKey = JSON.stringify(data);
 
-    // Get cached dimensions or fallback
+    
     let tooltipWidth, tooltipHeight;
     if (this.tooltipDimensions.has(dataKey)) {
       const cached = this.tooltipDimensions.get(dataKey);
@@ -2628,21 +2426,21 @@ class TooltipManager {
       tooltipHeight = tooltipRect.height || 100;
     }
 
-    // Get trigger element position relative to viewport (for fixed positioning)
+    
     const triggerRect = trigger.getBoundingClientRect();
 
-    // For multi-line triggers, get the position of the topmost and lowermost lines
+    
     const range = document.createRange();
     range.selectNodeContents(trigger);
     const rects = range.getClientRects();
     let topLineRect = triggerRect;
     let bottomLineRect = triggerRect;
     if (rects.length > 0) {
-      topLineRect = rects[0]; // First rect is the topmost line
-      bottomLineRect = rects[rects.length - 1]; // Last rect is the lowermost line
+      topLineRect = rects[0]; 
+      bottomLineRect = rects[rects.length - 1]; 
     }
 
-    // Get sidebar width to avoid overlapping it (only on desktop where sidebar is side-by-side)
+    
     let sidebarWidth = 0;
     const isMobile = window.innerWidth <= 800;
 
@@ -2652,78 +2450,78 @@ class TooltipManager {
       const sidebar = blogList || poemList;
       if (sidebar && !sidebar.classList.contains('show')) {
         const sidebarRect = sidebar.getBoundingClientRect();
-        // Only use sidebar width if it's visible and positioned on the left
+        
         if (sidebarRect.left === 0 && sidebarRect.width > 0) {
           sidebarWidth = sidebarRect.width;
         }
       }
     }
 
-    // Position tooltip using fixed positioning (relative to viewport)
+    
     const margin = isMobile ? 8 : 10;
     const leftBoundary = sidebarWidth + margin;
     const rightBoundary = window.innerWidth - margin;
 
-    // Horizontal position: align with cursor if available, otherwise center on topmost line
+    
     let left;
     if (mouseX !== null && mouseX !== undefined) {
-      // Center tooltip on cursor position
+      
       left = mouseX - (tooltipWidth / 2);
     } else {
-      // Fallback to centering on topmost line
+      
       left = topLineRect.left + (topLineRect.width / 2) - (tooltipWidth / 2);
     }
 
-    // Vertical position: decide between above topmost line or below lowermost line based on space
+    
     let top;
     const spaceAbove = topLineRect.top;
     const spaceBelow = window.innerHeight - bottomLineRect.bottom;
     const requiredSpace = tooltipHeight + this.verticalOffset + margin;
 
-    // Check if tooltip has audio - audio tooltips always use absolute positioning (scroll with page)
+    
     const hasAudio = tooltip.classList.contains('has-audio');
-    // On mobile, use absolute positioning (scrolls with page), on desktop use fixed (stays in viewport)
-    // Exception: audio tooltips always use absolute positioning to scroll with the page
+    
+    
     const useAbsolutePosition = isMobile || hasAudio;
 
     if (useAbsolutePosition) {
-      // Absolute positioning: calculate position relative to page (including scroll offset)
+      
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
 
-      // Prefer positioning above, but use below if not enough space above and there's more space below
+      
       if (spaceAbove >= requiredSpace || spaceAbove > spaceBelow) {
-        // Position above the topmost line
+        
         top = topLineRect.top + scrollTop - tooltipHeight - this.verticalOffset;
         tooltip.classList.remove('bottom');
       } else {
-        // Position below the lowermost line
+        
         top = bottomLineRect.bottom + scrollTop + this.verticalOffset;
         tooltip.classList.add('bottom');
       }
 
       left = left + scrollLeft;
     } else {
-      // Fixed positioning: stays in viewport (current desktop behavior)
-      // Prefer positioning above, but use below if not enough space above and there's more space below
+      
+      
       if (spaceAbove >= requiredSpace || spaceAbove > spaceBelow) {
-        // Position above the topmost line
+        
         top = topLineRect.top - tooltipHeight - this.verticalOffset;
         tooltip.classList.remove('bottom');
       } else {
-        // Position below the lowermost line
+        
         top = bottomLineRect.bottom + this.verticalOffset;
         tooltip.classList.add('bottom');
       }
     }
 
-    // Adjust if tooltip goes off screen horizontally, accounting for sidebar
+    
     if (left < leftBoundary) left = leftBoundary;
     if (left + tooltipWidth > rightBoundary) {
       left = rightBoundary - tooltipWidth;
     }
 
-    // On mobile, ensure tooltip doesn't exceed max-width
+    
     if (isMobile) {
       const maxTooltipWidth = window.innerWidth - (margin * 2);
       if (tooltipWidth > maxTooltipWidth) {
@@ -2733,19 +2531,17 @@ class TooltipManager {
       }
     }
 
-    // Ensure tooltip doesn't go off bottom of screen (only for fixed positioning)
+    
     if (!useAbsolutePosition) {
       if (top + tooltipHeight > window.innerHeight - margin) {
         top = window.innerHeight - tooltipHeight - margin;
       }
 
-      // Ensure tooltip doesn't go off top of screen
       if (top < margin) {
         top = margin;
       }
     }
 
-    // Use absolute positioning on mobile (scrolls with page), fixed on desktop (stays in viewport)
     tooltip.style.position = useAbsolutePosition ? 'absolute' : 'fixed';
     tooltip.style.left = left + 'px';
     tooltip.style.top = top + 'px';
@@ -2755,17 +2551,12 @@ class TooltipManager {
     }
   }
 
-
-
-  // Hide the active tooltip
   hideActiveTooltip() {
     if (this.tooltip) {
-      // Remove active class from current trigger
       if (this.currentTrigger) {
         this.currentTrigger.classList.remove('active');
       }
 
-      // Stop any playing audio in the tooltip
       if (this.activeTooltipAudio && !this.activeTooltipAudio.paused) {
         this.activeTooltipAudio.pause();
         this.activeTooltipAudio.currentTime = 0;
@@ -2774,12 +2565,10 @@ class TooltipManager {
 
       this.tooltip.classList.remove('show');
 
-      // Hide overlay
       if (this.overlay) {
         this.overlay.classList.remove('show');
       }
 
-      // Store reference to current tooltip for cleanup
       const tooltipToRemove = this.tooltip;
       this.tooltip = null;
       this.currentTrigger = null;
@@ -2797,15 +2586,12 @@ class TooltipManager {
     return this.tooltip && this.tooltip.matches(':hover');
   }
 
-  // Public method to reinitialize tooltips (for dynamic content)
-  async reinitialize(blogFolder) {
+  async reinitialize(folder, contentType = 'blogs') {
 
-    // Use provided blog folder or try to detect it
-    const folder = blogFolder || this.detectBlogFolder();
+    const actualFolder = folder || this.detectBlogFolder();
 
-
-    if (folder) {
-      await this.loadTooltipData(folder);
+    if (actualFolder) {
+      await this.loadTooltipData(actualFolder, contentType);
 
     } else {
 
@@ -2814,28 +2600,20 @@ class TooltipManager {
     this.initializeTooltips();
   }
 
-
-
-  // Show entire tooltip in fullscreen at larger scale
   showImageFullscreen(imageSrc, altText, tooltipData) {
-    // Create fullscreen overlay
     const overlay = document.createElement('div');
     overlay.className = 'tooltip-fullscreen-overlay';
 
-    // Add loading spinner
     const loadingSpinner = document.createElement('div');
     loadingSpinner.className = 'tooltip-loading-spinner';
     overlay.appendChild(loadingSpinner);
 
-    // Create zoomed tooltip container
     const zoomedTooltip = document.createElement('div');
     zoomedTooltip.className = 'tooltip-zoomed';
 
-    // Add text if available
     if (tooltipData && tooltipData.text) {
       const text = document.createElement('div');
       text.className = 'tooltip-zoomed-text';
-      // Convert custom tags and newlines to HTML
       let formattedText = tooltipData.text
         .replace(/<bold>/g, '<strong>')
         .replace(/<\/bold>/g, '</strong>')
@@ -2846,18 +2624,15 @@ class TooltipManager {
       zoomedTooltip.appendChild(text);
     }
 
-    // Add image if available
     if (imageSrc) {
       const imageContainer = document.createElement('div');
       imageContainer.className = 'tooltip-zoomed-image-container';
 
       const img = document.createElement('img');
       img.src = imageSrc;
-      // Use alt text if provided, otherwise use empty string (not the full text)
       img.alt = altText || '';
       img.className = 'tooltip-zoomed-image';
 
-      // Hide loading spinner when image loads
       img.onload = () => {
         loadingSpinner.style.display = 'none';
       };
@@ -2869,7 +2644,6 @@ class TooltipManager {
       imageContainer.appendChild(img);
       zoomedTooltip.appendChild(imageContainer);
 
-      // Add alt text below image in italics if it exists (centered)
       if (tooltipData && tooltipData.alt) {
         const altTextEl = document.createElement('div');
         altTextEl.className = 'tooltip-zoomed-alt';
@@ -2882,7 +2656,6 @@ class TooltipManager {
       }
     }
 
-    // Add credit at the bottom left if it exists
     if (tooltipData && tooltipData.credit) {
       const creditEl = document.createElement('div');
       creditEl.className = 'tooltip-zoomed-credit';
@@ -2895,26 +2668,22 @@ class TooltipManager {
       zoomedTooltip.appendChild(creditEl);
     }
 
-    // Close handlers
     const closeFullscreen = () => {
       document.body.removeChild(overlay);
       document.body.style.overflow = '';
       document.removeEventListener('keydown', escHandler);
     };
 
-    // Only close when clicking the overlay (background), not the tooltip content
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) {
         closeFullscreen();
       }
     });
 
-    // Prevent clicks inside the tooltip from closing it
     zoomedTooltip.addEventListener('click', (e) => {
       e.stopPropagation();
     });
 
-    // ESC key to close
     const escHandler = (e) => {
       if (e.key === 'Escape') {
         closeFullscreen();
@@ -2922,10 +2691,9 @@ class TooltipManager {
     };
     document.addEventListener('keydown', escHandler);
 
-    // Assemble and show
     overlay.appendChild(zoomedTooltip);
     document.body.appendChild(overlay);
-    document.body.style.overflow = 'hidden'; // Prevent scrolling
+    document.body.style.overflow = 'hidden';
   }
 }
 
@@ -2933,7 +2701,6 @@ function initHomePage() {
   let headerLoaded = false;
   let bannerLoaded = false;
 
-  // Position theme toggle button below banner
   function adjustThemeTogglePosition() {
     requestAnimationFrame(() => {
       const banner = document.getElementById("banner-placeholder");
@@ -2942,16 +2709,30 @@ function initHomePage() {
         const bannerRect = banner.getBoundingClientRect();
         const bannerBottom = Math.max(0, bannerRect.bottom);
         themeToggle.style.top = `${bannerBottom + 10}px`;
-        // Make button visible after positioning
         themeToggle.classList.add("positioned");
+        
+        adjustModeControlsPosition();
       }
     });
   }
+  
+  function adjustModeControlsPosition() {
+    requestAnimationFrame(() => {
+      const themeToggle = document.getElementById("themeToggle");
+      const modeControls = document.getElementById("readingModeControls");
+      
+      if (themeToggle && modeControls) {
+        const themeRect = themeToggle.getBoundingClientRect();
+        const themeBottom = themeRect.bottom;
+        modeControls.style.top = `${themeBottom + 8}px`;
+      }
+    });
+  }
+  
+  window.adjustModeControlsPosition = adjustModeControlsPosition;
 
-  // Check if both header and banner are loaded, then position theme toggle
   function checkAndPositionThemeToggle() {
     if (headerLoaded && bannerLoaded) {
-      // Use multiple RAF calls to ensure layout is complete
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           adjustThemeTogglePosition();
@@ -2960,7 +2741,6 @@ function initHomePage() {
     }
   }
 
-  // Wait for images in header to load
   function waitForHeaderImages() {
     const header = document.getElementById("header-placeholder");
     const images = header.querySelectorAll("img");
@@ -3001,7 +2781,6 @@ function initHomePage() {
     }
   }
 
-  // Load header.html first
   fetch("src/header.html")
     .then(response => response.text())
     .then(data => {
@@ -3011,13 +2790,11 @@ function initHomePage() {
     })
     .catch(error => { });
 
-  // Load banner.html and initialize dropdown
   fetch("src/banner.html")
     .then(response => response.text())
     .then(data => {
       const banner = document.getElementById("banner-placeholder");
       banner.innerHTML = data;
-      // Always try to initialize dropdowns after banner loads
       if (typeof initDropdownToggle === "function") {
         initDropdownToggle();
       }
@@ -3026,17 +2803,17 @@ function initHomePage() {
     })
     .catch(error => { });
 
-  // Update position on scroll
   window.addEventListener("scroll", adjustThemeTogglePosition);
   window.addEventListener("touchmove", adjustThemeTogglePosition, { passive: true });
 
-  // Position on load (catch-all for timing issues)
   window.addEventListener("load", adjustThemeTogglePosition);
+  
+  window.addEventListener("resize", () => {
+    adjustThemeTogglePosition();
+  });
 
-  // Load and display history
   loadHistory();
 
-  // Reinitialize dropdown toggle on resize
   let resizeTimer;
   window.addEventListener("resize", () => {
     clearTimeout(resizeTimer);
@@ -3048,7 +2825,6 @@ function initHomePage() {
     }, 100);
   });
 
-  // Ensure dropdowns are initialized on load
   window.addEventListener("load", () => {
     if (typeof initDropdownToggle === "function") {
       initDropdownToggle();
@@ -3063,8 +2839,6 @@ function loadHistory() {
       return response.json();
     })
     .then(historyData => {
-      // Data is already sorted and trimmed to 5 items by the Python script
-      // No need to sort or slice here
 
       const historyList = document.getElementById("historyList");
       if (!historyList) return;
@@ -3091,7 +2865,7 @@ function loadHistory() {
 
         const dateSpan = document.createElement("span");
         dateSpan.className = "history-item-date";
-        dateSpan.textContent = formatDate(item.date); // Uses updated formatDate function
+        dateSpan.textContent = formatDate(item.date);
 
         content.appendChild(typeSpan);
         content.appendChild(nameSpan);
@@ -3110,45 +2884,37 @@ function loadHistory() {
 }
 
 function formatDate(dateString) {
-  // Handle partial dates (YYYY-MM) and full dates (YYYY-MM-DD)
   const parts = dateString.split('-');
 
   if (parts.length === 2) {
-    // Partial date: YYYY-MM -> "Month Year"
     const year = parseInt(parts[0]);
-    const month = parseInt(parts[1]) - 1; // 0-indexed
+    const month = parseInt(parts[1]) - 1;
     const date = new Date(Date.UTC(year, month, 1));
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', timeZone: 'UTC' });
   } else if (parts.length === 3) {
-    // Full date: YYYY-MM-DD -> "Month DD, YYYY"
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
   }
 
-  // Fallback for invalid format
   return dateString;
 }
 
 function initBlogPage() {
-  // Load banner and set up page-specific functionality
   fetch("banner.html")
     .then((response) => response.text())
     .then((data) => {
       document.getElementById("banner-placeholder").innerHTML = data;
 
-      // Ensure dropdowns are initialized after banner loads
+      
       if (typeof initDropdownToggle === "function") {
         initDropdownToggle();
       }
 
-      // Adjust blog list position
       adjustSidebarHeight();
     })
     .catch((error) => { });
 
-  // Adjust sidebar height dynamically and pad content below banner
   function adjustSidebarHeight() {
-    // use rAF for smoother updates and to cover rapid scroll/touch events
     requestAnimationFrame(() => {
       const banner = document.getElementById("banner-placeholder");
       const blogList = document.getElementById("blogList");
@@ -3156,19 +2922,17 @@ function initBlogPage() {
       if (banner && blogList) {
         const bannerRect = banner.getBoundingClientRect();
 
-        // Calculate how much of the banner is still visible
         const bannerBottom = Math.max(0, bannerRect.bottom);
 
-        // Apply same logic for both mobile and desktop - just use bannerRect.bottom
         blogList.style.top = `${bannerBottom}px`;
         blogList.style.height = `calc(100vh - ${bannerBottom}px)`;
 
-        // ensure mobile toggle is positioned correctly
+        
         if (mobileToggle) {
           mobileToggle.style.top = `${bannerBottom}px`;
         }
 
-        // Position theme toggle button below banner
+        
         const themeToggle = document.getElementById("themeToggle");
         if (themeToggle) {
           themeToggle.style.top = `${bannerBottom + 10}px`;
@@ -3178,21 +2942,21 @@ function initBlogPage() {
     });
   }
 
-  // Set initial sidebar state (mobile: hidden, desktop: visible)
+  
   function setInitialSidebarState() {
     const blogList = document.getElementById("blogList");
     const floatingToggle = document.getElementById("sidebarFloatingToggle");
     if (!blogList) return;
 
     if (window.innerWidth <= 800) {
-      // Mobile: hide sidebar initially, show floating toggle
+      
       blogList.classList.remove("show");
       if (floatingToggle) {
         floatingToggle.style.display = "block";
         floatingToggle.classList.remove("hidden");
       }
     } else {
-      // Desktop: show sidebar, hide floating toggle
+      
       blogList.classList.remove("show");
       if (floatingToggle) {
         floatingToggle.style.display = "none";
@@ -3200,35 +2964,35 @@ function initBlogPage() {
     }
   }
 
-  // Toggle blog list visibility
+  
   const toggleBlogList = document.getElementById("toggleBlogList");
   if (toggleBlogList) {
     toggleBlogList.addEventListener("click", (e) => {
       e.stopPropagation();
       const blogList = document.getElementById("blogList");
       if (window.innerWidth <= 800) {
-        // Mobile: toggle overlay
+        
         const isOpen = blogList.classList.toggle("show");
         document.body.classList.toggle("no-scroll", isOpen);
         document.documentElement.classList.toggle("no-scroll", isOpen);
         const floatingToggle = document.getElementById("sidebarFloatingToggle");
         if (floatingToggle) floatingToggle.classList.toggle("hidden", isOpen);
-        // Clear search when closing
+        
         if (!isOpen) clearSidebarSearchInputs();
       } else {
-        // Desktop: toggle collapsed state
+        
         blogList.classList.toggle("collapsed");
         const contentWrapper = document.querySelector(".content-scale-wrapper");
         if (contentWrapper) {
           contentWrapper.classList.toggle("sidebar-collapsed", blogList.classList.contains("collapsed"));
         }
-        // Clear search when collapsing
+        
         if (blogList.classList.contains("collapsed")) clearSidebarSearchInputs();
       }
     });
   }
 
-  // Handle floating toggle for mobile
+  
   const floatingToggle = document.getElementById("sidebarFloatingToggle");
   if (floatingToggle) {
     floatingToggle.addEventListener("click", (e) => {
@@ -3241,7 +3005,7 @@ function initBlogPage() {
     });
   }
 
-  // Close mobile overlay when clicking outside
+  
   document.addEventListener("click", (e) => {
     const blogList = document.getElementById("blogList");
     if (!blogList) return;
@@ -3256,14 +3020,14 @@ function initBlogPage() {
     }
   });
 
-  // Ensure correct initial state on load and on resize
+  
   let lastWidth = window.innerWidth;
   window.addEventListener("load", () => {
     setInitialSidebarState();
     adjustSidebarHeight();
     lastWidth = window.innerWidth;
 
-    // DEBUG: Show ECU tooltip on startup
+    
     setTimeout(() => {
       const ecuElement = document.querySelector('[data-tooltip="ecu"]');
       if (ecuElement && window.tooltipManager) {
@@ -3286,13 +3050,13 @@ function initBlogPage() {
   window.addEventListener("touchmove", adjustSidebarHeight, { passive: true });
   window.addEventListener("touchend", adjustSidebarHeight);
 
-  // Search functionality
+  
   const blogSearch = document.getElementById("blogSearch");
   if (blogSearch) {
     blogSearch.addEventListener("input", (e) => {
       const search = e.target.value.toLowerCase();
       document.querySelectorAll("#blogListItems li").forEach((item) => {
-        // Skip the no-results item itself
+        
         if (item.classList.contains('no-results')) return;
         const link = item.querySelector('a');
         if (!link) return;
@@ -3305,7 +3069,7 @@ function initBlogPage() {
         const matches = search && lowerText.includes(search);
 
         if (matches) {
-          // Highlight matching parts
+          
           const regex = new RegExp(`(${search.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')})`, 'gi');
           titleSpan.innerHTML = originalText.replace(regex, '<mark>$1</mark>');
           item.style.display = "block";
@@ -3323,23 +3087,23 @@ function initBlogPage() {
 }
 
 function initPoemPage() {
-  // Load banner
+  
   fetch("banner.html")
     .then((response) => response.text())
     .then((data) => {
       document.getElementById("banner-placeholder").innerHTML = data;
 
-      // Ensure dropdowns are initialized after banner loads
+      
       if (typeof initDropdownToggle === "function") {
         initDropdownToggle();
       }
 
-      // Adjust poem list position
+      
       adjustSidebarHeight();
     })
     .catch((error) => { });
 
-  // Similar functionality as blog page but for poems
+  
   function adjustSidebarHeight() {
     requestAnimationFrame(() => {
       const banner = document.getElementById("banner-placeholder");
@@ -3348,43 +3112,51 @@ function initPoemPage() {
       if (banner && poemList) {
         const bannerRect = banner.getBoundingClientRect();
 
-        // Calculate how much of the banner is still visible
+        
         const bannerBottom = Math.max(0, bannerRect.bottom);
 
-        // Apply same logic for both mobile and desktop - just use bannerRect.bottom
+        
         poemList.style.top = `${bannerBottom}px`;
         poemList.style.height = `calc(100vh - ${bannerBottom}px)`;
 
-        // ensure mobile toggle is positioned correctly
+        
         if (mobileToggle) {
           mobileToggle.style.top = `${bannerBottom}px`;
         }
 
-        // Position theme toggle button below banner
+        
         const themeToggle = document.getElementById("themeToggle");
         if (themeToggle) {
           themeToggle.style.top = `${bannerBottom + 10}px`;
           themeToggle.classList.add("positioned");
+          
+          
+          const modeControls = document.getElementById("readingModeControls");
+          if (modeControls) {
+            const themeRect = themeToggle.getBoundingClientRect();
+            const themeBottom = themeRect.bottom;
+            modeControls.style.top = `${themeBottom + 8}px`;
+          }
         }
       }
     });
   }
 
-  // Set initial sidebar state (mobile: hidden, desktop: visible)
+  
   function setInitialSidebarState() {
     const poemList = document.getElementById("poemList");
     const floatingToggle = document.getElementById("sidebarFloatingToggle");
     if (!poemList) return;
 
     if (window.innerWidth <= 800) {
-      // Mobile: hide sidebar initially, show floating toggle
+      
       poemList.classList.remove("show");
       if (floatingToggle) {
         floatingToggle.style.display = "block";
         floatingToggle.classList.remove("hidden");
       }
     } else {
-      // Desktop: show sidebar, hide floating toggle
+      
       poemList.classList.remove("show");
       if (floatingToggle) {
         floatingToggle.style.display = "none";
@@ -3392,35 +3164,35 @@ function initPoemPage() {
     }
   }
 
-  // Toggle poem list visibility
+  
   const toggleSidebar = document.getElementById("toggleSidebar");
   if (toggleSidebar) {
     toggleSidebar.addEventListener("click", (e) => {
       e.stopPropagation();
       const poemList = document.getElementById("poemList");
       if (window.innerWidth <= 800) {
-        // Mobile: toggle overlay
+        
         const isOpen = poemList.classList.toggle("show");
         document.body.classList.toggle("no-scroll", isOpen);
         document.documentElement.classList.toggle("no-scroll", isOpen);
         const floatingToggle = document.getElementById("sidebarFloatingToggle");
         if (floatingToggle) floatingToggle.classList.toggle("hidden", isOpen);
-        // Clear search when closing
+        
         if (!isOpen) clearSidebarSearchInputs();
       } else {
-        // Desktop: toggle collapsed state
+        
         poemList.classList.toggle("collapsed");
         const contentWrapper = document.querySelector(".content-scale-wrapper");
         if (contentWrapper) {
           contentWrapper.classList.toggle("sidebar-collapsed", poemList.classList.contains("collapsed"));
         }
-        // Clear search when collapsing
+        
         if (poemList.classList.contains("collapsed")) clearSidebarSearchInputs();
       }
     });
   }
 
-  // Handle floating toggle for mobile
+  
   const floatingToggle = document.getElementById("sidebarFloatingToggle");
   if (floatingToggle) {
     floatingToggle.addEventListener("click", (e) => {
@@ -3433,7 +3205,7 @@ function initPoemPage() {
     });
   }
 
-  // Close mobile overlay when clicking outside
+  
   document.addEventListener("click", (e) => {
     const poemList = document.getElementById("poemList");
     if (!poemList) return;
@@ -3448,13 +3220,14 @@ function initPoemPage() {
     }
   });
 
-  // Event listeners
+  
   let lastWidth = window.innerWidth;
   window.addEventListener("load", () => {
     setInitialSidebarState();
     adjustSidebarHeight();
     lastWidth = window.innerWidth;
   });
+  window.addEventListener("scroll", adjustSidebarHeight);
   window.addEventListener("resize", () => {
     const currentWidth = window.innerWidth;
     if (currentWidth !== lastWidth) {
@@ -3467,13 +3240,13 @@ function initPoemPage() {
   window.addEventListener("touchmove", adjustSidebarHeight, { passive: true });
   window.addEventListener("touchend", adjustSidebarHeight);
 
-  // Search functionality
+  
   const poemSearch = document.getElementById("poemSearch");
   if (poemSearch) {
     poemSearch.addEventListener("input", (e) => {
       const search = e.target.value.toLowerCase();
       document.querySelectorAll("#poemListItems li").forEach((item) => {
-        // Skip the no-results item itself
+        
         if (item.classList.contains('no-results')) return;
         const link = item.querySelector('a');
         if (!link) return;
@@ -3486,7 +3259,7 @@ function initPoemPage() {
         const matches = search && lowerText.includes(search);
 
         if (matches) {
-          // Highlight matching parts
+          
           const regex = new RegExp(`(${search.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')})`, 'gi');
           titleSpan.innerHTML = originalText.replace(regex, '<mark>$1</mark>');
           item.style.display = "block";
@@ -3501,11 +3274,10 @@ function initPoemPage() {
       updateNoResultsMessage('poemListItems');
     });
   }
-  // Initialize overview slideshow after DOM is ready
-  setTimeout(initOverviewSlideshow, 0); // Ensure DOM is ready
+  
+  setTimeout(initOverviewSlideshow, 0); 
 }
 
-// Slideshow logic for showcase windows
 function initShowcaseSlideshow() {
   const MANIFEST = 'src/resources/images/overview/overview_manifest.json';
   const container = document.getElementById('image-showcase-container');
@@ -3524,11 +3296,11 @@ function initShowcaseSlideshow() {
     const window2 = container.querySelector('.showcase-window-2');
     if (!window1) return;
 
-    // Clear windows
+    
     window1.innerHTML = '';
     if (window2) window2.innerHTML = '';
 
-    // Create image for first window
+    
     const img1 = document.createElement('img');
     img1.className = 'showcase-img contain click-zoom';
     img1.src = images[current];
@@ -3538,7 +3310,7 @@ function initShowcaseSlideshow() {
     img1.addEventListener('click', () => openImageFullscreen(img1.src, img1.alt));
     window1.appendChild(img1);
 
-    // Create image for second window (desktop only)
+    
     if (!isMobile && window2) {
       const img2 = document.createElement('img');
       img2.className = 'showcase-img contain click-zoom';
@@ -3560,43 +3332,43 @@ function initShowcaseSlideshow() {
     const window2 = container.querySelector('.showcase-window-2');
 
     if (isMobile || !window2) {
-      // Mobile: simple swap
+      
       current = (current + 1) % images.length;
       render();
       animating = false;
       return;
     }
 
-    // Desktop: animated swap
+    
     const img1 = window1.querySelector('img');
     const img2 = window2.querySelector('img');
     if (!img1 || !img2) { animating = false; return; }
 
-    // Calculate proper slide distance including gap
+    
     const window1Rect = window1.getBoundingClientRect();
     const window2Rect = window2.getBoundingClientRect();
     const slideDistance = window2Rect.left - window1Rect.left;
 
-    // Fade out first window, slide second window
+    
     img1.style.transition = 'opacity 0.45s';
     img1.style.opacity = '0';
     window2.style.transition = 'transform 0.45s cubic-bezier(.4, 0, .2, 1)';
     window2.style.transform = `translateX(-${slideDistance}px)`;
 
     setTimeout(() => {
-      // Update first window to show what was in second
+      
       img1.src = img2.src;
       img1.alt = img2.alt;
       img1.style.opacity = '1';
       img1.style.transition = 'none';
       img1.style.borderRadius = '12px';
 
-      // Update second window to next image and reset position
+      
       const nextIdx = (current + 2) % images.length;
-      img2.style.opacity = '0'; // Hide during load
+      img2.style.opacity = '0'; 
       img2.src = images[nextIdx];
       img2.alt = `Overview image ${nextIdx + 1}`;
-      // Show when loaded
+      
       img2.onload = () => { img2.style.opacity = '1'; };
       window2.style.transform = 'translateX(0)';
       window2.style.transition = 'none';
@@ -3608,7 +3380,7 @@ function initShowcaseSlideshow() {
 
   function startAuto() {
     if (autoTimer) clearInterval(autoTimer);
-    // Faster interval for mobile since it's a single image
+    
     const interval = window.innerWidth <= 799 ? 2000 : 3000;
     autoTimer = setInterval(next, interval);
   }
@@ -3620,14 +3392,14 @@ function initShowcaseSlideshow() {
     }
   }
 
-  // Load manifest and start
+  
   fetch(MANIFEST).then(r => r.json()).then(list => {
     if (!Array.isArray(list) || list.length === 0) return;
     images = list.map(n => 'src/resources/images/overview/' + encodeURIComponent(n).replace(/%2F/g, '/'));
     render();
     startAuto();
   }).catch(() => {
-    // fallback to empty render
+    
   });
 
   window.addEventListener('resize', () => {
@@ -3635,7 +3407,6 @@ function initShowcaseSlideshow() {
   });
 }
 
-// Slideshow logic for overview images
 function initOverviewSlideshow() {
   const MANIFEST = 'src/resources/images/overview/overview_manifest.json';
   const container = document.querySelector('#overview-slideshow .slideshow-images');
@@ -3675,14 +3446,14 @@ function initOverviewSlideshow() {
   function applySizingForImage(imgEl) {
     const isVertical = imgEl.naturalHeight >= imgEl.naturalWidth;
     const sizing = computeSizing(isVertical);
-    // Apply inline styles to container so dynamic JS calculation takes effect
+    
     container.style.width = sizing.width + 'px';
     container.style.height = sizing.height + 'px';
-    // Ensure images scale down to fit the window (no cropping)
+    
     container.querySelectorAll('.slideshow-img').forEach((ie) => {
       ie.classList.add('contain');
       ie.classList.remove('cover');
-      // Clear any hard width/height on image elements to allow object-fit to work
+      
       ie.style.width = '';
       ie.style.height = '';
     });
@@ -3778,29 +3549,28 @@ function initOverviewSlideshow() {
 
   function stopAuto() { if (autoTimer) { clearInterval(autoTimer); autoTimer = null; } }
 
-  // Load manifest and start
+  
   fetch(MANIFEST).then(r => r.json()).then(list => {
     if (!Array.isArray(list) || list.length === 0) return;
     images = list.map(n => 'src/resources/images/overview/' + encodeURIComponent(n).replace(/%2F/g, '/'));
     render();
     startAuto();
   }).catch(() => {
-    // fallback to empty render
+    
   });
 
   if (prevBtn) prevBtn.addEventListener('click', (e) => { e.preventDefault(); stopAuto(); prev(); startAuto(); });
   if (nextBtn) nextBtn.addEventListener('click', (e) => { e.preventDefault(); stopAuto(); next(); startAuto(); });
 
   window.addEventListener('resize', () => {
-    // Recompute sizing for current displayed image
+    
     const firstImg = container.querySelector('.slideshow-img');
     if (firstImg) applySizingForImage(firstImg);
   });
 }
 
-// Helper for fullscreen image zoom (like blog)
 function openImageFullscreen(src, alt) {
-  // Remove any existing overlay
+  
   const oldOverlay = document.getElementById('fullscreen-image-overlay');
   if (oldOverlay) oldOverlay.remove();
 
@@ -3829,7 +3599,7 @@ function openImageFullscreen(src, alt) {
 
   overlay.appendChild(img);
 
-  // Close on click or ESC
+  
   overlay.addEventListener('click', () => overlay.remove());
   document.addEventListener('keydown', function escHandler(e) {
     if (e.key === 'Escape') {
@@ -3841,33 +3611,32 @@ function openImageFullscreen(src, alt) {
   document.body.appendChild(overlay);
 }
 
-// Handle anchor link highlighting with fade effect
 function handleAnchorHighlight() {
   const hash = window.location.hash;
   if (hash) {
     const targetElement = document.querySelector(hash);
     if (targetElement) {
-      // Choose the most appropriate container to highlight
+      
       const id = targetElement.id;
       let highlightEl = null;
 
-      // If targeting a heading, highlight the entire section block
+      
       if (targetElement.matches('h1, h2, h3, h4, h5, h6')) {
         const block = targetElement.closest('.anchor-block') || (id ? document.querySelector(`.anchor-block[data-anchor-id='${CSS.escape(id)}']`) : null);
         highlightEl = block || targetElement;
       } else if (targetElement.matches('div, section, article, aside') && targetElement.id) {
-        // If it's a div/section/article/aside with its own ID, highlight just that element
+        
         highlightEl = targetElement;
       } else {
-        // Otherwise, highlight the nearest block element (prefer li over ul/ol)
+        
         const nearestLi = targetElement.closest('li');
         const nearestBlock = targetElement.closest('p, pre, blockquote, table, dl, ol, ul, .image-wrapper, .pdf-placeholder, .video-player');
         if (nearestLi) {
           highlightEl = nearestLi;
         } else if (nearestBlock) {
-          // Avoid highlighting entire UL/OL when a specific item is intended
+          
           if (nearestBlock.tagName && (nearestBlock.tagName.toLowerCase() === 'ul' || nearestBlock.tagName.toLowerCase() === 'ol')) {
-            // Fall back to anchor-block or the target itself
+            
             const block = targetElement.closest('.anchor-block') || (id ? document.querySelector(`.anchor-block[data-anchor-id='${CSS.escape(id)}']`) : null);
             highlightEl = block || targetElement;
           } else {
@@ -3879,13 +3648,13 @@ function handleAnchorHighlight() {
         }
       }
 
-      // Remove class first if it exists (to restart animation)
+      
       highlightEl.classList.remove('anchor-highlight');
 
-      // Force reflow to restart animation
+      
       void highlightEl.offsetWidth;
 
-      // Add class to trigger animation
+      
       highlightEl.classList.add('anchor-highlight');
       setTimeout(() => {
         highlightEl.classList.remove('anchor-highlight');
@@ -3894,7 +3663,6 @@ function handleAnchorHighlight() {
   }
 }
 
-// Wrap blog content into sections: each heading and its following siblings until next heading
 function wrapBlogSections(root) {
   if (!root) return;
   const headingSelector = 'h1, h2, h3, h4, h5, h6';
@@ -3902,7 +3670,7 @@ function wrapBlogSections(root) {
   let currentBlock = null;
   nodes.forEach((node) => {
     if (node.nodeType === 1 && node.matches(headingSelector)) {
-      // Start a new block with this heading
+      
       const block = document.createElement('div');
       block.className = 'anchor-block';
       const hid = node.id;
@@ -3916,17 +3684,14 @@ function wrapBlogSections(root) {
   });
 }
 
-// Listen for hash changes (when clicking anchor links on same page)
 window.addEventListener('hashchange', () => {
-  setTimeout(handleAnchorHighlight, 50); // Small delay to ensure element exists
+  setTimeout(handleAnchorHighlight, 50); 
 });
 
-// Call on page load (after content is loaded)
 window.addEventListener('load', () => {
-  setTimeout(handleAnchorHighlight, 100); // Small delay to ensure content is rendered
+  setTimeout(handleAnchorHighlight, 100); 
 });
 
-// Ensure slideshow runs on DOMContentLoaded in case other init paths were skipped
 document.addEventListener('DOMContentLoaded', () => {
   try {
     initOverviewSlideshow();
@@ -3935,9 +3700,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// Function to add hover overlays for truncated text
 function addTruncatedTextOverlays() {
-  // Only add overlays on desktop (screen width > 800px)
+  
   if (window.innerWidth <= 800) {
     return;
   }
@@ -3945,27 +3709,27 @@ function addTruncatedTextOverlays() {
   let activeOverlay = null;
 
   function showOverlay(element, overlayClass) {
-    // Remove any existing overlay
+    
     if (activeOverlay) {
       activeOverlay.remove();
       activeOverlay = null;
     }
 
-    // Get parent link element to access date
+    
     const linkElement = element.closest('a');
     const dateElement = linkElement ? linkElement.querySelector('.list-item-date') : null;
 
-    // Create overlay container
+    
     const overlay = document.createElement('div');
     overlay.className = overlayClass;
 
-    // Create title span
+    
     const titleSpan = document.createElement('span');
     titleSpan.textContent = element.textContent;
     titleSpan.style.marginRight = dateElement ? '8px' : '0';
     overlay.appendChild(titleSpan);
 
-    // Add date if it exists
+    
     if (dateElement) {
       const dateSpan = document.createElement('span');
       dateSpan.textContent = dateElement.textContent;
@@ -3977,7 +3741,7 @@ function addTruncatedTextOverlays() {
       overlay.appendChild(dateSpan);
     }
 
-    // Copy computed styles from original element and parent link
+    
     const computedStyle = window.getComputedStyle(element);
     const linkStyle = linkElement ? window.getComputedStyle(linkElement) : null;
 
@@ -3989,26 +3753,26 @@ function addTruncatedTextOverlays() {
     overlay.style.alignItems = 'center';
     overlay.style.gap = '8px';
 
-    // Add to body
+    
     document.body.appendChild(overlay);
     activeOverlay = overlay;
 
-    // Position overlay to match the element's position and height, but allow width to expand
+    
     const rect = element.getBoundingClientRect();
     overlay.style.left = rect.left + 'px';
     overlay.style.top = rect.top + 'px';
     overlay.style.height = rect.height + 'px';
     overlay.style.lineHeight = rect.height + 'px';
 
-    // Allow width to expand naturally, but don't exceed viewport
+    
     overlay.style.maxWidth = 'max-content';
     const overlayRect = overlay.getBoundingClientRect();
-    const maxRight = window.innerWidth - 20; // 20px margin
+    const maxRight = window.innerWidth - 20; 
     if (overlayRect.right > maxRight) {
       overlay.style.maxWidth = (maxRight - rect.left) + 'px';
     }
 
-    // Show overlay only after width is calculated to prevent reflow
+    
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         overlay.classList.add('show');
@@ -4025,7 +3789,7 @@ function addTruncatedTextOverlays() {
     }
   }
 
-  // Handle list item titles (blogs/poems sidebar only) - attach to parent link to include date hover area
+  
   document.querySelectorAll('.list-item-title').forEach(el => {
     if (el.scrollWidth > el.clientWidth) {
       const linkElement = el.closest('a');
@@ -4036,3 +3800,316 @@ function addTruncatedTextOverlays() {
     }
   });
 }
+
+class ReadingModeManager {
+  constructor() {
+    this.currentMode = 'static';
+    this.tooltipsEnabled = false;
+    this.paragraphs = [];
+    this.currentParagraphIndex = 0;
+    this.poemTitle = '';
+    this.animationTimeout = null;
+    this.audioElement = null;
+    
+    this.loadPreferences();
+    this.checkTooltipsAvailable();
+    this.initializeUI();
+    this.attachEventListeners();
+  }
+  
+  loadPreferences() {
+    
+    
+    this.tooltipsEnabled = false;
+  }
+  
+  savePreferences() {
+    localStorage.setItem('tooltipsEnabled', this.tooltipsEnabled);
+  }
+  
+  checkTooltipsAvailable() {
+    
+    if (window.currentPoem) {
+      this.checkTooltipsForPoem(window.currentPoem.folder);
+    }
+  }
+  
+  checkDynamicModeAvailable(poem) {
+    const dynamicBtn = document.getElementById('dynamicModeBtn');
+    if (!dynamicBtn) return;
+    
+    
+    if (poem && poem.noDynamicMode) {
+      dynamicBtn.style.display = 'none';
+      dynamicBtn.classList.remove('positioned');
+    } else {
+      dynamicBtn.style.display = 'flex';
+      setTimeout(() => dynamicBtn.classList.add('positioned'), 100);
+    }
+    
+    
+    if (window.adjustModeControlsPosition) {
+      window.adjustModeControlsPosition();
+    }
+  }
+  
+  checkTooltipsForPoem(poemFolder) {
+    const tooltipToggle = document.getElementById('tooltipToggleIcon');
+    if (!tooltipToggle) return;
+    
+    const poemText = document.getElementById('poemText');
+    const tooltipElements = poemText ? [
+      ...poemText.querySelectorAll('[tt]'),
+      ...poemText.querySelectorAll('[data-tooltip]')
+    ] : [];
+    
+    if (tooltipElements.length > 0) {
+      tooltipToggle.style.display = 'flex';
+      setTimeout(() => tooltipToggle.classList.add('positioned'), 100);
+    } else {
+      tooltipToggle.style.display = 'none';
+      tooltipToggle.classList.remove('positioned');
+    }
+    
+    if (window.adjustModeControlsPosition) {
+      window.adjustModeControlsPosition();
+    }
+  }
+  
+  initializeUI() {
+    
+    const tooltipToggle = document.getElementById('tooltipToggleIcon');
+    if (tooltipToggle) {
+      tooltipToggle.style.display = 'none';
+    }
+    
+    
+    document.body.classList.add('tooltips-disabled');
+    
+    
+    setTimeout(() => {
+      const dynamicBtn = document.getElementById('dynamicModeBtn');
+      if (dynamicBtn) dynamicBtn.classList.add('positioned');
+      
+      
+      if (window.adjustModeControlsPosition) {
+        window.adjustModeControlsPosition();
+      } else {
+        
+        setTimeout(() => {
+          if (window.adjustModeControlsPosition) {
+            window.adjustModeControlsPosition();
+          }
+        }, 500);
+      }
+    }, 100);
+    
+    this.updateTooltipUI();
+  }
+  
+  attachEventListeners() {
+    
+    document.getElementById('dynamicModeBtn')?.addEventListener('click', () => {
+      if (this.currentMode === 'static') {
+        this.enterDynamicMode();
+      } else {
+        this.exitDynamicMode();
+      }
+    });
+    
+    document.getElementById('tooltipToggleIcon')?.addEventListener('click', () => this.toggleTooltips());
+  }
+
+  
+  toggleTooltips() {
+    this.tooltipsEnabled = !this.tooltipsEnabled;
+    this.savePreferences();
+    this.updateTooltipUI();
+  }
+  
+  updateTooltipUI() {
+    document.body.classList.toggle('tooltips-disabled', !this.tooltipsEnabled);
+    
+    const tooltipIcon = document.getElementById('tooltipToggleIcon');
+    
+    if (tooltipIcon) {
+      
+      const iconIsVisible = tooltipIcon.style.display !== 'none';
+      if (iconIsVisible) {
+        tooltipIcon.classList.toggle('disabled', !this.tooltipsEnabled);
+        tooltipIcon.style.opacity = this.tooltipsEnabled ? '1' : '0.4';
+      }
+    }
+    
+    
+    if (!this.tooltipsEnabled) {
+      document.querySelectorAll('.tooltip-box').forEach(box => {
+        box.style.display = 'none';
+      });
+    }
+  }
+  
+  enterDynamicMode() {
+    this.currentMode = 'dynamic';
+    
+    const dynamicBtn = document.getElementById('dynamicModeBtn');
+    if (dynamicBtn) {
+      dynamicBtn.classList.add('active');
+      dynamicBtn.blur();
+    }
+    
+    const poemText = document.getElementById('poemText');
+    if (!poemText) {
+      return;
+    }
+    
+    const hrs = poemText.querySelectorAll('hr');
+    if (hrs.length < 2) {
+      return;
+    }
+    
+    const allElements = Array.from(poemText.children);
+    const firstHrIndex = allElements.indexOf(hrs[0]);
+    const secondHrIndex = allElements.indexOf(hrs[1]);
+    
+    allElements.forEach((el, index) => {
+      if (index < firstHrIndex || index > secondHrIndex) {
+        el.style.transition = 'opacity 0.8s ease';
+        el.style.opacity = '0';
+      }
+    });
+    
+    const poemElements = allElements.slice(firstHrIndex + 1, secondHrIndex);
+    const existingTitle = poemElements.find(el => el.tagName === 'H2');
+    const existingParagraphs = poemElements.filter(el => el.tagName === 'P');
+    
+    if (existingParagraphs.length === 0) {
+      return;
+    }
+    
+    existingParagraphs.forEach(p => {
+      p.style.opacity = '0';
+      p.style.transition = 'opacity 0.8s ease';
+    });
+    
+    if (existingTitle) {
+      existingTitle.style.opacity = '0';
+      existingTitle.style.transition = 'opacity 0.8s ease';
+    }
+    
+    
+    
+    
+    
+    
+    this.paragraphElements = existingParagraphs;
+    this.titleElement = existingTitle;
+    this.hiddenElements = allElements.filter((el, index) => index < firstHrIndex || index > secondHrIndex);
+    this.hrElements = [hrs[0], hrs[1]];
+    this.currentParagraphIndex = 0;
+    
+    
+    setTimeout(() => {
+      this.clickHandler = (e) => {
+        
+        if (!e.target.closest('.reading-mode-controls')) {
+          this.exitDynamicMode();
+        }
+      };
+      document.addEventListener('click', this.clickHandler, { once: false });
+    }, 100);
+    
+    
+    setTimeout(() => this.showNextParagraph(), 2000);
+  }
+  
+  exitDynamicMode() {
+    this.currentMode = 'static';
+    
+    
+    const dynamicBtn = document.getElementById('dynamicModeBtn');
+    if (dynamicBtn) {
+      dynamicBtn.classList.remove('active');
+      dynamicBtn.blur(); 
+    }
+    
+    
+    if (this.clickHandler) {
+      document.removeEventListener('click', this.clickHandler);
+      this.clickHandler = null;
+    }
+    
+    
+    if (this.animationTimeout) {
+      clearTimeout(this.animationTimeout);
+      this.animationTimeout = null;
+    }
+    
+    
+    if (this.paragraphElements) {
+      this.paragraphElements.forEach(p => {
+        p.style.opacity = '1';
+      });
+    }
+    
+    if (this.titleElement) {
+      this.titleElement.style.opacity = '1';
+    }
+    
+    
+    if (this.hiddenElements) {
+      this.hiddenElements.forEach(el => {
+        el.style.opacity = '1';
+      });
+    }
+    
+    
+    
+    
+    
+    
+    
+  }
+  
+  showNextParagraph() {
+    
+    if (this.currentParagraphIndex >= this.paragraphElements.length) {
+      if (this.titleElement) {
+        setTimeout(() => {
+          this.titleElement.style.opacity = '1';
+          
+          setTimeout(() => this.exitDynamicMode(), 1000);
+        }, 50);
+      } else {
+        
+        setTimeout(() => this.exitDynamicMode(), 1000);
+      }
+      return;
+    }
+    
+    
+    const currentPara = this.paragraphElements[this.currentParagraphIndex];
+    
+    if (currentPara) {
+      const wordCount = currentPara.textContent.trim().split(/\s+/).length;
+      
+      setTimeout(() => {
+        currentPara.style.opacity = '1';
+      }, 50);
+      
+      
+      
+      const delay = wordCount * 300;
+      
+      
+      this.currentParagraphIndex++;
+      this.animationTimeout = setTimeout(() => this.showNextParagraph(), delay);
+    }
+  }
+}
+
+window.initReadingModeManager = function() {
+  if (document.getElementById('poemContent')) {
+    window.readingModeManager = new ReadingModeManager();
+  }
+};
