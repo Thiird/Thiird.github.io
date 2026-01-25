@@ -3809,6 +3809,7 @@ class ReadingModeManager {
     this.currentParagraphIndex = 0;
     this.poemTitle = '';
     this.animationTimeout = null;
+    this.initialTimeout = null;
     this.audioElement = null;
     
     this.loadPreferences();
@@ -3838,14 +3839,32 @@ class ReadingModeManager {
     const dynamicBtn = document.getElementById('dynamicModeBtn');
     if (!dynamicBtn) return;
     
+    // Exit dynamic mode if currently active (cleanup on poem change)
+    if (this.currentMode === 'dynamic') {
+      this.exitDynamicMode();
+    }
     
     if (poem && poem.noDynamicMode) {
       dynamicBtn.style.display = 'none';
       dynamicBtn.classList.remove('positioned');
-    } else {
-      dynamicBtn.style.display = 'flex';
-      setTimeout(() => dynamicBtn.classList.add('positioned'), 100);
+      return;
     }
+    
+    // Check if current poem has the required structure (at least 2 HR elements)
+    setTimeout(() => {
+      const poemText = document.getElementById('poemText');
+      if (poemText) {
+        const hrs = poemText.querySelectorAll('hr');
+        if (hrs.length >= 2) {
+          dynamicBtn.style.display = 'flex';
+          setTimeout(() => dynamicBtn.classList.add('positioned'), 100);
+        } else {
+          console.log('Dynamic mode disabled: poem needs at least 2 HR elements, found', hrs.length);
+          dynamicBtn.style.display = 'none';
+          dynamicBtn.classList.remove('positioned');
+        }
+      }
+    }, 100);
     
     
     if (window.adjustModeControlsPosition) {
@@ -3910,6 +3929,8 @@ class ReadingModeManager {
   attachEventListeners() {
     
     document.getElementById('dynamicModeBtn')?.addEventListener('click', () => {
+      console.log('Poem dynamic display clicked');
+      // Prevent starting if already in dynamic mode
       if (this.currentMode === 'static') {
         this.enterDynamicMode();
       } else {
@@ -3949,28 +3970,55 @@ class ReadingModeManager {
     }
   }
   
+  resetToStatic(dynamicBtn) {
+    this.currentMode = 'static';
+    if (dynamicBtn) {
+      dynamicBtn.classList.remove('active');
+      dynamicBtn.style.display = 'none';
+    }
+  }
+  
   enterDynamicMode() {
+    console.log('enterDynamicMode called, current mode:', this.currentMode);
+    // Prevent double-entry
+    if (this.currentMode === 'dynamic') {
+      console.log('Already in dynamic mode, ignoring');
+      return;
+    }
+    
     this.currentMode = 'dynamic';
+    console.log('Mode set to dynamic');
     
     const dynamicBtn = document.getElementById('dynamicModeBtn');
     if (dynamicBtn) {
       dynamicBtn.classList.add('active');
       dynamicBtn.blur();
+      // Hide button when animation starts
+      dynamicBtn.style.display = 'none';
+      console.log('Button hidden');
     }
     
     const poemText = document.getElementById('poemText');
     if (!poemText) {
+      console.log('ERROR: poemText not found');
+      this.resetToStatic(dynamicBtn);
       return;
     }
+    console.log('poemText found');
     
     const hrs = poemText.querySelectorAll('hr');
+    console.log('Found', hrs.length, 'hr elements');
     if (hrs.length < 2) {
+      console.log('ERROR: Not enough hr elements, need at least 2');
+      this.resetToStatic(dynamicBtn);
       return;
     }
+    console.log('HR elements check passed');
     
     const allElements = Array.from(poemText.children);
     const firstHrIndex = allElements.indexOf(hrs[0]);
     const secondHrIndex = allElements.indexOf(hrs[1]);
+    console.log('First HR index:', firstHrIndex, 'Second HR index:', secondHrIndex);
     
     allElements.forEach((el, index) => {
       if (index < firstHrIndex || index > secondHrIndex) {
@@ -3978,23 +4026,30 @@ class ReadingModeManager {
         el.style.opacity = '0';
       }
     });
+    console.log('Hidden elements outside HR range');
     
     const poemElements = allElements.slice(firstHrIndex + 1, secondHrIndex);
     const existingTitle = poemElements.find(el => el.tagName === 'H2');
     const existingParagraphs = poemElements.filter(el => el.tagName === 'P');
+    console.log('Found', existingParagraphs.length, 'paragraphs');
     
     if (existingParagraphs.length === 0) {
+      console.log('ERROR: No paragraphs found');
+      this.resetToStatic(dynamicBtn);
       return;
     }
+    console.log('Paragraphs check passed');
     
     existingParagraphs.forEach(p => {
       p.style.opacity = '0';
       p.style.transition = 'opacity 0.8s ease';
     });
+    console.log('Set all paragraphs opacity to 0');
     
     if (existingTitle) {
       existingTitle.style.opacity = '0';
       existingTitle.style.transition = 'opacity 0.8s ease';
+      console.log('Set title opacity to 0');
     }
     
     
@@ -4007,7 +4062,15 @@ class ReadingModeManager {
     this.hiddenElements = allElements.filter((el, index) => index < firstHrIndex || index > secondHrIndex);
     this.hrElements = [hrs[0], hrs[1]];
     this.currentParagraphIndex = 0;
+    console.log('State initialized, currentParagraphIndex:', this.currentParagraphIndex);
     
+    // Clear any existing timeouts before setting new ones
+    if (this.initialTimeout) {
+      clearTimeout(this.initialTimeout);
+    }
+    if (this.animationTimeout) {
+      clearTimeout(this.animationTimeout);
+    }
     
     setTimeout(() => {
       this.clickHandler = (e) => {
@@ -4017,10 +4080,11 @@ class ReadingModeManager {
         }
       };
       document.addEventListener('click', this.clickHandler, { once: false });
+      console.log('Click handler attached');
     }, 100);
     
-    
-    setTimeout(() => this.showNextParagraph(), 2000);
+    console.log('Scheduling showNextParagraph in 2000ms');
+    this.initialTimeout = setTimeout(() => this.showNextParagraph(), 2000);
   }
   
   exitDynamicMode() {
@@ -4030,7 +4094,11 @@ class ReadingModeManager {
     const dynamicBtn = document.getElementById('dynamicModeBtn');
     if (dynamicBtn) {
       dynamicBtn.classList.remove('active');
-      dynamicBtn.blur(); 
+      dynamicBtn.blur();
+      // Show button again when exiting dynamic mode
+      if (window.currentPoem && !window.currentPoem.noDynamicMode) {
+        dynamicBtn.style.display = 'flex';
+      }
     }
     
     
@@ -4039,6 +4107,11 @@ class ReadingModeManager {
       this.clickHandler = null;
     }
     
+    // Clear all timeouts
+    if (this.initialTimeout) {
+      clearTimeout(this.initialTimeout);
+      this.initialTimeout = null;
+    }
     
     if (this.animationTimeout) {
       clearTimeout(this.animationTimeout);
@@ -4072,16 +4145,19 @@ class ReadingModeManager {
   }
   
   showNextParagraph() {
+    console.log('showNextParagraph called, index:', this.currentParagraphIndex, 'total paragraphs:', this.paragraphElements?.length);
     
     if (this.currentParagraphIndex >= this.paragraphElements.length) {
+      console.log('All paragraphs shown, showing title and exiting');
       if (this.titleElement) {
         setTimeout(() => {
           this.titleElement.style.opacity = '1';
+          console.log('Title shown');
           
           setTimeout(() => this.exitDynamicMode(), 1000);
         }, 50);
       } else {
-        
+        console.log('No title, exiting immediately');
         setTimeout(() => this.exitDynamicMode(), 1000);
       }
       return;
@@ -4089,21 +4165,27 @@ class ReadingModeManager {
     
     
     const currentPara = this.paragraphElements[this.currentParagraphIndex];
+    console.log('Current paragraph:', currentPara);
     
     if (currentPara) {
       const wordCount = currentPara.textContent.trim().split(/\s+/).length;
+      console.log('Paragraph word count:', wordCount);
       
       setTimeout(() => {
         currentPara.style.opacity = '1';
+        console.log('Paragraph shown at index:', this.currentParagraphIndex);
       }, 50);
       
       
       
       const delay = wordCount * 300;
+      console.log('Next paragraph delay:', delay, 'ms');
       
       
       this.currentParagraphIndex++;
       this.animationTimeout = setTimeout(() => this.showNextParagraph(), delay);
+    } else {
+      console.log('ERROR: currentPara is null/undefined');
     }
   }
 }

@@ -25,3 +25,5 @@ Silence reigns as their minds get rewired.
 Death is both a blessing and a curse.  
 It curses the subject with destruction.  
 It blesses the bystanders with comprehension.
+
+---
