@@ -7,13 +7,13 @@ I used to be an avid PC gamer, but nowadays I mostly play just to meet people or
 # Background
 I was born and raised in the Verona province, northern Italy.
 
+Being born in 1999, I am doing my best to live to 101 years old, so that I can say I was alive across three different centuries. That would make for a very cool tombstone.
+
 As a little kid I first got into computers when a family friend from the USA gifted us a computer. I still remember the black CRT monitor and black ball-tracking mouse.
 
 My education has always been Computer Science focused, from high-school to University.
 
-I started with embedded systems in 2020 when I accidentally discovered the field online.
-I got hooked up very quickly.
-I built a macropad, then a keyboard, then a better keyboard, then a mouse, then I landed my first job (thanks to the mouse).
+I started with embedded systems in 2020 when I accidentally discovered the field online. I got hooked up very quickly. I built a macropad, then a keyboard, then a better keyboard, then a mouse and then I landed my first job (thanks to the mouse).
 
 # My personality, hobbies and interests
 I'm a very attentive, self-critical and innerly emotional person.  
