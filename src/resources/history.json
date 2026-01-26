@@ -1,6 +1,12 @@
 [
   {
     "type": "blog",
+    "name": "AI Thoughts",
+    "date": "2026-01-26",
+    "link": "src/blogs.html?blog=2"
+  },
+  {
+    "type": "blog",
     "name": "Embedded Systems Overview",
     "date": "2026-01-18",
     "link": "src/blogs.html?blog=1"
@@ -22,11 +28,5 @@
     "name": "Letter To A Faded Friend",
     "date": "2025-07",
     "link": "src/poems.html?poem=5"
-  },
-  {
-    "type": "poem",
-    "name": "Intro",
-    "date": "2025-07",
-    "link": "src/poems.html?poem=0"
   }
 ]

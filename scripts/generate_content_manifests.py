@@ -221,8 +221,8 @@ def make_blog_manifest():
         title = title.replace('_', ' ')
         # Add spacing around number: "1 optical" → "1 - optical"
         title = re.sub(r'^(\d+)\s+', r'\1 - ', title)
-        # Capitalize each word
-        title = title.title()
+        # Capitalize first letter of each word while preserving rest
+        title = ' '.join(word[0].upper() + word[1:] if word else '' for word in title.split())
         
         blog_entry = {
             'folder': folder.name,
@@ -298,8 +298,8 @@ def make_poem_manifest():
         name = name.replace('_', ' ').replace('-', ' ')
         # Add spacing around number: "1 intro" → "1 - intro"
         name = re.sub(r'^(\d+)\s+', r'\1 - ', name)
-        # Capitalize each word
-        name = name.title()
+        # Capitalize first letter of each word while preserving rest
+        name = ' '.join(word[0].upper() + word[1:] if word else '' for word in name.split())
         
         poem_entry = {
             'folder': folder.name,
