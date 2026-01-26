@@ -32,7 +32,7 @@ Coming to what is happening in 2026, these developments are very promising and e
 
 When it comes to software, I'm seeing more and more tasks being taken off my workload by AI. In general, I get to spend less time on the micro things and more on the macro things. On top of that, I can acquire knowledge faster and digest complex topics quicker, as LLMs function as a convenient, though glorified, internet search and personal teacher.
 
-Having to work "less" sounds good on paper until you realize personal satisfaction and people's livelihoods depend on it. Remove it and now you have voids to fill: things like the lack of satisfaction and Universal Basic Income start to appear in the public discourse.
+Having to work "less" sounds good on paper, until you realize personal satisfaction and people's livelihoods depend on it. Remove it, and now you have voids to fill: things like the lack of satisfaction and Universal Basic Income start to appear in the public discourse.
 
 I personally have no idea how to fix these issues. George Hotz says that, being a society-level problem, it should be up to the politicians to fix it, and researchers building AI shouldn't concern themselves with it. I can see his point, nonetheless it doesn't make me feel more at ease with the pace of AI progress.
 
