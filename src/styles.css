@@ -1158,6 +1158,21 @@ body.no-scroll {
   box-sizing: border-box;
 }
 
+.poem-text p {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.poem-text p.blank-line {
+  height: 1em;
+  margin: 0;
+}
+
+.poem-text h2 {
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
 .poem-text hr,
 .blog-text hr {
   max-width: 800px;
@@ -3026,6 +3041,7 @@ pre code {
 
 /* Mode Icons - Match Theme Toggle Style */
 .mode-icon,
+.nav-icon,
 .tooltip-toggle-icon {
   font-size: 18px;
   background-color: var(--button-bg);
@@ -3041,27 +3057,38 @@ pre code {
   transition: background-color 0.2s ease;
 }
 
+.nav-icon:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  background-color: var(--button-bg);
+}
+
 .tooltip-toggle-icon {
-  opacity: 0.4; /* Default to 0.4 since tooltips are disabled by default */
+  opacity: 0.4;
+  /* Default to 0.4 since tooltips are disabled by default */
 }
 
 .mode-icon.positioned,
+.nav-icon.positioned,
 .tooltip-toggle-icon.positioned {
   /* No opacity/visibility transitions - just instant display */
 }
 
 .mode-icon:hover,
+.nav-icon:hover:not(:disabled),
 .tooltip-toggle-icon:hover {
   background-color: var(--accent-hover);
 }
 
 .mode-icon:focus,
+.nav-icon:focus,
 .tooltip-toggle-icon:focus {
   outline: none;
   background-color: var(--button-bg);
 }
 
 .mode-icon:active,
+.nav-icon:active:not(:disabled),
 .tooltip-toggle-icon:active {
   opacity: 0.8;
 }

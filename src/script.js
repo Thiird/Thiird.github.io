@@ -311,12 +311,12 @@ function applyImageScaling(container) {
 
 function addTableDataLabels(container) {
   if (!container) return;
-  
+
   const tables = container.querySelectorAll('.blog-text table, .content-text table');
   tables.forEach(table => {
     const headers = table.querySelectorAll('thead th');
     const headerTexts = Array.from(headers).map(th => th.textContent.trim());
-    
+
     const rows = table.querySelectorAll('tbody tr');
     rows.forEach((row, rowIndex) => {
       const cells = row.querySelectorAll('td');
@@ -325,17 +325,17 @@ function addTableDataLabels(container) {
           cell.setAttribute('data-label', headerTexts[index]);
         }
       });
-      
+
       if (rowIndex === 0) {
         row.classList.add('active');
       }
     });
-    
+
     if (rows.length > 1 && window.innerWidth <= 768) {
       addTableArrows(table, rows);
     }
   });
-  
+
   let resizeTimer;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
@@ -346,7 +346,7 @@ function addTableDataLabels(container) {
           const arrows = row.querySelectorAll('.table-arrow');
           arrows.forEach(arrow => arrow.remove());
         });
-        
+
         if (rows.length > 1 && window.innerWidth <= 768) {
           addTableArrows(table, rows);
         }
@@ -357,19 +357,19 @@ function addTableDataLabels(container) {
 
 function addTableArrows(table, rows) {
   let currentIndex = 0;
-  
+
   const updateArrows = () => {
     rows.forEach((row, index) => {
       const leftArrow = row.querySelector('.table-arrow-left');
       const rightArrow = row.querySelector('.table-arrow-right');
-      
+
       if (leftArrow && rightArrow) {
         if (currentIndex === 0) {
           leftArrow.classList.add('disabled');
         } else {
           leftArrow.classList.remove('disabled');
         }
-        
+
         if (currentIndex === rows.length - 1) {
           rightArrow.classList.add('disabled');
         } else {
@@ -378,21 +378,21 @@ function addTableArrows(table, rows) {
       }
     });
   };
-  
+
   rows.forEach((row, rowIndex) => {
     const firstCell = row.querySelector('td:first-child');
     if (!firstCell) return;
-    
+
     const leftArrow = document.createElement('button');
     leftArrow.className = 'table-arrow table-arrow-left';
     leftArrow.innerHTML = '◀';
     leftArrow.setAttribute('aria-label', 'Previous item');
-    
+
     const rightArrow = document.createElement('button');
     rightArrow.className = 'table-arrow table-arrow-right';
     rightArrow.innerHTML = '▶';
     rightArrow.setAttribute('aria-label', 'Next item');
-    
+
     leftArrow.addEventListener('click', (e) => {
       e.stopPropagation();
       if (currentIndex > 0) {
@@ -402,7 +402,7 @@ function addTableArrows(table, rows) {
         updateArrows();
       }
     });
-    
+
     rightArrow.addEventListener('click', (e) => {
       e.stopPropagation();
       if (currentIndex < rows.length - 1) {
@@ -412,11 +412,11 @@ function addTableArrows(table, rows) {
         updateArrows();
       }
     });
-    
+
     firstCell.insertBefore(leftArrow, firstCell.firstChild);
     firstCell.appendChild(rightArrow);
   });
-  
+
   updateArrows();
 }
 
@@ -1132,10 +1132,10 @@ document.addEventListener("DOMContentLoaded", () => {
       link.addEventListener("click", (e) => {
         e.preventDefault();
 
-        
+
         const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
         if (isTouchDevice && window.innerWidth <= 800 && !link.classList.contains('show-date')) {
-          return; 
+          return;
         }
 
         const index = link.dataset.index;
@@ -1202,13 +1202,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function loadPoem(poem) {
     resetAudioPlayer();
-    
+
     window.currentPoem = poem;
-    
+
     if (window.readingModeManager) {
       window.readingModeManager.checkDynamicModeAvailable(poem);
     }
-    
+
     const localMd = `poems/${poem.folder}/poem.md`;
     fetch(localMd)
       .then((res) => {
@@ -1223,13 +1223,119 @@ document.addEventListener("DOMContentLoaded", () => {
         let dateStr = null;
         md = md.replace(/^date:\s*(\d{4}-\d{2}(?:-\d{2})?)\s*$/m, (match, extractedDate) => {
           dateStr = extractedDate;
-          return ''; 
+          return '';
         });
 
-        
+
         md = md.replace(/^\s*---\s*$/m, '');
 
-        poemText.innerHTML = marked.parse(md);
+        // Custom parsing: convert lines to paragraphs, preserve blank lines as spacing
+        const lines = md.split('\n');
+        let html = '';
+        let inParagraph = false;
+        let inUnclosedTag = false;
+
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i];
+          const trimmed = line.trim();
+
+          // Check for horizontal rule (---)
+          if (trimmed === '---') {
+            if (inParagraph) {
+              html += '</p>';
+              inParagraph = false;
+            }
+            html += '<hr>';
+            inUnclosedTag = false;
+          }
+          // Check for markdown headings
+          else if (/^#{1,6}\s/.test(trimmed)) {
+            if (inParagraph) {
+              html += '</p>';
+              inParagraph = false;
+            }
+            // Convert markdown heading to HTML
+            const level = trimmed.match(/^#{1,6}/)[0].length;
+            const headingText = trimmed.replace(/^#{1,6}\s/, '');
+            html += `<h${level}>${headingText}</h${level}>`;
+            inUnclosedTag = false;
+          }
+          // Check if line is already HTML (starts with <)
+          else if (trimmed.startsWith('<')) {
+            // Check if it's a block-level HTML element (p, div, h1-h6, etc.)
+            const isBlockElement = /^<(p|div|h[1-6]|ul|ol|li|blockquote|pre|hr|table)\b/i.test(trimmed);
+
+            // Check if this line opens a tag without closing it
+            const hasOpenTag = /<(\w+)[^>]*>/.test(trimmed);
+            const hasCloseTag = /<\/\w+>/.test(trimmed);
+
+            if (isBlockElement) {
+              // Close current paragraph if open
+              if (inParagraph) {
+                html += '</p>';
+                inParagraph = false;
+              }
+              // Add block element directly
+              html += line + '\n';
+              inUnclosedTag = false;
+            } else {
+              // Inline HTML element - keep in paragraph
+              if (!inParagraph) {
+                html += '<p>';
+                inParagraph = true;
+              } else if (!inUnclosedTag) {
+                // Only add line break if we're not inside an unclosed tag
+                html += '<br>';
+              }
+              html += line + '\n';
+
+              // Track if we're inside an unclosed tag
+              if (hasOpenTag && !hasCloseTag) {
+                inUnclosedTag = true;
+              } else if (hasCloseTag) {
+                inUnclosedTag = false;
+              }
+            }
+          }
+          else if (trimmed === '') {
+            // Blank line - close paragraph and add spacing
+            if (inParagraph) {
+              html += '</p>';
+              inParagraph = false;
+            }
+            html += '<p class="blank-line"></p>';
+            inUnclosedTag = false;
+          }
+          else {
+            // Regular text line
+            if (!inParagraph) {
+              html += '<p>';
+              inParagraph = true;
+            } else if (!inUnclosedTag) {
+              // Only add line break if we're not inside an unclosed tag
+              html += '<br>';
+            }
+            // Process inline markdown (bold, italic, etc.)
+            html += trimmed;
+          }
+        } if (inParagraph) {
+          html += '</p>';
+        }
+
+        // Use marked only for inline formatting
+        marked.setOptions({
+          breaks: false,
+          gfm: true
+        });
+
+        // Process each paragraph's content through marked for inline markdown
+        poemText.innerHTML = html.replace(/<p>(.*?)<\/p>/gs, (match, content) => {
+          if (content.trim() === '' || content.includes('class="blank-line"')) {
+            return match;
+          }
+          const processed = marked.parseInline(content);
+          return '<p>' + processed + '</p>';
+        });
 
         if (dateStr && poemContent) {
           const existingDate = poemContent.querySelector('.poem-date');
@@ -1251,11 +1357,11 @@ document.addEventListener("DOMContentLoaded", () => {
         addTableDataLabels(poemText);
 
         attachLightboxEvents();
-        
+
         if (window.tooltipManager) {
           window.tooltipManager.reinitialize(poem.folder, 'poems');
         }
-        
+
         if (window.readingModeManager) {
           window.readingModeManager.checkTooltipsForPoem(poem.folder);
         }
@@ -1327,7 +1433,7 @@ document.addEventListener("DOMContentLoaded", () => {
     blogs.forEach((blog, index) => {
       const currentYear = blog.date ? new Date(blog.date).getFullYear() : null;
 
-      
+
       if (previousYear !== null && currentYear !== null && currentYear !== previousYear) {
         const separator = document.createElement("hr");
         separator.className = "year-separator";
@@ -1342,14 +1448,14 @@ document.addEventListener("DOMContentLoaded", () => {
       displayBlogTitle = displayBlogTitle.replace(/^\s*\d+\s*[-\.]?\s*/, '').trim();
       const chronologicalIndex = blogs.length - 1 - index;
 
-      
+
       const titleSpan = document.createElement("span");
       titleSpan.className = "list-item-title";
       titleSpan.textContent = `${chronologicalIndex} - ${displayBlogTitle}`;
 
       a.appendChild(titleSpan);
 
-      
+
       if (blog.date) {
         const dateSpan = document.createElement("span");
         dateSpan.className = "list-item-date";
@@ -1363,24 +1469,24 @@ document.addEventListener("DOMContentLoaded", () => {
       a.dataset.index = index;
       a.classList.add("blog-link");
 
-      
+
       let preventNextClick = false;
 
       a.addEventListener('touchend', (e) => {
-        
+
         if (!a.classList.contains('show-date') && blog.date) {
           e.preventDefault();
           e.stopPropagation();
           preventNextClick = true;
 
-          
+
           document.querySelectorAll('.blog-link.show-date').forEach(link => {
             link.classList.remove('show-date');
           });
-          
+
           a.classList.add('show-date');
 
-          
+
           setTimeout(() => { preventNextClick = false; }, 100);
         }
       });
@@ -1392,49 +1498,49 @@ document.addEventListener("DOMContentLoaded", () => {
       link.addEventListener("click", (e) => {
         e.preventDefault();
 
-        
+
         const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
         if (isTouchDevice && window.innerWidth <= 800 && !link.classList.contains('show-date')) {
-          return; 
+          return;
         }
 
         const index = link.dataset.index;
         const blog = JSON.parse(link.getAttribute("data-blog"));
         const currentBlogParam = getUrlParameter('blog');
 
-        
+
         const folderMatch = blog.folder.match(/^(\d+)/);
         const folderNum = folderMatch ? folderMatch[1] : null;
 
-        
+
         if (folderNum !== null && folderNum === currentBlogParam) {
-          
+
           if (window.innerWidth <= 800) {
             closeSidebarAfterSelect();
             clearSidebarSearchInputs();
           }
-          
+
           return;
         }
 
-        
+
         loadBlogPost(blog);
         history.pushState({ blogIndex: index }, "", `?blog=${folderNum}`);
-        
+
         clearSidebarSearchInputs();
-        
+
         if (window.innerWidth <= 800) {
           closeSidebarAfterSelect();
         }
-        
+
         setActiveListItem('blogListItems', parseInt(index, 10));
       });
     });
 
-    
+
     setTimeout(() => addTruncatedTextOverlays(), 100);
 
-    
+
     const blogParam = getUrlParameter('blog');
     if (blogParam !== null && blogsCache) {
       const folderNum = parseInt(blogParam);
@@ -1452,7 +1558,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function formatBlogTitle(folder) {
     let title = folder.replace(/_/g, " ");
-    
+
     title = title.replace(/(\d+)-/, "$1 - ");
     title = title.replace(/\b\w/g, (char) => char.toUpperCase());
     return title.trim();
@@ -1470,17 +1576,17 @@ document.addEventListener("DOMContentLoaded", () => {
         return res.text();
       })
       .then((md) => {
-        
+
         let dateStr = null;
         md = md.replace(/^date:\s*(\d{4}-\d{2}(?:-\d{2})?)\s*$/m, (match, extractedDate) => {
           dateStr = extractedDate;
-          return ''; 
+          return '';
         });
 
-        
+
         md = md.replace(/^\s*---\s*$/m, '');
 
-        
+
         let dateHtml = '';
         if (dateStr) {
           const formatted = formatDate(dateStr);
@@ -1532,7 +1638,7 @@ document.addEventListener("DOMContentLoaded", () => {
         md = md.replace(
           /<embed([^>]+)src=["']([^"']+)["']([^>]*)>/g,
           (match, before, src, after) => {
-            
+
             let href = src;
             if (!src.startsWith("http") && !src.includes("/")) {
               href = `blogs/${blog.folder}/res/${src}`;
@@ -1590,12 +1696,12 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
-  
+
   window.addEventListener("popstate", (event) => {
-    
+
     closeAllDropdowns();
 
-    
+
     if (event.state && event.state.anchor) {
       scrollToAnchor("#" + event.state.anchor);
       return;
@@ -1630,7 +1736,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let selectedBlog;
         let blogIndex = 0;
         if (blogParam !== null) {
-          
+
           const folderNum = parseInt(blogParam);
           selectedBlog = blogsCache.find(b => {
             const match = b.folder.match(/^(\d+)/);
@@ -1642,7 +1748,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         selectedBlog = selectedBlog || blogsCache[0];
         loadBlogPost(selectedBlog);
-        
+
         setActiveListItem('blogListItems', blogIndex);
       }
     }
@@ -1816,7 +1922,7 @@ class TooltipManager {
     window.addEventListener('scroll', () => {
       const isMobile = window.innerWidth <= 800;
       const hasAudio = this.tooltip && this.tooltip.classList.contains('has-audio');
-      
+
       if (isMobile || hasAudio) {
         return;
       }
@@ -1895,13 +2001,13 @@ class TooltipManager {
   }
 
   showTooltip(trigger, data, mouseX = null) {
-      document.querySelectorAll('.tooltip.show').forEach(tip => {
-        tip.classList.remove('show');
-        setTimeout(() => {
-          if (tip.parentNode) tip.parentNode.removeChild(tip);
-        }, 300);
-      });
-      this.hideActiveTooltip();
+    document.querySelectorAll('.tooltip.show').forEach(tip => {
+      tip.classList.remove('show');
+      setTimeout(() => {
+        if (tip.parentNode) tip.parentNode.removeChild(tip);
+      }, 300);
+    });
+    this.hideActiveTooltip();
 
     const tooltip = this.createTooltip(data);
 
@@ -1930,14 +2036,14 @@ class TooltipManager {
     if (data.media && (data.media.endsWith('.jpg') || data.media.endsWith('.jpeg') ||
       data.media.endsWith('.png') || data.media.endsWith('.gif') ||
       data.media.endsWith('.webp'))) {
-      
+
       const imageWrapper = tooltip.querySelector('.tooltip-image-wrapper');
       const image = tooltip.querySelector('.tooltip-gif');
       if (imageWrapper) imageWrapper.classList.add('clickable');
       if (image) {
         image.classList.add('clickable');
         image.style.cursor = 'pointer';
-        
+
         image.addEventListener('click', (e) => {
           e.stopPropagation();
           this.hideActiveTooltip();
@@ -1988,7 +2094,7 @@ class TooltipManager {
         .replace(/<italics>/g, '<em>')
         .replace(/<\/italics>/g, '</em>')
         .replace(/\n/g, '<br>');
-      
+
       text.innerHTML = formattedText;
       content.appendChild(text);
     }
@@ -2189,20 +2295,20 @@ class TooltipManager {
 
         this.currentAudio = audioElement;
       } else {
-        
+
         const imageWrapper = document.createElement('div');
         imageWrapper.className = 'tooltip-image-wrapper';
-        
+
         const mediaEl = document.createElement('img');
         mediaEl.className = 'tooltip-gif';
         mediaEl.src = data.media;
         mediaEl.alt = data.text || 'Tooltip media';
         mediaEl.onerror = () => { };
-        
+
         imageWrapper.appendChild(mediaEl);
         content.appendChild(imageWrapper);
 
-        
+
         if (data.alt) {
           const altText = document.createElement('div');
           altText.className = 'tooltip-alt';
@@ -2220,21 +2326,21 @@ class TooltipManager {
     return tooltip;
   }
 
-  
+
   initializeTooltips() {
     const triggers = document.querySelectorAll('[data-tooltip], [tt]');
 
-    
+
     this.tooltipDimensions.clear();
 
     triggers.forEach(trigger => {
       this.setupTooltip(trigger);
-      
+
       this.precalculateTooltipDimensions(trigger);
     });
   }
 
-  
+
   precalculateTooltipDimensions(element) {
     const tooltipId = element.getAttribute('tt');
     let tooltipData;
@@ -2259,12 +2365,12 @@ class TooltipManager {
 
     const dataKey = JSON.stringify(tooltipData);
 
-    
+
     if (this.tooltipDimensions.has(dataKey)) {
       return;
     }
 
-    
+
     const tempTooltip = this.createTooltip(tooltipData);
     tempTooltip.style.position = 'absolute';
     tempTooltip.style.left = '-9999px';
@@ -2272,32 +2378,32 @@ class TooltipManager {
     tempTooltip.style.visibility = 'hidden';
     document.body.appendChild(tempTooltip);
 
-    
+
     const gifImg = tempTooltip.querySelector('.tooltip-gif');
 
     const measureAndStore = () => {
-      
+
       tempTooltip.offsetHeight;
 
-      
+
       const rect = tempTooltip.getBoundingClientRect();
       this.tooltipDimensions.set(dataKey, {
         width: rect.width,
         height: rect.height
       });
 
-      
+
       document.body.removeChild(tempTooltip);
 
     };
 
     if (gifImg) {
-      
+
       if (gifImg.complete) {
         measureAndStore();
       } else {
         gifImg.onload = measureAndStore;
-        gifImg.onerror = measureAndStore; 
+        gifImg.onerror = measureAndStore;
       }
     } else {
       measureAndStore();
@@ -2338,7 +2444,7 @@ class TooltipManager {
         return;
       }
 
-      
+
       const mouseX = e.clientX;
       element._tooltipTimeout = setTimeout(() => {
         this.showTooltip(element, tooltipData, mouseX);
@@ -2348,7 +2454,7 @@ class TooltipManager {
     element._tooltipMouseLeave = (e) => {
       const relatedTarget = e.relatedTarget;
 
-      
+
       if (relatedTarget && this.tooltip && this.tooltip.contains(relatedTarget)) {
         if (element._tooltipTimeout) {
           clearTimeout(element._tooltipTimeout);
@@ -2362,7 +2468,7 @@ class TooltipManager {
         element._tooltipTimeout = null;
       }
 
-      
+
       if (element._justClicked) {
         return;
       }
@@ -2374,34 +2480,34 @@ class TooltipManager {
       }, this.hideDelay);
     };
 
-    
+
     element._tooltipClick = (e) => {
-      
+
       element._justClicked = true;
 
-      
+
       setTimeout(() => {
         element._justClicked = false;
       }, 500);
 
-      
+
       if (this.tooltip && this.currentTrigger === element) {
         return;
       }
 
-      
+
       if (element._tooltipTimeout) {
         clearTimeout(element._tooltipTimeout);
         element._tooltipTimeout = null;
       }
 
-      
+
       if (this.hideTimeout) {
         clearTimeout(this.hideTimeout);
         this.hideTimeout = null;
       }
 
-      
+
       this.showTooltip(element, tooltipData, e.clientX);
     };
 
@@ -2410,11 +2516,11 @@ class TooltipManager {
     element.addEventListener('click', element._tooltipClick);
   }
 
-  
+
   positionTooltipAtTrigger(tooltip, trigger, data, mouseX = null) {
     const dataKey = JSON.stringify(data);
 
-    
+
     let tooltipWidth, tooltipHeight;
     if (this.tooltipDimensions.has(dataKey)) {
       const cached = this.tooltipDimensions.get(dataKey);
@@ -2426,21 +2532,21 @@ class TooltipManager {
       tooltipHeight = tooltipRect.height || 100;
     }
 
-    
+
     const triggerRect = trigger.getBoundingClientRect();
 
-    
+
     const range = document.createRange();
     range.selectNodeContents(trigger);
     const rects = range.getClientRects();
     let topLineRect = triggerRect;
     let bottomLineRect = triggerRect;
     if (rects.length > 0) {
-      topLineRect = rects[0]; 
-      bottomLineRect = rects[rects.length - 1]; 
+      topLineRect = rects[0];
+      bottomLineRect = rects[rects.length - 1];
     }
 
-    
+
     let sidebarWidth = 0;
     const isMobile = window.innerWidth <= 800;
 
@@ -2450,78 +2556,78 @@ class TooltipManager {
       const sidebar = blogList || poemList;
       if (sidebar && !sidebar.classList.contains('show')) {
         const sidebarRect = sidebar.getBoundingClientRect();
-        
+
         if (sidebarRect.left === 0 && sidebarRect.width > 0) {
           sidebarWidth = sidebarRect.width;
         }
       }
     }
 
-    
+
     const margin = isMobile ? 8 : 10;
     const leftBoundary = sidebarWidth + margin;
     const rightBoundary = window.innerWidth - margin;
 
-    
+
     let left;
     if (mouseX !== null && mouseX !== undefined) {
-      
+
       left = mouseX - (tooltipWidth / 2);
     } else {
-      
+
       left = topLineRect.left + (topLineRect.width / 2) - (tooltipWidth / 2);
     }
 
-    
+
     let top;
     const spaceAbove = topLineRect.top;
     const spaceBelow = window.innerHeight - bottomLineRect.bottom;
     const requiredSpace = tooltipHeight + this.verticalOffset + margin;
 
-    
+
     const hasAudio = tooltip.classList.contains('has-audio');
-    
-    
+
+
     const useAbsolutePosition = isMobile || hasAudio;
 
     if (useAbsolutePosition) {
-      
+
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
 
-      
+
       if (spaceAbove >= requiredSpace || spaceAbove > spaceBelow) {
-        
+
         top = topLineRect.top + scrollTop - tooltipHeight - this.verticalOffset;
         tooltip.classList.remove('bottom');
       } else {
-        
+
         top = bottomLineRect.bottom + scrollTop + this.verticalOffset;
         tooltip.classList.add('bottom');
       }
 
       left = left + scrollLeft;
     } else {
-      
-      
+
+
       if (spaceAbove >= requiredSpace || spaceAbove > spaceBelow) {
-        
+
         top = topLineRect.top - tooltipHeight - this.verticalOffset;
         tooltip.classList.remove('bottom');
       } else {
-        
+
         top = bottomLineRect.bottom + this.verticalOffset;
         tooltip.classList.add('bottom');
       }
     }
 
-    
+
     if (left < leftBoundary) left = leftBoundary;
     if (left + tooltipWidth > rightBoundary) {
       left = rightBoundary - tooltipWidth;
     }
 
-    
+
     if (isMobile) {
       const maxTooltipWidth = window.innerWidth - (margin * 2);
       if (tooltipWidth > maxTooltipWidth) {
@@ -2531,7 +2637,7 @@ class TooltipManager {
       }
     }
 
-    
+
     if (!useAbsolutePosition) {
       if (top + tooltipHeight > window.innerHeight - margin) {
         top = window.innerHeight - tooltipHeight - margin;
@@ -2710,17 +2816,17 @@ function initHomePage() {
         const bannerBottom = Math.max(0, bannerRect.bottom);
         themeToggle.style.top = `${bannerBottom + 10}px`;
         themeToggle.classList.add("positioned");
-        
+
         adjustModeControlsPosition();
       }
     });
   }
-  
+
   function adjustModeControlsPosition() {
     requestAnimationFrame(() => {
       const themeToggle = document.getElementById("themeToggle");
       const modeControls = document.getElementById("readingModeControls");
-      
+
       if (themeToggle && modeControls) {
         const themeRect = themeToggle.getBoundingClientRect();
         const themeBottom = themeRect.bottom;
@@ -2728,7 +2834,7 @@ function initHomePage() {
       }
     });
   }
-  
+
   window.adjustModeControlsPosition = adjustModeControlsPosition;
 
   function checkAndPositionThemeToggle() {
@@ -2807,7 +2913,7 @@ function initHomePage() {
   window.addEventListener("touchmove", adjustThemeTogglePosition, { passive: true });
 
   window.addEventListener("load", adjustThemeTogglePosition);
-  
+
   window.addEventListener("resize", () => {
     adjustThemeTogglePosition();
   });
@@ -2905,7 +3011,7 @@ function initBlogPage() {
     .then((data) => {
       document.getElementById("banner-placeholder").innerHTML = data;
 
-      
+
       if (typeof initDropdownToggle === "function") {
         initDropdownToggle();
       }
@@ -2927,12 +3033,12 @@ function initBlogPage() {
         blogList.style.top = `${bannerBottom}px`;
         blogList.style.height = `calc(100vh - ${bannerBottom}px)`;
 
-        
+
         if (mobileToggle) {
           mobileToggle.style.top = `${bannerBottom}px`;
         }
 
-        
+
         const themeToggle = document.getElementById("themeToggle");
         if (themeToggle) {
           themeToggle.style.top = `${bannerBottom + 10}px`;
@@ -2942,21 +3048,21 @@ function initBlogPage() {
     });
   }
 
-  
+
   function setInitialSidebarState() {
     const blogList = document.getElementById("blogList");
     const floatingToggle = document.getElementById("sidebarFloatingToggle");
     if (!blogList) return;
 
     if (window.innerWidth <= 800) {
-      
+
       blogList.classList.remove("show");
       if (floatingToggle) {
         floatingToggle.style.display = "block";
         floatingToggle.classList.remove("hidden");
       }
     } else {
-      
+
       blogList.classList.remove("show");
       if (floatingToggle) {
         floatingToggle.style.display = "none";
@@ -2964,35 +3070,35 @@ function initBlogPage() {
     }
   }
 
-  
+
   const toggleBlogList = document.getElementById("toggleBlogList");
   if (toggleBlogList) {
     toggleBlogList.addEventListener("click", (e) => {
       e.stopPropagation();
       const blogList = document.getElementById("blogList");
       if (window.innerWidth <= 800) {
-        
+
         const isOpen = blogList.classList.toggle("show");
         document.body.classList.toggle("no-scroll", isOpen);
         document.documentElement.classList.toggle("no-scroll", isOpen);
         const floatingToggle = document.getElementById("sidebarFloatingToggle");
         if (floatingToggle) floatingToggle.classList.toggle("hidden", isOpen);
-        
+
         if (!isOpen) clearSidebarSearchInputs();
       } else {
-        
+
         blogList.classList.toggle("collapsed");
         const contentWrapper = document.querySelector(".content-scale-wrapper");
         if (contentWrapper) {
           contentWrapper.classList.toggle("sidebar-collapsed", blogList.classList.contains("collapsed"));
         }
-        
+
         if (blogList.classList.contains("collapsed")) clearSidebarSearchInputs();
       }
     });
   }
 
-  
+
   const floatingToggle = document.getElementById("sidebarFloatingToggle");
   if (floatingToggle) {
     floatingToggle.addEventListener("click", (e) => {
@@ -3005,7 +3111,7 @@ function initBlogPage() {
     });
   }
 
-  
+
   document.addEventListener("click", (e) => {
     const blogList = document.getElementById("blogList");
     if (!blogList) return;
@@ -3020,14 +3126,14 @@ function initBlogPage() {
     }
   });
 
-  
+
   let lastWidth = window.innerWidth;
   window.addEventListener("load", () => {
     setInitialSidebarState();
     adjustSidebarHeight();
     lastWidth = window.innerWidth;
 
-    
+
     setTimeout(() => {
       const ecuElement = document.querySelector('[data-tooltip="ecu"]');
       if (ecuElement && window.tooltipManager) {
@@ -3050,13 +3156,13 @@ function initBlogPage() {
   window.addEventListener("touchmove", adjustSidebarHeight, { passive: true });
   window.addEventListener("touchend", adjustSidebarHeight);
 
-  
+
   const blogSearch = document.getElementById("blogSearch");
   if (blogSearch) {
     blogSearch.addEventListener("input", (e) => {
       const search = e.target.value.toLowerCase();
       document.querySelectorAll("#blogListItems li").forEach((item) => {
-        
+
         if (item.classList.contains('no-results')) return;
         const link = item.querySelector('a');
         if (!link) return;
@@ -3069,7 +3175,7 @@ function initBlogPage() {
         const matches = search && lowerText.includes(search);
 
         if (matches) {
-          
+
           const regex = new RegExp(`(${search.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')})`, 'gi');
           titleSpan.innerHTML = originalText.replace(regex, '<mark>$1</mark>');
           item.style.display = "block";
@@ -3087,23 +3193,23 @@ function initBlogPage() {
 }
 
 function initPoemPage() {
-  
+
   fetch("banner.html")
     .then((response) => response.text())
     .then((data) => {
       document.getElementById("banner-placeholder").innerHTML = data;
 
-      
+
       if (typeof initDropdownToggle === "function") {
         initDropdownToggle();
       }
 
-      
+
       adjustSidebarHeight();
     })
     .catch((error) => { });
 
-  
+
   function adjustSidebarHeight() {
     requestAnimationFrame(() => {
       const banner = document.getElementById("banner-placeholder");
@@ -3112,25 +3218,25 @@ function initPoemPage() {
       if (banner && poemList) {
         const bannerRect = banner.getBoundingClientRect();
 
-        
+
         const bannerBottom = Math.max(0, bannerRect.bottom);
 
-        
+
         poemList.style.top = `${bannerBottom}px`;
         poemList.style.height = `calc(100vh - ${bannerBottom}px)`;
 
-        
+
         if (mobileToggle) {
           mobileToggle.style.top = `${bannerBottom}px`;
         }
 
-        
+
         const themeToggle = document.getElementById("themeToggle");
         if (themeToggle) {
           themeToggle.style.top = `${bannerBottom + 10}px`;
           themeToggle.classList.add("positioned");
-          
-          
+
+
           const modeControls = document.getElementById("readingModeControls");
           if (modeControls) {
             const themeRect = themeToggle.getBoundingClientRect();
@@ -3142,21 +3248,21 @@ function initPoemPage() {
     });
   }
 
-  
+
   function setInitialSidebarState() {
     const poemList = document.getElementById("poemList");
     const floatingToggle = document.getElementById("sidebarFloatingToggle");
     if (!poemList) return;
 
     if (window.innerWidth <= 800) {
-      
+
       poemList.classList.remove("show");
       if (floatingToggle) {
         floatingToggle.style.display = "block";
         floatingToggle.classList.remove("hidden");
       }
     } else {
-      
+
       poemList.classList.remove("show");
       if (floatingToggle) {
         floatingToggle.style.display = "none";
@@ -3164,35 +3270,35 @@ function initPoemPage() {
     }
   }
 
-  
+
   const toggleSidebar = document.getElementById("toggleSidebar");
   if (toggleSidebar) {
     toggleSidebar.addEventListener("click", (e) => {
       e.stopPropagation();
       const poemList = document.getElementById("poemList");
       if (window.innerWidth <= 800) {
-        
+
         const isOpen = poemList.classList.toggle("show");
         document.body.classList.toggle("no-scroll", isOpen);
         document.documentElement.classList.toggle("no-scroll", isOpen);
         const floatingToggle = document.getElementById("sidebarFloatingToggle");
         if (floatingToggle) floatingToggle.classList.toggle("hidden", isOpen);
-        
+
         if (!isOpen) clearSidebarSearchInputs();
       } else {
-        
+
         poemList.classList.toggle("collapsed");
         const contentWrapper = document.querySelector(".content-scale-wrapper");
         if (contentWrapper) {
           contentWrapper.classList.toggle("sidebar-collapsed", poemList.classList.contains("collapsed"));
         }
-        
+
         if (poemList.classList.contains("collapsed")) clearSidebarSearchInputs();
       }
     });
   }
 
-  
+
   const floatingToggle = document.getElementById("sidebarFloatingToggle");
   if (floatingToggle) {
     floatingToggle.addEventListener("click", (e) => {
@@ -3205,7 +3311,7 @@ function initPoemPage() {
     });
   }
 
-  
+
   document.addEventListener("click", (e) => {
     const poemList = document.getElementById("poemList");
     if (!poemList) return;
@@ -3220,7 +3326,7 @@ function initPoemPage() {
     }
   });
 
-  
+
   let lastWidth = window.innerWidth;
   window.addEventListener("load", () => {
     setInitialSidebarState();
@@ -3240,13 +3346,13 @@ function initPoemPage() {
   window.addEventListener("touchmove", adjustSidebarHeight, { passive: true });
   window.addEventListener("touchend", adjustSidebarHeight);
 
-  
+
   const poemSearch = document.getElementById("poemSearch");
   if (poemSearch) {
     poemSearch.addEventListener("input", (e) => {
       const search = e.target.value.toLowerCase();
       document.querySelectorAll("#poemListItems li").forEach((item) => {
-        
+
         if (item.classList.contains('no-results')) return;
         const link = item.querySelector('a');
         if (!link) return;
@@ -3259,7 +3365,7 @@ function initPoemPage() {
         const matches = search && lowerText.includes(search);
 
         if (matches) {
-          
+
           const regex = new RegExp(`(${search.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')})`, 'gi');
           titleSpan.innerHTML = originalText.replace(regex, '<mark>$1</mark>');
           item.style.display = "block";
@@ -3274,8 +3380,8 @@ function initPoemPage() {
       updateNoResultsMessage('poemListItems');
     });
   }
-  
-  setTimeout(initOverviewSlideshow, 0); 
+
+  setTimeout(initOverviewSlideshow, 0);
 }
 
 function initShowcaseSlideshow() {
@@ -3296,11 +3402,11 @@ function initShowcaseSlideshow() {
     const window2 = container.querySelector('.showcase-window-2');
     if (!window1) return;
 
-    
+
     window1.innerHTML = '';
     if (window2) window2.innerHTML = '';
 
-    
+
     const img1 = document.createElement('img');
     img1.className = 'showcase-img contain click-zoom';
     img1.src = images[current];
@@ -3310,7 +3416,7 @@ function initShowcaseSlideshow() {
     img1.addEventListener('click', () => openImageFullscreen(img1.src, img1.alt));
     window1.appendChild(img1);
 
-    
+
     if (!isMobile && window2) {
       const img2 = document.createElement('img');
       img2.className = 'showcase-img contain click-zoom';
@@ -3332,43 +3438,43 @@ function initShowcaseSlideshow() {
     const window2 = container.querySelector('.showcase-window-2');
 
     if (isMobile || !window2) {
-      
+
       current = (current + 1) % images.length;
       render();
       animating = false;
       return;
     }
 
-    
+
     const img1 = window1.querySelector('img');
     const img2 = window2.querySelector('img');
     if (!img1 || !img2) { animating = false; return; }
 
-    
+
     const window1Rect = window1.getBoundingClientRect();
     const window2Rect = window2.getBoundingClientRect();
     const slideDistance = window2Rect.left - window1Rect.left;
 
-    
+
     img1.style.transition = 'opacity 0.45s';
     img1.style.opacity = '0';
     window2.style.transition = 'transform 0.45s cubic-bezier(.4, 0, .2, 1)';
     window2.style.transform = `translateX(-${slideDistance}px)`;
 
     setTimeout(() => {
-      
+
       img1.src = img2.src;
       img1.alt = img2.alt;
       img1.style.opacity = '1';
       img1.style.transition = 'none';
       img1.style.borderRadius = '12px';
 
-      
+
       const nextIdx = (current + 2) % images.length;
-      img2.style.opacity = '0'; 
+      img2.style.opacity = '0';
       img2.src = images[nextIdx];
       img2.alt = `Overview image ${nextIdx + 1}`;
-      
+
       img2.onload = () => { img2.style.opacity = '1'; };
       window2.style.transform = 'translateX(0)';
       window2.style.transition = 'none';
@@ -3380,7 +3486,7 @@ function initShowcaseSlideshow() {
 
   function startAuto() {
     if (autoTimer) clearInterval(autoTimer);
-    
+
     const interval = window.innerWidth <= 799 ? 2000 : 3000;
     autoTimer = setInterval(next, interval);
   }
@@ -3392,14 +3498,14 @@ function initShowcaseSlideshow() {
     }
   }
 
-  
+
   fetch(MANIFEST).then(r => r.json()).then(list => {
     if (!Array.isArray(list) || list.length === 0) return;
     images = list.map(n => 'src/resources/images/overview/' + encodeURIComponent(n).replace(/%2F/g, '/'));
     render();
     startAuto();
   }).catch(() => {
-    
+
   });
 
   window.addEventListener('resize', () => {
@@ -3446,14 +3552,14 @@ function initOverviewSlideshow() {
   function applySizingForImage(imgEl) {
     const isVertical = imgEl.naturalHeight >= imgEl.naturalWidth;
     const sizing = computeSizing(isVertical);
-    
+
     container.style.width = sizing.width + 'px';
     container.style.height = sizing.height + 'px';
-    
+
     container.querySelectorAll('.slideshow-img').forEach((ie) => {
       ie.classList.add('contain');
       ie.classList.remove('cover');
-      
+
       ie.style.width = '';
       ie.style.height = '';
     });
@@ -3549,28 +3655,28 @@ function initOverviewSlideshow() {
 
   function stopAuto() { if (autoTimer) { clearInterval(autoTimer); autoTimer = null; } }
 
-  
+
   fetch(MANIFEST).then(r => r.json()).then(list => {
     if (!Array.isArray(list) || list.length === 0) return;
     images = list.map(n => 'src/resources/images/overview/' + encodeURIComponent(n).replace(/%2F/g, '/'));
     render();
     startAuto();
   }).catch(() => {
-    
+
   });
 
   if (prevBtn) prevBtn.addEventListener('click', (e) => { e.preventDefault(); stopAuto(); prev(); startAuto(); });
   if (nextBtn) nextBtn.addEventListener('click', (e) => { e.preventDefault(); stopAuto(); next(); startAuto(); });
 
   window.addEventListener('resize', () => {
-    
+
     const firstImg = container.querySelector('.slideshow-img');
     if (firstImg) applySizingForImage(firstImg);
   });
 }
 
 function openImageFullscreen(src, alt) {
-  
+
   const oldOverlay = document.getElementById('fullscreen-image-overlay');
   if (oldOverlay) oldOverlay.remove();
 
@@ -3599,7 +3705,7 @@ function openImageFullscreen(src, alt) {
 
   overlay.appendChild(img);
 
-  
+
   overlay.addEventListener('click', () => overlay.remove());
   document.addEventListener('keydown', function escHandler(e) {
     if (e.key === 'Escape') {
@@ -3616,27 +3722,27 @@ function handleAnchorHighlight() {
   if (hash) {
     const targetElement = document.querySelector(hash);
     if (targetElement) {
-      
+
       const id = targetElement.id;
       let highlightEl = null;
 
-      
+
       if (targetElement.matches('h1, h2, h3, h4, h5, h6')) {
         const block = targetElement.closest('.anchor-block') || (id ? document.querySelector(`.anchor-block[data-anchor-id='${CSS.escape(id)}']`) : null);
         highlightEl = block || targetElement;
       } else if (targetElement.matches('div, section, article, aside') && targetElement.id) {
-        
+
         highlightEl = targetElement;
       } else {
-        
+
         const nearestLi = targetElement.closest('li');
         const nearestBlock = targetElement.closest('p, pre, blockquote, table, dl, ol, ul, .image-wrapper, .pdf-placeholder, .video-player');
         if (nearestLi) {
           highlightEl = nearestLi;
         } else if (nearestBlock) {
-          
+
           if (nearestBlock.tagName && (nearestBlock.tagName.toLowerCase() === 'ul' || nearestBlock.tagName.toLowerCase() === 'ol')) {
-            
+
             const block = targetElement.closest('.anchor-block') || (id ? document.querySelector(`.anchor-block[data-anchor-id='${CSS.escape(id)}']`) : null);
             highlightEl = block || targetElement;
           } else {
@@ -3648,13 +3754,13 @@ function handleAnchorHighlight() {
         }
       }
 
-      
+
       highlightEl.classList.remove('anchor-highlight');
 
-      
+
       void highlightEl.offsetWidth;
 
-      
+
       highlightEl.classList.add('anchor-highlight');
       setTimeout(() => {
         highlightEl.classList.remove('anchor-highlight');
@@ -3670,7 +3776,7 @@ function wrapBlogSections(root) {
   let currentBlock = null;
   nodes.forEach((node) => {
     if (node.nodeType === 1 && node.matches(headingSelector)) {
-      
+
       const block = document.createElement('div');
       block.className = 'anchor-block';
       const hid = node.id;
@@ -3685,11 +3791,11 @@ function wrapBlogSections(root) {
 }
 
 window.addEventListener('hashchange', () => {
-  setTimeout(handleAnchorHighlight, 50); 
+  setTimeout(handleAnchorHighlight, 50);
 });
 
 window.addEventListener('load', () => {
-  setTimeout(handleAnchorHighlight, 100); 
+  setTimeout(handleAnchorHighlight, 100);
 });
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -3701,7 +3807,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function addTruncatedTextOverlays() {
-  
+
   if (window.innerWidth <= 800) {
     return;
   }
@@ -3709,27 +3815,27 @@ function addTruncatedTextOverlays() {
   let activeOverlay = null;
 
   function showOverlay(element, overlayClass) {
-    
+
     if (activeOverlay) {
       activeOverlay.remove();
       activeOverlay = null;
     }
 
-    
+
     const linkElement = element.closest('a');
     const dateElement = linkElement ? linkElement.querySelector('.list-item-date') : null;
 
-    
+
     const overlay = document.createElement('div');
     overlay.className = overlayClass;
 
-    
+
     const titleSpan = document.createElement('span');
     titleSpan.textContent = element.textContent;
     titleSpan.style.marginRight = dateElement ? '8px' : '0';
     overlay.appendChild(titleSpan);
 
-    
+
     if (dateElement) {
       const dateSpan = document.createElement('span');
       dateSpan.textContent = dateElement.textContent;
@@ -3741,7 +3847,7 @@ function addTruncatedTextOverlays() {
       overlay.appendChild(dateSpan);
     }
 
-    
+
     const computedStyle = window.getComputedStyle(element);
     const linkStyle = linkElement ? window.getComputedStyle(linkElement) : null;
 
@@ -3753,26 +3859,26 @@ function addTruncatedTextOverlays() {
     overlay.style.alignItems = 'center';
     overlay.style.gap = '8px';
 
-    
+
     document.body.appendChild(overlay);
     activeOverlay = overlay;
 
-    
+
     const rect = element.getBoundingClientRect();
     overlay.style.left = rect.left + 'px';
     overlay.style.top = rect.top + 'px';
     overlay.style.height = rect.height + 'px';
     overlay.style.lineHeight = rect.height + 'px';
 
-    
+
     overlay.style.maxWidth = 'max-content';
     const overlayRect = overlay.getBoundingClientRect();
-    const maxRight = window.innerWidth - 20; 
+    const maxRight = window.innerWidth - 20;
     if (overlayRect.right > maxRight) {
       overlay.style.maxWidth = (maxRight - rect.left) + 'px';
     }
 
-    
+
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         overlay.classList.add('show');
@@ -3789,7 +3895,7 @@ function addTruncatedTextOverlays() {
     }
   }
 
-  
+
   document.querySelectorAll('.list-item-title').forEach(el => {
     if (el.scrollWidth > el.clientWidth) {
       const linkElement = el.closest('a');
@@ -3811,45 +3917,45 @@ class ReadingModeManager {
     this.animationTimeout = null;
     this.initialTimeout = null;
     this.audioElement = null;
-    
+
     this.loadPreferences();
     this.checkTooltipsAvailable();
     this.initializeUI();
     this.attachEventListeners();
   }
-  
+
   loadPreferences() {
-    
-    
+
+
     this.tooltipsEnabled = false;
   }
-  
+
   savePreferences() {
     localStorage.setItem('tooltipsEnabled', this.tooltipsEnabled);
   }
-  
+
   checkTooltipsAvailable() {
-    
+
     if (window.currentPoem) {
       this.checkTooltipsForPoem(window.currentPoem.folder);
     }
   }
-  
+
   checkDynamicModeAvailable(poem) {
     const dynamicBtn = document.getElementById('dynamicModeBtn');
     if (!dynamicBtn) return;
-    
+
     // Exit dynamic mode if currently active (cleanup on poem change)
     if (this.currentMode === 'dynamic') {
       this.exitDynamicMode();
     }
-    
+
     if (poem && poem.noDynamicMode) {
       dynamicBtn.style.display = 'none';
       dynamicBtn.classList.remove('positioned');
       return;
     }
-    
+
     // Check if current poem has the required structure (at least 2 HR elements)
     setTimeout(() => {
       const poemText = document.getElementById('poemText');
@@ -3865,23 +3971,23 @@ class ReadingModeManager {
         }
       }
     }, 100);
-    
-    
+
+
     if (window.adjustModeControlsPosition) {
       window.adjustModeControlsPosition();
     }
   }
-  
+
   checkTooltipsForPoem(poemFolder) {
     const tooltipToggle = document.getElementById('tooltipToggleIcon');
     if (!tooltipToggle) return;
-    
+
     const poemText = document.getElementById('poemText');
     const tooltipElements = poemText ? [
       ...poemText.querySelectorAll('[tt]'),
       ...poemText.querySelectorAll('[data-tooltip]')
     ] : [];
-    
+
     if (tooltipElements.length > 0) {
       tooltipToggle.style.display = 'flex';
       setTimeout(() => tooltipToggle.classList.add('positioned'), 100);
@@ -3889,32 +3995,32 @@ class ReadingModeManager {
       tooltipToggle.style.display = 'none';
       tooltipToggle.classList.remove('positioned');
     }
-    
+
     if (window.adjustModeControlsPosition) {
       window.adjustModeControlsPosition();
     }
   }
-  
+
   initializeUI() {
-    
+
     const tooltipToggle = document.getElementById('tooltipToggleIcon');
     if (tooltipToggle) {
       tooltipToggle.style.display = 'none';
     }
-    
-    
+
+
     document.body.classList.add('tooltips-disabled');
-    
-    
+
+
     setTimeout(() => {
       const dynamicBtn = document.getElementById('dynamicModeBtn');
       if (dynamicBtn) dynamicBtn.classList.add('positioned');
-      
-      
+
+
       if (window.adjustModeControlsPosition) {
         window.adjustModeControlsPosition();
       } else {
-        
+
         setTimeout(() => {
           if (window.adjustModeControlsPosition) {
             window.adjustModeControlsPosition();
@@ -3922,54 +4028,56 @@ class ReadingModeManager {
         }, 500);
       }
     }, 100);
-    
+
     this.updateTooltipUI();
   }
-  
+
   attachEventListeners() {
-    
+
     document.getElementById('dynamicModeBtn')?.addEventListener('click', () => {
-      console.log('Poem dynamic display clicked');
-      // Prevent starting if already in dynamic mode
       if (this.currentMode === 'static') {
         this.enterDynamicMode();
       } else {
         this.exitDynamicMode();
       }
     });
-    
+
+    document.getElementById('dynamicDownBtn')?.addEventListener('click', () => {
+      this.navigateParagraph(1);
+    });
+
     document.getElementById('tooltipToggleIcon')?.addEventListener('click', () => this.toggleTooltips());
   }
 
-  
+
   toggleTooltips() {
     this.tooltipsEnabled = !this.tooltipsEnabled;
     this.savePreferences();
     this.updateTooltipUI();
   }
-  
+
   updateTooltipUI() {
     document.body.classList.toggle('tooltips-disabled', !this.tooltipsEnabled);
-    
+
     const tooltipIcon = document.getElementById('tooltipToggleIcon');
-    
+
     if (tooltipIcon) {
-      
+
       const iconIsVisible = tooltipIcon.style.display !== 'none';
       if (iconIsVisible) {
         tooltipIcon.classList.toggle('disabled', !this.tooltipsEnabled);
         tooltipIcon.style.opacity = this.tooltipsEnabled ? '1' : '0.4';
       }
     }
-    
-    
+
+
     if (!this.tooltipsEnabled) {
       document.querySelectorAll('.tooltip-box').forEach(box => {
         box.style.display = 'none';
       });
     }
   }
-  
+
   resetToStatic(dynamicBtn) {
     this.currentMode = 'static';
     if (dynamicBtn) {
@@ -3977,93 +4085,77 @@ class ReadingModeManager {
       dynamicBtn.style.display = 'none';
     }
   }
-  
+
   enterDynamicMode() {
-    console.log('enterDynamicMode called, current mode:', this.currentMode);
     // Prevent double-entry
     if (this.currentMode === 'dynamic') {
-      console.log('Already in dynamic mode, ignoring');
       return;
     }
-    
+
     this.currentMode = 'dynamic';
-    console.log('Mode set to dynamic');
-    
+
     const dynamicBtn = document.getElementById('dynamicModeBtn');
+    const downBtn = document.getElementById('dynamicDownBtn');
+
     if (dynamicBtn) {
       dynamicBtn.classList.add('active');
       dynamicBtn.blur();
-      // Hide button when animation starts
       dynamicBtn.style.display = 'none';
-      console.log('Button hidden');
     }
-    
+
+    // Show navigation button
+    if (downBtn) {
+      downBtn.style.display = 'flex';
+    }
+
     const poemText = document.getElementById('poemText');
     if (!poemText) {
-      console.log('ERROR: poemText not found');
       this.resetToStatic(dynamicBtn);
       return;
     }
-    console.log('poemText found');
-    
+
     const hrs = poemText.querySelectorAll('hr');
-    console.log('Found', hrs.length, 'hr elements');
     if (hrs.length < 2) {
-      console.log('ERROR: Not enough hr elements, need at least 2');
       this.resetToStatic(dynamicBtn);
       return;
     }
-    console.log('HR elements check passed');
-    
+
     const allElements = Array.from(poemText.children);
     const firstHrIndex = allElements.indexOf(hrs[0]);
     const secondHrIndex = allElements.indexOf(hrs[1]);
-    console.log('First HR index:', firstHrIndex, 'Second HR index:', secondHrIndex);
-    
+
     allElements.forEach((el, index) => {
       if (index < firstHrIndex || index > secondHrIndex) {
         el.style.transition = 'opacity 0.8s ease';
         el.style.opacity = '0';
       }
     });
-    console.log('Hidden elements outside HR range');
-    
+
     const poemElements = allElements.slice(firstHrIndex + 1, secondHrIndex);
     const existingTitle = poemElements.find(el => el.tagName === 'H2');
-    const existingParagraphs = poemElements.filter(el => el.tagName === 'P');
-    console.log('Found', existingParagraphs.length, 'paragraphs');
-    
+    const existingParagraphs = poemElements.filter(el => el.tagName === 'P' && !el.classList.contains('blank-line'));
+
     if (existingParagraphs.length === 0) {
-      console.log('ERROR: No paragraphs found');
       this.resetToStatic(dynamicBtn);
       return;
     }
-    console.log('Paragraphs check passed');
-    
+
     existingParagraphs.forEach(p => {
       p.style.opacity = '0';
       p.style.transition = 'opacity 0.8s ease';
     });
-    console.log('Set all paragraphs opacity to 0');
-    
+
     if (existingTitle) {
       existingTitle.style.opacity = '0';
       existingTitle.style.transition = 'opacity 0.8s ease';
-      console.log('Set title opacity to 0');
     }
-    
-    
-    
-    
-    
-    
+
     this.paragraphElements = existingParagraphs;
     this.titleElement = existingTitle;
     this.hiddenElements = allElements.filter((el, index) => index < firstHrIndex || index > secondHrIndex);
     this.hrElements = [hrs[0], hrs[1]];
-    this.currentParagraphIndex = 0;
-    console.log('State initialized, currentParagraphIndex:', this.currentParagraphIndex);
-    
+    this.currentParagraphIndex = -1;
+
     // Clear any existing timeouts before setting new ones
     if (this.initialTimeout) {
       clearTimeout(this.initialTimeout);
@@ -4071,27 +4163,28 @@ class ReadingModeManager {
     if (this.animationTimeout) {
       clearTimeout(this.animationTimeout);
     }
-    
+
     setTimeout(() => {
       this.clickHandler = (e) => {
-        
         if (!e.target.closest('.reading-mode-controls')) {
           this.exitDynamicMode();
         }
       };
       document.addEventListener('click', this.clickHandler, { once: false });
-      console.log('Click handler attached');
     }, 100);
-    
-    console.log('Scheduling showNextParagraph in 2000ms');
-    this.initialTimeout = setTimeout(() => this.showNextParagraph(), 2000);
+
+    // Show first paragraph automatically with fade-in
+    setTimeout(() => {
+      this.navigateParagraph(1);
+    }, 500);
   }
-  
+
   exitDynamicMode() {
     this.currentMode = 'static';
-    
-    
+
     const dynamicBtn = document.getElementById('dynamicModeBtn');
+    const downBtn = document.getElementById('dynamicDownBtn');
+
     if (dynamicBtn) {
       dynamicBtn.classList.remove('active');
       dynamicBtn.blur();
@@ -4100,60 +4193,121 @@ class ReadingModeManager {
         dynamicBtn.style.display = 'flex';
       }
     }
-    
-    
+
+    // Hide navigation button
+    if (downBtn) downBtn.style.display = 'none';
+
+
     if (this.clickHandler) {
       document.removeEventListener('click', this.clickHandler);
       this.clickHandler = null;
     }
-    
+
     // Clear all timeouts
     if (this.initialTimeout) {
       clearTimeout(this.initialTimeout);
       this.initialTimeout = null;
     }
-    
+
     if (this.animationTimeout) {
       clearTimeout(this.animationTimeout);
       this.animationTimeout = null;
     }
-    
-    
+
+
     if (this.paragraphElements) {
       this.paragraphElements.forEach(p => {
         p.style.opacity = '1';
       });
     }
-    
+
     if (this.titleElement) {
       this.titleElement.style.opacity = '1';
     }
-    
-    
+
+
     if (this.hiddenElements) {
       this.hiddenElements.forEach(el => {
         el.style.opacity = '1';
       });
     }
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
   }
-  
+
+  navigateParagraph(direction) {
+    // Clear any existing timeout
+    if (this.animationTimeout) {
+      clearTimeout(this.animationTimeout);
+      this.animationTimeout = null;
+    }
+    if (this.initialTimeout) {
+      clearTimeout(this.initialTimeout);
+      this.initialTimeout = null;
+    }
+
+    // Going forward - show next paragraph
+    const newIndex = this.currentParagraphIndex + 1;
+
+    // Check if we've reached the end of paragraphs
+    if (newIndex >= this.paragraphElements.length) {
+      // Show title
+      if (this.titleElement) {
+        this.titleElement.style.transition = 'opacity 0.8s ease';
+        requestAnimationFrame(() => {
+          this.titleElement.style.opacity = '1';
+        });
+      }
+
+      // Disable down button
+      const downBtn = document.getElementById('dynamicDownBtn');
+      if (downBtn) {
+        downBtn.disabled = true;
+      }
+      return;
+    }
+
+    this.currentParagraphIndex = newIndex;
+
+    // Show new paragraph immediately
+    this.showCurrentParagraph();
+  }
+
+  showCurrentParagraph() {
+    const currentPara = this.paragraphElements[this.currentParagraphIndex];
+
+    if (currentPara) {
+      // Ensure transition is set and show with fade-in
+      currentPara.style.transition = 'opacity 0.8s ease';
+      // Use requestAnimationFrame to ensure the transition starts immediately
+      requestAnimationFrame(() => {
+        currentPara.style.opacity = '1';
+      });
+
+      // Update button state - don't disable until after all paragraphs AND title
+      const downBtn = document.getElementById('dynamicDownBtn');
+      if (downBtn) {
+        // Keep enabled until we're past the last paragraph (title is next)
+        downBtn.disabled = false;
+      }
+    }
+  }
+
   showNextParagraph() {
     console.log('showNextParagraph called, index:', this.currentParagraphIndex, 'total paragraphs:', this.paragraphElements?.length);
-    
+
     if (this.currentParagraphIndex >= this.paragraphElements.length) {
       console.log('All paragraphs shown, showing title and exiting');
       if (this.titleElement) {
         setTimeout(() => {
           this.titleElement.style.opacity = '1';
           console.log('Title shown');
-          
+
           setTimeout(() => this.exitDynamicMode(), 1000);
         }, 50);
       } else {
@@ -4162,35 +4316,23 @@ class ReadingModeManager {
       }
       return;
     }
-    
-    
+
+
     const currentPara = this.paragraphElements[this.currentParagraphIndex];
     console.log('Current paragraph:', currentPara);
-    
+
     if (currentPara) {
       const wordCount = currentPara.textContent.trim().split(/\s+/).length;
       console.log('Paragraph word count:', wordCount);
-      
-      setTimeout(() => {
-        currentPara.style.opacity = '1';
-        console.log('Paragraph shown at index:', this.currentParagraphIndex);
-      }, 50);
-      
-      
-      
-      const delay = wordCount * 300;
-      console.log('Next paragraph delay:', delay, 'ms');
-      
-      
-      this.currentParagraphIndex++;
-      this.animationTimeout = setTimeout(() => this.showNextParagraph(), delay);
-    } else {
-      console.log('ERROR: currentPara is null/undefined');
     }
+  }
+
+  showNextParagraph() {
+    this.showCurrentParagraph();
   }
 }
 
-window.initReadingModeManager = function() {
+window.initReadingModeManager = function () {
   if (document.getElementById('poemContent')) {
     window.readingModeManager = new ReadingModeManager();
   }

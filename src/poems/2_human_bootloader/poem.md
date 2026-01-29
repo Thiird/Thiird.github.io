@@ -1,36 +1,35 @@
 ---
 date: 2025-04-26
 ---
-
 ## Human auto-bootloader
 
-Intelligence is a discrete part of the Universe.  
+Intelligence is a discrete part of the Universe.
 The universe comes to life in me.
 
-My life is pure wealth.  
+My life is pure wealth.
 This value weighs on my shoulders.
 
-Peaceful moments echo Humanity's past sacrifices.  
+Peaceful moments echo Humanity's past sacrifices.
 I stand on the shoulders of giants.
 
-Humanity's will has yielded wonders.  
+Humanity's will has yielded wonders.
 I must continue this endeavor.
 
-Perception renders infinite realities.  
+Perception renders infinite realities.
 I must not get distracted by trivialities.
 
-Much more is at stake than it seems.  
+Much more is at stake than it seems.
 The world is in my hands.
 
-Every moment is a correct choice waiting to be made.  
+Every moment is a correct choice waiting to be made.
 I must believe I can do it all.
 
-The past sits in my mind.  
-The present is in my hands.  
-The future lives in my actions.  
+The past sits in my mind.
+The present is in my hands.
+The future lives in my actions.
 
-<span style="color: #99999996;">_It only needs to click once._</span>  
-<span style="color: #99999996;">_I earned a passing grade on life._</span>
+<span style="color: #99999996;"><em>It only needs to click once.</em></span>
+<span style="color: #99999996;"><em>I earned a passing grade on life.</em></span>
 
 ---
 

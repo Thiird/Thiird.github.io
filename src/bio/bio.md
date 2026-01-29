@@ -7,8 +7,6 @@ I used to be an avid PC gamer, but nowadays I mostly play just to meet people or
 # Background
 I was born and raised in the Verona province, northern Italy.
 
-Being born in 1999, I am doing my best to live to 101 years old, so that I can say I was alive across three different centuries. That would make for a very cool tombstone.
-
 As a little kid I first got into computers when a family friend from the USA gifted us a computer. I still remember the black CRT monitor and black ball-tracking mouse.
 
 My education has always been Computer Science focused, from high-school to University.
@@ -31,4 +29,4 @@ I'm a <em>very</em> curious person, I love to ask questions. Some people might s
 
 I'm a huge fan of technology and I take great pride for being in a position where I get to study and develop it.
 
-What I aspire to do in life is to sustain my existence, the one of the people around me and pave the way for our legacy.
+What I aspire to do in life is to sustain my existence, the one of the people around me and pave the way for my legacy.

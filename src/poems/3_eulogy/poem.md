@@ -1,7 +1,6 @@
 ---
 date: 2025-05-28
 ---
-
 ## Eulogy
 
 Name Surname, born day of month year,

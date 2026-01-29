@@ -8,11 +8,11 @@
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <script>
         // Set theme immediately to prevent FOUC (Flash of Unstyled Content)
-        (function() {
+        (function () {
             try {
                 const savedTheme = localStorage.getItem("theme") || "light";
                 document.documentElement.setAttribute("data-theme", savedTheme);
-            } catch(e) {
+            } catch (e) {
                 // Fallback if localStorage is blocked
                 document.documentElement.setAttribute("data-theme", "light");
             }
@@ -45,7 +45,11 @@
                 <button class="mode-icon" id="dynamicModeBtn" title="Dynamic Performance Mode">
                     <span>✒️</span>
                 </button>
-                <button class="tooltip-toggle-icon" id="tooltipToggleIcon" title="Toggle Tooltips" style="display: none;">
+                <button class="nav-icon" id="dynamicDownBtn" title="Next Paragraph" style="display: none;">
+                    <span>▼</span>
+                </button>
+                <button class="tooltip-toggle-icon" id="tooltipToggleIcon" title="Toggle Tooltips"
+                    style="display: none;">
                     <span id="tooltipIconSymbol">💬</span>
                 </button>
             </div>

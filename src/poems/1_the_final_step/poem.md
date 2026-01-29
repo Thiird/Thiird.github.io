@@ -1,7 +1,6 @@
 ---
 date: 2025-04-29
 ---
-
 ## The Final Step
 
 It's time to cross the door of the end of life, I feel an immense pitiful sensation.

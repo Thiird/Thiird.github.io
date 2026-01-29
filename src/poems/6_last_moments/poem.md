@@ -1,7 +1,6 @@
 ---
 date: 2025-07
 ---
-
 ## Last moments
 
 The room is full, people keep coming.

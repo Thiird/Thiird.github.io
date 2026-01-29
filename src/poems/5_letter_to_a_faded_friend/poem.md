@@ -1,7 +1,6 @@
 ---
 date: 2025-07
 ---
-
 ## Letter to a faded friend
 
 It has been a while since we last talked, and I cannot help but to wonder: is this one of those friendships that dies for no reason? Life gets in the way, people grow apart, misunderstandings happen, incompatibilities arise. I get it. It's ok.

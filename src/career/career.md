@@ -1,9 +1,9 @@
 # Professional Skills
-I'm an Embedded Systems Engineer with formal education in Computer Science. My role centers on embedded software and firmware, but I maintain a strong skill set and interest in the electronics side as I enjoy working in all the aspects of embedded systems development.
+I'm an Embedded Systems Engineer with formal education in Computer Science. My role centers on embedded software and firmware, but I am also very much involved in the electronics side of things, as I'm interested in all aspects of embedded systems development, including manufacturing and product lifecycle.
 
 ## Programming
 My main languages are C, C++ and Python.  
-I have worked with MCU platforms like nRF52, ATMega using tools like nRF Connect SDK and Zephyr RTOS. I have experience with Embedded Linux, system programming for user-space applications and communication protocols: BLE, USB, SPI, I2C and UART.
+On the firmware side, I have worked with MCU platforms like ATMega and nRF52 using the nRF Connect SDK and Zephyr RTOS, and communication protocols like BLE, USB, SPI, I2C and UART. On the embedded software side, I have experience with Embedded Linux and system programming for user-space applications.
 
 ## Electronics & Hardware
 I started building hardware in 2020.  
@@ -22,4 +22,4 @@ You can find some of my work on my [YouTube channel](https://www.youtube.com/@st
 
 Full employment history on [LinkedIn](https://www.linkedin.com/in/stefanonicolis/)  
 
-[Download CV](CV_stefano_nicolis_2026_01.pdf) (January 2026)
+[Download CV](CV_stefano_nicolis_January_2026.pdf) (January 2026)
