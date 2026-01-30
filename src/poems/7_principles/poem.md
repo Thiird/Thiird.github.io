@@ -15,7 +15,7 @@ If I were a messiah, these would be my three commandments.
 
 <br>
 
-<strong><em>Seek Knowledge</em></strong>  
+<strong><em>Seek Knowledge</em></strong>
 Information is <em>needed</em> to operate in life.  
 With it, the proper action can be taken to achieve practically anything.  
 Always be on the lookout for the next information.  
@@ -25,7 +25,7 @@ Seek knowledge: you are always missing out on what you don't know
 
 <br>
 
-<strong><em>Seize Time</em></strong>  
+<strong><em>Seize Time</em></strong>
 Time is the currency of life.  
 You can buy some, maybe a lot, but entrophy wins in the end.  
 It flows regardless of will, which is both a blessing and a curse.  
@@ -33,7 +33,7 @@ Seize time: there is always tomorrow, until there is not.
 
 <br>
 
-<strong><em>Cherish People</em></strong>  
+<strong><em>Cherish People</em></strong>
 People are so ubiquitous we tend to filter them out.  
 Nonetheless, they make us what we are.  
 Recognition makes efforts worthwhile.  
