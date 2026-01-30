@@ -31,7 +31,6 @@ Thank you so much for the time together.
 Keep your head up ~~░░░░░~~, can win.
 
 Stefano
-
 ---
 
 ~~_Context redacted_~~

@@ -30,7 +30,6 @@ The future lives in my actions.
 
 <span style="color: #99999996;"><em>It only needs to click once.</em></span>
 <span style="color: #99999996;"><em>I earned a passing grade on life.</em></span>
-
 ---
 
 I have a very strong urge of making the most of my life.  

@@ -3,17 +3,18 @@ date: 2026-01
 ---
 ## The necessity of love
 
-The thought of being forgotten eats me alive.
-It's not ego, it's the memory of Life.
+The thought of one day being forgotten eats me alive.
+It's not ego, It's a life-long effort going into oblivion.
 
-Relief is nowhere to be found.
 Going forward means ignoring it.
+Relief is nowhere to be found.
 
 My body rejects that.
 Delusion is unacceptable.
 
-Then I realize.
-Love can blanket my preoccupation.
+Love is the answer.
+
+Its absence makes life unbearable.
+Its presence blankets any preoccupation.
 
 ---
-

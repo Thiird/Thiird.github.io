@@ -3,7 +3,7 @@ I'm an Embedded Systems Engineer with formal education in Computer Science. My r
 
 ## Programming
 My main languages are C, C++ and Python.  
-On the firmware side, I have worked with MCU platforms like ATMega and nRF52 using the nRF Connect SDK and Zephyr RTOS, and communication protocols like BLE, USB, SPI, I2C and UART. On the embedded software side, I have experience with Embedded Linux and system programming for user-space applications.
+On the firmware side, I have worked with MCU platforms like ATMega and nRF52, tools like the nRF Connect SDK and Zephyr RTOS and communication protocols like BLE, USB, SPI, I2C and UART. On the embedded software side instead, I have worked with Yocto-based Embedded Linux systems, for which I developed user-space applications and the required system programming to support them.
 
 ## Electronics & Hardware
 I started building hardware in 2020.  

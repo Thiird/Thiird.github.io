@@ -3,6 +3,19 @@ const zoomScales = [1, 1.5, 2];
 let currentImageIndex = 0;
 let imageList = [];
 
+window.toggleAfterthoughts = function (button) {
+  const content = button.nextElementSibling;
+  const isHidden = content.classList.contains('hidden');
+
+  if (isHidden) {
+    content.classList.remove('hidden');
+    button.textContent = "▲";
+  } else {
+    content.classList.add('hidden');
+    button.textContent = "▼";
+  }
+};
+
 function closeAllDropdowns() {
   const dropdowns = document.querySelectorAll(".top-menu .dropdown");
   dropdowns.forEach((dropdown) => {
@@ -1201,6 +1214,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function loadPoem(poem) {
+    window.scrollTo(0, 0);
     resetAudioPlayer();
 
     window.currentPoem = poem;
@@ -1287,7 +1301,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Only add line break if we're not inside an unclosed tag
                 html += '<br>';
               }
-              html += line + '\n';
+
+              // Process markdown syntax inside HTML tags
+              let processedLine = line;
+              // Check if there's markdown heading syntax inside the tag
+              const headingMatch = processedLine.match(/^(<[^>]+>)(#{1,6}\s+)(.+?)(<\/[^>]+>)$/);
+              if (headingMatch) {
+                const [, openTag, hashes, content, closeTag] = headingMatch;
+                const level = hashes.trim().length;
+                processedLine = `${openTag}<h${level} style="display:inline">${content}</h${level}>${closeTag}`;
+              }
+
+              html += processedLine + '\n';
 
               // Track if we're inside an unclosed tag
               if (hasOpenTag && !hasCloseTag) {
@@ -1329,13 +1354,37 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         // Process each paragraph's content through marked for inline markdown
-        poemText.innerHTML = html.replace(/<p>(.*?)<\/p>/gs, (match, content) => {
+        let processedHtml = html.replace(/<p>(.*?)<\/p>/gs, (match, content) => {
           if (content.trim() === '' || content.includes('class="blank-line"')) {
             return match;
           }
           const processed = marked.parseInline(content);
           return '<p>' + processed + '</p>';
         });
+
+        // Split content at second <hr> to separate poem from afterthoughts
+        const firstHrIndex = processedHtml.indexOf('<hr>');
+        if (firstHrIndex !== -1) {
+          const remainingHtml = processedHtml.substring(firstHrIndex + 4);
+          const secondHrIndex = remainingHtml.indexOf('<hr>');
+
+          if (secondHrIndex !== -1) {
+            const beforeSecondHr = processedHtml.substring(0, firstHrIndex + 4 + secondHrIndex + 4);
+            const afterthoughtsPart = remainingHtml.substring(secondHrIndex + 4).trim();
+
+            // Check if there's actual content (not just whitespace or empty paragraphs)
+            const hasContent = afterthoughtsPart &&
+              afterthoughtsPart.replace(/<p[^>]*>\s*<\/p>/g, '').trim() !== '';
+
+            if (hasContent) {
+              processedHtml = beforeSecondHr +
+                '<div class="afterthoughts-toggle" onclick="window.toggleAfterthoughts(this)">▼</div>' +
+                '<div class="afterthoughts-content hidden">' + afterthoughtsPart + '</div>';
+            }
+          }
+        }
+
+        poemText.innerHTML = processedHtml;
 
         if (dateStr && poemContent) {
           const existingDate = poemContent.querySelector('.poem-date');
@@ -1565,6 +1614,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function loadBlogPost(blog) {
+    window.scrollTo(0, 0);
     resetAudioPlayer();
     const target = document.getElementById("blogText");
     if (!target) return;
@@ -4074,6 +4124,14 @@ class ReadingModeManager {
     if (!this.tooltipsEnabled) {
       document.querySelectorAll('.tooltip-box').forEach(box => {
         box.style.display = 'none';
+      });
+    } else {
+      // Flash all tooltip triggers when enabling
+      document.querySelectorAll('.tooltip-trigger').forEach(trigger => {
+        trigger.classList.add('flash');
+        setTimeout(() => {
+          trigger.classList.remove('flash');
+        }, 1000);
       });
     }
   }

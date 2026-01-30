@@ -1,7 +1,7 @@
 ---
-date: 2026-01
+date: 2026-01-30
 ---
-## Just three things
+## Principles
 
 <p>Seek Knowledge</p>
 <p>Seize Time</p>

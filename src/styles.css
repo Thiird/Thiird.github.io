@@ -508,6 +508,7 @@
   --tooltip-text: #ffffff;
   --tooltip-trigger-bg: rgba(88, 166, 255, 0.15);
   --tooltip-trigger-hover: rgba(88, 166, 255, 0.25);
+  --tooltip-trigger-flash: rgba(88, 166, 255, 0.7);
   --audio-player-bg: rgb(82, 100, 128);
   --audio-player-border: #30363d;
   --audio-player-text: #c9d1d9;
@@ -554,6 +555,7 @@
   --tooltip-text: #ffffff;
   --tooltip-trigger-bg: lab(63.46% -8.37 -34.23 / 0.267);
   --tooltip-trigger-hover: rgba(52, 152, 219, 0.425);
+  --tooltip-trigger-flash: rgba(52, 152, 219, 0.8);
   --audio-player-bg: rgba(44, 62, 80, 0.6);
   --audio-player-border: #3a4a5a;
   --audio-player-text: #d3d7db;
@@ -600,6 +602,7 @@
   --tooltip-text: #2c3e50;
   --tooltip-trigger-bg: rgba(41, 128, 185, 0.12);
   --tooltip-trigger-hover: rgba(41, 128, 185, 0.22);
+  --tooltip-trigger-flash: rgba(41, 128, 185, 0.65);
   --audio-player-bg: rgba(165, 174, 182, 0.9);
   --audio-player-border: #a0aec0;
   --audio-player-text: #2c3e50;
@@ -1180,6 +1183,55 @@ body.no-scroll {
   border: none;
   border-top: 1px solid var(--text-primary, #333);
   opacity: 0.3;
+}
+
+.afterthoughts-toggle {
+  text-align: center;
+  padding: 0;
+  margin: 20px auto;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: 1px solid var(--border-secondary);
+  border-radius: 5px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: background-color 0.2s ease;
+  user-select: none;
+}
+
+.afterthoughts-toggle:hover {
+  background-color: var(--accent-hover);
+}
+
+.afterthoughts-toggle:active {
+  opacity: 0.8;
+}
+
+.afterthoughts-content {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.afterthoughts-content.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .toggle-btn {
@@ -2016,6 +2068,20 @@ pre code {
   border-radius: 2px;
   position: relative;
   z-index: 2960;
+}
+
+.tooltip-trigger.flash {
+  animation: tooltipFlash 1s ease-out;
+}
+
+@keyframes tooltipFlash {
+  0% {
+    background: var(--tooltip-trigger-flash);
+  }
+
+  100% {
+    background: var(--tooltip-trigger-bg);
+  }
 }
 
 /* Only show pointer cursor when tooltips are enabled */

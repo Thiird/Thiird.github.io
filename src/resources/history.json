@@ -1,5 +1,11 @@
 [
   {
+    "type": "poem",
+    "name": "Principles",
+    "date": "2026-01-30",
+    "link": "src/poems.html?poem=7"
+  },
+  {
     "type": "blog",
     "name": "AI Thoughts",
     "date": "2026-01-26",
@@ -22,11 +28,5 @@
     "name": "Last Moments",
     "date": "2025-07",
     "link": "src/poems.html?poem=6"
-  },
-  {
-    "type": "poem",
-    "name": "Letter To A Faded Friend",
-    "date": "2025-07",
-    "link": "src/poems.html?poem=5"
   }
 ]

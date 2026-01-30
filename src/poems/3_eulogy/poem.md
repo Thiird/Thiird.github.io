@@ -18,10 +18,9 @@ You have successfully and dutifully sustained Humanity's endeavor.
 You are hereby relieved of your duties as an adult of the world.
 
 May you forever, Rest In Peace.
-
 ---
 
-Written around 9 am while at work.
+Written around 9 am.
 I listened to music on youtube while at work, and this music popped up.
 I got the necessary inspiration/visualization and got to work.  
 Tearful moments followed.
