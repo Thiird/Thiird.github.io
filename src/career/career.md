@@ -6,8 +6,7 @@ My main languages are C, C++ and Python.
 On the firmware side, I have worked with MCU platforms like ATMega and nRF52, tools like the nRF Connect SDK and Zephyr RTOS and communication protocols like BLE, USB, SPI, I2C and UART. On the embedded software side instead, I have worked with Yocto-based Embedded Linux systems, for which I developed user-space applications and the required system programming to support them.
 
 ## Electronics & Hardware
-I started building hardware in 2020.  
-Electronics wise, I design PCBs with KiCAD: 2/4 layers, schematic design, PCB layout, component selection, manual assembly and rework. I'm familiar with circuit design principles like power management, voltage regulation, and basic signal integrity. I have hands-on experience with PCB assembly/rework (SMD/THT) and most lab tools like oscilloscopes and multimeters.
+Electronics wise, I design PCBs with KiCAD: 2/4 layers, schematic design, PCB layout and component selection. I'm familiar with circuit design principles like power management, voltage regulation and basic signal integrity principles. I have hands-on experience with PCB assembly/rework (SMD/THT) and lab tools like oscilloscopes and multimeters.
 
 Mechanics wise, I work with Fusion360 to create enclosures and mechanical pieces, both 3D printed and CNC'd aluminum.
 
