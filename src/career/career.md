@@ -21,4 +21,4 @@ You can find some of my work on my [YouTube channel](https://www.youtube.com/@st
 
 Full employment history on [LinkedIn](https://www.linkedin.com/in/stefanonicolis/)  
 
-[Download CV](CV_stefano_nicolis_January_2026.pdf) (January 2026)
+[Download CV](CV_stefano_nicolis_February_2026.pdf) (February 2026)
