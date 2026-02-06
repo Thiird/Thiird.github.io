@@ -3217,3 +3217,23 @@ body.dynamic-mode .tooltip-box {
     line-height: 1.8;
   }
 }
+
+/* Tap overlay for writing mode */
+.tap-overlay {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3000;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-style: italic;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  user-select: none;
+}
+
+.tap-overlay.visible {
+  opacity: 0.5;
+}

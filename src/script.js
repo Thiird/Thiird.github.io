@@ -4038,7 +4038,11 @@ class ReadingModeManager {
       ...poemText.querySelectorAll('[data-tooltip]')
     ] : [];
 
-    if (tooltipElements.length > 0) {
+    // Check if there are tooltip elements AND if tooltip data is available
+    const hasTooltipData = window.tooltipManager && window.tooltipManager.tooltipData &&
+      window.tooltipManager.tooltipData.size > 0;
+
+    if (tooltipElements.length > 0 && hasTooltipData) {
       tooltipToggle.style.display = 'flex';
       setTimeout(() => tooltipToggle.classList.add('positioned'), 100);
     } else {
@@ -4088,7 +4092,12 @@ class ReadingModeManager {
       if (this.currentMode === 'static') {
         this.enterDynamicMode();
       } else {
-        this.exitDynamicMode();
+        // If in dynamic mode, show all content then exit
+        this.showAllContent();
+        // Small delay to let the fade-in happen before exiting
+        setTimeout(() => {
+          this.exitDynamicMode();
+        }, 100);
       }
     });
 
@@ -4158,12 +4167,12 @@ class ReadingModeManager {
     if (dynamicBtn) {
       dynamicBtn.classList.add('active');
       dynamicBtn.blur();
-      dynamicBtn.style.display = 'none';
+      // Keep button visible during animation
     }
 
-    // Show navigation button
+    // Hide navigation button (not used in new tap mode)
     if (downBtn) {
-      downBtn.style.display = 'flex';
+      downBtn.style.display = 'none';
     }
 
     const poemText = document.getElementById('poemText');
@@ -4186,6 +4195,7 @@ class ReadingModeManager {
       if (index < firstHrIndex || index > secondHrIndex) {
         el.style.transition = 'opacity 0.8s ease';
         el.style.opacity = '0';
+        el.style.pointerEvents = 'none';
       }
     });
 
@@ -4212,7 +4222,8 @@ class ReadingModeManager {
     this.titleElement = existingTitle;
     this.hiddenElements = allElements.filter((el, index) => index < firstHrIndex || index > secondHrIndex);
     this.hrElements = [hrs[0], hrs[1]];
-    this.currentParagraphIndex = -1;
+    this.currentParagraphIndex = -1; // Will start at 0 (title first)
+    this.allContentShown = false;
 
     // Clear any existing timeouts before setting new ones
     if (this.initialTimeout) {
@@ -4222,19 +4233,181 @@ class ReadingModeManager {
       clearTimeout(this.animationTimeout);
     }
 
+    // Create tap overlay
+    this.createTapOverlay();
+
+    // Set up click handler to advance verses (only within poem area)
     setTimeout(() => {
       this.clickHandler = (e) => {
-        if (!e.target.closest('.reading-mode-controls')) {
-          this.exitDynamicMode();
+        // Only respond to clicks within the poem area
+        const poemText = document.getElementById('poemText');
+        if (!poemText || !e.target.closest('#poemText')) {
+          return;
         }
+
+        // Ignore clicks on controls, audio players, and interactive elements
+        if (e.target.closest('.reading-mode-controls') ||
+          e.target.closest('audio') ||
+          e.target.closest('video') ||
+          e.target.closest('a') ||
+          e.target.closest('button')) {
+          return;
+        }
+
+        // Progress to next verse
+        this.progressAnimation();
       };
       document.addEventListener('click', this.clickHandler, { once: false });
     }, 100);
+  }
 
-    // Show first paragraph automatically with fade-in
+  createTapOverlay() {
+    // Remove existing overlay if any
+    this.removeTapOverlay();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'tapOverlay';
+    overlay.className = 'tap-overlay';
+    overlay.textContent = 'Tap to show';
+
+    const poemText = document.getElementById('poemText');
+    if (poemText && this.hrElements && this.hrElements.length >= 2) {
+      // Set poemText to relative positioning to contain the absolute overlay
+      poemText.style.position = 'relative';
+
+      // Get the positions of the two HR lines relative to poemText
+      const firstHr = this.hrElements[0];
+      const secondHr = this.hrElements[1];
+
+      const firstHrRect = firstHr.getBoundingClientRect();
+      const secondHrRect = secondHr.getBoundingClientRect();
+      const poemTextRect = poemText.getBoundingClientRect();
+
+      // Calculate center point between the two HRs (relative to poemText)
+      const firstHrBottom = firstHrRect.bottom - poemTextRect.top;
+      const secondHrTop = secondHrRect.top - poemTextRect.top;
+      let centerY = (firstHrBottom + secondHrTop) / 2;
+
+      // Check if overlay would be visible in viewport
+      // Account for overlay height (approximately 30px) and some margin
+      const overlayHeight = 30;
+      const margin = 20;
+      const absoluteY = poemTextRect.top + centerY;
+
+      // If overlay would be below viewport, move it to be visible
+      if (absoluteY + overlayHeight > window.innerHeight) {
+        // Position it near the bottom of the visible area
+        centerY = window.innerHeight - poemTextRect.top - overlayHeight - margin;
+      }
+
+      // If overlay would be above viewport, move it to be visible
+      if (absoluteY < margin) {
+        centerY = margin - poemTextRect.top;
+      }
+
+      // Override CSS top to position between HRs (or adjusted for visibility)
+      overlay.style.top = centerY + 'px';
+
+      poemText.appendChild(overlay);
+    } else {
+      document.body.appendChild(overlay);
+    }
+    this.tapOverlay = overlay;
+
+    // Fade in the overlay
     setTimeout(() => {
-      this.navigateParagraph(1);
-    }, 500);
+      overlay.classList.add('visible');
+    }, 100);
+  }
+
+  removeTapOverlay() {
+    if (this.tapOverlay) {
+      this.tapOverlay.classList.remove('visible');
+      setTimeout(() => {
+        if (this.tapOverlay) {
+          this.tapOverlay.remove();
+          this.tapOverlay = null;
+        }
+      }, 300);
+    }
+  }
+
+  progressAnimation() {
+    // Remove tap overlay on first tap
+    if (this.tapOverlay) {
+      this.removeTapOverlay();
+    }
+
+    // If all content already shown, exit dynamic mode
+    if (this.allContentShown) {
+      this.exitDynamicMode();
+      return;
+    }
+
+    // Clear any existing timeout
+    if (this.animationTimeout) {
+      clearTimeout(this.animationTimeout);
+      this.animationTimeout = null;
+    }
+    if (this.initialTimeout) {
+      clearTimeout(this.initialTimeout);
+      this.initialTimeout = null;
+    }
+
+    // First show title if it exists and hasn't been shown
+    if (this.currentParagraphIndex === -1) {
+      if (this.titleElement) {
+        this.titleElement.style.transition = 'opacity 0.8s ease';
+        requestAnimationFrame(() => {
+          this.titleElement.style.opacity = '1';
+        });
+      }
+      this.currentParagraphIndex = 0;
+      return;
+    }
+
+    // Then show paragraphs one by one
+    if (this.currentParagraphIndex < this.paragraphElements.length) {
+      const currentPara = this.paragraphElements[this.currentParagraphIndex];
+      if (currentPara) {
+        currentPara.style.transition = 'opacity 0.8s ease';
+        requestAnimationFrame(() => {
+          currentPara.style.opacity = '1';
+        });
+      }
+      this.currentParagraphIndex++;
+
+      // Check if we just showed the last paragraph
+      if (this.currentParagraphIndex >= this.paragraphElements.length) {
+        this.allContentShown = true;
+      }
+      return;
+    }
+
+    // All verses shown (fallback, should already be set above)
+    this.allContentShown = true;
+  }
+
+  showAllContent() {
+    // Remove tap overlay
+    this.removeTapOverlay();
+
+    // Show title
+    if (this.titleElement) {
+      this.titleElement.style.transition = 'opacity 0.8s ease';
+      this.titleElement.style.opacity = '1';
+    }
+
+    // Show all paragraphs
+    if (this.paragraphElements) {
+      this.paragraphElements.forEach(p => {
+        p.style.transition = 'opacity 0.8s ease';
+        p.style.opacity = '1';
+      });
+    }
+
+    this.allContentShown = true;
+    this.currentParagraphIndex = this.paragraphElements.length;
   }
 
   exitDynamicMode() {
@@ -4246,15 +4419,14 @@ class ReadingModeManager {
     if (dynamicBtn) {
       dynamicBtn.classList.remove('active');
       dynamicBtn.blur();
-      // Show button again when exiting dynamic mode
-      if (window.currentPoem && !window.currentPoem.noDynamicMode) {
-        dynamicBtn.style.display = 'flex';
-      }
+      // Button stays visible, just remove active state
     }
 
     // Hide navigation button
     if (downBtn) downBtn.style.display = 'none';
 
+    // Remove tap overlay
+    this.removeTapOverlay();
 
     if (this.clickHandler) {
       document.removeEventListener('click', this.clickHandler);
@@ -4286,16 +4458,14 @@ class ReadingModeManager {
 
     if (this.hiddenElements) {
       this.hiddenElements.forEach(el => {
-        el.style.opacity = '1';
+        el.style.opacity = '';
+        el.style.pointerEvents = '';
+        el.style.transition = '';
       });
     }
 
-
-
-
-
-
-
+    // Reset state
+    this.allContentShown = false;
   }
 
   navigateParagraph(direction) {

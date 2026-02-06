@@ -1,6 +1,12 @@
 [
   {
     "type": "poem",
+    "name": "Sad Inevitability",
+    "date": "2026-02-06",
+    "link": "src/poems.html?poem=8"
+  },
+  {
+    "type": "poem",
     "name": "Principles",
     "date": "2026-01-30",
     "link": "src/poems.html?poem=7"
@@ -22,11 +28,5 @@
     "name": "Optical Mouse",
     "date": "2025-11-30",
     "link": "src/blogs.html?blog=0"
-  },
-  {
-    "type": "poem",
-    "name": "Last Moments",
-    "date": "2025-07",
-    "link": "src/poems.html?poem=6"
   }
 ]
