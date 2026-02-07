@@ -1219,10 +1219,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.currentPoem = poem;
 
-    if (window.readingModeManager) {
-      window.readingModeManager.checkDynamicModeAvailable(poem);
-    }
-
     const localMd = `poems/${poem.folder}/poem.md`;
     fetch(localMd)
       .then((res) => {
@@ -1407,13 +1403,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
         attachLightboxEvents();
 
-        if (window.tooltipManager) {
-          window.tooltipManager.reinitialize(poem.folder, 'poems');
-        }
+        // Wait for tooltip data to load before checking reading mode controls,
+        // since checkTooltipsForPoem needs the tooltip data to be available.
+        const tooltipReady = window.tooltipManager
+          ? window.tooltipManager.reinitialize(poem.folder, 'poems')
+          : Promise.resolve();
 
-        if (window.readingModeManager) {
-          window.readingModeManager.checkTooltipsForPoem(poem.folder);
-        }
+        tooltipReady.then(() => {
+          // Signal that poem content and tooltip data are both ready.
+          // If the reading mode manager isn't created yet, store a pending callback.
+          const onPoemReady = () => {
+            window.readingModeManager.checkDynamicModeAvailable(poem);
+            window.readingModeManager.checkTooltipsForPoem(poem.folder);
+          };
+          if (window.readingModeManager) {
+            onPoemReady();
+          } else {
+            window._pendingPoemReady = onPoemReady;
+          }
+        });
       })
       .catch((err) => {
         console.error("Error loading poem:", err);
@@ -3969,7 +3977,6 @@ class ReadingModeManager {
     this.audioElement = null;
 
     this.loadPreferences();
-    this.checkTooltipsAvailable();
     this.initializeUI();
     this.attachEventListeners();
   }
@@ -4007,20 +4014,17 @@ class ReadingModeManager {
     }
 
     // Check if current poem has the required structure (at least 2 HR elements)
-    setTimeout(() => {
-      const poemText = document.getElementById('poemText');
-      if (poemText) {
-        const hrs = poemText.querySelectorAll('hr');
-        if (hrs.length >= 2) {
-          dynamicBtn.style.display = 'flex';
-          setTimeout(() => dynamicBtn.classList.add('positioned'), 100);
-        } else {
-          console.log('Dynamic mode disabled: poem needs at least 2 HR elements, found', hrs.length);
-          dynamicBtn.style.display = 'none';
-          dynamicBtn.classList.remove('positioned');
-        }
+    const poemText = document.getElementById('poemText');
+    if (poemText) {
+      const hrs = poemText.querySelectorAll('hr');
+      if (hrs.length >= 2) {
+        dynamicBtn.style.display = 'flex';
+        setTimeout(() => dynamicBtn.classList.add('positioned'), 100);
+      } else {
+        dynamicBtn.style.display = 'none';
+        dynamicBtn.classList.remove('positioned');
       }
-    }, 100);
+    }
 
 
     if (window.adjustModeControlsPosition) {
@@ -4062,14 +4066,15 @@ class ReadingModeManager {
       tooltipToggle.style.display = 'none';
     }
 
+    const dynamicBtn = document.getElementById('dynamicModeBtn');
+    if (dynamicBtn) {
+      dynamicBtn.style.display = 'none';
+    }
 
     document.body.classList.add('tooltips-disabled');
 
 
     setTimeout(() => {
-      const dynamicBtn = document.getElementById('dynamicModeBtn');
-      if (dynamicBtn) dynamicBtn.classList.add('positioned');
-
 
       if (window.adjustModeControlsPosition) {
         window.adjustModeControlsPosition();
@@ -4563,10 +4568,11 @@ class ReadingModeManager {
 window.initReadingModeManager = function () {
   if (document.getElementById('poemContent')) {
     window.readingModeManager = new ReadingModeManager();
-    // If a poem was already loaded before the manager was initialized,
-    // retroactively check dynamic mode availability to avoid missing the icon.
-    if (window.currentPoem) {
-      window.readingModeManager.checkDynamicModeAvailable(window.currentPoem);
+    // If the poem was already rendered before the manager was created,
+    // replay the pending notification now.
+    if (window._pendingPoemReady) {
+      window._pendingPoemReady();
+      delete window._pendingPoemReady;
     }
   }
 };
