@@ -4563,5 +4563,10 @@ class ReadingModeManager {
 window.initReadingModeManager = function () {
   if (document.getElementById('poemContent')) {
     window.readingModeManager = new ReadingModeManager();
+    // If a poem was already loaded before the manager was initialized,
+    // retroactively check dynamic mode availability to avoid missing the icon.
+    if (window.currentPoem) {
+      window.readingModeManager.checkDynamicModeAvailable(window.currentPoem);
+    }
   }
 };
