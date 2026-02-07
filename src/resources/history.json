@@ -1,6 +1,12 @@
 [
   {
     "type": "poem",
+    "name": "The Necessity Of Love",
+    "date": "2026-02-07",
+    "link": "src/poems.html?poem=9"
+  },
+  {
+    "type": "poem",
     "name": "Sad Inevitability",
     "date": "2026-02-06",
     "link": "src/poems.html?poem=8"
@@ -22,11 +28,5 @@
     "name": "Embedded Systems Overview",
     "date": "2026-01-18",
     "link": "src/blogs.html?blog=1"
-  },
-  {
-    "type": "blog",
-    "name": "Optical Mouse",
-    "date": "2025-11-30",
-    "link": "src/blogs.html?blog=0"
   }
 ]
