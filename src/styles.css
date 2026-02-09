@@ -1752,7 +1752,6 @@ body.no-scroll {
 }
 
 #themeToggle {
-  top: 60px;
   right: 10px;
   opacity: 0;
   visibility: hidden;
@@ -1858,8 +1857,7 @@ pre code {
   position: fixed;
   width: 30px;
   height: 30px;
-  margin-top: 10px;
-  margin-left: 10px;
+  left: 10px;
   border-radius: 5px;
   z-index: 1100;
   background: var(--button-bg);
@@ -1877,6 +1875,55 @@ pre code {
 
 .mobile-sidebar-toggle:active {
   opacity: 0.8;
+}
+
+/* Mobile Navigation Arrows */
+.mobile-nav-arrow {
+  display: none;
+  position: fixed;
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  z-index: 2900;
+  background: var(--button-bg);
+  color: var(--button-text);
+  border: 1px solid var(--border-secondary);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: opacity 0.2s ease, background 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.mobile-nav-arrow:hover {
+  background: var(--accent-hover);
+}
+
+.mobile-nav-arrow:focus {
+  outline: none;
+  background: var(--button-bg);
+}
+
+.mobile-nav-arrow:active {
+  opacity: 0.8;
+}
+
+.mobile-nav-arrow.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.mobile-nav-prev {
+  left: 10px;
+}
+
+.mobile-nav-next {
+  right: 10px;
 }
 
 @media (max-width: 800px) {
@@ -1906,6 +1953,10 @@ pre code {
   }
 
   .mobile-sidebar-toggle {
+    display: inline-flex;
+  }
+
+  .mobile-nav-arrow {
     display: inline-flex;
   }
 
