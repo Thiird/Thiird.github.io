@@ -1179,7 +1179,6 @@ body.no-scroll {
 .poem-text hr,
 .blog-text hr {
   max-width: 800px;
-  margin: 20px auto;
   border: none;
   border-top: 1px solid var(--text-primary, #333);
   opacity: 0.3;

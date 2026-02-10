@@ -1124,23 +1124,6 @@ document.addEventListener("DOMContentLoaded", () => {
       a.dataset.index = index;
       a.classList.add("poem-link");
 
-      let preventNextClick = false;
-
-      a.addEventListener('touchend', (e) => {
-        if (!a.classList.contains('show-date') && poem.date) {
-          e.preventDefault();
-          e.stopPropagation();
-          preventNextClick = true;
-
-          document.querySelectorAll('.poem-link.show-date').forEach(link => {
-            link.classList.remove('show-date');
-          });
-          a.classList.add('show-date');
-
-          setTimeout(() => { preventNextClick = false; }, 100);
-        }
-      });
-
       li.appendChild(a);
       poemListItems.appendChild(li);
     });
@@ -1148,14 +1131,8 @@ document.addEventListener("DOMContentLoaded", () => {
       link.addEventListener("click", (e) => {
         e.preventDefault();
 
-
-        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-        if (isTouchDevice && window.innerWidth <= 800 && !link.classList.contains('show-date')) {
-          return;
-        }
-
-        const index = link.dataset.index;
-        const poem = JSON.parse(link.getAttribute("data-poem"));
+        const index = parseInt(link.dataset.index, 10);
+        const poem = window.poemsCache[index];
         const currentPoemParam = getUrlParameter('poem');
 
         const folderMatch = poem.folder.match(/^(\d+)/);
@@ -1169,13 +1146,13 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
-        loadPoem(poem);
+        window.loadPoem(poem);
         history.pushState({ poemIndex: index }, "", `?poem=${folderNum}`);
         clearSidebarSearchInputs();
         if (window.innerWidth <= 800) {
           closeSidebarAfterSelect();
         }
-        setActiveListItem('poemListItems', parseInt(index, 10));
+        setActiveListItem('poemListItems', index);
       });
     });
 
@@ -1221,6 +1198,14 @@ document.addEventListener("DOMContentLoaded", () => {
     window.scrollTo(0, 0);
     resetAudioPlayer();
 
+    // Disable mobile nav buttons during loading
+    const mobilePrevBtn = document.getElementById("mobilePrevItem");
+    const mobileNextBtn = document.getElementById("mobileNextItem");
+    if (mobilePrevBtn && mobileNextBtn) {
+      mobilePrevBtn.classList.add('disabled');
+      mobileNextBtn.classList.add('disabled');
+    }
+
     window.currentPoem = poem;
 
     const localMd = `poems/${poem.folder}/poem.md`;
@@ -1242,6 +1227,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         md = md.replace(/^\s*---\s*$/m, '');
+        
+        // Trim leading/trailing whitespace to avoid blank lines at start/end
+        md = md.trim();
 
         // Custom parsing: convert lines to paragraphs, preserve blank lines as spacing
         const lines = md.split('\n');
@@ -1425,11 +1413,49 @@ document.addEventListener("DOMContentLoaded", () => {
           } else {
             window._pendingPoemReady = onPoemReady;
           }
+          
+          // Re-enable mobile nav buttons after everything is loaded
+          setTimeout(() => {
+            const mobilePrevBtn = document.getElementById("mobilePrevItem");
+            const mobileNextBtn = document.getElementById("mobileNextItem");
+            if (mobilePrevBtn && mobileNextBtn && window.currentPoem && window.poemsCache) {
+              const currentIndex = window.poemsCache.indexOf(window.currentPoem);
+              if (currentIndex <= 0) {
+                mobilePrevBtn.classList.add('disabled');
+              } else {
+                mobilePrevBtn.classList.remove('disabled');
+              }
+              if (currentIndex >= window.poemsCache.length - 1) {
+                mobileNextBtn.classList.add('disabled');
+              } else {
+                mobileNextBtn.classList.remove('disabled');
+              }
+            }
+          }, 50);
         });
       })
       .catch((err) => {
         console.error("Error loading poem:", err);
         document.getElementById("poemText").innerHTML = "<p>Error loading poem.</p>";
+        
+        // Re-enable buttons on error
+        setTimeout(() => {
+          const mobilePrevBtn = document.getElementById("mobilePrevItem");
+          const mobileNextBtn = document.getElementById("mobileNextItem");
+          if (mobilePrevBtn && mobileNextBtn && window.currentPoem && window.poemsCache) {
+            const currentIndex = window.poemsCache.indexOf(window.currentPoem);
+            if (currentIndex <= 0) {
+              mobilePrevBtn.classList.add('disabled');
+            } else {
+              mobilePrevBtn.classList.remove('disabled');
+            }
+            if (currentIndex >= window.poemsCache.length - 1) {
+              mobileNextBtn.classList.add('disabled');
+            } else {
+              mobileNextBtn.classList.remove('disabled');
+            }
+          }
+        }, 100);
       });
     if (poem.audio) {
       const audioPlayer = document.getElementById("audioPlayer");
@@ -1531,28 +1557,6 @@ document.addEventListener("DOMContentLoaded", () => {
       a.dataset.index = index;
       a.classList.add("blog-link");
 
-
-      let preventNextClick = false;
-
-      a.addEventListener('touchend', (e) => {
-
-        if (!a.classList.contains('show-date') && blog.date) {
-          e.preventDefault();
-          e.stopPropagation();
-          preventNextClick = true;
-
-
-          document.querySelectorAll('.blog-link.show-date').forEach(link => {
-            link.classList.remove('show-date');
-          });
-
-          a.classList.add('show-date');
-
-
-          setTimeout(() => { preventNextClick = false; }, 100);
-        }
-      });
-
       li.appendChild(a);
       listEl.appendChild(li);
     });
@@ -1560,14 +1564,8 @@ document.addEventListener("DOMContentLoaded", () => {
       link.addEventListener("click", (e) => {
         e.preventDefault();
 
-
-        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-        if (isTouchDevice && window.innerWidth <= 800 && !link.classList.contains('show-date')) {
-          return;
-        }
-
-        const index = link.dataset.index;
-        const blog = JSON.parse(link.getAttribute("data-blog"));
+        const index = parseInt(link.dataset.index, 10);
+        const blog = window.blogsCache[index];
         const currentBlogParam = getUrlParameter('blog');
 
 
@@ -1586,7 +1584,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        loadBlogPost(blog);
+        window.loadBlogPost(blog);
         history.pushState({ blogIndex: index }, "", `?blog=${folderNum}`);
 
         clearSidebarSearchInputs();
@@ -1595,7 +1593,7 @@ document.addEventListener("DOMContentLoaded", () => {
           closeSidebarAfterSelect();
         }
 
-        setActiveListItem('blogListItems', parseInt(index, 10));
+        setActiveListItem('blogListItems', index);
       });
     });
 
@@ -1629,9 +1627,17 @@ document.addEventListener("DOMContentLoaded", () => {
   function loadBlogPost(blog) {
     window.scrollTo(0, 0);
     resetAudioPlayer();
-    
+
+    // Disable mobile nav buttons during loading
+    const mobilePrevBtn = document.getElementById("mobilePrevItem");
+    const mobileNextBtn = document.getElementById("mobileNextItem");
+    if (mobilePrevBtn && mobileNextBtn) {
+      mobilePrevBtn.classList.add('disabled');
+      mobileNextBtn.classList.add('disabled');
+    }
+
     window.currentBlog = blog;
-    
+
     const target = document.getElementById("blogText");
     if (!target) return;
     target.innerHTML = "Loading blog post...";
@@ -1748,6 +1754,23 @@ document.addEventListener("DOMContentLoaded", () => {
           if (typeof handleAnchorHighlight === 'function') {
             handleAnchorHighlight();
           }
+          
+          // Re-enable mobile nav buttons after everything is loaded
+          const mobilePrevBtn = document.getElementById("mobilePrevItem");
+          const mobileNextBtn = document.getElementById("mobileNextItem");
+          if (mobilePrevBtn && mobileNextBtn && window.currentBlog && window.blogsCache) {
+            const currentIndex = window.blogsCache.indexOf(window.currentBlog);
+            if (currentIndex <= 0) {
+              mobilePrevBtn.classList.add('disabled');
+            } else {
+              mobilePrevBtn.classList.remove('disabled');
+            }
+            if (currentIndex >= window.blogsCache.length - 1) {
+              mobileNextBtn.classList.add('disabled');
+            } else {
+              mobileNextBtn.classList.remove('disabled');
+            }
+          }
         }, 100);
 
         attachLightboxEvents();
@@ -1759,6 +1782,25 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .catch((err) => {
         target.innerHTML = "Failed to load blog post.";
+        
+        // Re-enable buttons on error
+        setTimeout(() => {
+          const mobilePrevBtn = document.getElementById("mobilePrevItem");
+          const mobileNextBtn = document.getElementById("mobileNextItem");
+          if (mobilePrevBtn && mobileNextBtn && window.currentBlog && window.blogsCache) {
+            const currentIndex = window.blogsCache.indexOf(window.currentBlog);
+            if (currentIndex <= 0) {
+              mobilePrevBtn.classList.add('disabled');
+            } else {
+              mobilePrevBtn.classList.remove('disabled');
+            }
+            if (currentIndex >= window.blogsCache.length - 1) {
+              mobileNextBtn.classList.add('disabled');
+            } else {
+              mobileNextBtn.classList.remove('disabled');
+            }
+          }
+        }, 100);
       });
   }
   window.loadBlogPost = loadBlogPost;
@@ -3102,35 +3144,31 @@ function initBlogPage() {
 
 
         if (mobileToggle) {
-          // In mobile mode, position at same level as theme toggle; in desktop, at banner bottom
-          const isMobile = window.innerWidth <= 800;
-          if (isMobile) {
-            const arrowHeight = 30; // button height
-            const spacing = 8;
-            mobileToggle.style.top = `${bannerBottom + 10 + arrowHeight + spacing}px`;
-          } else {
-            mobileToggle.style.top = `${bannerBottom}px`;
-          }
+          // Position at banner bottom (mobile and desktop)
+          mobileToggle.style.top = `${bannerBottom + 10}px`;
         }
-
-        const mobileNav = document.querySelectorAll('.mobile-nav-arrow');
-        mobileNav.forEach(btn => {
-          btn.style.top = `${bannerBottom + 10}px`;
-        });
-
 
         const themeToggle = document.getElementById("themeToggle");
         if (themeToggle) {
-          // In mobile mode, position below nav arrows; in desktop, right below banner
-          const isMobile = window.innerWidth <= 800;
-          if (isMobile) {
-            const arrowHeight = 30; // button height
-            const spacing = 8;
-            themeToggle.style.top = `${bannerBottom + 10 + arrowHeight + spacing}px`;
-          } else {
-            themeToggle.style.top = `${bannerBottom + 10}px`;
-          }
+          // Position at banner bottom + 10px
+          themeToggle.style.top = `${bannerBottom + 10}px`;
           themeToggle.classList.add("positioned");
+        }
+
+        // Position mobile nav arrows below sidebar/theme toggles (mobile only)
+        const isMobile = window.innerWidth <= 800;
+        const buttonHeight = 30;
+        const rowSpacing = 16; // Extra space between first row and subsequent rows
+        const mobilePrevBtn = document.querySelector('.mobile-nav-prev');
+        const mobileNextBtn = document.querySelector('.mobile-nav-next');
+
+        if (isMobile) {
+          if (mobilePrevBtn) {
+            mobilePrevBtn.style.top = `${bannerBottom + 10 + buttonHeight + rowSpacing}px`;
+          }
+          if (mobileNextBtn) {
+            mobileNextBtn.style.top = `${bannerBottom + 10 + buttonHeight + rowSpacing}px`;
+          }
         }
       }
     });
@@ -3312,7 +3350,6 @@ function initBlogPage() {
         const prevBlog = window.blogsCache[currentIndex - 1];
         window.loadBlogPost(prevBlog);
         window.setActiveListItem('blogListItems', currentIndex - 1);
-        updateMobileNavButtons();
 
         // Update URL
         const blogNumber = prevBlog.folder.match(/^(\d+)/);
@@ -3335,7 +3372,6 @@ function initBlogPage() {
         const nextBlog = window.blogsCache[currentIndex + 1];
         window.loadBlogPost(nextBlog);
         window.setActiveListItem('blogListItems', currentIndex + 1);
-        updateMobileNavButtons();
 
         // Update URL
         const blogNumber = nextBlog.folder.match(/^(\d+)/);
@@ -3347,19 +3383,6 @@ function initBlogPage() {
     mobileNextBtn.addEventListener('touchend', () => {
       setTimeout(() => mobileNextBtn.blur(), 10);
     });
-  }
-
-  // Update buttons whenever a blog is loaded
-  if (typeof updateMobileNavButtons === 'function') {
-    // Hook into loadBlogPost by overriding it
-    const originalLoadBlogPost = window.loadBlogPost;
-    window.loadBlogPost = function (blog) {
-      originalLoadBlogPost(blog);
-      setTimeout(updateMobileNavButtons, 100);
-    };
-    
-    // Initialize buttons on page load
-    setTimeout(updateMobileNavButtons, 500);
   }
 }
 
@@ -3398,42 +3421,44 @@ function initPoemPage() {
 
 
         if (mobileToggle) {
-          // In mobile mode, position at same level as theme toggle; in desktop, at banner bottom
-          const isMobile = window.innerWidth <= 800;
-          if (isMobile) {
-            const arrowHeight = 30; // button height
-            const spacing = 8;
-            mobileToggle.style.top = `${bannerBottom + 10 + arrowHeight + spacing}px`;
-          } else {
-            mobileToggle.style.top = `${bannerBottom}px`;
-          }
+          // Position at banner bottom (mobile and desktop)
+          mobileToggle.style.top = `${bannerBottom + 10}px`;
         }
-
-        const mobileNav = document.querySelectorAll('.mobile-nav-arrow');
-        mobileNav.forEach(btn => {
-          btn.style.top = `${bannerBottom + 10}px`;
-        });
-
 
         const themeToggle = document.getElementById("themeToggle");
         if (themeToggle) {
-          // In mobile mode, position below nav arrows; in desktop, right below banner
-          const isMobile = window.innerWidth <= 800;
-          if (isMobile) {
-            const arrowHeight = 30; // button height
-            const spacing = 8;
-            themeToggle.style.top = `${bannerBottom + 10 + arrowHeight + spacing}px`;
-          } else {
-            themeToggle.style.top = `${bannerBottom + 10}px`;
-          }
+          // Position at banner bottom + 10px
+          themeToggle.style.top = `${bannerBottom + 10}px`;
           themeToggle.classList.add("positioned");
+        }
 
+        // Position mobile nav arrows and mode controls based on screen size
+        const isMobile = window.innerWidth <= 800;
+        const buttonHeight = 30;
+        const rowSpacing = 16; // Extra space between first row and subsequent rows
+        const normalSpacing = 8;
+        const mobilePrevBtn = document.querySelector('.mobile-nav-prev');
+        const mobileNextBtn = document.querySelector('.mobile-nav-next');
+        const modeControls = document.getElementById("readingModeControls");
 
-          const modeControls = document.getElementById("readingModeControls");
+        if (isMobile) {
+          // Mobile mode: show nav arrows, position mode controls below them
+          if (mobilePrevBtn) {
+            mobilePrevBtn.style.top = `${bannerBottom + 10 + buttonHeight + rowSpacing}px`;
+          }
+          if (mobileNextBtn) {
+            mobileNextBtn.style.top = `${bannerBottom + 10 + buttonHeight + rowSpacing}px`;
+          }
           if (modeControls) {
+            const arrowsBottom = bannerBottom + 10 + buttonHeight + rowSpacing + buttonHeight;
+            modeControls.style.top = `${arrowsBottom + normalSpacing}px`;
+          }
+        } else {
+          // Desktop mode: position mode controls directly below theme toggle
+          if (modeControls && themeToggle) {
             const themeRect = themeToggle.getBoundingClientRect();
             const themeBottom = themeRect.bottom;
-            modeControls.style.top = `${themeBottom + 8}px`;
+            modeControls.style.top = `${themeBottom + normalSpacing}px`;
           }
         }
       }
@@ -3606,7 +3631,6 @@ function initPoemPage() {
         const prevPoem = window.poemsCache[currentIndex - 1];
         window.loadPoem(prevPoem);
         window.setActiveListItem('poemListItems', currentIndex - 1);
-        updateMobileNavButtons();
 
         // Update URL
         const poemNumber = prevPoem.folder.match(/^(\d+)/);
@@ -3629,7 +3653,6 @@ function initPoemPage() {
         const nextPoem = window.poemsCache[currentIndex + 1];
         window.loadPoem(nextPoem);
         window.setActiveListItem('poemListItems', currentIndex + 1);
-        updateMobileNavButtons();
 
         // Update URL
         const poemNumber = nextPoem.folder.match(/^(\d+)/);
@@ -3641,19 +3664,6 @@ function initPoemPage() {
     mobileNextBtn.addEventListener('touchend', () => {
       setTimeout(() => mobileNextBtn.blur(), 10);
     });
-  }
-
-  // Update buttons whenever a poem is loaded  
-  if (typeof updateMobileNavButtons === 'function') {
-    // Hook into loadPoem by overriding it
-    const originalLoadPoem = window.loadPoem;
-    window.loadPoem = function (poem) {
-      originalLoadPoem(poem);
-      setTimeout(updateMobileNavButtons, 100);
-    };
-    
-    // Initialize buttons on page load
-    setTimeout(updateMobileNavButtons, 500);
   }
 }
 

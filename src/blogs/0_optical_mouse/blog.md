@@ -1,3 +1,4 @@
+---
 date: 2025-11-30
 ---
 
@@ -267,3 +268,5 @@ Here is a clip of me playing Battlefield 4 with my mouse!
   <img class="click-zoom" src="mouse_final_3.jpg" alt="" />
   <img class="click-zoom" src="mouse_final_4.jpg" alt="" />
 </div>
+
+---

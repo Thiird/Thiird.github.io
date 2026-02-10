@@ -14,3 +14,5 @@ The need for writing came to me naturally as I guided myself to think things thr
 We all know, although subconsciously, what's the truth, what really matters. None of us knows the full story, but collectively? Yes, I believe we do. I try my best to put what I know to be true and valuable in these texts, both for me to have a clear view on them and for others to learn from.
 
 To put it poetically: here is my part of the collective enlightenment.
+
+---

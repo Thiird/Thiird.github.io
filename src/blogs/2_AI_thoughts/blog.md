@@ -1,3 +1,4 @@
+---
 date: 2026-01-26
 ---
 
@@ -49,3 +50,5 @@ Many technological revolutions have happened in the history of human civilizatio
 It's either that or be left behind.
 
 That's my current approach at least.
+
+---

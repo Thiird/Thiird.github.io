@@ -1,3 +1,4 @@
+---
 date: 2026-01-18
 ---
 
@@ -481,3 +482,5 @@ Written by Stefano Nicolis.
 
 Thanks to [Kamil Rudnicki](https://www.linkedin.com/in/rudnickikamil/) for a quick check.
 </em>
+
+---
