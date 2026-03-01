@@ -1165,6 +1165,14 @@ document.addEventListener("DOMContentLoaded", () => {
     list.querySelectorAll('a').forEach((a) => {
       a.classList.toggle('current', parseInt(a.dataset.index, 10) === Number(activeIndex));
     });
+    // Update any visible overlay's font-weight to match the newly-active item's bold state
+    const overlay = document.querySelector('.list-item-title-overlay');
+    if (overlay) {
+      const activeLink = list.querySelector('a.current .list-item-title');
+      if (activeLink) {
+        overlay.style.fontWeight = window.getComputedStyle(activeLink).fontWeight;
+      }
+    }
   }
   window.setActiveListItem = setActiveListItem;
 
@@ -3781,6 +3789,9 @@ function initShowcaseSlideshow() {
     }
   }
 
+  // Expose stop/start so the lightbox can pause and resume
+  window._showcaseSlideshowStop = stopAuto;
+  window._showcaseSlideshowStart = startAuto;
 
   fetch(MANIFEST).then(r => r.json()).then(list => {
     if (!Array.isArray(list) || list.length === 0) return;
@@ -3824,7 +3835,7 @@ function initOverviewSlideshow() {
     const orientationW = readCSSVar(wVar, isVertical ? 320 : 420);
     const orientationH = readCSSVar(hVar, isVertical ? 480 : 260);
 
-    const historyEl = document.getElementById('historySection');
+    const historyEl = document.getElementById('RecentUpdates');
     const halfHistory = historyEl ? Math.floor(historyEl.clientWidth / 2) : Math.floor(document.documentElement.clientWidth / 2);
 
     const finalWidth = Math.min(orientationW, halfHistory);
@@ -3938,6 +3949,9 @@ function initOverviewSlideshow() {
 
   function stopAuto() { if (autoTimer) { clearInterval(autoTimer); autoTimer = null; } }
 
+  // Expose stop/start so the lightbox can pause and resume
+  window._overviewSlideshowStop = stopAuto;
+  window._overviewSlideshowStart = startAuto;
 
   fetch(MANIFEST).then(r => r.json()).then(list => {
     if (!Array.isArray(list) || list.length === 0) return;
@@ -3958,10 +3972,33 @@ function initOverviewSlideshow() {
   });
 }
 
+// Pause all slideshows when the tab is hidden, resume when visible
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    if (window._showcaseSlideshowStop) window._showcaseSlideshowStop();
+    if (window._overviewSlideshowStop) window._overviewSlideshowStop();
+  } else {
+    // Only resume if the lightbox is not open
+    if (!document.getElementById('fullscreen-image-overlay')) {
+      if (window._showcaseSlideshowStart) window._showcaseSlideshowStart();
+      if (window._overviewSlideshowStart) window._overviewSlideshowStart();
+    }
+  }
+});
+
 function openImageFullscreen(src, alt) {
 
   const oldOverlay = document.getElementById('fullscreen-image-overlay');
   if (oldOverlay) oldOverlay.remove();
+
+  // Stop all slideshows while the lightbox is open
+  if (window._showcaseSlideshowStop) window._showcaseSlideshowStop();
+  if (window._overviewSlideshowStop) window._overviewSlideshowStop();
+
+  function resumeSlideshows() {
+    if (window._showcaseSlideshowStart) window._showcaseSlideshowStart();
+    if (window._overviewSlideshowStart) window._overviewSlideshowStart();
+  }
 
   const overlay = document.createElement('div');
   overlay.id = 'fullscreen-image-overlay';
@@ -3989,10 +4026,11 @@ function openImageFullscreen(src, alt) {
   overlay.appendChild(img);
 
 
-  overlay.addEventListener('click', () => overlay.remove());
+  overlay.addEventListener('click', () => { overlay.remove(); resumeSlideshows(); });
   document.addEventListener('keydown', function escHandler(e) {
     if (e.key === 'Escape') {
       overlay.remove();
+      resumeSlideshows();
       document.removeEventListener('keydown', escHandler);
     }
   });
