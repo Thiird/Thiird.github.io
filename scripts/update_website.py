@@ -165,6 +165,44 @@ import sys
 import subprocess
 from pathlib import Path
 import os
+from datetime import datetime
+import re
+
+def update_last_modified_date():
+    """Update the 'last updated' date in index.html."""
+    try:
+        index_path = Path(__file__).parent.parent / 'index.html'
+        
+        if not index_path.exists():
+            print("  Warning: index.html not found, skipping date update")
+            return False
+        
+        # Read the file
+        content = index_path.read_text(encoding='utf-8')
+        
+        # Format date as "13 February 2026" (no leading zero on day)
+        now = datetime.now()
+        current_date = f"{now.day} {now.strftime('%B %Y')}"
+        
+        # Update the date in the span with id="last-updated"
+        pattern = r'<span id="last-updated">([^<]+)</span>'
+        replacement = f'<span id="last-updated">{current_date}</span>'
+        
+        updated_content = re.sub(pattern, replacement, content)
+        
+        if updated_content != content:
+            index_path.write_text(updated_content, encoding='utf-8')
+            print(f"  Updated last modified date to: {current_date}")
+            return True
+        else:
+            print("  Warning: Could not find date placeholder in index.html")
+            return False
+            
+    except Exception as e:
+        print(f"  Error updating date: {e}")
+        return False
+        print(f"  Error updating date: {e}")
+        return False
 
 def run_script(script_name, description):
     """Run a Python script and report results."""
@@ -215,6 +253,10 @@ def main():
     
     # Step 5: Update history
     results['history'] = run_script('update_site_history.py', 'Updating site history')
+    
+    # Step 6: Update last modified date in index.html
+    print("\nUpdating last modified date...")
+    update_last_modified_date()
     
     # Summary
     print("\nSummary:")
